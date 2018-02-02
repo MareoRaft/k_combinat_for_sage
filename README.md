@@ -1,5 +1,13 @@
 The goal is to translate Morse's code from (Maple?) to Sage.
 
+Please read /Applications/sage/sage-7.2/src/sage/interfaces/maple.py.
+You can also type `maple.fsolve('x^2=cos(x)+4', 'x=0..5')` into the Sage shell to get an explanation of how you should install/config Maple on your system.  One question is whether this maple integration works only in the console, or in any Sage script.
+
+
+It may be possible to import maple into Sage, which would solve the problem at least for personal use!
+
+
+
 Plan of attack
 -------------------
   1. obtain code
