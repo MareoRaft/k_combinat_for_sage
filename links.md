@@ -6,3 +6,59 @@ see
 https://ask.sagemath.org/question/33954/can-i-create-a-sage-file-and-import-it-as-a-python-module/
 for explanation of import_statements and preparse
 
+sage track ticket:
+https://trac.sagemath.org/ticket/25295
+
+sage combinat things to take a look out and see what's there:
+ncsf_qsym
+sf/k_dual
+sf/macdonald
+sf/new_kschur
+k_tableau
+
+
+
+things that definitely exist in sage
+------------------------------------
+  * dual k-Schur basis
+  * strong and weak k-tableau
+  * SkewTableau
+  * SkewPartition (ferrers diagram of the skew shape)
+  * row-shape and col-shape exist in SkewPartition as row_lengths and column_lengths
+  * "cells": We use "cells" as coordinates.  A "cell" is an ordered pair (i, j).  No actual class.
+  * hook_length and hook_lengths methods in Partition
+  * leg_length and arm_length
+  * k_boundary and k_interior already exist in Partition!
+
+
+things mentioned in sage (and might exist)
+------------------------------------------
+  * k-bounded partitions
+  * kshapes mentioned in k_tableau and skew_tableau
+
+
+
+things that definitely do not exist in sage
+-------------------------------------------
+  * 
+
+
+
+plan
+----
+If I need to see whether an object (for example a skew shape) qualifies to be an object of a child class (for example a k-boundary), there are three options:
+
+(1) Create `is_k_boundary` as a method of the skew shape class.
+(2) Create a separate `is_k_boundary` function in my module for k-things.  The point being that we don't need to bloat the skew shape class.  (Of course, kBoundary class will use is_k_boundary function itself).
+(3) Just do the checking in the `__init__` method of the kBoundary class ONLY.  If the user wants to see if a skew shape is a kBoundary, they must try to create a new kBoundary(skew_shape) object and catch the error.
+
+Planning to go with (1) because it seems consistent with what I'm seeing: In the Tableau class, I see methods like is_standard, is_k_tableau, and is_key_tableau, two of which I know have their own class.
+
+
+
+
+
+
+Questions
+-----------
+I think a lot of these objects will be SkewPartitions or ferrers diagrams, but then should have a .to_hook_length_SkewTableau method which gives you back the shape with hook lengths filled in.
