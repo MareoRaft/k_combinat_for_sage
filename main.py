@@ -1,26 +1,60 @@
-"""
-Definition: A __skew-linked diagram__ is a skew-shape S where both the row-shape and column-shape of S are partitions.
-"""
+from sage.all import *
+from sage.combinat.skew_partition import SkewPartition
+# from sage.combinat.
 
-def is_skew_linked_diagram(S):
-	return is_skew_shape(S) and is_partition(row_shape(S)) and is_partition(col_shape(S))
+# HELPERS (only exist as helper functions for other things):
+def is_weakly_decreasing(li):
+	return all(li[i] >= li[i+1] for i in range(len(li)-1))
 
 
-"""
-Definition: Given a partition \lambda and a positive integer k, the __k-boundary__ of gamma is the skew-shape obtained from the shape of \lambda by removing all cells of hook-length greater than k.
-"""
+# MAIN:
 
-class k_boundary (skew_shape):
-	def __init__(l, k):
+
+class SkewPartition2 (SkewPartition):
+	def is_skew_linked_diagram(self):
+		"""
+		A __skew-linked diagram__ is a skew-shape `s` where both the row-shape and column-shape of `s` are partitions.
+		"""
+		return is_weakly_decreasing(self.row_lengths()) and is_weakly_decreasing(self.column_lengths())
+
+	# DOESN"T MAKE SENSE BECAUSE OUR SKEWPARTITION ARE JUST OUTER AND INNER PART ALREADY DEFINED.
+	# def minimal_containing_partition(self):
+	# 	""" Returns the smallest possible partition that could contain this skew shape.
+	# 	Simply go down and left of all cells in skew_shape
+	# 	"""
+	# 	current_row_len = 0
+	# 	partition_reversed = []
+	# 	for row in reversed(skew_shape.rows()):
+	# 		current_row_len = max(current_row_len, rightmost(row))
+	# 		partition_reversed.append(current_row_len)
+	# 	partition = list(reversed(partition_reversed))
+	# 	return partition
+
+
+class kBoundary (SkewPartition2):
 	"""
-	l: the partition
-	k: the largest allowed hook length
+	Given a partition \lambda and a positive integer k, the __k-boundary__ of \lambda is the skew-shape obtained from the shape of \lambda by removing all cells of hook-length greater than k.
 	"""
-	self.super(partition=l) # effectively s = l.shape()
-	s = self.shape
-	for cell in s.cells():
-		if s.hook_length(cell) > k:
-			s.remove(cell)
+	def __init__(self, l, k):
+		# NOTE: THIS FUNCTION IS REDUNDANT WITH Permutation.k_boundary AND THIS SHOULD BE ADDRESSED
+		"""
+		l: the partition
+		k: the largest allowed hook length
+		"""
+		# to make a SkewPartition, we must calculate the inner and outer partitions
+		outer_partition = l.to_list()
+		# we could make more efficient, but it's simple to get the tableau of all hook lengths and pick out the inner partition from it
+		inner_partition = []
+		for row_hook_lengths in l.hook_lengths():
+			inner_row_length = len([x for x in row_hook_lengths if x > k])
+			inner_partition.append(inner_row_length)
+		# finally, make the SkewPartition
+		SkewPartition2.__init__(self, [outer_partition, inner_partition])
+
+	def partition(self):
+		""" Return the partition whose k-boundary is self. """
+
+
 
 """
 Given a skew-linked diagram, is it a k-boundary?  (That is, does there exist some partition which - when cells of hook-length > k are removed - becomes the skew-linked diagram.)
@@ -28,19 +62,13 @@ Given a skew-linked diagram, is it a k-boundary?  (That is, does there exist som
 
 def k_boundary_to_partition(skew_shape, strict=True):
 	"""
-	skew_shape: the skew_shape (a k_boundary) to find the corresponding partition for
-	strict: assert that the skew_shape really is a k_boundary
+	skew_shape: The skew-shape (a k-boundary) to find the corresponding partition for.
+	strict: If true, assert that the skew-shape really is a k-boundary.
 	"""
 	if strict:
 		assert is_k_boundary(skew_shape)
-	""" simply go down and left of all cells in skew_shape """
-	current_row_len = 0
-	partition_reversed = []
-	for row in reversed(skew_shape.rows()):
-		current_row_len = max(current_row_len, rightmost(row))
-		partition_reversed.append(current_row_len)
-	partition = list(reversed(partition_reversed))
-	return partition
+	# return minimal_containing_partition()
+	return skew_shape.outer()
 
 def is_k_boundary(skew_shape):
 	if k == 0:
