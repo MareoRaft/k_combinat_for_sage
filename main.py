@@ -30,6 +30,31 @@ class SkewPartition2 (SkewPartition):
 	# 	partition = list(reversed(partition_reversed))
 	# 	return partition
 
+def row_col_to_skew_partition(rs, cs):
+	outer = []
+	inner = []
+	current_cs = [0] * len(cs)
+	row_index = 0
+	for col_coindex, col_length in enumerate(list(reversed(cs))):
+		current_col_length = list(reversed(current_cs))[col_coindex]
+		num_rows_to_slide = col_length - current_col_length
+		if num_rows_to_slide < 0:
+			raise ValueError('The inputted (row-shape, col-shape) pair has no possible corresponding skew-shape.')
+		# 'col_num' is 1-based index of cols
+		col_num = len(cs) - col_coindex
+		while num_rows_to_slide > 0:
+			if row_index > len(rs) - 1:
+				raise ValueError('error more')
+			# slide a row
+			outer.append(col_num)
+			inner.append(col_num - rs[row_index])
+			# update params/info
+			for c in range(col_num - rs[row_index], col_num):
+				current_cs[c] += 1
+			row_index += 1
+			num_rows_to_slide -= 1
+	return SkewPartition([outer, inner])
+
 
 class kBoundary (SkewPartition2):
 	"""
@@ -70,9 +95,10 @@ def k_boundary_to_partition(skew_shape, strict=True):
 	# return minimal_containing_partition()
 	return skew_shape.outer()
 
-def is_k_boundary(skew_shape):
+def is_k_boundary(skew_shape, k):
 	if k == 0:
-		return is_empty_tableau(skew_shape)
+		# the only valid 0-boundary is the empty shape
+		return skew_shape.outer() == skew_shape.inner()
 	else:
 		"""We go down and left of each cell to create the only possible partition that could have led to this potential k-boundary
 
@@ -80,14 +106,8 @@ def is_k_boundary(skew_shape):
 		"""
 		l = k_boundary_to_partition(skew_shape, strict=False)
 		"""now that we have the partition, we simply compute it's hook-length for each cell and verify that for each cell of values k or less, it appears in the skew_shape"""
-		for cell in l:
-			if hook_length(l, cell) <= k:
-				if cell not in skew_shape:
-					return False
-			else:
-				if cell in skew_shape:
-					return False
-		return True
+		correct_k_boundary = l.k_boundary(k)
+		return skew_shape == correct_k_boundary
 
 """
 Definition: A partition is __k-irreducible__ if its shape has at most k-i rows of length i for all 1 \leq i < k, and no rows of length \geq k.
@@ -105,6 +125,7 @@ def is_k_irreducible(l, k):
 	if k == 0:
 		# do anything speciall???
 		# return is_empty(l) ?
+		pass
 
 	l_reversed = list(reversed(l))
 	i = 1
@@ -126,8 +147,7 @@ def is_k_irreducible(l, k):
 
 def get_k_irreducible_partitions(k):
 	""" Given k, output a list of all k-irreducible partitions """
-
-
+	pass
 
 
 
