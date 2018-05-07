@@ -1,6 +1,6 @@
 from sage.all import *
 from sage.combinat.skew_partition import SkewPartition
-# from sage.combinat.
+from sage.structure.unique_representation import CachedRepresentation
 
 # HELPERS (only exist as helper functions for other things):
 def is_weakly_decreasing(li):
@@ -56,10 +56,18 @@ def row_col_to_skew_partition(rs, cs):
 	return SkewPartition([outer, inner])
 
 
-class kBoundary (SkewPartition2):
+class kBoundary (SkewPartition2, CachedRepresentation):
 	"""
-	Given a partition \lambda and a positive integer k, the __k-boundary__ of \lambda is the skew-shape obtained from the shape of \lambda by removing all cells of hook-length greater than k.
+	Given a partition l and a positive integer k, the __k-boundary__ of l is the skew-shape obtained from the shape of l by removing all cells of hook-length greater than k.
 	"""
+	@staticmethod
+	def __classcall_private__(cls, l, k):
+		""" Normalize input to ensure unique representation. """
+		l = Partition(l)
+		k = NN(k)
+		# this BELOW should fail because SkewPartition(l, k) would fail.
+		return super(kBoundary, cls).__classcall__(cls, l, k)
+
 	def __init__(self, l, k):
 		# NOTE: THIS FUNCTION IS REDUNDANT WITH Permutation.k_boundary AND THIS SHOULD BE ADDRESSED
 		"""
@@ -78,6 +86,10 @@ class kBoundary (SkewPartition2):
 
 	def partition(self):
 		""" Return the partition whose k-boundary is self. """
+		return k_boundary_to_partition(self, strict=False)
+
+	def __eq__(self):
+		""" Two
 
 
 
@@ -109,9 +121,22 @@ def is_k_boundary(skew_shape, k):
 		correct_k_boundary = l.k_boundary(k)
 		return skew_shape == correct_k_boundary
 
-"""
-Definition: A partition is __k-irreducible__ if its shape has at most k-i rows of length i for all 1 \leq i < k, and no rows of length \geq k.
-"""
+
+class kIrreduciblePartition (Partition, CachedRepresentation):
+	"""
+	Definition: A partition is __k-irreducible__ if its shape has at most k-i rows of length i for all 1 \leq i < k, and no rows of length \geq k.
+	"""
+	@staticmethod
+	def __classcall_private__(cls, l, k):
+		""" Normalize input to ensure a unique representation. """
+		l = Partition(l)
+		k = NN(k)
+		# I DONT THINK WE ALLOW k=0.  NOT SURE.  I THINK THE DEFINITION IS WRONG.
+		return super(kIrreduciblePartition, cls).__classcall__(cls, l, k)
+
+	def __init__(self, l, k):
+
+
 
 def is_k_irreducible(l, k):
 	"""

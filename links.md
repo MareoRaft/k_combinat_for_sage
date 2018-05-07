@@ -6,8 +6,13 @@ see
 https://ask.sagemath.org/question/33954/can-i-create-a-sage-file-and-import-it-as-a-python-module/
 for explanation of import_statements and preparse
 
+classcall private explained:
+https://doc.sagemath.org/html/en/reference/structure/sage/structure/unique_representation.html
+
 sage track ticket:
 https://trac.sagemath.org/ticket/25295
+https://trac.sagemath.org/ticket/25298
+
 
 sage combinat things to take a look out and see what's there:
 ncsf_qsym
