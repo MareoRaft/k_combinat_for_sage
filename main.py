@@ -14,6 +14,21 @@ class SkewPartition2 (SkewPartition):
 	def is_skew_linked_diagram(self):
 		"""
 		A __skew-linked diagram__ is a skew-shape `s` where both the row-shape and column-shape of `s` are partitions.
+
+		TESTS:
+			# empty skew
+			sage: sp = SkewPartition2([[], []])
+			sage: sp.is_skew_linked_diagram()
+			True
+			# valid row shape but invalid col shape
+			sage: sp = SkewPartition2([[3, 2], [1, 0]])
+			sage: sp.is_skew_linked_diagram()
+			False
+			sage: assert False
+
+
+
+
 		"""
 		return is_weakly_decreasing(self.row_lengths()) and is_weakly_decreasing(self.column_lengths())
 
@@ -63,7 +78,7 @@ class kBoundary (SkewPartition2, CachedRepresentation):
 	@staticmethod
 	def __classcall_private__(cls, l, k):
 		""" Normalize input to ensure unique representation. """
-		l = Partition(l)
+		l = Partition2(l)
 		k = NN(k)
 		# this BELOW should fail because SkewPartition(l, k) would fail.
 		return super(kBoundary, cls).__classcall__(cls, l, k)
@@ -88,8 +103,7 @@ class kBoundary (SkewPartition2, CachedRepresentation):
 		""" Return the partition whose k-boundary is self. """
 		return k_boundary_to_partition(self, strict=False)
 
-	def __eq__(self):
-		""" Two
+	# def __eq__(self):
 
 
 
@@ -122,57 +136,76 @@ def is_k_boundary(skew_shape, k):
 		return skew_shape == correct_k_boundary
 
 
-class kIrreduciblePartition (Partition, CachedRepresentation):
+class Partition2 (Partition):
+	def is_k_irreducible(self, k):
+		"""
+		See if the partition is `k`-irreducible for the provided natural number `k`.
+
+		TESTS:
+
+			sage: p = Partition2([])
+			sage: p.is_k_irreducible(0)
+			False
+
+			# 3-rectangles are NOT 3-irreducible
+			sage: p = Partition2([1, 1, 1])
+			sage: p.is_k_irreducible(3)
+			False
+			sage: p = Partition2([2, 2])
+			sage: p.is_k_irreducible(3)
+			False
+			sage: p = Partition2([3])
+			sage: p.is_k_irreducible(3)
+			False
+
+
+		"""
+		# k must be a natural number
+		k = NN(k)
+		if k == 0:
+			# do anything speciall???
+			# return is_empty(l) ?
+			# TODO: edit this
+			return True
+		# if there's more than k-i rows of length i, it fails the condition
+		l_reversed = list(reversed(l))
+		i = 1
+		num_rows_of_len_i = 0
+		index = 0
+		while True:
+			if index == len(l_reversed) or l_reversed[index] > i:
+				# check for failure, move on to next i
+				if num_rows_of_len_i > k-i:
+					return False
+				i += 1
+				num_rows_of_len_i = 0
+			else:
+				# add to the count, keep going
+				assert l_reversed[index] == i # sanity check
+				num_rows_of_len_i += 1
+				index += 1
+		return True
+
+
+class kIrreduciblePartition (Partition2, CachedRepresentation):
 	"""
 	Definition: A partition is __k-irreducible__ if its shape has at most k-i rows of length i for all 1 \leq i < k, and no rows of length \geq k.
 	"""
+	def _validate(self, l, k):
+		assert l.is_k_irreducible(k)
+
 	@staticmethod
 	def __classcall_private__(cls, l, k):
 		""" Normalize input to ensure a unique representation. """
-		l = Partition(l)
+		l = Partition2(l)
 		k = NN(k)
 		# I DONT THINK WE ALLOW k=0.  NOT SURE.  I THINK THE DEFINITION IS WRONG.
 		return super(kIrreduciblePartition, cls).__classcall__(cls, l, k)
 
-	def __init__(self, l, k):
+	# def __init__(self, l, k):
 
-
-
-def is_k_irreducible(l, k):
-	"""
-	l: a partition
-	k: the 'k_irreducible' k
-	"""
-	""" if there's more than k-i rows of length i, it fails the condition """
-	assert is_partition(l) # we assume l is weakly decreasing
-	if k < 0:
-		raise ValueError('Nonsensical choice for k.')
-	if k == 0:
-		# do anything speciall???
-		# return is_empty(l) ?
-		pass
-
-	l_reversed = list(reversed(l))
-	i = 1
-	num_rows_of_len_i = 0
-	index = 0
-	while True:
-		if index == len(l_reversed) or l_reversed[index] > i:
-			# check for failure, move on to next i
-			if num_rows_of_len_i > k-i:
-				return False
-			i += 1
-			num_rows_of_len_i = 0
-		else:
-			# add to the count, keep going
-			assert l_reversed[index] == i # sanity check
-			num_rows_of_len_i += 1
-			index += 1
-	return True
 
 def get_k_irreducible_partitions(k):
 	""" Given k, output a list of all k-irreducible partitions """
 	pass
-
-
 
