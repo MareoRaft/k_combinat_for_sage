@@ -9,9 +9,12 @@ for explanation of import_statements and preparse
 classcall private explained:
 https://doc.sagemath.org/html/en/reference/structure/sage/structure/unique_representation.html
 
-sage track ticket:
+sage trac ticket:
 https://trac.sagemath.org/ticket/25295
 https://trac.sagemath.org/ticket/25298
+
+push to trac: (YES USERNAME IS CASE SENSITIVE)
+git push trac HEAD:u/gh-MareoRaft/ticket/25295/add-k-stuff
 
 
 sage combinat things to take a look out and see what's there:
