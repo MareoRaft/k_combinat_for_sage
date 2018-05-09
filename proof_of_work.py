@@ -1,3 +1,4 @@
+#!/usr/bin/env sage
 """ This file demonstrates that I have completed each requested task (or the functionality already existed in sage) by showing an example for each one. """
 from main import *
 print('Sage loaded.  Executing proof of work...')
@@ -22,8 +23,17 @@ assert is_k_boundary(sp, k) == True
 
 
 # 4. Given k, output a list of all k-irreducible partitions
-irr_partitions = get_k_irreducible_partitions(3)
-# assert set(irr_partitions) == ...
+irr_partitions = get_k_irreducible_partition_lists(3)
+assert irr_partitions == [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
+
+
+# 5. Given skew-linked diagram, generate root ideal
+
+
+# 6. Given Dyck-path, generate root ideal
+
+
+# 7.
 
 
 # ALL DONE!
