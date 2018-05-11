@@ -255,7 +255,7 @@ def skew_partition_to_selected_rows(sp):
 		col_index2 = cell2[1]
 		cell_under3 = top(col_index2)
 		row_index3 = cell_under3[0]
-		while row_index3 in blocked_rows
+		while row_index3 in blocked_rows:
 			row_index3 += 1
 		# CATTY-CORNER ONLY line:
 		max_row_index = len(sp.outer()) - 1
@@ -288,7 +288,17 @@ def selected_rows_to_root_ideal(n, selected_rows):
 	Given the dimension of the square n and the selected rows, output the root ideal """
 	pass
 
+def is_symmetric(l):
+	"""matt
+	Given a partition l, detect if l = l'.
 
+	This function runs in LINEAR time of order length(l).
+	"""
+	for j in range(0, len(l)):
+		for k in range(l[-j], l[-j-1]):
+			if l[k] != len(l) - j:
+				return False
+	return True
 
 
 
