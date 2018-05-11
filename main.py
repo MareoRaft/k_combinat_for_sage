@@ -244,3 +244,53 @@ def n_to_number_of_linked_partition_self_pairs(n):
 		else:
 			count += 1
 	return count
+
+def skew_partition_to_selected_rows(sp):
+	# actually this may ONLY WORK for catty-connected skew-partitions, because i'm not sure how we deal with 'missing' rows
+	# arguably we should call it a linked_skew_partition
+	def bump_path_piece(sp, start_row_index, blocked_rows):
+		# this algo find the correct "L" piece of the path, where the bottom right cell is cell1, the bottom left is cell2, and the top left is cell3
+		# Returns (top_row_index, is_end) which are the row index of cell3 and whether or not we 'broke free' out of the top left cell of the skew-partition, respectively.
+		cell2 = left(start_row_index)
+		col_index2 = cell2[1]
+		cell_under3 = top(col_index2)
+		row_index3 = cell_under3[0]
+		while row_index3 in blocked_rows
+			row_index3 += 1
+		# CATTY-CORNER ONLY line:
+		max_row_index = len(sp.outer()) - 1
+		if row_index3 > max_row_index:
+			return None, True
+		else:
+			return row_index3, False
+	def bump_path(sp, row_index, blocked_rows):
+		new_blocked_rows = {row_index}
+		# is_end says if you reached the end of the path
+		while True:
+			row_index, is_end = bump_path_piece(sp, row_index, blocked_rows)
+			if is_end:
+				break
+			else:
+				new_blocked_rows.add(row_index)
+		return new_blocked_rows
+	# record the indices of rows that have been used up
+	blocked_rows = set()
+	for row_index, outer_row in enumerate(sp.outer()):
+		new_blocked_rows = bump_path(sp, row_index, blocked_rows)
+		blocked_rows += new_blocked_rows
+	# CATTY-CORNER ONLY line:
+	all_rows = set(range(0, len(sp.outer())))
+	selected_rows = sorted(all_rows - blocked_rows)
+	return selected_rows
+
+def selected_rows_to_root_ideal(n, selected_rows):
+	"""matt
+	Given the dimension of the square n and the selected rows, output the root ideal """
+	pass
+
+
+
+
+
+
+

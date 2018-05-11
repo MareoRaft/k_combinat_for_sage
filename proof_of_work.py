@@ -28,12 +28,11 @@ assert irr_partitions == [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
 
 
 # 5. Given skew-linked diagram, generate root ideal
+sp = SkewPartition([[6, 5, 3, 2, 2, 1] [2, 2]])
+selected_rows = skew_partition_to_selected_rows(sp)
+root_ideal = selected_rows_to_root_ideal(selected_rows)
+assert root_ideal == [(1,4), (1,5), (1,6), (2,5), (2,6)]
 
-
-# 6. Given Dyck-path, generate root ideal
-
-
-# 7.
 
 
 # ALL DONE!
