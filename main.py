@@ -50,10 +50,9 @@ def bottom(self, col_index):
     Given a 0-based col_index, return the 0-based row_index of the bottommost cell in the corresponding column """
     return left(self.conjugate(), col_index)
 
-
 def is_skew_linked_diagram(self):
     """
-    A __skew-linked diagram__ is a skew-shape `s` where both the row-shape and column-shape of `s` are partitions.
+    A skew-shape `s` is a __skew-linked diagram__ if both the row-shape and column-shape of `s` are partitions.
     """
     return is_weakly_decreasing(self.row_lengths()) and is_weakly_decreasing(self.column_lengths())
 
@@ -260,7 +259,45 @@ def is_symmetric(l):
                 return False
     return True
 
+def sequence(func, num_terms=20):
+    seq = []
+    for n in range(0, num_terms):
+        seq.append(func(n))
+    return seq
 
+def print_sequence(func, num_terms=float('inf')):
+    n = 0
+    while n < num_terms:
+        print('n={}\t{}=f(n)'.format(n, func(n)))
 
+def is_k_shape(ptn, k=None):
+    """ A partition is a k-shape if its k-boundary has row-shape and col-shape that are partitions themselves. """
+    if k is None:
+        # see if it's a k-shape for any k in [1, n-1].
+        # (note that every partition is a 0-shape and an n-shape)
+        n = ptn.size()
+        lis = [is_k_shape(ptn, kk) for kk in range(1, n)]
+        return any(lis)
+    else:
+        k_bdy = ptn.k_boundary(k)
+        return is_skew_linked_diagram(k_bdy)
+
+def n_to_k_shapes(n, k=None):
+    """ Given n, find all partitions of size n that are k-shapes. """
+    return [ptn for ptn in Partitions(n) if is_k_shape(ptn, k)]
+
+def n_to_num_k_shapes(n, k=None):
+    return len(n_to_k_shapes(n, k))
+
+def n_to_k_skews(n, k):
+    """ Given n, find all k-skews coming from partitions of size n. """
+    return [ptn.k_boundary(k) for ptn in Partitions(n) if is_k_shape(ptn, k)]
+
+def n_to_self_conjugate_k_skews(n, k):
+    k_skews = n_to_k_skews(n, k)
+    return [ks for ks in k_skews if ks == ks.conjugate()]
+
+def n_to_num_self_conjugate_k_skews(n, k):
+    return len(n_to_self_conjugate_k_skews(n, k))
 
 

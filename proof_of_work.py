@@ -42,6 +42,34 @@ p = Partition([6, 4, 4, 3, 1, 1])
 assert is_symmetric(p)
 
 
+# 7. Get the first 20 terms of the sequence (a_n) where a_n is the number of pairs (λ, λ) where λ has size n and there exists a skew-partition whose row and col shapes are λ
+seq = sequence(n_to_number_of_linked_partition_self_pairs)
+assert seq == [1, 1, 1, 2, 3, 4, 4, 7, 9, 13, 12, 20, 24, 32, 31, 50, 55, 74, 76, 109]
+# To get only the first 10 terms, use sequence(n_to_number_of_linked_partition_self_pairs, num_terms=10).
+# To print out a sequence, use print_sequence(n_to_number_of_linked_partition_self_pairs).
+
+
+# 8. Find some more interesting sequences:
+# Get the sequence (a_n) where where a_n is the number of 1-shapes of size n.
+seq = sequence(lambda n: n_to_num_k_shapes(n, k=1))
+assert seq == [1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0] # A010054
+seq = sequence(lambda n: n_to_num_k_shapes(n, k=2))
+assert seq == [1, 1, 2, 1, 2, 1, 3, 2, 1, 2, 3, 2, 3, 2, 2, 1, 5, 3, 2, 2]
+seq = sequence(lambda n: n_to_num_k_shapes(n, k=3))
+assert seq == [1, 1, 2, 3, 3, 3, 5, 5, 5, 8, 6, 6, 10, 9, 11, 10, 9, 13, 15, 13]
+# n to number of k-shapes of size n (for any k between 1 and n-1)
+seq = sequence(n_to_num_k_shapes)
+assert seq == [0, 0, 0, 1, 3, 5, 9, 13, 20, 28, 40, 54, 75, 99, 133, 174, 229, 295, 383, 488]
+# n to number of self-conjugate k-skews
+seq = sequence(lambda n: n_to_num_self_conjugate_k_skews(n, k=0))
+assert seq == [1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 5, 5, 5, 6] # A000700
+seq = sequence(lambda n: n_to_num_self_conjugate_k_skews(n, 2))
+assert seq == [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0]
+# TODO: number of k-skews of size n.
+
+
+
+
 
 
 # ALL DONE!
