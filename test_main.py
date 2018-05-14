@@ -1,8 +1,9 @@
 #!/usr/bin/env sage
 # A place to test my functions
 
-from testing import *
 from sage.all import *
+
+from testing import *
 from main import *
 print('Sage loaded.  Testing...')
 
@@ -197,6 +198,37 @@ a(selected_rows, [0, 1])
 sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
 selected_rows = skew_partition_to_selected_rows(sp)
 a(selected_rows, [0, 1, 2, 5])
+
+
+# test_selected_rows_to_root_ideal
+root_ideal = selected_rows_to_root_ideal(1, [0])
+a(root_ideal, [])
+
+root_ideal = selected_rows_to_root_ideal(2, [0, 1])
+a(root_ideal, [])
+
+root_ideal = selected_rows_to_root_ideal(2, [0])
+a(root_ideal, [(0,1)])
+
+root_ideal = selected_rows_to_root_ideal(3, [0, 2])
+a(root_ideal, [(0,1), (0,2)])
+
+root_ideal = selected_rows_to_root_ideal(4, [0, 2])
+a(root_ideal, [(0,1), (0,2), (0,3), (1,3)])
+
+root_ideal = selected_rows_to_root_ideal(5, [0, 1, 4])
+a(root_ideal, [(0,2), (0,3), (0,4), (1,3), (1,4)])
+
+root_ideal = selected_rows_to_root_ideal(5, [0, 1])
+a(root_ideal, [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)])
+
+
+# test_skew_partition_to_root_ideal
+sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+ri = skew_partition_to_root_ideal(sp)
+a(ri, [(0,3), (0,4), (0,5), (1,4), (1,5)])
+
+
 
 
 # TESTS:

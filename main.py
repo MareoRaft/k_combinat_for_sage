@@ -1,7 +1,5 @@
 #!/usr/bin/env sage
-from sage.combinat.partition import Partition, _Partitions
-from sage.combinat.skew_partition import SkewPartition, SkewPartitions
-from sage.structure.unique_representation import CachedRepresentation
+from sage.all import *
 
 # HELPERS (only exist as helper functions for other things):
 def is_weakly_decreasing(li):
@@ -85,42 +83,6 @@ def row_col_to_skew_partition(rs, cs):
     return SkewPartition([outer, inner])
 
 
-class kBoundary (SkewPartition, CachedRepresentation):
-    """
-    Given a partition l and a positive integer k, the __k-boundary__ of l is the skew-shape obtained from the shape of l by removing all cells of hook-length greater than k.
-    """
-    @staticmethod
-    def __classcall_private__(cls, l, k):
-        """ Normalize input to ensure unique representation. """
-        l = Partition2(l)
-        k = NN(k)
-        # this BELOW should fail because SkewPartition(l, k) would fail.
-        return super(kBoundary, cls).__classcall__(cls, l, k)
-
-    def __init__(self, l, k):
-        # NOTE: THIS FUNCTION IS REDUNDANT WITH Permutation.k_boundary AND THIS SHOULD BE ADDRESSED
-        """
-        l: the partition
-        k: the largest allowed hook length
-        """
-        # to make a SkewPartition, we must calculate the inner and outer partitions
-        outer_partition = l.to_list()
-        # we could make more efficient, but it's simple to get the tableau of all hook lengths and pick out the inner partition from it
-        inner_partition = []
-        for row_hook_lengths in l.hook_lengths():
-            inner_row_length = len([x for x in row_hook_lengths if x > k])
-            inner_partition.append(inner_row_length)
-        # finally, make the SkewPartition
-        SkewPartition.__init__(self, [outer_partition, inner_partition])
-
-    def partition(self):
-        """ Return the partition whose k-boundary is self. """
-        return k_boundary_to_partition(self, strict=False)
-
-    # def __eq__(self):
-
-
-
 """
 Given a skew-linked diagram, is it a k-boundary?  (That is, does there exist some partition which - when cells of hook-length > k are removed - becomes the skew-linked diagram.)
 """
@@ -200,25 +162,6 @@ class Partition2 (Partition):
                 index += 1
         return True
 
-
-class kIrreduciblePartition (Partition2, CachedRepresentation):
-    """
-    Definition: A partition is __k-irreducible__ if its shape has at most k-i rows of length i for all 1 \leq i < k, and no rows of length \geq k.
-    """
-    def _validate(self, l, k):
-        assert l.is_k_irreducible(k)
-
-    @staticmethod
-    def __classcall_private__(cls, l, k):
-        """ Normalize input to ensure a unique representation. """
-        l = Partition2(l)
-        k = NN(k)
-        # I DONT THINK WE ALLOW k=0.  NOT SURE.  I THINK THE DEFINITION IS WRONG.
-        return super(kIrreduciblePartition, cls).__classcall__(cls, l, k)
-
-    # def __init__(self, l, k):
-
-
 def get_k_irreducible_partition_lists(k):
     """matt
     Since there are n! such partitions, the big-O time can't be better than that.
@@ -277,19 +220,33 @@ def skew_partition_to_selected_rows(sp):
     # actually this may ONLY WORK for catty-connected skew-partitions, because i'm not sure how we deal with 'missing' rows
     # arguably we should call it a linked_skew_partition
     # record the indices of rows that have been used up
-    blocked_rows = set()
     selected_rows = set()
+    blocked_rows = set()
     for row_index, outer_row in enumerate(sp.outer()):
         if row_index not in blocked_rows:
             selected_rows.add(row_index)
             new_blocked_rows = bump_path(sp, row_index, blocked_rows)
             blocked_rows.update(new_blocked_rows)
     return sorted(selected_rows)
-
-def selected_rows_to_root_ideal(n, selected_rows):
+def selected_rows_to_root_ideal(n, selected_indecis):
     """matt
     Given the dimension of the square n and the selected rows, output the root ideal """
-    pass
+    root_ideal_cells = []
+    selected_indecis = set(selected_indecis)
+    permitted_col_indecis = set(range(n)) - selected_indecis
+    for i in range(n):
+        if i in selected_indecis:
+            if permitted_col_indecis:
+                smallest_unblocked_index = min(permitted_col_indecis)
+                root_ideal_cells += [(i, j) for j in range(smallest_unblocked_index, n)]
+                permitted_col_indecis.remove(smallest_unblocked_index)
+                selected_indecis.add(smallest_unblocked_index)
+    return root_ideal_cells
+def skew_partition_to_root_ideal(sp):
+    selected_indecis = skew_partition_to_selected_rows(sp)
+    n = len(sp.outer())
+    root_ideal = selected_rows_to_root_ideal(n, selected_indecis)
+    return root_ideal
 
 def is_symmetric(l):
     """matt
