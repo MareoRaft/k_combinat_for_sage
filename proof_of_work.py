@@ -26,8 +26,11 @@ assert is_k_boundary(sp, k) == True
 
 
 # 4. Given k, output a list of all k-irreducible partitions
-irr_partitions = get_k_irreducible_partition_lists(3)
-assert irr_partitions == [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
+irr_ptns = get_k_irreducible_partitions(3)
+assert irr_ptns == [Partition([]), Partition([1]), Partition([1, 1]), Partition([2]), Partition([2, 1]), Partition([2, 1, 1])]
+# or for efficiency, get lists instead of actual Partition objects
+irr_ptns = get_k_irreducible_partition_lists(3)
+assert irr_ptns == [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
 
 
 # 5. Given skew-linked diagram, generate root ideal (in progress)

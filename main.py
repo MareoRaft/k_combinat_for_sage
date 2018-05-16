@@ -9,10 +9,9 @@ def is_weakly_decreasing(li):
 # MAIN:
 
 
-# SkewPartition
+# SkewPartition methods:
 def right(self, row_index):
-    """matt
-    self: a SkewPartition
+    """self: a SkewPartition
     Given a 0-based row_index, return the 0-based column index of the rightmost cell in the corresponding row """
     # first check to make sure the cell exists
     if self.row_lengths()[row_index] == 0:
@@ -23,8 +22,7 @@ def right(self, row_index):
     return col_index
 
 def left(self, row_index):
-    """matt
-    self: a SkewPartition
+    """self: a SkewPartition
     Given a 0-based row_index, return the 0-based column index of the leftmost cell in the corresponding row """
     # first check to make sure the cell exists
     if self.row_lengths()[row_index] == 0:
@@ -39,14 +37,12 @@ def left(self, row_index):
     return col_index
 
 def top(self, col_index):
-    """matt
-    self: a SkewPartition
+    """self: a SkewPartition
     Given a 0-based col_index, return the 0-based row_index of the topmost cell in the corresponding column """
     return right(self.conjugate(), col_index)
 
 def bottom(self, col_index):
-    """matt
-    self: a SkewPartition
+    """self: a SkewPartition
     Given a 0-based col_index, return the 0-based row_index of the bottommost cell in the corresponding column """
     return left(self.conjugate(), col_index)
 
@@ -111,60 +107,44 @@ def is_k_boundary(skew_shape, k):
         return skew_shape == correct_k_boundary
 
 
-class Partition2 (Partition):
-    def is_k_irreducible(self, k):
-        """
-        See if the partition is `k`-irreducible for the provided natural number `k`.
+# Partition methods:
+def k_row_lengths(ptn, k):
+    return ptn.k_boundary(k).row_lengths()
 
-        TESTS:
+def k_column_lengths(ptn, k):
+    return ptn.k_boundary(k).column_lengths()
 
-            # sage: p = Partition2([])
-            # sage: p.is_k_irreducible(0)
-            # False
+def has_rectangle(ptn, a, b):
+    """ A partition has an `a` x `b` rectangle if it's Ferrer's diagram has `a` (*or more*) rows of length `b` (*exactly*).
+    """
+    assert a >= 1
+    assert b >= 1
+    num_rows_of_len_b = 0
+    for part in ptn:
+        if part == b:
+            num_rows_of_len_b += 1
+    return num_rows_of_len_b >= a
 
-            # # 3-rectangles are NOT 3-irreducible
-            # sage: p = Partition2([1, 1, 1])
-            # sage: p.is_k_irreducible(3)
-            # False
-            # sage: p = Partition2([2, 2])
-            # sage: p.is_k_irreducible(3)
-            # False
-            # sage: p = Partition2([3])
-            # sage: p.is_k_irreducible(3)
-            # False
-
-
-        """
-        # k must be a natural number
-        k = NN(k)
-        if k == 0:
-            # do anything speciall???
-            # return is_empty(l) ?
-            # TODO: edit this
+def has_k_rectangle(ptn, k):
+    """ A partition has a k-rectangle if it's Ferrer's diagram contains k-i+1 rows (or more) of length i (exactly) for any i in [1, k].
+    """
+    for i in range(1, k+1):
+        if has_rectangle(ptn, k-i+1, i):
             return True
-        # if there's more than k-i rows of length i, it fails the condition
-        l_reversed = list(reversed(l))
-        i = 1
-        num_rows_of_len_i = 0
-        index = 0
-        while True:
-            if index == len(l_reversed) or l_reversed[index] > i:
-                # check for failure, move on to next i
-                if num_rows_of_len_i > k-i:
-                    return False
-                i += 1
-                num_rows_of_len_i = 0
-            else:
-                # add to the count, keep going
-                assert l_reversed[index] == i # sanity check
-                num_rows_of_len_i += 1
-                index += 1
-        return True
+    return False
+
+def Partition_is_k_reducible(ptn, k):
+    return has_k_rectangle(ptn, k)
+
+def Partition_is_k_irreducible(ptn, k):
+    return not Partition_is_k_reducible(ptn, k)
+# END Partition methods.
 
 def get_k_irreducible_partition_lists(k):
-    """matt
-    Since there are n! such partitions, the big-O time can't be better than that.
+    """Since there are n! such partitions, the big-O time can't be better than that.
     We could have a yeild in the function to be an iterator.
+
+    Returns: list of lists (instead of list of Partition objects)
     """
     k = NN(k)
     k_irr_ptns = [[]]
@@ -178,6 +158,10 @@ def get_k_irreducible_partition_lists(k):
                 new_k_irr_ptns.append(new_ptn)
         k_irr_ptns = new_k_irr_ptns
     return k_irr_ptns
+
+def get_k_irreducible_partitions(k):
+    """Given k, return the n! k-irreducible-partitions. """
+    return [Partition(e) for e in get_k_irreducible_partition_lists(k)]
 
 def n_to_number_of_linked_partition_self_pairs(n):
     """ Given a natural number n, count how many partitions l of size n have the property that (l, l) has a corresponding linked-skew-diagram. """
@@ -228,8 +212,7 @@ def skew_partition_to_selected_rows(sp):
             blocked_rows.update(new_blocked_rows)
     return sorted(selected_rows)
 def selected_rows_to_root_ideal(n, selected_indecis):
-    """matt
-    Given the dimension of the square n and the selected rows, output the root ideal """
+    """Given the dimension of the square n and the selected rows, output the root ideal """
     root_ideal_cells = []
     selected_indecis = set(selected_indecis)
     permitted_col_indecis = set(range(n)) - selected_indecis
@@ -248,8 +231,7 @@ def skew_partition_to_root_ideal(sp):
     return root_ideal
 
 def is_symmetric(l):
-    """matt
-    Given a partition l, detect if l = l'.
+    """Given a partition l, detect if l = l'.
 
     This function runs in LINEAR time of order length(l).
     """
@@ -300,4 +282,29 @@ def n_to_self_conjugate_k_skews(n, k):
 def n_to_num_self_conjugate_k_skews(n, k):
     return len(n_to_self_conjugate_k_skews(n, k))
 
+
+
+# kShape methods:
+def kShape_is_k_reducible(s, k):
+    """ A k-shape is called __k-reducible__ if there exists a k-rectangle R such that (the k-row-shape has R and the k-column-shape has R'). """
+    rs = Partition(k_row_lengths(s, k))
+    cs = Partition(k_column_lengths(s, k))
+    for i in range(1, k+1):
+        a = k-i+1
+        b = i
+        if has_rectangle(rs, a, b) and has_rectangle(cs, b, a):
+            return True
+    return False
+
+def kShape_is_k_irreducible(s, k):
+    """ A k-shape is called __k-irreducible__ if it is not k-reducible. """
+    return not kShape_is_k_reducible(s, k)
+# END k-shape methods.
+
+def get_k_irreducible_k_shapes(n, k):
+    # The k-row-shape has at most k rows of length 0, k-1 rows of length 1, ..., 0 rows of length k.  And 0 rows of length greater than k.  Hence the k-row-shape has an upper bound of k*(k+1)/2 rows.  The same goes for the k-col-shape.
+    bound = k*(k+1)/2
+    ptns = Partitions(max_length=bound, max_part=bound)
+    k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k)]
+    return k_irr_k_shapes
 

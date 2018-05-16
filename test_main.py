@@ -229,6 +229,19 @@ ri = skew_partition_to_root_ideal(sp)
 a(ri, [(0,3), (0,4), (0,5), (1,4), (1,5)])
 
 
+# test_k_row_lengths
+ptn = Partition([4, 4, 4, 3, 2])
+rs = k_row_lengths(ptn, 2)
+a(rs, [0, 1, 1, 1, 2])
+
+
+# test_has_rectangle
+
+
+# test_has_k_rectangle
+
+
+#
 
 
 # TESTS:
