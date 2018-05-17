@@ -236,21 +236,153 @@ a(rs, [0, 1, 1, 1, 2])
 
 
 # test_has_rectangle
+p = Partition([1, 1, 1])
+h = 4
+w = 1
+a(has_rectangle(p, h, w), False)
+
+p = Partition([1, 1, 1])
+h = 3
+w = 1
+a(has_rectangle(p, h, w), True)
+
+p = Partition([1, 1, 1])
+h = 2
+w = 1
+a(has_rectangle(p, h, w), True)
+
+p = Partition([1, 1, 1])
+h = 1
+w = 2
+a(has_rectangle(p, h, w), False)
+
+p = Partition([3])
+h = 1
+w = 3
+a(has_rectangle(p, h, w), True)
+
+p = Partition([3])
+h = 1
+w = 2
+a(has_rectangle(p, h, w), False)
+
+p = Partition([3])
+h = 2
+w = 3
+a(has_rectangle(p, h, w), False)
+
+p = Partition([5, 5, 4, 2, 2])
+h = 2
+w = 2
+a(has_rectangle(p, h, w), True)
+
+p = Partition([5, 5, 4, 2, 2])
+h = 3
+w = 2
+a(has_rectangle(p, h, w), False)
+
+p = Partition([5, 5, 4, 2, 2])
+h = 2
+w = 5
+a(has_rectangle(p, h, w), True)
 
 
 # test_has_k_rectangle
+p = Partition([1])
+k = 1
+a(has_k_rectangle(p, k), True)
+
+p = Partition([1])
+k = 2
+a(has_k_rectangle(p, k), False)
+
+p = Partition([1, 1, 1])
+k = 3
+a(has_k_rectangle(p, k), True)
+
+p = Partition([1, 1, 1])
+k = 2
+a(has_k_rectangle(p, k), True)
+
+p = Partition([1, 1, 1])
+k = 4
+a(has_k_rectangle(p, k), False)
+
+p = Partition([3])
+k = 3
+a(has_k_rectangle(p, k), True)
+
+# p = Partition([3]) # DON"T KNOW
+# k = 2
+# a(has_k_rectangle(p, k), ?)
+
+p = Partition([3])
+k = 4
+a(has_k_rectangle(p, k), False)
+
+p = Partition([5, 5, 4, 2, 2])
+k = 7
+a(has_k_rectangle(p, k), False)
+
+p = Partition([5, 5, 4, 2, 2])
+k = 6
+a(has_k_rectangle(p, k), True)
+
+p = Partition([5, 5, 4, 2, 2])
+k = 5
+a(has_k_rectangle(p, k), True)
+
+p = Partition([5, 5, 4, 2, 2])
+k = 4
+a(has_k_rectangle(p, k), True)
+
+p = Partition([5, 5, 4, 2, 2])
+k = 3
+a(has_k_rectangle(p, k), True)
+
+p = Partition([5, 5, 4, 2, 2])
+k = 2
+a(has_k_rectangle(p, k), True)
 
 
-#
+# test_kShape_is_k_reducible
+s = Partition([1])
+k = 1
+a(kShape_is_k_reducible(s, k), True)
+
+s = Partition([2, 1])
+k = 1
+a(kShape_is_k_reducible(s, k), True)
+
+s = Partition([1, 1])
+k = 2
+a(kShape_is_k_reducible(s, k), True)
+
+s = Partition([2, 1, 1])
+k = 2
+a(kShape_is_k_reducible(s, k), True)
+
+s = Partition([2, 1, 1])
+k = 3
+a(kShape_is_k_reducible(s, k), False)
+
+s = Partition([3, 2, 1])
+k = 3
+a(kShape_is_k_reducible(s, k), True)
+
+
+# test_get_k_irreducible_k_shapes
+ptns = get_k_irreducible_k_shapes(2)
+a(ptns, [[], [1], [2, 1], [3, 2, 1]])
 
 
 # TESTS:
 #     # empty skew
-#     sage: sp = SkewPartition2([[], []])
+#     sage: sp = SkewPartition([[], []])
 #     sage: sp.is_skew_linked_diagram()
 #     True
 #     # # valid row shape but invalid col shape
-#     # sage: sp = SkewPartition2([[3, 2], [1, 0]])
+#     # sage: sp = SkewPartition([[3, 2], [1, 0]])
 #     # sage: sp.is_skew_linked_diagram()
 #     # False
 #     # sage: aFalse

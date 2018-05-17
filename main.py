@@ -114,16 +114,16 @@ def k_row_lengths(ptn, k):
 def k_column_lengths(ptn, k):
     return ptn.k_boundary(k).column_lengths()
 
-def has_rectangle(ptn, a, b):
-    """ A partition has an `a` x `b` rectangle if it's Ferrer's diagram has `a` (*or more*) rows of length `b` (*exactly*).
+def has_rectangle(ptn, h, w):
+    """ A partition has an `h` x `w` rectangle if it's Ferrer's diagram has `h` (*or more*) rows of length `w` (*exactly*).
     """
-    assert a >= 1
-    assert b >= 1
-    num_rows_of_len_b = 0
+    assert h >= 1
+    assert w >= 1
+    num_rows_of_len_w = 0
     for part in ptn:
-        if part == b:
-            num_rows_of_len_b += 1
-    return num_rows_of_len_b >= a
+        if part == w:
+            num_rows_of_len_w += 1
+    return num_rows_of_len_w >= h
 
 def has_k_rectangle(ptn, k):
     """ A partition has a k-rectangle if it's Ferrer's diagram contains k-i+1 rows (or more) of length i (exactly) for any i in [1, k].
@@ -301,10 +301,13 @@ def kShape_is_k_irreducible(s, k):
     return not kShape_is_k_reducible(s, k)
 # END k-shape methods.
 
-def get_k_irreducible_k_shapes(n, k):
+def get_k_irreducible_k_shapes(k):
     # The k-row-shape has at most k rows of length 0, k-1 rows of length 1, ..., 0 rows of length k.  And 0 rows of length greater than k.  Hence the k-row-shape has an upper bound of k*(k+1)/2 rows.  The same goes for the k-col-shape.
     bound = k*(k+1)/2
-    ptns = Partitions(max_length=bound, max_part=bound)
+    n_bound = bound**2
+    ptns = []
+    for n in range(0, n_bound+1):
+        ptns += Partitions(n, max_length=bound, max_part=bound)
     k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k)]
     return k_irr_k_shapes
 

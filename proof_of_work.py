@@ -71,7 +71,10 @@ assert seq == [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0]
 # TODO: number of k-skews of size n.
 
 
-
+# 9. Given k, find all k-irreducible-k-shapes.
+ptns = get_k_irreducible_k_shapes(2)
+a(ptns, [[], [1], [2, 1], [3, 2, 1]])
+# a little more testing could be done here.  Still didn't sort out if [3] is 1-reducible yet.
 
 
 
