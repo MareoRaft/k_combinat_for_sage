@@ -46,7 +46,7 @@ def bottom(self, col_index):
     Given a 0-based col_index, return the 0-based row_index of the bottommost cell in the corresponding column """
     return left(self.conjugate(), col_index)
 
-def is_skew_linked_diagram(self):
+def is_linked(self):
     """
     A skew-shape `s` is a __skew-linked diagram__ if both the row-shape and column-shape of `s` are partitions.
     """
@@ -133,12 +133,27 @@ def has_k_rectangle(ptn, k):
             return True
     return False
 
+def is_k_bounded(ptn, k):
+    """ Returns True iff the partition is bounded by k. """
+    if ptn.is_empty():
+        least_upper_bound = 0
+    else:
+        least_upper_bound = max(ptn)
+    return least_upper_bound <= k
+
 def Partition_is_k_reducible(ptn, k):
+    """ A k-bounded partition is __k-reducible__ if it has a k-rectangle. """
+    # We only talk about k-reducible / k-irreducible for k-bounded partitions.
+    assert is_k_bounded(ptn, k)
     return has_k_rectangle(ptn, k)
 
 def Partition_is_k_irreducible(ptn, k):
     return not Partition_is_k_reducible(ptn, k)
 # END Partition methods.
+
+def get_k_rectangles(k):
+    """ A __k-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is k. """
+    return [Partition([i] * (k-i+1)) for i in range(1, k+1)]
 
 def get_k_irreducible_partition_lists(k):
     """Since there are n! such partitions, the big-O time can't be better than that.
@@ -262,7 +277,7 @@ def is_k_shape(ptn, k=None):
         return any(lis)
     else:
         k_bdy = ptn.k_boundary(k)
-        return is_skew_linked_diagram(k_bdy)
+        return is_linked(k_bdy)
 
 def n_to_k_shapes(n, k=None):
     """ Given n, find all partitions of size n that are k-shapes. """
@@ -287,14 +302,18 @@ def n_to_num_self_conjugate_k_skews(n, k):
 # kShape methods:
 def kShape_is_k_reducible(s, k):
     """ A k-shape is called __k-reducible__ if there exists a k-rectangle R such that (the k-row-shape has R and the k-column-shape has R'). """
+    def has_k_rectangle_pair(k):
+        for i in range(1, k+1):
+            a = k-i+1
+            b = i
+            if has_rectangle(rs, a, b) and has_rectangle(cs, b, a):
+                return True
+        return False
     rs = Partition(k_row_lengths(s, k))
     cs = Partition(k_column_lengths(s, k))
-    for i in range(1, k+1):
-        a = k-i+1
-        b = i
-        if has_rectangle(rs, a, b) and has_rectangle(cs, b, a):
-            return True
-    return False
+    # We only consider the notion of k-irreducibility in the k-bounded setting.
+    assert is_k_bounded(rs, k) and is_k_bounded(cs, k)
+    return has_k_rectangle_pair(k) or has_k_rectangle_pair(k-1)
 
 def kShape_is_k_irreducible(s, k):
     """ A k-shape is called __k-irreducible__ if it is not k-reducible. """
@@ -302,12 +321,12 @@ def kShape_is_k_irreducible(s, k):
 # END k-shape methods.
 
 def get_k_irreducible_k_shapes(k):
-    # The k-row-shape has at most k rows of length 0, k-1 rows of length 1, ..., 0 rows of length k.  And 0 rows of length greater than k.  Hence the k-row-shape has an upper bound of k*(k+1)/2 rows.  The same goes for the k-col-shape.
-    bound = k*(k+1)/2
+    # The k-row-shape has at most k rows of length 0, k-1 rows of length 1, ..., 0 rows of length k.  And 0 rows of length greater than k.  Hence the k-row-shape has an upper bound of k*(k-1)/2 rows.  The same goes for the k-col-shape.
+    bound = (k-1)*k/2
     n_bound = bound**2
     ptns = []
     for n in range(0, n_bound+1):
         ptns += Partitions(n, max_length=bound, max_part=bound)
-    k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k)]
+        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k)]
     return k_irr_k_shapes
 

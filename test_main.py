@@ -345,6 +345,23 @@ k = 2
 a(has_k_rectangle(p, k), True)
 
 
+# test_get_k_rectangles
+out = get_k_rectangles(0)
+a(out, [])
+
+out = get_k_rectangles(1)
+a(out, [[1]])
+
+out = get_k_rectangles(2)
+a(out, [[1, 1], [2]])
+
+out = get_k_rectangles(3)
+a(out, [[1, 1, 1], [2, 2], [3]])
+
+out = get_k_rectangles(4)
+a(out, [[1, 1, 1, 1], [2, 2, 2], [3, 3], [4]])
+
+
 # test_kShape_is_k_reducible
 s = Partition([1])
 k = 1
@@ -364,7 +381,7 @@ a(kShape_is_k_reducible(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 3
-a(kShape_is_k_reducible(s, k), False)
+a(kShape_is_k_reducible(s, k), True)
 
 s = Partition([3, 2, 1])
 k = 3
@@ -373,19 +390,22 @@ a(kShape_is_k_reducible(s, k), True)
 
 # test_get_k_irreducible_k_shapes
 ptns = get_k_irreducible_k_shapes(2)
-a(ptns, [[], [1], [2, 1], [3, 2, 1]])
+a(ptns, [[]])
+
+# for size in range(1, 5):
+# 	ptns = get_k_irreducible_k_shapes(size)
+# 	print(ptns)
 
 
-# TESTS:
-#     # empty skew
-#     sage: sp = SkewPartition([[], []])
-#     sage: sp.is_skew_linked_diagram()
-#     True
-#     # # valid row shape but invalid col shape
-#     # sage: sp = SkewPartition([[3, 2], [1, 0]])
-#     # sage: sp.is_skew_linked_diagram()
-#     # False
-#     # sage: aFalse
+# test_is_linked
+# empty skew
+sp = SkewPartition([[], []])
+a(is_linked(sp), True)
+
+# valid row shape but invalid col shape
+sp = SkewPartition([[3, 2], [1, 0]])
+a(is_linked(sp), False)
+
 
 
 # ALL DONE!
