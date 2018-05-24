@@ -46,6 +46,11 @@ https://nbviewer.jupyter.org/url/jdj.mit.edu/~stevenj/IJulia%20Preview.ipynb
 GITHUB will automatically make your notebook viewable online (https://blog.github.com/2015-05-07-github-jupyter-notebooks-3/).  ALL YOU NEED TO DO is put a ipynb file into your repo.
 
 The following PROGRAM (https://github.com/aaren/notedown) allows you to write your IPython Notebooks in markdown!
+md to ipynb:
+notedown input.md > output.ipynb
+ipynb to md:
+notedown input.ipynb --to markdown --strip > output.md
+
 
 You can run an ipynb with any installed kernel (including sage) with a command such as:
 sage -n jupyter test_sage_nb.ipynb

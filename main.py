@@ -267,7 +267,7 @@ def print_sequence(func, num_terms=float('inf')):
     while n < num_terms:
         print('n={}\t{}=f(n)'.format(n, func(n)))
 
-def is_k_shape(ptn, k=None):
+def is_k_shape(ptn, k):
     """ A partition is a k-shape if its k-boundary has row-shape and col-shape that are partitions themselves. """
     if k is None:
         # see if it's a k-shape for any k in [1, n-1].
@@ -279,11 +279,11 @@ def is_k_shape(ptn, k=None):
         k_bdy = ptn.k_boundary(k)
         return is_linked(k_bdy)
 
-def n_to_k_shapes(n, k=None):
+def n_to_k_shapes(n, k):
     """ Given n, find all partitions of size n that are k-shapes. """
     return [ptn for ptn in Partitions(n) if is_k_shape(ptn, k)]
 
-def n_to_num_k_shapes(n, k=None):
+def n_to_num_k_shapes(n, k):
     return len(n_to_k_shapes(n, k))
 
 def n_to_k_skews(n, k):
@@ -311,8 +311,6 @@ def kShape_is_k_reducible(s, k):
         return False
     rs = Partition(k_row_lengths(s, k))
     cs = Partition(k_column_lengths(s, k))
-    # We only consider the notion of k-irreducibility in the k-bounded setting.
-    assert is_k_bounded(rs, k) and is_k_bounded(cs, k)
     return has_k_rectangle_pair(k) or has_k_rectangle_pair(k-1)
 
 def kShape_is_k_irreducible(s, k):
