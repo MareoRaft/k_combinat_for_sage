@@ -364,17 +364,6 @@ def v_bounds(p, k, height):
     """ Recall "V_i".  This is the vertical analog of h_bounds. """
     return h_bounds(p.conjugate(), k, height)
 
-def kShape_is_k_reducible1(s, k):
-    """ A k-shape is called __k-reducible__ if there exists a k-rectangle R such that (the k-row-shape has R and the k-column-shape has R'). """
-    def has_k_rectangle_pair(k):
-        for (a, b) in k_rectangle_dimension_list(k):
-            if has_rectangle(rs, a, b) and has_rectangle(cs, b, a):
-                return True
-        return False
-    rs = Partition(k_row_lengths(s, k))
-    cs = Partition(k_column_lengths(s, k))
-    return has_k_rectangle_pair(k) or has_k_rectangle_pair(k-1)
-
 def kShape_is_k_reducible_by_rectangle(p, k, (a,b)):
     """ Checks if the k-shape is k-reducible for a k-rectangle of specific dimensions a x b.
 
@@ -404,26 +393,24 @@ def kShape_is_k_reducible2(p, k):
             return True
     return False
 
-def kShape_is_k_reducible(s, k, method=1):
-    if method == 1:
-        return kShape_is_k_reducible1(s, k)
-    elif method == 2:
+def kShape_is_k_reducible(s, k, method=2):
+    if method == 2:
         return kShape_is_k_reducible2(s, k)
     else:
         raise ValueError('Unknown reducibility method.')
 
-def kShape_is_k_irreducible(s, k, method=1):
+def kShape_is_k_irreducible(s, k, method=2):
     """ A k-shape is called __k-irreducible__ if it is not k-reducible. """
     return not kShape_is_k_reducible(s, k, method)
 # END k-shape methods.
 
-def get_k_irreducible_k_shapes(k):
+def get_k_irreducible_k_shapes(k, method=2):
     # The k-row-shape has at most k rows of length 0, k-1 rows of length 1, ..., 0 rows of length k.  And 0 rows of length greater than k.  Hence the k-row-shape has an upper bound of k*(k-1)/2 rows.  The same goes for the k-col-shape.
     bound = (k-1)*k/2
     n_bound = bound**2
     ptns = []
     for n in range(0, n_bound+1):
         ptns += Partitions(n, max_length=bound, max_part=bound)
-        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k, method=2)]
+        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k, method)]
     return k_irr_k_shapes
 

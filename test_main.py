@@ -571,31 +571,13 @@ s = Partition([3, 2, 1])
 k = 3
 a(kShape_is_k_reducible2(s, k), True)
 
+s = Partition([5, 3, 2, 1, 1])
+k = 4
+a(kShape_is_k_reducible2(s, k), False)
 
-# test_kShape_is_k_reducible
-s = Partition([1])
-k = 1
-a(kShape_is_k_reducible(s, k), True)
-
-s = Partition([2, 1])
-k = 1
-a(kShape_is_k_reducible(s, k), True)
-
-s = Partition([1, 1])
-k = 2
-a(kShape_is_k_reducible(s, k), True)
-
-s = Partition([2, 1, 1])
-k = 2
-a(kShape_is_k_reducible(s, k), True)
-
-s = Partition([2, 1, 1])
-k = 3
-a(kShape_is_k_reducible(s, k), True)
-
-s = Partition([3, 2, 1])
-k = 3
-a(kShape_is_k_reducible(s, k), True)
+s = Partition([5, 4, 2, 2, 1])
+k = 4
+a(kShape_is_k_reducible2(s, k), False)
 
 
 # test_get_k_irreducible_k_shapes

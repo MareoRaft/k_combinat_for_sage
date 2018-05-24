@@ -61,7 +61,7 @@ assert seq == [1, 1, 2, 1, 2, 1, 3, 2, 1, 2, 3, 2, 3, 2, 2, 1, 5, 3, 2, 2]
 seq = sequence(lambda n: n_to_num_k_shapes(n, k=3))
 assert seq == [1, 1, 2, 3, 3, 3, 5, 5, 5, 8, 6, 6, 10, 9, 11, 10, 9, 13, 15, 13]
 # n to number of k-shapes of size n (for any k between 1 and n-1)
-seq = sequence(n_to_num_k_shapes)
+seq = sequence(lambda n: n_to_num_k_shapes(n, k=None))
 assert seq == [0, 0, 0, 1, 3, 5, 9, 13, 20, 28, 40, 54, 75, 99, 133, 174, 229, 295, 383, 488]
 # n to number of self-conjugate k-skews
 seq = sequence(lambda n: n_to_num_self_conjugate_k_skews(n, k=0))
@@ -72,9 +72,11 @@ assert seq == [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0]
 
 
 # 9. Given k, find all k-irreducible-k-shapes.
-ptns = get_k_irreducible_k_shapes(2)
-assert ptns == [[], [1], [2, 1], [3, 2, 1]]
-
+ptns = get_k_irreducible_k_shapes(3)
+assert ptns == [[], [1], [2, 1]]
+# There should be Genocchi many
+seq = [len(get_k_irreducible_k_shapes(k)) for k in range(1, 5)]
+assert seq == [1, 1, 3, 17]
 
 
 # ALL DONE!
