@@ -6,3 +6,4 @@ def a(one, two):
     else:
         msg = "\nExpected: {}\nGot: {}".format(two, one)
         raise AssertionError(msg)
+

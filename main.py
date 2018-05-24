@@ -5,6 +5,9 @@ from sage.all import *
 def is_weakly_decreasing(li):
     return all(li[i] >= li[i+1] for i in range(len(li)-1))
 
+def k_rectangle_dimension_list(k):
+    return [(k-i+1, i) for i in range(1, k+1)]
+
 
 # MAIN:
 
@@ -108,6 +111,51 @@ def is_k_boundary(skew_shape, k):
 
 
 # Partition methods:
+def boundary(ptn):
+    """ The boundary of a partition is the set { NE(d) | for all d diagonal }.  That is, for every diagonal, we find the northeasternmost (NE) point on that diagonal which is also in the ferrer's diagram.  Finally, we restrict to only integer coordinates.
+
+    The boundary will go from bottom-right to top-left in the French notation.
+    """
+    def horizontal_piece((start_x, start_y), bdy):
+        if not bdy:
+            h_piece = [(start_x, start_y)]
+        else:
+            stop_x = bdy[-1][0]
+            y = start_y # y never changes
+            h_piece = [(x, y) for x in range(start_x, stop_x)]
+        h_piece = list(reversed(h_piece))
+        return h_piece
+    bdy = []
+    for i, part in enumerate(ptn):
+        (cell_x, cell_y) = (part - 1, i)
+        (x, y) = (cell_x + 1, cell_y + 1)
+        bdy += horizontal_piece((x, y - 1), bdy)
+        bdy.append((x, y))
+    # add final "top-left" horizontal piece
+    (top_left_x, top_left_y) = (0, len(ptn))
+    bdy += horizontal_piece((top_left_x, top_left_y), bdy)
+    # claim victory
+    return bdy
+
+def k_rim(ptn, k):
+    """ The k-rim of a partition is the "line between" (or "intersection of") the k-boundary and the k-interior.
+
+    It will be outputted as an ordered list of integer coordinates, where the origin is (0,0).  It will start at the top-left of the k-rim (under French depiction) and end at the bottom-right. """
+    interior_rim = boundary(ptn.k_interior(k))
+    # get leftmost vertical line
+    interior_top_left_y = interior_rim[-1][1]
+    v_piece = [(0, y) for y in range(interior_top_left_y + 1, len(ptn) + 1)]
+    # get bottommost horizontal line
+    interior_bottom_right_x = interior_rim[0][0]
+    if ptn:
+        ptn_bottom_right_x = ptn[0]
+    else:
+        ptn_bottom_right_x = 0
+    h_piece = [(x, 0) for x in range(ptn_bottom_right_x, interior_bottom_right_x, -1)]
+    # glue together with boundary
+    rim = h_piece + interior_rim + v_piece
+    return rim
+
 def k_row_lengths(ptn, k):
     return ptn.k_boundary(k).row_lengths()
 
@@ -128,10 +176,7 @@ def has_rectangle(ptn, h, w):
 def has_k_rectangle(ptn, k):
     """ A partition has a k-rectangle if it's Ferrer's diagram contains k-i+1 rows (or more) of length i (exactly) for any i in [1, k].
     """
-    for i in range(1, k+1):
-        if has_rectangle(ptn, k-i+1, i):
-            return True
-    return False
+    return any(has_rectangle(ptn, a, b) for (a, b) in k_rectangle_dimension_list(k))
 
 def is_k_bounded(ptn, k):
     """ Returns True iff the partition is bounded by k. """
@@ -153,7 +198,7 @@ def Partition_is_k_irreducible(ptn, k):
 
 def get_k_rectangles(k):
     """ A __k-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is k. """
-    return [Partition([i] * (k-i+1)) for i in range(1, k+1)]
+    return [Partition([a] * b) for (a, b) in k_rectangle_dimension_list(k)]
 
 def get_k_irreducible_partition_lists(k):
     """Since there are n! such partitions, the big-O time can't be better than that.
@@ -300,12 +345,29 @@ def n_to_num_self_conjugate_k_skews(n, k):
 
 
 # kShape methods:
-def kShape_is_k_reducible(s, k):
+def h_bounds(p, k, width):
+    """ Recall the "H_i" as defined in Def 3.3 of Combinatorics of k-shapes and Genocchi
+numbers.
+    k: The k used for the 'k'-shape or 'k'-boundary
+    width: i
+    returns: (y_min, y_max) The two vertical coordinates which define the horizontal stip.
+    """
+    assert is_k_shape(p, k)
+    r = k_row_lengths(p, k)
+    # pad with a row of infinite length and a row of length 0
+    r = [float('inf')] + r + [0]
+    y_min = max([j for j in range(0, len(r)) if r[j] > width])
+    y_max = min([j for j in range(0, len(r)) if r[j] < width]) - 1
+    return (y_min, y_max)
+
+def v_bounds(p, k, height):
+    """ Recall "V_i".  This is the vertical analog of h_bounds. """
+    return h_bounds(p.conjugate(), k, height)
+
+def kShape_is_k_reducible1(s, k):
     """ A k-shape is called __k-reducible__ if there exists a k-rectangle R such that (the k-row-shape has R and the k-column-shape has R'). """
     def has_k_rectangle_pair(k):
-        for i in range(1, k+1):
-            a = k-i+1
-            b = i
+        for (a, b) in k_rectangle_dimension_list(k):
             if has_rectangle(rs, a, b) and has_rectangle(cs, b, a):
                 return True
         return False
@@ -313,9 +375,46 @@ def kShape_is_k_reducible(s, k):
     cs = Partition(k_column_lengths(s, k))
     return has_k_rectangle_pair(k) or has_k_rectangle_pair(k-1)
 
-def kShape_is_k_irreducible(s, k):
+def kShape_is_k_reducible_by_rectangle(p, k, (a,b)):
+    """ Checks if the k-shape is k-reducible for a k-rectangle of specific dimensions a x b.
+
+    See Proposition 3.8 in Combinatorics of k-shapes and Genocchi
+numbers
+    """
+    assert is_k_shape(p, k)
+    assert a + b - 1 == k or a + b - 1 == k - 1
+    # get intersection H_a \cap V_b \cap k_rim
+    rim = k_rim(p, k)
+    (y_min, y_max) = h_bounds(p, k, a)
+    (x_min, x_max) = v_bounds(p, k, b)
+    intersection_rim = [(x,y) for (x,y) in rim if x_min <= x <= x_max and y_min <= y <= y_max]
+    # check condition (iii) of Proposition 3.8
+    if not intersection_rim:
+        return False
+    else:
+        # min_y is DIFFERENT than y_min
+        min_y = intersection_rim[0][1]
+        max_y = intersection_rim[-1][1]
+        return max_y - min_y >= b
+
+def kShape_is_k_reducible2(p, k):
+    rect_dim_list = k_rectangle_dimension_list(k) + k_rectangle_dimension_list(k-1)
+    for (a, b) in rect_dim_list:
+        if kShape_is_k_reducible_by_rectangle(p, k, (a,b)):
+            return True
+    return False
+
+def kShape_is_k_reducible(s, k, method=1):
+    if method == 1:
+        return kShape_is_k_reducible1(s, k)
+    elif method == 2:
+        return kShape_is_k_reducible2(s, k)
+    else:
+        raise ValueError('Unknown reducibility method.')
+
+def kShape_is_k_irreducible(s, k, method=1):
     """ A k-shape is called __k-irreducible__ if it is not k-reducible. """
-    return not kShape_is_k_reducible(s, k)
+    return not kShape_is_k_reducible(s, k, method)
 # END k-shape methods.
 
 def get_k_irreducible_k_shapes(k):
@@ -325,6 +424,6 @@ def get_k_irreducible_k_shapes(k):
     ptns = []
     for n in range(0, n_bound+1):
         ptns += Partitions(n, max_length=bound, max_part=bound)
-        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k)]
+        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k, method=2)]
     return k_irr_k_shapes
 

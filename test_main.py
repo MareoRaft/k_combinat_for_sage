@@ -229,6 +229,59 @@ ri = skew_partition_to_root_ideal(sp)
 a(ri, [(0,3), (0,4), (0,5), (1,4), (1,5)])
 
 
+# test_boundary
+p = Partition([1])
+a(boundary(p), [(1,0), (1,1), (0,1)])
+
+p = Partition([2, 1])
+a(boundary(p), [(2,0), (2,1), (1,1), (1,2), (0,2)])
+
+p = Partition([3, 1])
+a(boundary(p), [(3,0), (3,1), (2,1), (1,1), (1,2), (0,2)])
+
+p = Partition([2, 1, 1])
+a(boundary(p), [(2,0), (2,1), (1,1), (1,2), (1,3), (0,3)])
+
+p = Partition([7, 4, 3, 3, 2, 1, 1])
+a(boundary(p), [(7,0), (7,1), (6,1), (5,1), (4,1), (4,2), (3,2), (3,3), (3,4), (2,4), (2,5), (1,5), (1,6), (1,7), (0,7)])
+
+
+# test_k_rim
+p = Partition([1])
+k = 0
+a(k_rim(p, k), [(1,0), (1,1), (0,1)])
+
+p = Partition([3, 1])
+k = 0
+a(k_rim(p, k), [(3,0), (3,1), (2,1), (1,1), (1,2), (0,2)])
+
+p = Partition([3, 1])
+k = 1
+a(k_rim(p, k), [(3,0), (2,0), (2,1), (1,1), (0,1), (0,2)])
+
+p = Partition([3, 1])
+k = 2
+a(k_rim(p, k), [(3,0), (2,0), (1,0), (1,1), (0,1), (0,2)])
+
+p = Partition([3, 1])
+k = 3
+a(k_rim(p, k), [(3,0), (2,0), (1,0), (1,1), (0,1), (0,2)])
+
+p = Partition([3, 1])
+k = 4
+a(k_rim(p, k), [(3,0), (2,0), (1,0), (0,0), (0,1), (0,2)])
+
+p = Partition([7, 4, 3, 3, 2, 1, 1])
+k = 0
+a(k_rim(p, k), [(7,0), (7,1), (6,1), (5,1), (4,1), (4,2), (3,2), (3,3), (3,4), (2,4), (2,5), (1,5), (1,6), (1,7), (0,7)])
+
+p = Partition([7, 4, 3, 3, 2, 1, 1])
+k = 1
+a(k_rim(p, k), [(7,0), (6,0), (6,1), (5,1), (4,1), (3,1), (3,2), (3,3), (2,3), (2,4), (1,4), (1,5), (1,6), (0,6), (0,7)])
+
+
+
+
 # test_k_row_lengths
 ptn = Partition([4, 4, 4, 3, 2])
 rs = k_row_lengths(ptn, 2)
@@ -346,20 +399,177 @@ a(has_k_rectangle(p, k), True)
 
 
 # test_get_k_rectangles
-out = get_k_rectangles(0)
-a(out, [])
+out = set(get_k_rectangles(0))
+a(out, set(Partition([])))
 
-out = get_k_rectangles(1)
-a(out, [[1]])
+out = set(get_k_rectangles(1))
+a(out, set([Partition([1])]))
 
-out = get_k_rectangles(2)
-a(out, [[1, 1], [2]])
+out = set(get_k_rectangles(2))
+a(out, set([Partition([1, 1]), Partition([2])]))
 
-out = get_k_rectangles(3)
-a(out, [[1, 1, 1], [2, 2], [3]])
+out = set(get_k_rectangles(3))
+a(out, set([Partition([1, 1, 1]), Partition([2, 2]), Partition([3])]))
 
-out = get_k_rectangles(4)
-a(out, [[1, 1, 1, 1], [2, 2, 2], [3, 3], [4]])
+out = set(get_k_rectangles(4))
+a(out, set([Partition([1, 1, 1, 1]), Partition([2, 2, 2]), Partition([3, 3]), Partition([4])]))
+
+
+# test_h_bounds
+p = Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1])
+k = 4
+i = 1
+a(h_bounds(p, k, i), (3, 10))
+
+p = Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1])
+k = 4
+i = 2
+a(h_bounds(p, k, i), (2, 3))
+
+p = Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1])
+k = 4
+i = 3
+a(h_bounds(p, k, i), (0, 2))
+
+
+# test_v_bounds
+p = Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1])
+k = 4
+i = 1
+a(v_bounds(p, k, i), (2, 10))
+
+p = Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1])
+k = 4
+i = 2
+a(v_bounds(p, k, i), (2, 2))
+
+p = Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1])
+k = 4
+i = 3
+a(v_bounds(p, k, i), (1, 2))
+
+p = Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1])
+k = 4
+i = 4
+a(v_bounds(p, k, i), (0, 1))
+
+
+# test_kShape_is_k_reducible_by_rectangle
+s = Partition([1])
+k = 1
+(w,h) = (1,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+
+s = Partition([2, 1])
+k = 1
+(w,h) = (1,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+
+s = Partition([1, 1])
+k = 2
+(w,h) = (1,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([1, 1])
+k = 2
+(w,h) = (1,2)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+
+s = Partition([1, 1])
+k = 2
+(w,h) = (2,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([2, 1, 1])
+k = 2
+(w,h) = (2,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([2, 1, 1])
+k = 2
+(w,h) = (1,2)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+
+s = Partition([2, 1, 1])
+k = 2
+(w,h) = (1,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+
+s = Partition([2, 1, 1])
+k = 3
+(w,h) = (3,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([2, 1, 1])
+k = 3
+(w,h) = (2,2)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([2, 1, 1])
+k = 3
+(w,h) = (1,3)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([2, 1, 1])
+k = 3
+(w,h) = (2,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([2, 1, 1])
+k = 3
+(w,h) = (1,2)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+
+s = Partition([3, 2, 1])
+k = 3
+(w,h) = (3,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([3, 2, 1])
+k = 3
+(w,h) = (2,2)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+
+s = Partition([3, 2, 1])
+k = 3
+(w,h) = (1,3)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([3, 2, 1])
+k = 3
+(w,h) = (2,1)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+s = Partition([3, 2, 1])
+k = 3
+(w,h) = (1,2)
+a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+
+
+# test_kShape_is_k_reducible2
+s = Partition([1])
+k = 1
+a(kShape_is_k_reducible2(s, k), True)
+
+s = Partition([2, 1])
+k = 1
+a(kShape_is_k_reducible2(s, k), True)
+
+s = Partition([1, 1])
+k = 2
+a(kShape_is_k_reducible2(s, k), True)
+
+s = Partition([2, 1, 1])
+k = 2
+a(kShape_is_k_reducible2(s, k), True)
+
+s = Partition([2, 1, 1])
+k = 3
+a(kShape_is_k_reducible2(s, k), True)
+
+s = Partition([3, 2, 1])
+k = 3
+a(kShape_is_k_reducible2(s, k), True)
 
 
 # test_kShape_is_k_reducible
@@ -389,12 +599,14 @@ a(kShape_is_k_reducible(s, k), True)
 
 
 # test_get_k_irreducible_k_shapes
+ptns = get_k_irreducible_k_shapes(1)
+a(ptns, [[]])
+
 ptns = get_k_irreducible_k_shapes(2)
 a(ptns, [[]])
 
-# for size in range(1, 5):
-# 	ptns = get_k_irreducible_k_shapes(size)
-# 	print(ptns)
+ptns = get_k_irreducible_k_shapes(3)
+a(ptns, [[], [1], [2, 1]])
 
 
 # test_is_linked
