@@ -1,4 +1,5 @@
 #!/usr/bin/env sage
+# -*- coding: utf-8 -*-
 from sage.all import *
 
 # HELPERS (only exist as helper functions for other things):
@@ -13,7 +14,7 @@ def k_rectangle_dimension_list(k):
 
 
 # SkewPartition methods:
-def right(self, row_index):
+def SkewPartition_right(self, row_index):
     """self: a SkewPartition
     Given a 0-based row_index, return the 0-based column index of the rightmost cell in the corresponding row """
     # first check to make sure the cell exists
@@ -24,7 +25,7 @@ def right(self, row_index):
     col_index = outer_row_length - 1
     return col_index
 
-def left(self, row_index):
+def SkewPartition_left(self, row_index):
     """self: a SkewPartition
     Given a 0-based row_index, return the 0-based column index of the leftmost cell in the corresponding row """
     # first check to make sure the cell exists
@@ -39,15 +40,15 @@ def left(self, row_index):
     col_index = inner_row_length
     return col_index
 
-def top(self, col_index):
+def SkewPartition_top(self, col_index):
     """self: a SkewPartition
     Given a 0-based col_index, return the 0-based row_index of the topmost cell in the corresponding column """
-    return right(self.conjugate(), col_index)
+    return SkewPartition_right(self.conjugate(), col_index)
 
-def bottom(self, col_index):
+def SkewPartition_bottom(self, col_index):
     """self: a SkewPartition
     Given a 0-based col_index, return the 0-based row_index of the bottommost cell in the corresponding column """
-    return left(self.conjugate(), col_index)
+    return SkewPartition_left(self.conjugate(), col_index)
 
 def is_linked(self):
     """
@@ -83,8 +84,8 @@ def row_col_to_skew_partition(rs, cs):
 def bump_path_piece(sp, start_row_index, blocked_rows=set()):
     # this algo find the correct "L" piece of the path, where the bottom right cell is cell1, the bottom left is cell2, and the top left is cell3
     # Returns (top_row_index, is_end) which are the row index of cell3 and whether or not we 'broke free' out of the top left cell of the skew-partition, respectively.
-    col_index2 = left(sp, start_row_index)
-    row_index3 = top(sp, col_index2) + 1
+    col_index2 = SkewPartition_left(sp, start_row_index)
+    row_index3 = SkewPartition_top(sp, col_index2) + 1
     while row_index3 in blocked_rows:
         row_index3 += 1
     # CATTY-CORNER ONLY line:
@@ -134,8 +135,79 @@ def skew_partition_to_root_ideal(sp):
     root_ideal = selected_rows_to_root_ideal(n, selected_indecis)
     return root_ideal
 
-def skew_partition_to_removable_roots(sp):
-    pass
+def skew_partition_to_removable_roots(sp, type='small'):
+    """
+    sp: The SkewPartition
+    type: Get removable roots for the 'small' root ideal or the 'big' root ideal?
+    returns: A list of removable roots
+
+    reference: [LM04] L. Lapointe and J. Morse. Order ideals in weak subposets of Young’s lattice and associated
+unimodality conjectures. Ann. Comb., 8(2):197–219, 2004.
+    """
+    selected_rows = set()
+    blocked_rows = set()
+    for row_index, outer_row in enumerate(sp.outer()):
+        if row_index not in blocked_rows:
+            selected_rows.add(row_index)
+            new_blocked_rows = bump_path(sp, row_index, blocked_rows)
+            blocked_rows.update(new_blocked_rows)
+    return sorted(selected_rows)
+
+def down(root_ideal, row_index):
+    """ Given a root ideal and a starting position (row_index), move right unti you hit the root ideal, then move straight down until you hit the diagonal, and return the new index. """
+
+    # Note: I am assuming the cells in the root ideal are IN ORDER with y coordinates weakly increasing, and for fixed y, x strictly increasing
+    for cell in root_ideal:
+        if cell[1] == row_index:
+            return cell[0]
+    return None
+
+def up(root_ideal, index):
+    for cell in reversed(root_ideal):
+        if cell[0] == index:
+            return cell[1]
+    return None
+
+def generate_path(next_func, start):
+    path = [start]
+    while True:
+        next_ = next_func(path[-1])
+        if next_ is not None:
+            path.append(next_)
+        else:
+            break
+    return path
+
+def down_path(root_ideal, start_index):
+    next_func = lambda index: down(root_ideal, index)
+    return generate_path(next_func, start_index)
+
+def up_path(root_ideal, start_index):
+    next_func = lambda index: up(root_ideal, index)
+    return generate_path(next_func, start_index)
+
+def top(root_ideal, start_index):
+    return up_path(root_ideal, start_index)[-1]
+
+def bottom(root_ideal, start_index):
+    return down_path(root_ideal, start_index)[-1]
+
+def k_thing(root_ideal, ptn, start_index):
+    """ CHANGE the name of this!  See 9.JPG """
+    return sum(ptn[j] for j in down_path(root_ideal, start_index))
+
+def mu_thing(root_ideal, ptn, n):
+    """ CHANGE name """
+    mu = []
+    indecis_available = set(range(0, n))
+    for index in range(0, n):
+        if index in indecis_available:
+            # add the kthing to mu
+            mu.append(k_thing(root_ideal, ptn, index))
+            # remove indecis from future draws
+            dpath = down_path(root_ideal, index)
+            indecis_available -= set(dpath)
+    return mu
 
 """
 Given a skew-linked diagram, is it a k-boundary?  (That is, does there exist some partition which - when cells of hook-length > k are removed - becomes the skew-linked diagram.)

@@ -10,109 +10,109 @@ print('Sage loaded.  Testing...')
 
 # test_right
 sp = SkewPartition([[1], []])
-c = right(sp, 0)
+c = SkewPartition_right(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = right(sp, 0)
+c = SkewPartition_right(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[1, 1], []])
-c = right(sp, 0)
+c = SkewPartition_right(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], [1]])
-c = right(sp, 0)
+c = SkewPartition_right(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = right(sp, 0)
+c = SkewPartition_right(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = right(sp, 2)
+c = SkewPartition_right(sp, 2)
 a(c, 3)
 
 
 # test_left
 sp = SkewPartition([[1], []])
-c = left(sp, 0)
+c = SkewPartition_left(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = left(sp, 0)
+c = SkewPartition_left(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], [1]])
-c = left(sp, 0)
+c = SkewPartition_left(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = left(sp, 0)
+c = SkewPartition_left(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = left(sp, 2)
+c = SkewPartition_left(sp, 2)
 a(c, 2)
 
 
 # test_top
 sp = SkewPartition([[1], []])
-c = top(sp, 0)
+c = SkewPartition_top(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = top(sp, 0)
+c = SkewPartition_top(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], []])
-c = top(sp, 0)
+c = SkewPartition_top(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[1, 1], [1]])
-c = top(sp, 0)
+c = SkewPartition_top(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = top(sp, 0)
+c = SkewPartition_top(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = top(sp, 2)
+c = SkewPartition_top(sp, 2)
 a(c, 2)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = top(sp, 3)
+c = SkewPartition_top(sp, 3)
 a(c, 2)
 
 
 # test_bottom
 sp = SkewPartition([[1], []])
-c = bottom(sp, 0)
+c = SkewPartition_bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = bottom(sp, 0)
+c = SkewPartition_bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], []])
-c = bottom(sp, 0)
+c = SkewPartition_bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], [1]])
-c = bottom(sp, 0)
+c = SkewPartition_bottom(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = bottom(sp, 0)
+c = SkewPartition_bottom(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = bottom(sp, 2)
+c = SkewPartition_bottom(sp, 2)
 a(c, 2)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = bottom(sp, 3)
+c = SkewPartition_bottom(sp, 3)
 a(c, 1)
 
 
