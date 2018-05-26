@@ -42,6 +42,7 @@ notebook metadata example:
 
 example of a nb w latex and code quotes:
 https://nbviewer.jupyter.org/url/jdj.mit.edu/~stevenj/IJulia%20Preview.ipynb
+on jupyter to FLUSH THE CACHE, use URL params ?flush_cache=true
 
 GITHUB will automatically make your notebook viewable online (https://blog.github.com/2015-05-07-github-jupyter-notebooks-3/).  ALL YOU NEED TO DO is put a ipynb file into your repo.
 

@@ -6,6 +6,9 @@ from sage.all import *
 def is_weakly_decreasing(li):
     return all(li[i] >= li[i+1] for i in range(len(li)-1))
 
+def is_strictly_decreasing(li):
+    return all(li[i] > li[i+1] for i in range(len(li)-1))
+
 def k_rectangle_dimension_list(k):
     return [(k-i+1, i) for i in range(1, k+1)]
 
@@ -192,22 +195,49 @@ def top(root_ideal, start_index):
 def bottom(root_ideal, start_index):
     return down_path(root_ideal, start_index)[-1]
 
-def k_thing(root_ideal, ptn, start_index):
-    """ CHANGE the name of this!  See 9.JPG """
+def down_path_partition_sum(root_ideal, ptn, start_index):
+    """ This is \\mu_i in Definition 2.3 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY. """
     return sum(ptn[j] for j in down_path(root_ideal, start_index))
+def down_path_partition(root_ideal, ptn):
+    """ This is the *column shape* \\mu' as defined by Definition 2.3 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY.  I prefer the name *down path partition*. """
+    if not root_ideal:
+        mu = ptn
+    else:
+        mu = []
+        # n is the side length of the square
+        n = max(x for (x,y) in root_ideal) + 1
+        indecis_available = set(range(0, n))
+        for index in range(0, n):
+            if index in indecis_available:
+                # add the kthing to mu
+                mu.append(down_path_partition_sum(root_ideal, ptn, index))
+                # remove indecis from future draws
+                dpath = down_path(root_ideal, index)
+                indecis_available -= set(dpath)
+    return Partition(mu)
 
-def mu_thing(root_ideal, ptn, n):
-    """ CHANGE name """
-    mu = []
-    indecis_available = set(range(0, n))
-    for index in range(0, n):
-        if index in indecis_available:
-            # add the kthing to mu
-            mu.append(k_thing(root_ideal, ptn, index))
-            # remove indecis from future draws
-            dpath = down_path(root_ideal, index)
-            indecis_available -= set(dpath)
-    return mu
+def root_ideal_to_partition(root_ideal):
+    """ Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal). """
+    if not root_ideal:
+        ptn = []
+    else:
+        max_y = root_ideal[-1][1]
+        ptn = [0] * (max_y + 1)
+        for (x,y) in root_ideal:
+            ptn[y] += 1
+    return Partition(ptn)
+
+def partition_to_root_ideal(ptn, n):
+    """ Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to root_ideal_to_partition when restricted to n x n grid and sub-(n-1)-staircase partitions.) """
+    root_ideal = []
+    for y, part in enumerate(ptn):
+        root_ideal += [(x, y) for x in range(n-part, n)]
+    return root_ideal
+
+def is_rational_root_ideal(ri):
+    """ Given a root ideal ri, check to see if it is a *rational root ideal*, as defined in Example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY.  This merely means that it's corresponding partition is strictly decreasing! """
+    ptn = root_ideal_to_partition(ri)
+    return is_strictly_decreasing(ptn)
 
 """
 Given a skew-linked diagram, is it a k-boundary?  (That is, does there exist some partition which - when cells of hook-length > k are removed - becomes the skew-linked diagram.)
