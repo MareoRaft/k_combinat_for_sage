@@ -277,6 +277,8 @@ def is_rational_root_ideal(ri):
     ptn = root_ideal_to_partition(ri)
     return is_strictly_decreasing(ptn)
 
+
+
 """
 Given a skew-linked diagram, is it a k-boundary?  (That is, does there exist some partition which - when cells of hook-length > k are removed - becomes the skew-linked diagram.)
 """
@@ -402,6 +404,34 @@ def is_symmetric(ptn):
             if ptn[k] != len(ptn) - j:
                 return False
     return True
+
+def next_advanced(p, min=[], max=None):
+    """ We should still check to see if it already exists!
+    Get the next partition lexigraphically that contains min and is contained in max.
+    ptn: The Partition.
+    min: The 'minimum partition' that next_advanced(ptn) must contain.
+    max: The 'maximum partition' that next_advanced(ptn) must be contained in.
+    """
+    assert Partition(min) <= Partition(p) <= Partition(max)
+    # extend p and min to include 0's at the end
+    min = min + [0] * (len(max) - len(min))
+    p = p + [0] * (len(max) - len(p))
+    next_p = p.copy()
+    for r in range(len(p) - 1, -1, -1):
+        if r == 0:
+            if (max is None or p[r] < max[r]):
+                next_p[r] += 1
+                break
+            else:
+                return False
+        else:
+            if (max is None or p[r] < max[r]) and p[r] < p[r-1]:
+                next_p[r] += 1
+                break
+            else:
+                next_p[r] = min[r]
+                continue
+    return Partition(next_p)
 # END Partition methods.
 
 def get_k_rectangles(k):
