@@ -60,6 +60,7 @@ def is_linked(self):
     return is_weakly_decreasing(self.row_lengths()) and is_weakly_decreasing(self.column_lengths())
 
 def row_col_to_skew_partition(rs, cs):
+    # this ALREADY exists in sage. see SkewPartition.from_row_and_column_length
     outer = []
     inner = []
     current_cs = [0] * len(cs)
@@ -119,7 +120,7 @@ def skew_partition_to_selected_rows(sp):
             new_blocked_rows = bump_path(sp, row_index, blocked_rows)
             blocked_rows.update(new_blocked_rows)
     return sorted(selected_rows)
-def selected_rows_to_root_ideal(n, selected_indecis):
+def selected_rows_to_maximum_root_ideal(n, selected_indecis):
     """Given the dimension of the square n and the selected rows, output the root ideal """
     root_ideal_cells = []
     selected_indecis = set(selected_indecis)
@@ -132,43 +133,80 @@ def selected_rows_to_root_ideal(n, selected_indecis):
                 permitted_col_indecis.remove(smallest_unblocked_index)
                 selected_indecis.add(smallest_unblocked_index)
     return root_ideal_cells
-def skew_partition_to_root_ideal(sp):
-    selected_indecis = skew_partition_to_selected_rows(sp)
-    n = len(sp.outer())
-    root_ideal = selected_rows_to_root_ideal(n, selected_indecis)
-    return root_ideal
 
-def skew_partition_to_removable_roots(sp, type='small'):
+def skew_partition_to_removable_roots(sp, type='max'):
     """
-    sp: The SkewPartition
-    type: Get removable roots for the 'small' root ideal or the 'big' root ideal?
-    returns: A list of removable roots
+    sp: The SkewPartition.
+    type: Get removable roots for the 'min' root ideal or the 'max' root ideal.
+    returns: A list of removable roots.
 
     reference: [LM04] L. Lapointe and J. Morse. Order ideals in weak subposets of Young’s lattice and associated
 unimodality conjectures. Ann. Comb., 8(2):197–219, 2004.
     """
-    selected_rows = set()
-    blocked_rows = set()
-    for row_index, outer_row in enumerate(sp.outer()):
-        if row_index not in blocked_rows:
-            selected_rows.add(row_index)
-            new_blocked_rows = bump_path(sp, row_index, blocked_rows)
-            blocked_rows.update(new_blocked_rows)
-    return sorted(selected_rows)
+    def type_shift(x, type):
+        if type == 'max':
+            return x
+        elif type == 'min':
+            return x - 1
+        else:
+            raise ValueError('Bad type.')
+    assert is_linked(sp)
+    mu = Partition(sp.row_lengths())
+    eta = sp.inner()
+    return [(i, mu[type_shift(eta[i], type)] + i) for i in range(0, len(eta))]
+
+def removable_roots_to_partition(corners, n):
+    corners = sorted(corners)
+    # r is the row index or the 'y' value
+    # c is the col index of the 'x' value
+    previous_r = -1
+    ptn = []
+    for r in range(0, n):
+        if corners:
+            current_r = corners[0][0]
+            current_c = corners[0][1]
+            if current_r == r:
+                # see how many rows to fill
+                num_rows = r - previous_r
+                ptn += [n - current_c] * num_rows
+                # delete corner since it has now been used
+                previous_r = current_r
+                corners = corners[1:]
+    return Partition(ptn)
+
+def removable_roots_to_root_ideal(corners, n):
+    ptn = removable_roots_to_partition(corners, n)
+    ri = partition_to_root_ideal(ptn, n)
+    return ri
+
+def skew_partition_to_root_ideal(sp, type='max', method='removable roots'):
+    if method == 'removable roots':
+        corners = skew_partition_to_removable_roots(sp, type)
+        n = len(sp.outer())
+        root_ideal = removable_roots_to_root_ideal(corners, n)
+    elif method == 'bounce':
+        if type != 'max':
+            raise Exception('The bounce method can only yield the maximum root ideal (type=max).')
+        selected_indecis = skew_partition_to_selected_rows(sp)
+        n = len(sp.outer())
+        root_ideal = selected_rows_to_maximum_root_ideal(n, selected_indecis)
+    else:
+        raise ValueError('Unknown method.')
+    return root_ideal
 
 def down(root_ideal, row_index):
     """ Given a root ideal and a starting position (row_index), move right unti you hit the root ideal, then move straight down until you hit the diagonal, and return the new index. """
 
     # Note: I am assuming the cells in the root ideal are IN ORDER with y coordinates weakly increasing, and for fixed y, x strictly increasing
-    for cell in root_ideal:
-        if cell[1] == row_index:
-            return cell[0]
+    for (r,c) in root_ideal:
+        if r == row_index:
+            return c
     return None
 
 def up(root_ideal, index):
-    for cell in reversed(root_ideal):
-        if cell[0] == index:
-            return cell[1]
+    for (r,c) in reversed(root_ideal):
+        if c == index:
+            return r
     return None
 
 def generate_path(next_func, start):
@@ -199,13 +237,13 @@ def down_path_partition_sum(root_ideal, ptn, start_index):
     """ This is \\mu_i in Definition 2.3 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY. """
     return sum(ptn[j] for j in down_path(root_ideal, start_index))
 def down_path_partition(root_ideal, ptn):
-    """ This is the *column shape* \\mu' as defined by Definition 2.3 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY.  I prefer the name *down path partition*. """
+    """ This is the *column shape* \\mu' as defined by Definition 2.3 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY.  It is also introduced in the second paragraph of the overview as \\mathfrak{cs}(\Psi, \lambda). """
     if not root_ideal:
         mu = ptn
     else:
         mu = []
         # n is the side length of the square
-        n = max(x for (x,y) in root_ideal) + 1
+        n = max(c for (r,c) in root_ideal) + 1
         indecis_available = set(range(0, n))
         for index in range(0, n):
             if index in indecis_available:
@@ -221,17 +259,17 @@ def root_ideal_to_partition(root_ideal):
     if not root_ideal:
         ptn = []
     else:
-        max_y = root_ideal[-1][1]
-        ptn = [0] * (max_y + 1)
-        for (x,y) in root_ideal:
-            ptn[y] += 1
+        max_r = root_ideal[-1][0]
+        ptn = [0] * (max_r + 1)
+        for (r,c) in root_ideal:
+            ptn[r] += 1
     return Partition(ptn)
 
 def partition_to_root_ideal(ptn, n):
     """ Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to root_ideal_to_partition when restricted to n x n grid and sub-(n-1)-staircase partitions.) """
     root_ideal = []
-    for y, part in enumerate(ptn):
-        root_ideal += [(x, y) for x in range(n-part, n)]
+    for r, part in enumerate(ptn):
+        root_ideal += [(r, c) for c in range(n-part, n)]
     return root_ideal
 
 def is_rational_root_ideal(ri):

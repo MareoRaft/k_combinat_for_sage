@@ -35,8 +35,10 @@ assert irr_ptns == [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
 
 # 5. Given skew-linked diagram, generate root ideal (in progress)
 sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-root_ideal = skew_partition_to_root_ideal(sp)
-assert root_ideal == [(0,3), (0,4), (0,5), (1,4), (1,5)]
+min_root_ideal = skew_partition_to_root_ideal(sp, type='min')
+assert min_root_ideal == [(0,3), (0,4), (0,5), (1,4), (1,5)] # no way to know if this is right.  do it BY HAND
+max_root_ideal = skew_partition_to_root_ideal(sp, type='max')
+assert max_root_ideal == [(0,3), (0,4), (0,5), (1,4), (1,5)]
 # note that all indecis are 0-based
 
 
