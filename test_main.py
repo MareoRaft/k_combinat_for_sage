@@ -266,6 +266,14 @@ sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
 ri = skew_partition_to_root_ideal(sp, type='max')
 a(ri, [(0,3), (0,4), (0,5), (1,4), (1,5)])
 
+sp = SkewPartition([[4, 3, 2, 2, 1, 1], [3, 2, 1, 1]])
+ri = skew_partition_to_root_ideal(sp, type='max')
+a(ri, [(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)])
+
+sp = SkewPartition([[4, 3, 2, 2, 1, 1], [3, 2, 1, 1]])
+ri = skew_partition_to_root_ideal(sp, type='min')
+a(ri, [(0,1), (0,2), (0,3), (0,4), (0,5), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)])
+
 
 # test_removable_roots_to_root_ideal
 rr = [(0,1), (2,2)]
@@ -575,25 +583,17 @@ a(RootIdeal_next(ri, min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
 
 
 # test_skew_partition_to_root_ideals
-# sp = SkewPartition([[3, 2, 1], [1, 1]]) # this sp is not linked!  I think we only define this thing for linked things
-# correct_ris = [
-# 	RI([(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]),
-# 	RI([(0,2), (0,3), (1,2), (1,3), (2,3)]),
-# 	RI([(0,1), (0,2), (0,3), (1,3), (2,3)]),
-# 	RI([(0,2), (0,3), (1,3), (2,3)]),
-# 	RI([(0,1), (0,2), (0,3), (1,2), (1,3)]),
-# 	RI([(0,2), (0,3), (1,2), (1,3)]),
-# 	RI([(0,1), (0,2), (0,3), (1,3)]),
-# 	RI([(0,2), (0,3), (1,3)]),
-# 	RI([(0,1), (0,2), (0,3)]),
-# 	RI([(0,2), (0,3)]),
-# ]
-# a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
-
 sp = SkewPartition([[4, 2, 1, 1], [2, 1]])
 correct_ris = [
 	RI([(0,1), (0,2), (0,3), (1,2), (1,3)]),
 	RI([(0,1), (0,2), (0,3), (1,3)]),
+]
+a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
+
+sp = SkewPartition([[4, 3, 2, 2, 1, 1], [3, 2, 1, 1]])
+correct_ris = [
+	RI([(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
+	RI([(0,1), (0,2), (0,3), (0,4), (0,5), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
 ]
 a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
 

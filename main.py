@@ -160,9 +160,14 @@ unimodality conjectures. Ann. Comb., 8(2):197–219, 2004.
         else:
             raise ValueError('Bad type.')
     assert is_linked(sp)
-    mu = Partition(sp.row_lengths())
+    mu = Partition(sp.column_lengths())
     eta = sp.inner()
-    return [(i, mu[type_shift(eta[i], type)] + i) for i in range(0, len(eta))]
+    rmvble_roots = []
+    for i in range(0, len(eta)):
+        mu_index = type_shift(eta[i], type)
+        rmvble_root = (i, mu[mu_index] + i)
+        rmvble_roots.append(rmvble_root)
+    return rmvble_roots
 
 def removable_roots_to_partition(corners, n):
     corners = sorted(corners)
@@ -203,7 +208,7 @@ def skew_partition_to_root_ideal(sp, type='max', method='removable roots'):
         raise ValueError('Unknown method.')
     return RI(root_ideal)
 
-def RootIdeal_next(ri, min=[], max=None, n=None):
+def RootIdeal_next(ri, min=[], max=None, n=None, type='rational'):
     # figure out dimension of square
     if n is not None:
         pass
@@ -218,11 +223,13 @@ def RootIdeal_next(ri, min=[], max=None, n=None):
     ptn = root_ideal_to_partition(ri)
     min_ptn = root_ideal_to_partition(min)
     max_ptn = root_ideal_to_partition(max)
-    next_ptn = Partition_next(ptn, min=min_ptn, max=max_ptn)
+    if type == 'rational':
+        type = 'strictly decreasing'
+    next_ptn = Partition_next(ptn, min=min_ptn, max=max_ptn, type=type)
     next_ri = partition_to_root_ideal(next_ptn, n)
     return next_ri
 
-def skew_partition_to_root_ideals(sp):
+def skew_partition_to_root_ideals(sp, type='rational'):
     """ Given a skew partition, find the corresponding set (but given as a list here) of root_ideals.
 
     We could change this to an iterator if users may not want all the root ideals.
@@ -230,7 +237,7 @@ def skew_partition_to_root_ideals(sp):
     min_ri = skew_partition_to_root_ideal(sp, type='min')
     max_ri = skew_partition_to_root_ideal(sp, type='max')
     n = len(sp.outer())
-    next_func = lambda ri: RootIdeal_next(ri, min=min_ri, max=max_ri, n=n)
+    next_func = lambda ri: RootIdeal_next(ri, min=min_ri, max=max_ri, n=n, type=type)
     ris = generate_path(next_func, min_ri)
     return ris
 
@@ -449,12 +456,13 @@ def is_symmetric(ptn):
                 return False
     return True
 
-def Partition_next(p, min=[], max=None):
+def Partition_next(p, min=[], max=None, type=None):
     """
     Get the next partition lexigraphically that contains min and is contained in max.
     ptn: The Partition.
     min: The 'minimum partition' that next_advanced(ptn) must contain.
     max: The 'maximum partition' that next_advanced(ptn) must be contained in.
+    type: The type of partitions allowed.  For example, 'strictly decreasing'.
     """
     # make sure min <= p <= max
     if max is not None:
@@ -474,6 +482,13 @@ def Partition_next(p, min=[], max=None):
     min = min + [0] * (len(max) - len(min))
     # finally, run the algo to find next_p
     next_p = copy(p)
+    def condition(a, b):
+        if type == 'strictly decreasing':
+            return a < b - 1
+        elif type is None:
+            return a < b
+        else:
+            raise ValueError('Unrecognized partition type.')
     for r in range(len(p) - 1, -1, -1):
         if r == 0:
             if (max is None or p[r] < max[r]):
@@ -482,7 +497,7 @@ def Partition_next(p, min=[], max=None):
             else:
                 return None
         else:
-            if (max is None or p[r] < max[r]) and p[r] < p[r-1]:
+            if (max is None or p[r] < max[r]) and condition(p[r], p[r-1]):
                 next_p[r] += 1
                 break
             else:
