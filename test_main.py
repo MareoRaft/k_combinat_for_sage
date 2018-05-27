@@ -521,6 +521,83 @@ k = 2
 a(has_k_rectangle(p, k), True)
 
 
+# test_Partition_next
+min_ = []
+max_ = []
+p = []
+a(Partition_next(p, min=min_, max=max_), func=is_False_or_None)
+
+min_ = []
+max_ = [1]
+a(Partition_next([], min=min_, max=max_), [1])
+a(Partition_next([1], min=min_, max=max_), func=is_False_or_None)
+
+min_ = []
+max_ = [1, 1]
+a(Partition_next([], min=min_, max=max_), [1])
+a(Partition_next([1], min=min_, max=max_), [1, 1])
+a(Partition_next([1, 1], min=min_, max=max_), func=is_False_or_None)
+
+min_ = []
+max_ = [2]
+a(Partition_next([], min=min_, max=max_), [1])
+a(Partition_next([1], min=min_, max=max_), [2])
+a(Partition_next([2], min=min_, max=max_), func=is_False_or_None)
+
+min_ = []
+max_ = [2, 1]
+a(Partition_next([], min=min_, max=max_), [1])
+a(Partition_next([1], min=min_, max=max_), [1, 1])
+a(Partition_next([1, 1], min=min_, max=max_), [2])
+a(Partition_next([2], min=min_, max=max_), [2, 1])
+a(Partition_next([2, 1], min=min_, max=max_), func=is_False_or_None)
+
+min_ = [1, 1]
+max_ = [3, 2, 1]
+a(Partition_next([1, 1], min=min_, max=max_), [1, 1, 1])
+a(Partition_next([1, 1, 1], min=min_, max=max_), [2, 1])
+
+
+# test_RootIdeal_next
+ri = []
+n = 4
+a(RootIdeal_next(ri, n=n), [(0,3)])
+
+max_ri = [(0,0), (0,1), (1,0), (1,1)]
+min_ri = []
+ri = [(0,1), (1,1)]
+a(RootIdeal_next(ri, min=min_ri, max=max_ri), [(0,0), (0,1)])
+
+max_ri = [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
+min_ri = [(0,2), (0,3)]
+ri = [(0,1), (0,2), (0,3)]
+a(RootIdeal_next(ri, min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
+
+
+# test_skew_partition_to_root_ideals
+# sp = SkewPartition([[3, 2, 1], [1, 1]]) # this sp is not linked!  I think we only define this thing for linked things
+# correct_ris = [
+# 	RI([(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]),
+# 	RI([(0,2), (0,3), (1,2), (1,3), (2,3)]),
+# 	RI([(0,1), (0,2), (0,3), (1,3), (2,3)]),
+# 	RI([(0,2), (0,3), (1,3), (2,3)]),
+# 	RI([(0,1), (0,2), (0,3), (1,2), (1,3)]),
+# 	RI([(0,2), (0,3), (1,2), (1,3)]),
+# 	RI([(0,1), (0,2), (0,3), (1,3)]),
+# 	RI([(0,2), (0,3), (1,3)]),
+# 	RI([(0,1), (0,2), (0,3)]),
+# 	RI([(0,2), (0,3)]),
+# ]
+# a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
+
+sp = SkewPartition([[4, 2, 1, 1], [2, 1]])
+correct_ris = [
+	RI([(0,1), (0,2), (0,3), (1,2), (1,3)]),
+	RI([(0,1), (0,2), (0,3), (1,3)]),
+]
+a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
+
+
 # test_get_k_rectangles
 out = set(get_k_rectangles(0))
 a(out, set(Partition([])))

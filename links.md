@@ -34,6 +34,11 @@ things that definitely exist in sage
   * hook_length and hook_lengths methods in Partition
   * leg_length and arm_length
   * k_boundary and k_interior already exist in Partition!
+  * cell_poset exists, which is just like root_ideal way of listing cells in a partition, except it is left-justified instead of right-justified.  IN FACT, it allows you to set the 'orientation' as NE (northeast), so we may get rid of some of our root_ideal code.
+  * corners.  given a ptn, then ptn.corners() is the corners of the Young diagram!
+  * k_conjugate (whatever that is)
+  * k_atom
+  * k_split
 
 
 things mentioned in sage (and might exist)

@@ -12,8 +12,17 @@ def is_strictly_decreasing(li):
 def k_rectangle_dimension_list(k):
     return [(k-i+1, i) for i in range(1, k+1)]
 
+def get_n_from_root_ideal(root_ideal):
+    return max(c for (r,c) in root_ideal) + 1
+
 
 # MAIN:
+
+
+class RootIdeal(list):
+    def __hash__(self):
+        return hash(tuple(sorted(self)))
+RI = RootIdeal
 
 
 # SkewPartition methods:
@@ -192,7 +201,38 @@ def skew_partition_to_root_ideal(sp, type='max', method='removable roots'):
         root_ideal = selected_rows_to_maximum_root_ideal(n, selected_indecis)
     else:
         raise ValueError('Unknown method.')
-    return root_ideal
+    return RI(root_ideal)
+
+def RootIdeal_next(ri, min=[], max=None, n=None):
+    # figure out dimension of square
+    if n is not None:
+        pass
+    elif ri:
+        n = get_n_from_root_ideal(ri)
+    elif min:
+        n = get_n_from_root_ideal(min)
+    elif max:
+        n = get_n_from_root_ideal(max)
+    else:
+        raise Exception('There is no way to figure out the size of the staircase that the root ideals fall in.  Please supply n.')
+    ptn = root_ideal_to_partition(ri)
+    min_ptn = root_ideal_to_partition(min)
+    max_ptn = root_ideal_to_partition(max)
+    next_ptn = Partition_next(ptn, min=min_ptn, max=max_ptn)
+    next_ri = partition_to_root_ideal(next_ptn, n)
+    return next_ri
+
+def skew_partition_to_root_ideals(sp):
+    """ Given a skew partition, find the corresponding set (but given as a list here) of root_ideals.
+
+    We could change this to an iterator if users may not want all the root ideals.
+    """
+    min_ri = skew_partition_to_root_ideal(sp, type='min')
+    max_ri = skew_partition_to_root_ideal(sp, type='max')
+    n = len(sp.outer())
+    next_func = lambda ri: RootIdeal_next(ri, min=min_ri, max=max_ri, n=n)
+    ris = generate_path(next_func, min_ri)
+    return ris
 
 def down(root_ideal, row_index):
     """ Given a root ideal and a starting position (row_index), move right unti you hit the root ideal, then move straight down until you hit the diagonal, and return the new index. """
@@ -243,7 +283,7 @@ def down_path_partition(root_ideal, ptn):
     else:
         mu = []
         # n is the side length of the square
-        n = max(c for (r,c) in root_ideal) + 1
+        n = get_n_from_root_ideal(root_ideal)
         indecis_available = set(range(0, n))
         for index in range(0, n):
             if index in indecis_available:
@@ -256,6 +296,8 @@ def down_path_partition(root_ideal, ptn):
 
 def root_ideal_to_partition(root_ideal):
     """ Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal). """
+    if root_ideal is None or root_ideal == False:
+        return root_ideal
     if not root_ideal:
         ptn = []
     else:
@@ -267,10 +309,12 @@ def root_ideal_to_partition(root_ideal):
 
 def partition_to_root_ideal(ptn, n):
     """ Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to root_ideal_to_partition when restricted to n x n grid and sub-(n-1)-staircase partitions.) """
+    if ptn is None or ptn == False:
+        return ptn
     root_ideal = []
     for r, part in enumerate(ptn):
         root_ideal += [(r, c) for c in range(n-part, n)]
-    return root_ideal
+    return RI(root_ideal)
 
 def is_rational_root_ideal(ri):
     """ Given a root ideal ri, check to see if it is a *rational root ideal*, as defined in Example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY.  This merely means that it's corresponding partition is strictly decreasing! """
@@ -405,25 +449,38 @@ def is_symmetric(ptn):
                 return False
     return True
 
-def next_advanced(p, min=[], max=None):
-    """ We should still check to see if it already exists!
+def Partition_next(p, min=[], max=None):
+    """
     Get the next partition lexigraphically that contains min and is contained in max.
     ptn: The Partition.
     min: The 'minimum partition' that next_advanced(ptn) must contain.
     max: The 'maximum partition' that next_advanced(ptn) must be contained in.
     """
-    assert Partition(min) <= Partition(p) <= Partition(max)
+    # make sure min <= p <= max
+    if max is not None:
+        assert Partition(max).contains(Partition(p))
+    assert Partition(p).contains(Partition(min))
+    # check for empty max
+    if max is not None and Partition(max).is_empty():
+        return None
+    # convert partitions to lists to make them mutable
+    p = list(p)
+    min = list(min)
+    # if there is no max, the next partition just tacks a '1' on to the end!
+    if max is None:
+        return Partition(p + [1])
     # extend p and min to include 0's at the end
-    min = min + [0] * (len(max) - len(min))
     p = p + [0] * (len(max) - len(p))
-    next_p = p.copy()
+    min = min + [0] * (len(max) - len(min))
+    # finally, run the algo to find next_p
+    next_p = copy(p)
     for r in range(len(p) - 1, -1, -1):
         if r == 0:
             if (max is None or p[r] < max[r]):
                 next_p[r] += 1
                 break
             else:
-                return False
+                return None
         else:
             if (max is None or p[r] < max[r]) and p[r] < p[r-1]:
                 next_p[r] += 1

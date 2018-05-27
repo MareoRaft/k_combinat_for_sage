@@ -1,9 +1,19 @@
 # Tools for testing purposes.
-def a(one, two):
+def is_False_or_None(x):
+	return x is None or x == False
+
+def a(one, two=None, func=None):
     """ Replaces "assert" statements.  Tells you what the input what is the assertion fails. """
-    if one == two:
-        pass
+    if func is not None:
+    	if func(one):
+    		pass
+    	else:
+	        msg = "\nExpected: {}\nGot: {}".format(func, one)
+	        raise AssertionError(msg)
     else:
-        msg = "\nExpected: {}\nGot: {}".format(two, one)
-        raise AssertionError(msg)
+	    if one == two:
+	        pass
+	    else:
+	        msg = "\nExpected: {}\nGot: {}".format(two, one)
+	        raise AssertionError(msg)
 
