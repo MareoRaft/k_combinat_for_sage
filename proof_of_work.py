@@ -33,12 +33,17 @@ irr_ptns = get_k_irreducible_partition_lists(3)
 assert irr_ptns == [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
 
 
-# 5. Given skew-linked diagram, generate root ideal (in progress)
+# 5. Given skew-linked diagram, generate root ideal (or removable roots).
 sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
 min_root_ideal = skew_partition_to_root_ideal(sp, type='min')
 assert min_root_ideal == [(0,3), (0,4), (0,5), (1,4), (1,5)] # no way to know if this is right.  do it BY HAND
+min_removable_roots = skew_partition_to_removable_roots(sp, type='min')
+assert min_removable_roots == [(0,3), (1,4)]
 max_root_ideal = skew_partition_to_root_ideal(sp, type='max')
 assert max_root_ideal == [(0,3), (0,4), (0,5), (1,4), (1,5)]
+max_removable_roots = skew_partition_to_removable_roots(sp, type='max')
+assert max_removable_roots == [(0,3), (1,4)]
+# Note that down, down_path, up, up_path, top, and bottom all exist in main.py too.
 # note that all indecis are 0-based
 
 
