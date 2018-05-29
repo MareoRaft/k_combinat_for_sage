@@ -70,12 +70,12 @@ assert seq == [1, 1, 2, 3, 3, 3, 5, 5, 5, 8, 6, 6, 10, 9, 11, 10, 9, 13, 15, 13]
 # n to number of k-shapes of size n (for any k between 1 and n-1)
 seq = sequence(lambda n: n_to_num_k_shapes(n, k=None))
 assert seq == [0, 0, 0, 1, 3, 5, 9, 13, 20, 28, 40, 54, 75, 99, 133, 174, 229, 295, 383, 488]
-# n to number of self-conjugate k-skews
-seq = sequence(lambda n: n_to_num_self_conjugate_k_skews(n, k=0))
+# n to number of self-conjugate k-shape-boundaries
+seq = sequence(lambda n: n_to_num_self_conjugate_k_shape_boundaries(n, k=0))
 assert seq == [1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 5, 5, 5, 6] # A000700
-seq = sequence(lambda n: n_to_num_self_conjugate_k_skews(n, 2))
+seq = sequence(lambda n: n_to_num_self_conjugate_k_shape_boundaries(n, 2))
 assert seq == [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0]
-# TODO: number of k-skews of size n.
+# TODO: number of k-shape-boundaries of size n.
 
 
 # 9. Given k, find all k-irreducible-k-shapes.

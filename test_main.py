@@ -800,6 +800,63 @@ a(is_linked(sp), True)
 sp = SkewPartition([[3, 2], [1, 0]])
 a(is_linked(sp), False)
 
+###########################################################################
+# test_add_row
+sp = SkewPartition([[4, 3, 1], [1, 1]])
+a(add_row(sp, 1, 2), [[6, 5, 3, 1], [3, 3, 2]])
+
+
+# test_thing_to_added_row_things
+sp = SkewPartition([[1], []])
+a(thing_to_added_row_things(sp, 0), [[[1],[]]])
+
+sp = SkewPartition([[5, 2, 1], [2]])
+a(thing_to_added_row_things(sp, 0), [[[5, 2, 1], [2]]])
+
+sp = SkewPartition([[4, 3, 1], [1, 1]])
+a(thing_to_added_row_things(sp, 0), [])
+
+sp = SkewPartition([[1], []])
+a(thing_to_added_row_things(sp, 1), [[[1, 1],[]], [[2, 1],[1]]])
+
+sp = SkewPartition([[2], []])
+a(thing_to_added_row_things(sp, 2), [[[2, 2],[]], [[3, 2],[1]], [[4, 2],[2]]])
+
+
+# test_ptn_to_linked_things
+p = []
+a(ptn_to_linked_things(p), [[[],[]]])
+
+p = [7]
+a(ptn_to_linked_things(p), [[[7],[]]])
+
+p = [1, 1]
+a(ptn_to_linked_things(p), [[[1, 1],[]], [[2, 1],[1]]])
+
+p = [3, 2, 1]
+a(ptn_to_linked_things(p), [[[3, 2, 1],[]], [[4, 3, 1],[1, 1]], [[4, 2, 1],[1]], [[5, 2, 1], [2]], [[6, 3, 1],[3, 1]]])
+
+
+# test_ptn_to_linked_skew_partitions
+p = []
+a(ptn_to_linked_skew_partitions(p), [[[],[]]])
+
+p = [7]
+a(ptn_to_linked_skew_partitions(p), [[[7],[]]])
+
+p = [1, 1]
+a(ptn_to_linked_skew_partitions(p), [[[1, 1],[]], [[2, 1],[1]]])
+
+p = [3, 2, 1]
+a(ptn_to_linked_skew_partitions(p), [[[3, 2, 1],[]], [[4, 2, 1],[1]], [[5, 2, 1], [2]], [[6, 3, 1],[3, 1]]])
+
+p = [2, 2, 2]
+a(ptn_to_linked_skew_partitions(p), [[[2, 2, 2],[]], [[4, 2, 2],[2]], [[6, 4, 2],[4, 2]]])
+
+p = [3, 1, 1]
+a(ptn_to_linked_skew_partitions(p), [[[3, 1, 1],[]], [[4, 1, 1],[1]], [[5, 2, 1],[2, 1]]])
+
+
 
 
 # ALL DONE!

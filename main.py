@@ -576,16 +576,16 @@ def n_to_k_shapes(n, k):
 def n_to_num_k_shapes(n, k):
     return len(n_to_k_shapes(n, k))
 
-def n_to_k_skews(n, k):
-    """ Given n, find all k-skews coming from partitions of size n. """
+def n_to_k_shape_boundaries(n, k):
+    """ Given n, find all k-boundaries of all k-shapes of size n. """
     return [ptn.k_boundary(k) for ptn in Partitions(n) if is_k_shape(ptn, k)]
 
-def n_to_self_conjugate_k_skews(n, k):
-    k_skews = n_to_k_skews(n, k)
-    return [ks for ks in k_skews if ks == ks.conjugate()]
+def n_to_self_conjugate_k_shape_boundaries(n, k):
+    k_shape_boundaries = n_to_k_shape_boundaries(n, k)
+    return [ks for ks in k_shape_boundaries if ks == ks.conjugate()]
 
-def n_to_num_self_conjugate_k_skews(n, k):
-    return len(n_to_self_conjugate_k_skews(n, k))
+def n_to_num_self_conjugate_k_shape_boundaries(n, k):
+    return len(n_to_self_conjugate_k_shape_boundaries(n, k))
 
 
 
@@ -659,3 +659,59 @@ def get_k_irreducible_k_shapes(k, method=2):
         k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and kShape_is_k_irreducible(p, k, method)]
     return k_irr_k_shapes
 
+
+###########################################################################
+def add_row(sp, row_len, offset):
+    outer = sp.outer().to_list()
+    inner = sp.inner().to_list()
+    inner += [0] * (len(outer) - len(inner))
+    outer = [e + offset for e in outer]
+    inner = [e + offset for e in inner]
+    outer.append(row_len)
+    return SkewPartition([outer, inner])
+
+def thing_to_added_row_things(sp, row_len):
+    previous_checked_col_index = sp.outer()[-1]
+    # find the maximum leftmost offset for the new row
+    col_lens = sp.column_lengths()
+    max_offset = row_len
+    prev_col_len = 0
+    for col_index in range(previous_checked_col_index, -1, -1):
+        # get length of column
+        col_len = col_lens[col_index] if col_index < len(col_lens) else 0
+        # check col-shape partition condition
+        if col_len >= prev_col_len:
+            # col_index is good, continue
+            prev_col_len = col_len
+        else:
+            # col_index is bad, stop
+            good_col_index = col_index + 1
+            max_offset = row_len - good_col_index
+            break
+    # now add all possible positions for the row onto the list
+    return [add_row(sp, row_len, offset) for offset in range(0, max_offset+1)]
+
+def ptn_to_linked_things(p):
+    assert isinstance(p, list) and not isinstance(p, Partition)
+    if len(p) <= 1:
+        return [SkewPartition([p, []])]
+    else:
+        # these incomplete guys are not necessarily skew partitions
+        incomplete_things = ptn_to_linked_things(p[:-1])
+        almost_complete_things = []
+        for incomplete_thing in incomplete_things:
+            almost_complete_things += thing_to_added_row_things(incomplete_thing, p[-1])
+        return almost_complete_things
+
+def ptn_to_linked_skew_partitions(p):
+    """ Given a partition p, find all linked SkewPartitions whose row-shape is the partition. """
+    p_zero = list(Partition(p)) + [0]
+    return ptn_to_linked_things(p_zero)
+
+def n_to_linked_skew_partitions(n):
+    """ Given n, return all linked SkewPartitions of size n. """
+    linked_skew_ptns = []
+    ptns = Partitions(n)
+    for ptn in ptns:
+        linked_skew_ptns += ptn_to_linked_skew_partitions(ptn)
+    return linked_skew_ptns
