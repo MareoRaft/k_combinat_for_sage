@@ -711,6 +711,7 @@ def ptn_to_linked_skew_partitions(p):
 def n_to_linked_skew_partitions(n):
     """ Given n, return all linked SkewPartitions of size n. """
     linked_skew_ptns = []
+    # Here is one major optimization that's possible: Instead of first calculating all Partitions(n), and then doing the ptn_to_linked_things algo for each partition, actually go through the work of generating the partitions manually, and use ptn_to_linked_things algo as you go.  This is to ELIMINATE the redundancy of having two partitions that START with the same sub-partition.
     ptns = Partitions(n)
     for ptn in ptns:
         linked_skew_ptns += ptn_to_linked_skew_partitions(ptn)

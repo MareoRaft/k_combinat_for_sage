@@ -75,6 +75,8 @@ seq = sequence(lambda n: n_to_num_self_conjugate_k_shape_boundaries(n, k=0))
 assert seq == [1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 5, 5, 5, 6] # A000700
 seq = sequence(lambda n: n_to_num_self_conjugate_k_shape_boundaries(n, 2))
 assert seq == [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0]
+seq = sequence(lambda n: len(n_to_linked_skew_partitions(n)), 10)
+assert seq == [1, 1, 3, 6, 13, 24, 46, 81, 143, 243] # I think we should submit this sequence to OEIS
 # TODO: number of k-shape-boundaries of size n.
 
 
