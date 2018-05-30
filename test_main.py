@@ -10,109 +10,109 @@ print('Sage loaded.  Testing...')
 
 # test_right
 sp = SkewPartition([[1], []])
-c = SkewPartition_right(sp, 0)
+c = SP.right(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SkewPartition_right(sp, 0)
+c = SP.right(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[1, 1], []])
-c = SkewPartition_right(sp, 0)
+c = SP.right(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], [1]])
-c = SkewPartition_right(sp, 0)
+c = SP.right(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SkewPartition_right(sp, 0)
+c = SP.right(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SkewPartition_right(sp, 2)
+c = SP.right(sp, 2)
 a(c, 3)
 
 
 # test_left
 sp = SkewPartition([[1], []])
-c = SkewPartition_left(sp, 0)
+c = SP.left(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SkewPartition_left(sp, 0)
+c = SP.left(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], [1]])
-c = SkewPartition_left(sp, 0)
+c = SP.left(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SkewPartition_left(sp, 0)
+c = SP.left(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SkewPartition_left(sp, 2)
+c = SP.left(sp, 2)
 a(c, 2)
 
 
 # test_top
 sp = SkewPartition([[1], []])
-c = SkewPartition_top(sp, 0)
+c = SP.top(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SkewPartition_top(sp, 0)
+c = SP.top(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], []])
-c = SkewPartition_top(sp, 0)
+c = SP.top(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[1, 1], [1]])
-c = SkewPartition_top(sp, 0)
+c = SP.top(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SkewPartition_top(sp, 0)
+c = SP.top(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SkewPartition_top(sp, 2)
+c = SP.top(sp, 2)
 a(c, 2)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SkewPartition_top(sp, 3)
+c = SP.top(sp, 3)
 a(c, 2)
 
 
 # test_bottom
 sp = SkewPartition([[1], []])
-c = SkewPartition_bottom(sp, 0)
+c = SP.bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SkewPartition_bottom(sp, 0)
+c = SP.bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], []])
-c = SkewPartition_bottom(sp, 0)
+c = SP.bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], [1]])
-c = SkewPartition_bottom(sp, 0)
+c = SP.bottom(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SkewPartition_bottom(sp, 0)
+c = SP.bottom(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SkewPartition_bottom(sp, 2)
+c = SP.bottom(sp, 2)
 a(c, 2)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SkewPartition_bottom(sp, 3)
+c = SP.bottom(sp, 3)
 a(c, 1)
 
 
@@ -529,41 +529,41 @@ k = 2
 a(has_k_rectangle(p, k), True)
 
 
-# test_Partition_next
+# test_P.next
 min_ = []
 max_ = []
 p = []
-a(Partition_next(p, min=min_, max=max_), func=is_False_or_None)
+a(P.next(p, min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [1]
-a(Partition_next([], min=min_, max=max_), [1])
-a(Partition_next([1], min=min_, max=max_), func=is_False_or_None)
+a(P.next([], min=min_, max=max_), [1])
+a(P.next([1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [1, 1]
-a(Partition_next([], min=min_, max=max_), [1])
-a(Partition_next([1], min=min_, max=max_), [1, 1])
-a(Partition_next([1, 1], min=min_, max=max_), func=is_False_or_None)
+a(P.next([], min=min_, max=max_), [1])
+a(P.next([1], min=min_, max=max_), [1, 1])
+a(P.next([1, 1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [2]
-a(Partition_next([], min=min_, max=max_), [1])
-a(Partition_next([1], min=min_, max=max_), [2])
-a(Partition_next([2], min=min_, max=max_), func=is_False_or_None)
+a(P.next([], min=min_, max=max_), [1])
+a(P.next([1], min=min_, max=max_), [2])
+a(P.next([2], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [2, 1]
-a(Partition_next([], min=min_, max=max_), [1])
-a(Partition_next([1], min=min_, max=max_), [1, 1])
-a(Partition_next([1, 1], min=min_, max=max_), [2])
-a(Partition_next([2], min=min_, max=max_), [2, 1])
-a(Partition_next([2, 1], min=min_, max=max_), func=is_False_or_None)
+a(P.next([], min=min_, max=max_), [1])
+a(P.next([1], min=min_, max=max_), [1, 1])
+a(P.next([1, 1], min=min_, max=max_), [2])
+a(P.next([2], min=min_, max=max_), [2, 1])
+a(P.next([2, 1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = [1, 1]
 max_ = [3, 2, 1]
-a(Partition_next([1, 1], min=min_, max=max_), [1, 1, 1])
-a(Partition_next([1, 1, 1], min=min_, max=max_), [2, 1])
+a(P.next([1, 1], min=min_, max=max_), [1, 1, 1])
+a(P.next([1, 1, 1], min=min_, max=max_), [2, 1])
 
 
 # test_RootIdeal_next
@@ -585,15 +585,15 @@ a(RootIdeal_next(ri, min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
 # test_skew_partition_to_root_ideals
 sp = SkewPartition([[4, 2, 1, 1], [2, 1]])
 correct_ris = [
-	RI([(0,1), (0,2), (0,3), (1,2), (1,3)]),
-	RI([(0,1), (0,2), (0,3), (1,3)]),
+	RootIdeal([(0,1), (0,2), (0,3), (1,2), (1,3)]),
+	RootIdeal([(0,1), (0,2), (0,3), (1,3)]),
 ]
 a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
 
 sp = SkewPartition([[4, 3, 2, 2, 1, 1], [3, 2, 1, 1]])
 correct_ris = [
-	RI([(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
-	RI([(0,1), (0,2), (0,3), (0,4), (0,5), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
+	RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
+	RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
 ]
 a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
 
@@ -654,130 +654,130 @@ i = 4
 a(v_bounds(p, k, i), (0, 1))
 
 
-# test_kShape_is_k_reducible_by_rectangle
+# test_kS.is_k_reducible_by_rectangle
 s = Partition([1])
 k = 1
 (w,h) = (1,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([2, 1])
 k = 1
 (w,h) = (1,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([1, 1])
 k = 2
 (w,h) = (1,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([1, 1])
 k = 2
 (w,h) = (1,2)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([1, 1])
 k = 2
 (w,h) = (2,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 2
 (w,h) = (2,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 2
 (w,h) = (1,2)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([2, 1, 1])
 k = 2
 (w,h) = (1,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (3,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (2,2)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (1,3)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (2,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (1,2)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (3,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (2,2)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (1,3)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (2,1)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (1,2)
-a(kShape_is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 
-# test_kShape_is_k_reducible2
+# test_kS.is_k_reducible2
 s = Partition([1])
 k = 1
-a(kShape_is_k_reducible2(s, k), True)
+a(kS.is_k_reducible2(s, k), True)
 
 s = Partition([2, 1])
 k = 1
-a(kShape_is_k_reducible2(s, k), True)
+a(kS.is_k_reducible2(s, k), True)
 
 s = Partition([1, 1])
 k = 2
-a(kShape_is_k_reducible2(s, k), True)
+a(kS.is_k_reducible2(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 2
-a(kShape_is_k_reducible2(s, k), True)
+a(kS.is_k_reducible2(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 3
-a(kShape_is_k_reducible2(s, k), True)
+a(kS.is_k_reducible2(s, k), True)
 
 s = Partition([3, 2, 1])
 k = 3
-a(kShape_is_k_reducible2(s, k), True)
+a(kS.is_k_reducible2(s, k), True)
 
 s = Partition([5, 3, 2, 1, 1])
 k = 4
-a(kShape_is_k_reducible2(s, k), False)
+a(kS.is_k_reducible2(s, k), False)
 
 s = Partition([5, 4, 2, 2, 1])
 k = 4
-a(kShape_is_k_reducible2(s, k), False)
+a(kS.is_k_reducible2(s, k), False)
 
 
 # test_get_k_irreducible_k_shapes
