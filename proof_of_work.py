@@ -88,5 +88,22 @@ seq = [len(get_k_irreducible_k_shapes(k)) for k in range(1, 5)]
 assert seq == [1, 1, 3, 17]
 
 
+# 10. Given a root ideal, find it's compliment.
+ri = [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)]
+assert RI.complement(ri) == [(0,1), (1,2), (3,4)]
+
+
+# 11. Given (maybe optional: maximum partition length l) and a k-bounded partition μ, get the corresponding k-Schur root ideal.
+
+
+# 12. Create a 'raising operator' which acts on vectors.  Create a raising operator which acts on schur functions.
+
+
+# 13. Given an indexed root ideal (\Psi, \gamma), produce the Catalan function H(\Psi, \gamma) by the definition \prod_{(i,j) \in \Psi} (1 - R_{i,j})^{-1} s_\gamma(x).
+
+
+
+
+
 # ALL DONE!
 print('Proof of work completed successfully!')

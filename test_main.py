@@ -574,12 +574,12 @@ a(RootIdeal_next(ri, n=n), [(0,3)])
 max_ri = [(0,0), (0,1), (1,0), (1,1)]
 min_ri = []
 ri = [(0,1), (1,1)]
-a(RootIdeal_next(ri, min=min_ri, max=max_ri), [(0,0), (0,1)])
+a(RootIdeal_next(ri, n=2, min=min_ri, max=max_ri), [(0,0), (0,1)])
 
 max_ri = [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
 min_ri = [(0,2), (0,3)]
 ri = [(0,1), (0,2), (0,3)]
-a(RootIdeal_next(ri, min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
+a(RootIdeal_next(ri, n=4, min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
 
 
 # test_skew_partition_to_root_ideals
@@ -855,6 +855,48 @@ a(ptn_to_linked_skew_partitions(p), [[[2, 2, 2],[]], [[4, 2, 2],[2]], [[6, 4, 2]
 
 p = [3, 1, 1]
 a(ptn_to_linked_skew_partitions(p), [[[3, 1, 1],[]], [[4, 1, 1],[1]], [[5, 2, 1],[2, 1]]])
+
+
+# test_complement
+ri = []
+n = 1
+a(RI.complement(ri, n), [])
+
+ri = []
+n = 2
+a(RI.complement(ri, n), [(0,1)])
+a(RI.complement(RI.complement(ri, n), n), [])
+
+ri = [(0,1)]
+a(RI.complement(ri, n=2), [])
+
+ri = [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)]
+a(RI.complement(ri, n=5), [(0,1), (1,2), (3,4)])
+
+ri = [(0,1), (1,2), (3,4)]
+a(RI.complement(ri, 5), [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)])
+
+
+# test_partition_to_k_Schur_root_ideal
+p = [2, 1]
+n = 4
+k = 2
+a(partition_to_k_Schur_root_ideal(p, k, n), [(0,1), (0,2), (0,3), (1,3)])
+
+p = [2, 1]
+n = 4
+k = 3
+a(partition_to_k_Schur_root_ideal(p, k, n), [(0,2), (0,3)])
+
+p = [2, 1]
+n = 4
+k = 4
+a(partition_to_k_Schur_root_ideal(p, k, n), [(0,3)])
+
+p = [2, 1]
+n = 4
+k = 5
+a(partition_to_k_Schur_root_ideal(p, k, n), [])
 
 
 

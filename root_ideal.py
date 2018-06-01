@@ -13,9 +13,19 @@ def is_strictly_decreasing(li):
 def get_n_from_root_ideal(root_ideal):
     return max(c for (r,c) in root_ideal) + 1
 
+def get_dim(n, ri_list):
+    if n is not None:
+        return n
+    for ri in ri_list:
+        # To safeguard against user error, perhaps we should ALWAYS require user to input n.
+        if ri and isinstance(ri, RootIdeal):
+            return get_n_from_root_ideal(ri)
+    raise Exception('There is no way to figure out the size of the staircase that the root ideals fall in.  Please supply n.')
+
 
 # RootIdeal stuff
 class RootIdeal(list):
+    """ An upper root ideal """
     def __hash__(self):
         return hash(tuple(sorted(self)))
 
@@ -135,16 +145,7 @@ def skew_partition_to_root_ideal(sp, type='max', method='removable roots'):
 
 def RootIdeal_next(ri, min=[], max=None, n=None, type='rational'):
     # figure out dimension of square
-    if n is not None:
-        pass
-    elif ri:
-        n = get_n_from_root_ideal(ri)
-    elif min:
-        n = get_n_from_root_ideal(min)
-    elif max:
-        n = get_n_from_root_ideal(max)
-    else:
-        raise Exception('There is no way to figure out the size of the staircase that the root ideals fall in.  Please supply n.')
+    n = get_dim(n, [ri, min, max])
     ptn = root_ideal_to_partition(ri)
     min_ptn = root_ideal_to_partition(min)
     max_ptn = root_ideal_to_partition(max)
@@ -252,3 +253,27 @@ def is_rational_root_ideal(ri):
     """ Given a root ideal ri, check to see if it is a *rational root ideal*, as defined in Example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY.  This merely means that it's corresponding partition is strictly decreasing! """
     ptn = root_ideal_to_partition(ri)
     return is_strictly_decreasing(ptn)
+
+def complement(ri, n=None):
+    """ Given a root ideal (could be upper or lower), return it's complement in the upper-staircase-shape, the result being a root ideal. """
+    n = get_dim(n, [ri])
+    p_staircase = Partition(list(range(n-1, 0, -1)))
+    ri_staircase = partition_to_root_ideal(p_staircase, n)
+    ri_complement_set = set(ri_staircase) - set(ri)
+    ri_complement = sorted(ri_complement_set)
+    return ri_complement
+
+def partition_to_k_Schur_root_ideal(p, k, n):
+    """ Given a (maybe optinal: maximum partition length l) and a k-bounded partition μ, get the corresponding k-Schur root ideal. """
+    p = Partition(p)
+    assert P.is_k_bounded(p, k)
+    assert len(p) <= n
+    ri = []
+    for i, part in enumerate(p):
+        ri += [(i,j) for j in range(k - part + i + 1, n)]
+    return ri
+
+
+
+
+
