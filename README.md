@@ -13,3 +13,12 @@ I am working with [Jennifer Morse](http://math.virginia.edu/people/jlm6cj/) over
   * root ideals
 
 etc.
+
+## build
+To build the documentation, comment out all sage-specific imports (such as `from sage.all import *`), cd into `doc` folder, and run:
+
+    make html
+
+our config file `doc/source/conf.py` may try to be similar to the official sage config file `src/doc/common/conf.py`.  Documentation can contain mathjax using backticks, for example, `\\sum \\frac{h}{l}`.
+
+
