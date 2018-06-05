@@ -1,0 +1,17 @@
+sudo: required
+language: python # i believe python will be pre-installed on the server thanks to this
+before_install:
+- install sphinx
+script:
+- comment out sage.all
+- mkdir build if necessary
+- run make html
+- move html files into place if necessary
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_API_KEY # see settings in Travis
+  local_dir: doc/
+  on:
+    branch: master
+
