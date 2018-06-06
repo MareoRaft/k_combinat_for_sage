@@ -9,6 +9,7 @@ script:
 - make html
 - # move html files into place
 - mv build/html/* .
+- ls
 deploy:
   provider: pages
   skip_cleanup: true
