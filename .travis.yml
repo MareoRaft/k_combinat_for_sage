@@ -1,8 +1,11 @@
 sudo: required
-language: python # Python2 will be pre-installed on server thanks to this
-before_install:
-- pip install sphinx
+language: python # Python will be pre-installed on server thanks to this
+python:
+- "2.7"
 script:
+- pwd
+- cd doc
+- pwd
 - make html
 - # move html files into place if necessary
 deploy:
