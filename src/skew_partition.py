@@ -10,25 +10,39 @@ def is_strictly_decreasing(li):
 
 
 # SkewPartition stuff
-def right(self, row_index):
-    """self: a SkewPartition
-    Given a 0-based row_index, return the 0-based column index of the rightmost cell in the corresponding row """
+def right(sp, row_index):
+    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *rightmost* cell in the corresponding row.
+
+    EXAMPLES::
+
+        sage: right(SkewPartition([[6, 1], [2]]), 0)
+        5
+        sage: right(SkewPartition([[6, 1], [2]]), 1)
+        0
+    """
     # first check to make sure the cell exists
-    if self.row_lengths()[row_index] == 0:
+    if sp.row_lengths()[row_index] == 0:
         return None
-    outer_row_lengths = self.outer().to_list()
+    outer_row_lengths = sp.outer().to_list()
     outer_row_length = outer_row_lengths[row_index]
     col_index = outer_row_length - 1
     return col_index
 
-def left(self, row_index):
-    """self: a SkewPartition
-    Given a 0-based row_index, return the 0-based column index of the leftmost cell in the corresponding row """
+def left(sp, row_index):
+    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *leftmost* cell in the corresponding row.
+
+    EXAMPLES::
+
+        sage: left(SkewPartition([[6, 1], [2]]), 0)
+        2
+        sage: left(SkewPartition([[6, 1], [2]]), 1)
+        0
+    """
     # first check to make sure the cell exists
-    if self.row_lengths()[row_index] == 0:
+    if sp.row_lengths()[row_index] == 0:
         return None
-    outer_row_lengths = self.outer().to_list()
-    inner_row_lengths = self.inner().to_list()
+    outer_row_lengths = sp.outer().to_list()
+    inner_row_lengths = sp.inner().to_list()
     if (row_index in range(len(outer_row_lengths))) and (row_index not in range(len(inner_row_lengths))):
         inner_row_length = 0
     else:
@@ -36,21 +50,48 @@ def left(self, row_index):
     col_index = inner_row_length
     return col_index
 
-def top(self, col_index):
-    """self: a SkewPartition
-    Given a 0-based col_index, return the 0-based row_index of the topmost cell in the corresponding column """
-    return right(self.conjugate(), col_index)
+def top(sp, col_index):
+    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *topmost* cell in the corresponding column.
 
-def bottom(self, col_index):
-    """self: a SkewPartition
-    Given a 0-based col_index, return the 0-based row_index of the bottommost cell in the corresponding column """
-    return left(self.conjugate(), col_index)
+    EXAMPLES::
 
-def is_linked(self):
+        sage: top(SkewPartition([[7, 1, 1], [2]]), 0)
+        2
+        sage: top(SkewPartition([[7, 1, 1], [2]]), 1)
+        None
+        sage: top(SkewPartition([[7, 1, 1], [2]]), 2)
+        0
     """
-    A skew-shape `s` is a __skew-linked diagram__ if both the row-shape and column-shape of `s` are partitions.
+    return right(sp.conjugate(), col_index)
+
+def bottom(sp, col_index):
+    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *bottommost* cell in the corresponding column.
+
+    EXAMPLES::
+
+        sage: top(SkewPartition([[7, 1, 1], [2]]), 0)
+        1
+        sage: top(SkewPartition([[7, 1, 1], [2]]), 1)
+        None
+        sage: top(SkewPartition([[7, 1, 1], [2]]), 2)
+        0
     """
-    return is_weakly_decreasing(self.row_lengths()) and is_weakly_decreasing(self.column_lengths())
+    return left(sp.conjugate(), col_index)
+
+def is_linked(sp):
+    """
+    A skew-shape `sp` is a *skew-linked diagram* if both the row-shape and column-shape of `sp` are partitions.
+
+    EXAMPLES::
+
+        # both row shape and column shape are valid
+        sage: is_linked(SkewPartition([[2, 1], [1]]))
+        True
+        # valid row shape but invalid column shape
+        sage: is_linked(SkewPartition([[3, 2], [1]]))
+        False
+    """
+    return is_weakly_decreasing(sp.row_lengths()) and is_weakly_decreasing(sp.column_lengths())
 
 def row_col_to_skew_partition(rs, cs):
     # this ALREADY exists in sage. see SkewPartition.from_row_and_column_length
@@ -78,42 +119,61 @@ def row_col_to_skew_partition(rs, cs):
             num_rows_to_slide -= 1
     return SkewPartition([outer, inner])
 
-
-
-"""
-Given a skew-linked diagram, is it a k-boundary?  (That is, does there exist some partition which - when cells of hook-length > k are removed - becomes the skew-linked diagram.)
-"""
-
-def k_boundary_to_partition(skew_shape, strict=True):
+def k_boundary_to_partition(sp, k=None, strict=True):
     """
-    skew_shape: The skew-shape (a k-boundary) to find the corresponding partition for.
-    strict: If true, assert that the skew-shape really is a k-boundary.
+    Given a `k`-boundary `sp` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.
+
+    If strict is set to True, the program will assert that the skew-shape really is a `k`-boundary.
+
+    EXAMPLES::
+
+        sage: k_boundary_to_partition(SkewPartition([[3, 2, 1], [2, 1]]))
+        [3, 2, 1]
+
+        sage: k_boundary_to_partition(SkewPartition([[3, 1], [2]]), k=2)
+        Error
+        sage: k_boundary_to_partition(SkewPartition([[3, 1], [2]]), strict=False)
+        [3, 1]
+
     """
     if strict:
-        assert is_k_boundary(skew_shape)
-    # return minimal_containing_partition()
-    return skew_shape.outer()
+        assert is_k_boundary(sp, k)
+    return sp.outer()
 
-def is_k_boundary(skew_shape, k):
-    if k == 0:
+def is_k_boundary(sp, k=None):
+    """
+    Given a skew-shape `sp` and natural number `k`, return True iff `sp` is a `k`-boundary.
+
+    Given a skew-shape `sp` *only*, return True iff there exists some `k` such that `sp` is a `k`-boundary.
+
+    EXAMPLES::
+
+        sage: is_k_boundary(SkewPartition([[3, 2, 1], [2, 1]]))
+        True
+        sage: is_k_boundary(SkewPartition([[3, 2, 1], [2, 1]]), k=1)
+        True
+        sage: is_k_boundary(SkewPartition([[3, 2, 1], [2, 1]]), k=2)
+        False
+
+    """
+    if k is None:
+        max_hook_length = sp.outer().hook_length(0, 0)
+        return any(is_k_boundary(sp, k_star) for k_star in range(0, max_hook_length+1))
+    elif k == 0:
         # the only valid 0-boundary is the empty shape
-        return skew_shape.outer() == skew_shape.inner()
+        return sp.outer() == sp.inner()
     else:
         """We go down and left of each cell to create the only possible partition that could have led to this potential k-boundary
 
         (Any other partition containing this skew_shape would necessarily have a northeast corner that the skew_shape does *not have*.  But in order for the skew-shape to be a k-boundary, it *must have* that northeast corner.)
         """
-        l = k_boundary_to_partition(skew_shape, strict=False)
-        """now that we have the partition, we simply compute it's hook-length for each cell and verify that for each cell of values k or less, it appears in the skew_shape"""
+        l = k_boundary_to_partition(sp, strict=False)
+        """now that we have the partition, we simply compute it's hook-length for each cell and verify that for each cell of values k or less, it appears in the sp"""
         correct_k_boundary = l.k_boundary(k)
-        return skew_shape == correct_k_boundary
+        return sp == correct_k_boundary
 
-
-
-
-
-########### GETTER FUNCS ##############
 def add_row(sp, row_len, offset):
+    # HELPER func
     outer = sp.outer().to_list()
     inner = sp.inner().to_list()
     inner += [0] * (len(outer) - len(inner))
@@ -122,6 +182,7 @@ def add_row(sp, row_len, offset):
     outer.append(row_len)
     return SkewPartition([outer, inner])
 def thing_to_added_row_things(sp, row_len):
+    # HELPER func
     previous_checked_col_index = sp.outer()[-1]
     # find the maximum leftmost offset for the new row
     col_lens = sp.column_lengths()
@@ -142,6 +203,7 @@ def thing_to_added_row_things(sp, row_len):
     # now add all possible positions for the row onto the list
     return [add_row(sp, row_len, offset) for offset in range(0, max_offset+1)]
 def ptn_to_linked_things(p):
+    # HELPER func
     assert isinstance(p, list) and not isinstance(p, Partition)
     if len(p) <= 1:
         return [SkewPartition([p, []])]
@@ -152,16 +214,30 @@ def ptn_to_linked_things(p):
         for incomplete_thing in incomplete_things:
             almost_complete_things += thing_to_added_row_things(incomplete_thing, p[-1])
         return almost_complete_things
-def ptn_to_linked_skew_partitions(p):
-    """ Given a partition p, find all linked SkewPartitions whose row-shape is the partition. """
-    p_zero = list(Partition(p)) + [0]
-    return ptn_to_linked_things(p_zero)
+def row_shape_to_linked_skew_partitions(rs):
+    """ Given a partition `rs`, find all linked SkewPartitions whose row-shape is `rs`.
 
-def n_to_linked_skew_partitions(n):
-    """ Given n, return all linked SkewPartitions of size n. """
+    EXAMPLES::
+
+        sage: row_shape_to_linked_skew_partitions(Partition([3, 1, 1]))
+        [[3, 1, 1] / [], [4, 1, 1] / [1], [5, 2, 1] / [2, 1]]
+        # note that [4, 2, 1] / [1, 1] is *not* linked and hence doesn't appear in the above list
+
+    """
+    rs_zero = list(Partition(rs)) + [0]
+    return ptn_to_linked_things(rs_zero)
+def size_to_linked_skew_partitions(size):
+    """ Given a natural number `size`, return all linked SkewPartitions of size `size`.
+
+    EXAMPLES::
+
+        sage: size_to_linked_skew_partitions(3)
+        [[3] / [], [2, 1] / [], [3, 1] / [1], [1, 1, 1] / [], [2, 1, 1] / [1], [3, 2, 1] / [2, 1]]
+
+    """
     linked_skew_ptns = []
-    # Here is one major optimization that's possible: Instead of first calculating all Partitions(n), and then doing the ptn_to_linked_things algo for each partition, actually go through the work of generating the partitions manually, and use ptn_to_linked_things algo as you go.  This is to ELIMINATE the redundancy of having two partitions that START with the same sub-partition.
-    ptns = Partitions(n)
+    # Here is one major optimization that's possible: Instead of first calculating all Partitions(size), and then doing the ptn_to_linked_things algo for each partition, actually go through the work of generating the partitions manually, and use ptn_to_linked_things algo as you go.  This is to ELIMINATE the redundancy of having two partitions that START with the same sub-partition.
+    ptns = Partitions(size)
     for ptn in ptns:
-        linked_skew_ptns += ptn_to_linked_skew_partitions(ptn)
+        linked_skew_ptns += row_shape_to_linked_skew_partitions(ptn)
     return linked_skew_ptns

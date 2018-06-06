@@ -837,24 +837,24 @@ p = [3, 2, 1]
 a(ptn_to_linked_things(p), [[[3, 2, 1],[]], [[4, 3, 1],[1, 1]], [[4, 2, 1],[1]], [[5, 2, 1], [2]], [[6, 3, 1],[3, 1]]])
 
 
-# test_ptn_to_linked_skew_partitions
+# test_row_shape_to_linked_skew_partitions
 p = []
-a(ptn_to_linked_skew_partitions(p), [[[],[]]])
+a(row_shape_to_linked_skew_partitions(p), [[[],[]]])
 
 p = [7]
-a(ptn_to_linked_skew_partitions(p), [[[7],[]]])
+a(row_shape_to_linked_skew_partitions(p), [[[7],[]]])
 
 p = [1, 1]
-a(ptn_to_linked_skew_partitions(p), [[[1, 1],[]], [[2, 1],[1]]])
+a(row_shape_to_linked_skew_partitions(p), [[[1, 1],[]], [[2, 1],[1]]])
 
 p = [3, 2, 1]
-a(ptn_to_linked_skew_partitions(p), [[[3, 2, 1],[]], [[4, 2, 1],[1]], [[5, 2, 1], [2]], [[6, 3, 1],[3, 1]]])
+a(row_shape_to_linked_skew_partitions(p), [[[3, 2, 1],[]], [[4, 2, 1],[1]], [[5, 2, 1], [2]], [[6, 3, 1],[3, 1]]])
 
 p = [2, 2, 2]
-a(ptn_to_linked_skew_partitions(p), [[[2, 2, 2],[]], [[4, 2, 2],[2]], [[6, 4, 2],[4, 2]]])
+a(row_shape_to_linked_skew_partitions(p), [[[2, 2, 2],[]], [[4, 2, 2],[2]], [[6, 4, 2],[4, 2]]])
 
 p = [3, 1, 1]
-a(ptn_to_linked_skew_partitions(p), [[[3, 1, 1],[]], [[4, 1, 1],[1]], [[5, 2, 1],[2, 1]]])
+a(row_shape_to_linked_skew_partitions(p), [[[3, 1, 1],[]], [[4, 1, 1],[1]], [[5, 2, 1],[2, 1]]])
 
 
 # test_complement

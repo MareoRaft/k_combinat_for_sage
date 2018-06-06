@@ -11,6 +11,7 @@ MorseCode for Sage Documentation!
    :caption: Contents:
 
    partition
+   skew_partition
 
 
 Indices and tables
