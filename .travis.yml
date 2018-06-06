@@ -6,14 +6,19 @@ python:
 - "2.7"
 script:
 - pwd
-- cd docs
+- cd src
 - pwd
 - # comment out sage imports (workaround)
-- src_files=$(ls ../src/**/* | grep ".py$")
+- src_files=$(ls **/* | grep ".py$")
+- echo "$src_files"
 - |
   for file_path in src_files; do
     cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path"
   done
+- cd ..
+- pwd
+- cd docs
+- pwd
 - make html
 - # move html files into place
 - mv build/html/* .
