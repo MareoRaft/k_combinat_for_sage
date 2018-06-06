@@ -13,8 +13,12 @@ script:
 - echo "$src_files"
 - |
   for file_path in src_files; do
+    echo "$file_path"
+    cat "$file_path" | grep import
+    cat "$file_path" | sed 's/from sage\.all import \*//g' | grep import
     cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path"
-  done
+    cat "$file_path" | grep import
+done
 - cd ..
 - pwd
 - cd docs
