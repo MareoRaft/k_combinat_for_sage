@@ -11,13 +11,12 @@ script:
 - # comment-out/delete sage imports (workaround)
 - src_files=$(ls -R | grep ".py$")
 - echo "$src_files"
+- # note that $src_files below is NOT in quotes on purpose
 - |
   for file_path in $src_files; do
     echo " "
-    echo "NEXT"
     echo "$file_path"
-    cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path"
-    cat "$file_path"
+    cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path" > /dev/null 2>&1
   done
 - cd ..
 - pwd
