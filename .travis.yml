@@ -1,5 +1,3 @@
-# For deployment to github pages, check resource https://docs.travis-ci.com/user/deployment/pages/
-# In GitHub settings, go to GitHub Pages section, Source subsection, and select "gh-pages branch" from dropdown.  That option WON'T APPEAR if you don't have a branch called 'gh-pages'.
 sudo: required
 language: python # python will be pre-installed on server thanks to this
 python:
@@ -15,7 +13,7 @@ script:
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $GITHUB_API_KEY # You need to create this key (public access token) following the steps in https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/.  Make sure the PAT has the appropriate repo or public_repo access (or both).  Then copy and paste this PAT as an environment variable "GITHUB_API_KEY" in Travis settings for the appropriate repository.
+  github_token: $GITHUB_API_KEY # I think you need to create this key following the steps in "".  If this doesn't work, then I think you need to ALSO encrypt it following https://docs.travis-ci.com/user/environment-variables#Defining-encrypted-variables-in-.travis.yml
   local_dir: docs
   on:
     branch: master
