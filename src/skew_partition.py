@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+Sage has a builtin `SkewPartition <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/skew_partition.html>`_ object (a.k.a. skew-shape).  *This* module adds extra useful functions for skew partitions:
+
+REFERENCES:
+
+.. [mem] Lam, T., Lapointe, L., Morse, J., & Shimozono, M. (2013). `The poset of k-shapes and branching rules for k-Schur functions <http://breakfreerun.org/index.php/ebooks/the-poset-of-k-shapes-and-branching-rules-for-k-schur-functions>`_. Memoirs of the American Mathematical Society, 223(1050), 1-113. DOI: 10.1090/S0065-9266-2012-00655-1
+
+"""
 from sage.all import *
 
 # HELPERS (only exist as helper functions for other things):
@@ -11,7 +19,7 @@ def is_strictly_decreasing(li):
 
 # SkewPartition stuff
 def right(sp, row_index):
-    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *rightmost* cell in the corresponding row.
+    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *rightmost* cell in the corresponding row.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -29,7 +37,7 @@ def right(sp, row_index):
     return col_index
 
 def left(sp, row_index):
-    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *leftmost* cell in the corresponding row.
+    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *leftmost* cell in the corresponding row.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -51,7 +59,7 @@ def left(sp, row_index):
     return col_index
 
 def top(sp, col_index):
-    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *topmost* cell in the corresponding column.
+    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *topmost* cell in the corresponding column.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -65,7 +73,7 @@ def top(sp, col_index):
     return right(sp.conjugate(), col_index)
 
 def bottom(sp, col_index):
-    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *bottommost* cell in the corresponding column.
+    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *bottommost* cell in the corresponding column.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -121,9 +129,11 @@ def row_col_to_skew_partition(rs, cs):
 
 def k_boundary_to_partition(sp, k=None, strict=True):
     """
-    Given a `k`-boundary `sp` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.
+    Given a `k`-boundary `sp` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.  (For definition of `k`-boundary, see Section 2.2 of [mem]_)
 
     If strict is set to True, the program will assert that the skew-shape really is a `k`-boundary.
+
+    TODO: test
 
     EXAMPLES::
 
@@ -142,9 +152,11 @@ def k_boundary_to_partition(sp, k=None, strict=True):
 
 def is_k_boundary(sp, k=None):
     """
-    Given a skew-shape `sp` and natural number `k`, return True iff `sp` is a `k`-boundary.
+    Given a skew-shape `sp` and natural number `k`, return True iff `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
 
     Given a skew-shape `sp` *only*, return True iff there exists some `k` such that `sp` is a `k`-boundary.
+
+    TODO: test
 
     EXAMPLES::
 

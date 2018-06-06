@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Sage has a builtin `Partition <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/partition.html>`_ object.  *This* module adds extra useful functions for partitions:
+"""
 from sage.all import *
 
 # HELPERS
@@ -10,7 +13,7 @@ def k_rectangle_dimension_list(k):
 def boundary(ptn):
     """ The boundary of a partition is the set `\\{ \\text{NE}(d) \\mid \\forall d\\:\\text{diagonal} \\}`.  That is, for every diagonal line `y = x + b` where `b \\in \\mathbb{Z}`, we find the northeasternmost (NE) point on that diagonal which is also in the Ferrer's diagram (here, the Ferrer's diagram is interpreted as 1 x 1 cells in the Euclidean plane).
 
-    The boundary will go from bottom-right to top-left in the French notation.
+    The boundary will go from bottom-right to top-left in the French convention.
 
     EXAMPLES::
 
@@ -43,9 +46,9 @@ def boundary(ptn):
     return bdy
 
 def k_rim(ptn, k):
-    """ The `k`-rim of a partition is the "line between" (or "intersection of") the `k`-boundary and the `k`-interior.
+    """ The `k`-rim of a partition is the "line between" (or "intersection of") the `k`-boundary and the `k`-interior.  (Section 2.3 of [genocchi]_)
 
-    It will be outputted as an ordered list of integer coordinates, where the origin is `(0,0)`.  It will start at the top-left of the `k`-rim (under French depiction) and end at the bottom-right.
+    It will be outputted as an ordered list of integer coordinates, where the origin is `(0,0)`.  It will start at the top-left of the `k`-rim (using French convention) and end at the bottom-right.
 
     EXAMPLES::
 
@@ -69,7 +72,7 @@ def k_rim(ptn, k):
     return rim
 
 def k_row_lengths(ptn, k):
-    """ Given a partition, return it's `k`-row-shape.  This is equivalent to taking the `k`-boundary of the partition and then returning the row-shape of that.  We do *not* discard rows of length 0.
+    """ Given a partition, return it's `k`-row-shape.  This is equivalent to taking the `k`-boundary of the partition and then returning the row-shape of that.  We do *not* discard rows of length 0.  (Section 2.2 of [mem]_)
 
     EXAMPLES::
 
@@ -82,7 +85,7 @@ def k_row_lengths(ptn, k):
     return ptn.k_boundary(k).row_lengths()
 
 def k_column_lengths(ptn, k):
-    """ Given a partition, return it's `k`-column-shape.  This is the 'column' analog of k_row_lengths.
+    """ Given a partition, return it's `k`-column-shape.  This is the 'column' analog of :meth:`k_row_lengths`.
 
     EXAMPLES::
 
@@ -109,7 +112,7 @@ def has_k_rectangle(ptn, k):
     return any(has_rectangle(ptn, a, b) for (a, b) in k_rectangle_dimension_list(k))
 
 def is_k_bounded(ptn, k):
-    """ Returns True iff the partition is bounded by k.
+    """ Returns True iff the partition is bounded by `k`.
 
     EXAMPLES::
 
@@ -128,7 +131,7 @@ def is_k_bounded(ptn, k):
     return least_upper_bound <= k
 
 def is_k_reducible(ptn, k):
-    """ A `k`-bounded partition is `k`-*reducible* if it's Ferrer's diagram contains `k-i+1` rows (or more) of length `i` (exactly) for any `i` in `[1, k]`.
+    """ A `k`-bounded partition is `k`-*reducible* if it's Ferrer's diagram contains `k-i+1` rows (or more) of length `i` (exactly) for some `i \\in [1, k]`.
 
     (Also, a `k`-bounded partition is `k`-reducible iff it is not `k`-irreducible.)
 
@@ -147,7 +150,7 @@ def is_k_reducible(ptn, k):
     return has_k_rectangle(ptn, k)
 
 def is_k_irreducible(ptn, k):
-    """ A `k`-bounded partition is `k`-*irreducible* if it's Ferrer's diagram does *not* contain `k-i+1` rows (or more) of length `i` (exactly) for every `i` in `[1, k]`.
+    """ A `k`-bounded partition is `k`-*irreducible* if it's Ferrer's diagram does *not* contain `k-i+1` rows (or more) of length `i` (exactly) for every `i \\in [1, k]`.
 
     (Also, a `k`-bounded partition is `k`-irreducible iff it is not `k`-reducible.)
 
@@ -163,7 +166,7 @@ def is_k_irreducible(ptn, k):
     return not is_k_reducible(ptn, k)
 
 def is_symmetric(ptn):
-    """Given a partition λ, detect if λ = λ'.
+    """Given a partition λ, detect if λ equals its own transpose.
 
     EXAMPLES::
 
@@ -185,7 +188,7 @@ def next(p, min=[], max=None, type=None):
     # ptn: The Partition.
     # min: The 'minimum partition' that next_advanced(ptn) must contain.
     # max: The 'maximum partition' that next_advanced(ptn) must be contained in.
-    # type: The type of partitions allowed.  For example, 'strictly decreasing'.
+    # type: The type of partitions allowed.  For example, 'strict' for strictly decreasing.
     # make sure min <= p <= max
     if max is not None:
         assert Partition(max).contains(Partition(p))
@@ -205,9 +208,9 @@ def next(p, min=[], max=None, type=None):
     # finally, run the algo to find next_p
     next_p = copy(p)
     def condition(a, b):
-        if type == 'strictly decreasing':
+        if type in ('strict', 'strictly decreasing'):
             return a < b - 1
-        elif type is None:
+        elif type in (None, 'weak', 'weakly decreasing'):
             return a < b
         else:
             raise ValueError('Unrecognized partition type.')

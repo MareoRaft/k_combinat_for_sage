@@ -12,7 +12,8 @@ MorseCode for Sage Documentation!
 
    partition
    skew_partition
-
+   k_shape
+   root_ideal
 
 Indices and tables
 ==================

@@ -303,23 +303,23 @@ a(down_path(root_ideal, 4), [4])
 a(down_path(root_ideal, 5), [5])
 
 
-# test_down_path_partition_sum
+# test_down_path_column_lengths_part
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
 root_ideal = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
 ptn = [7, 6, 5, 2, 2, 2]
-a(down_path_partition_sum(root_ideal, ptn, 0), 15)
-a(down_path_partition_sum(root_ideal, ptn, 1), 8)
-a(down_path_partition_sum(root_ideal, ptn, 2), 7)
-a(down_path_partition_sum(root_ideal, ptn, 3), 4)
-a(down_path_partition_sum(root_ideal, ptn, 4), 2)
-a(down_path_partition_sum(root_ideal, ptn, 5), 2)
+a(down_path_column_lengths_part(root_ideal, ptn, 0), 15)
+a(down_path_column_lengths_part(root_ideal, ptn, 1), 8)
+a(down_path_column_lengths_part(root_ideal, ptn, 2), 7)
+a(down_path_column_lengths_part(root_ideal, ptn, 3), 4)
+a(down_path_column_lengths_part(root_ideal, ptn, 4), 2)
+a(down_path_column_lengths_part(root_ideal, ptn, 5), 2)
 
 
-# test_down_path_partition
+# test_down_path_column_lengths
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
 root_ideal = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
 ptn = [7, 6, 5, 2, 2, 2]
-a(down_path_partition(root_ideal, ptn), [15, 7, 4, 2])
+a(down_path_column_lengths(root_ideal, ptn), [15, 7, 4, 2])
 
 
 # test_root_ideal_to_partition
@@ -342,22 +342,22 @@ n = 6
 a(partition_to_root_ideal(p, n), [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
 
 
-# test_is_rational_root_ideal
+# test_is_strict
 ri = []
-a(is_rational_root_ideal(ri), True)
+a(is_strict(ri), True)
 
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
 ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-a(is_rational_root_ideal(ri), False)
+a(is_strict(ri), False)
 
 ri = [(0,1), (0,2), (0,3), (0,4), (0,5)]
-a(is_rational_root_ideal(ri), True)
+a(is_strict(ri), True)
 
 ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), (3,4), (3,5)]
-a(is_rational_root_ideal(ri), True)
+a(is_strict(ri), True)
 
 ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), (3,4), (3,5), (4,5)]
-a(is_rational_root_ideal(ri), True)
+a(is_strict(ri), True)
 
 
 # test_boundary
@@ -746,48 +746,48 @@ k = 3
 a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 
-# test_kS.is_k_reducible2
+# test_kS.is_reducible2
 s = Partition([1])
 k = 1
-a(kS.is_k_reducible2(s, k), True)
+a(kS.is_reducible2(s, k), True)
 
 s = Partition([2, 1])
 k = 1
-a(kS.is_k_reducible2(s, k), True)
+a(kS.is_reducible2(s, k), True)
 
 s = Partition([1, 1])
 k = 2
-a(kS.is_k_reducible2(s, k), True)
+a(kS.is_reducible2(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 2
-a(kS.is_k_reducible2(s, k), True)
+a(kS.is_reducible2(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 3
-a(kS.is_k_reducible2(s, k), True)
+a(kS.is_reducible2(s, k), True)
 
 s = Partition([3, 2, 1])
 k = 3
-a(kS.is_k_reducible2(s, k), True)
+a(kS.is_reducible2(s, k), True)
 
 s = Partition([5, 3, 2, 1, 1])
 k = 4
-a(kS.is_k_reducible2(s, k), False)
+a(kS.is_reducible2(s, k), False)
 
 s = Partition([5, 4, 2, 2, 1])
 k = 4
-a(kS.is_k_reducible2(s, k), False)
+a(kS.is_reducible2(s, k), False)
 
 
-# test_get_k_irreducible_k_shapes
-ptns = get_k_irreducible_k_shapes(1)
+# test_k_to_irreducible_k_shapes
+ptns = k_to_irreducible_k_shapes(1)
 a(ptns, [[]])
 
-ptns = get_k_irreducible_k_shapes(2)
+ptns = k_to_irreducible_k_shapes(2)
 a(ptns, [[]])
 
-ptns = get_k_irreducible_k_shapes(3)
+ptns = k_to_irreducible_k_shapes(3)
 a(ptns, [[], [1], [2, 1]])
 
 

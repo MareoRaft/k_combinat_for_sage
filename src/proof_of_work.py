@@ -81,10 +81,10 @@ assert seq == [1, 1, 3, 6, 13, 24, 46, 81, 143, 243] # I think we should submit 
 
 
 # 9. Given k, find all k-irreducible-k-shapes.
-ptns = get_k_irreducible_k_shapes(3)
+ptns = k_to_k_irreducible_k_shapes(3)
 assert ptns == [[], [1], [2, 1]]
 # There should be Genocchi many
-seq = [len(get_k_irreducible_k_shapes(k)) for k in range(1, 5)]
+seq = [len(k_to_k_irreducible_k_shapes(k)) for k in range(1, 5)]
 assert seq == [1, 1, 3, 17]
 
 
