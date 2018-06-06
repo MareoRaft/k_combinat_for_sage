@@ -6,8 +6,6 @@ REFERENCES:
 
 .. [cat] `Catalan functions and k-schur positivity <https://arxiv.org/abs/1804.03701>`_
 .. [scat] Skew-linked Catalan functions and k-schur positivity.  Jonah Blasiak, Jennifer Morse, Anna Pun, and Daniel Summers.  Not to be confused with 'Catalan functions and k-schur positivity.'
-
-
 """
 from sage.all import *
 import partition as P

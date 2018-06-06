@@ -5,7 +5,6 @@ Sage has a builtin `SkewPartition <https://doc.sagemath.org/html/en/reference/co
 REFERENCES:
 
 .. [mem] Lam, T., Lapointe, L., Morse, J., & Shimozono, M. (2013). `The poset of k-shapes and branching rules for k-Schur functions <http://breakfreerun.org/index.php/ebooks/the-poset-of-k-shapes-and-branching-rules-for-k-schur-functions>`_. Memoirs of the American Mathematical Society, 223(1050), 1-113. DOI: 10.1090/S0065-9266-2012-00655-1
-
 """
 from sage.all import *
 

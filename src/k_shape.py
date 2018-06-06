@@ -7,7 +7,6 @@ REFERENCES:
 .. [genocchi] `Combinatorics of k-shapes and Genocchi numbers <https://www.lri.fr/~hivert/PAPER/kshapes.pdf>`_, in FPSAC 2011, Reykjav´k, Iceland DMTCS proc. AO, 2011, 493-504.
 
 """
-
 from sage.all import *
 from partition import *
 import skew_partition as SP
