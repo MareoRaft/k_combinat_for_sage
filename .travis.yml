@@ -13,6 +13,7 @@ script:
 - echo "$src_files"
 - |
   for file_path in src_files; do
+    echo " "
     echo "$file_path"
     cat "$file_path" | grep import
     cat "$file_path" | sed 's/from sage\.all import \*//g' | grep import
