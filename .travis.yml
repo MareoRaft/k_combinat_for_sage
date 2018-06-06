@@ -19,7 +19,7 @@ script:
     cat "$file_path" | sed 's/from sage\.all import \*//g' | grep import
     cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path"
     cat "$file_path" | grep import
-done
+  done
 - cd ..
 - pwd
 - cd docs
@@ -29,7 +29,7 @@ done
 - mv build/html/* .
 - # include .nojekyll (see https://help.github.com/articles/files-that-start-with-an-underscore-are-missing/)
 - touch .nojekyll
-- ls
+- ls -a
 deploy:
   provider: pages
   skip_cleanup: true

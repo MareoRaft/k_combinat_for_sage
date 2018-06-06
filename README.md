@@ -2,6 +2,13 @@
 
 Code for Jennifer Morse.
 
+## Quicklinks
+
+  * [Documentation](https://mareoraft.github.io/morse-code/)
+  * [proof of work](https://github.com/MareoRaft/morse-code/blob/master/src/proof_of_work.py)
+
+## Overview
+
 I am working with [Jennifer Morse](http://math.virginia.edu/people/jlm6cj/) over the summer (and probably for a few years).  I am writing code with the goal of getting it added to the Sagemath project.  This code computes combinatorial things such as
 
   * k-boundaries
@@ -15,6 +22,7 @@ I am working with [Jennifer Morse](http://math.virginia.edu/people/jlm6cj/) over
 etc.
 
 ## build
+
 To build the documentation, comment out all sage-specific imports (such as `from sage.all import *`), cd into `doc` folder, and run:
 
     make html
