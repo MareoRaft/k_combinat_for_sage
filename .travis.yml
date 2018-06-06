@@ -8,7 +8,7 @@ script:
 - pwd
 - cd src
 - pwd
-- # comment out sage imports (workaround)
+- # comment-out/delete sage imports (workaround)
 - src_files=$(ls -R | grep ".py$")
 - echo "$src_files"
 - |
