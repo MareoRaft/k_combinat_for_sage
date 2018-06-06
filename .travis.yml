@@ -1,5 +1,5 @@
 sudo: required
-language: python # Python will be pre-installed on server thanks to this
+language: python # python will be pre-installed on server thanks to this
 python:
 - "2.7"
 script:
