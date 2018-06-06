@@ -9,7 +9,7 @@ script:
 - cd src
 - pwd
 - # comment out sage imports (workaround)
-- src_files=$(ls **/* | grep ".py$")
+- src_files=$(ls -R | grep ".py$")
 - echo "$src_files"
 - |
   for file_path in src_files; do
