@@ -4,15 +4,16 @@ python:
 - "2.7"
 script:
 - pwd
-- cd doc
+- cd docs
 - pwd
 - make html
-- # move html files into place if necessary
+- # move html files into place
+- mv build/html/* .
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_API_KEY # see settings in Travis
-  local_dir: doc/build/html
+  local_dir: docs
   on:
     branch: master
 
