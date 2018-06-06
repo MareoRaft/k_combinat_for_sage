@@ -29,7 +29,6 @@ def is_k_shape(ptn, k):
         False
         sage: is_k_shape(Partition([3, 1]), 2)
         True
-
     """
     if k is None:
         # see if it's a k-shape for any k in [1, n-1].
