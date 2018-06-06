@@ -13,7 +13,7 @@ script:
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $GITHUB_API_KEY # see settings in Travis
+  github_token: $GITHUB_API_KEY # I think you need to create this key following the steps in "".  If this doesn't work, then I think you need to ALSO encrypt it following https://docs.travis-ci.com/user/environment-variables#Defining-encrypted-variables-in-.travis.yml
   local_dir: docs
   on:
     branch: master
