@@ -12,7 +12,7 @@ script:
 - src_files=$(ls -R | grep ".py$")
 - echo "$src_files"
 - |
-  for file_path in src_files; do
+  for file_path in "$src_files"; do
     echo " "
     echo "$file_path"
     cat "$file_path" | grep import
