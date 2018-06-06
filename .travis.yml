@@ -8,6 +8,12 @@ script:
 - pwd
 - cd docs
 - pwd
+- # comment out sage imports (workaround)
+- src_files=$(ls ../src/**/* | grep ".py$")
+- |
+  for file_path in src_files; do
+    cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path"
+  done
 - make html
 - # move html files into place
 - mv build/html/* .
