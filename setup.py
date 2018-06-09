@@ -1,8 +1,8 @@
 from distutils.core import setup
 
 setup(
-	name='morse_code',
-	packages=['morse_code'], # must be same as name above
+	name='morse-code',
+	packages=['morse-code'], # must be same as name above
 	version='0.0.1',
 	description='Code for Jennifer Morse to be used with SageMath',
 	author='Matthew Lancellotti',
