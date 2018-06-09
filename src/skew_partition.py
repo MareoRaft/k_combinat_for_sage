@@ -17,6 +17,13 @@ def is_strictly_decreasing(li):
 
 
 # SkewPartition stuff
+def is_symmetric(sp):
+    """ A SkewPartition is *symmetric* if its inner and outer shapes are symmetric.
+
+    Returns True iff the SkewPartition `sp` is equal to its own conjugate.
+    """
+    return sp == sp.conjugate()
+
 def right(sp, row_index):
     """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *rightmost* cell in the corresponding row.  (Section 2.1 of [mem]_)
 

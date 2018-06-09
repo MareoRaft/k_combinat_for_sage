@@ -75,12 +75,74 @@ def n_to_k_shape_boundaries(n, k):
     """ Given n, find all k-boundaries of all k-shapes of size n. """
     return [ptn.k_boundary(k) for ptn in Partitions(n) if is_k_shape(ptn, k)]
 
-def n_to_self_conjugate_k_shape_boundaries(n, k):
+def n_to_symmetric_k_shape_boundaries(n, k):
     k_shape_boundaries = n_to_k_shape_boundaries(n, k)
-    return [ks for ks in k_shape_boundaries if ks == ks.conjugate()]
+    return [ks for ks in k_shape_boundaries if kS.is_symmetric(ks)]
 
-def n_to_num_self_conjugate_k_shape_boundaries(n, k):
-    return len(n_to_self_conjugate_k_shape_boundaries(n, k))
+def n_to_num_symmetric_k_shape_boundaries(n, k):
+    return len(n_to_symmetric_k_shape_boundaries(n, k))
+
+
+
+
+
+
+## Compositional hall-littlewood polynomials and more
+# def hall_littlewood_vertex_function_base(m, input_, base_ring=QQ):
+#     assert m == ZZ(m)
+#     # add 't' to ring and bless t variable
+#     base_ring = base_ring['t']
+#     t = base_ring.gen()
+#     sym = SymmetricFunctions(base_ring)
+#     h = sym.h()
+#     e = sym.e()
+#     def summand(i, j, input_):
+#         h_a = h([m + i + j])
+#         step1 = input_.skew_by(h[j])
+#         step2 = step1.skew_by(e[i])
+#         step3 = step2 * (-1)**i * t**j * h_a
+#         return step3
+#     i_max = 99
+#     j_max = 99
+#     return sum(summand(i, j, input_) for i in range(0, i_max+1) for j in range(0, j_max+1))
+# def hall_littlewood_vertex_function(ptn, input_, base_ring=QQ):
+#     # base cases
+#     if isinstance(ptn, int):
+#         return hall_littlewood_vertex_function_base(ptn, input_, base_ring)
+#     if len(ptn) == 0:
+#         return input_
+#     if len(ptn) == 1:
+#         return hall_littlewood_vertex_function_base(ptn[0], input_, base_ring)
+#     # inductive step
+#     for part in reversed(ptn):
+#         input_ = hall_littlewood_vertex_function_base(part, input_, base_ring)
+#     return input_
+# # def hall_littlewood_vertex_operator(ptn, base_ring=QQ):
+# #     """
+# #     base_ring: the base ring to build the SymmetricFunctions upon.
+
+# #     see p.14 of [cat]_.
+# #     """
+# #     return lambda input_: hall_littlewood_vertex_function(ptn, input_, base_ring)
+# class HallLittlewoodVertexOperator:
+#     """
+#     base_ring: the base ring to build the SymmetricFunctions upon.
+
+#     see p.14 of [cat]_.
+#     """
+#     def __init__(self, ptn, base_ring=QQ):
+#         self.ptn = ptn
+#         self.base_ring = base_ring
+
+#     def __call__(self, input_):
+#         # hall_littlewood_vertex_operator
+#         return hall_littlewood_vertex_function(self.ptn, input_, self.base_ring)
+
+
+
+
+
+
 
 
 

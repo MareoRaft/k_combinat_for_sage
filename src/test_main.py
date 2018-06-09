@@ -8,6 +8,30 @@ from main import *
 print('Sage loaded.  Testing...')
 
 
+
+# test_SP_is_symmetric
+sp = SkewPartition([[], []])
+b = SP.is_symmetric(sp)
+a(b, True)
+
+sp = SkewPartition([[1], []])
+b = SP.is_symmetric(sp)
+a(b, True)
+
+sp = SkewPartition([[4,3,3,1], [1]])
+b = SP.is_symmetric(sp)
+a(b, True)
+
+sp = SkewPartition([[4,3,3,1], [1,1]])
+b = SP.is_symmetric(sp)
+a(b, False)
+
+sp = SkewPartition([[5,3,3,1], [2,2]])
+b = SP.is_symmetric(sp)
+a(b, False)
+
+
+
 # test_right
 sp = SkewPartition([[1], []])
 c = SP.right(sp, 0)
@@ -897,6 +921,20 @@ p = [2, 1]
 n = 4
 k = 5
 a(partition_to_k_Schur_root_ideal(p, k, n), [])
+
+
+# test hall littlewood verter op
+# Sym = SymmetricFunctions(QQ['t'])
+# gamma = Partition([2])
+# hop = HallLittlewoodVertexOperator(gamma)
+# one = Sym.one()
+# hl_poly_maybe = hop(one)
+# print(hl_poly_maybe)
+# hl_poly = Sym.hall_littlewood()([2])
+# print(h1_poly)
+
+
+
 
 
 
