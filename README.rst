@@ -12,6 +12,22 @@ Quicklinks
   * `proof of work <https://github.com/MareoRaft/morse-code/blob/master/src/proof_of_work.py>`_
 
 
+Contents
+---------------
+
+This code computes combinatorial things such as
+
+  * k-boundaries
+  * k-rim
+  * k-shape partitions
+  * skew-linked diagrams
+  * k-irreducible partitions
+  * k-irreducible-k-shapes
+  * root ideals
+
+etc.  For a full list of functions, read the documentation.
+
+
 Install
 ---------------
 ::
@@ -49,30 +65,3 @@ Finally, you can run your file with sage::
 	$ sage myscript.py
 	it's symmetric, boogie woogie woogie!
 
-
-Overview
----------------
-
-This code computes combinatorial things such as
-
-  * k-boundaries
-  * k-rim
-  * k-shape partitions
-  * skew-linked diagrams
-  * k-irreducible partitions
-  * k-irreducible-k-shapes
-  * root ideals
-
-etc.
-
-
-build
----------------
-
-To build the documentation, comment out all sage-specific imports (such as `from sage.all import *`), cd into `doc` folder, and run::
-
-	make html
-
-our config file `doc/source/conf.py` may try to be similar to the official sage config file `src/doc/common/conf.py`.  Documentation can contain mathjax using backticks, for example, `\\sum \\frac{h}{l}`.
-
-To automatically generate for gh pages, try "https://gist.github.com/brantfaircloth/791759" or "https://github.com/sphinx-doc/sphinx/issues/3382" or "https://daler.github.io/sphinxdoc-test/includeme.html"
