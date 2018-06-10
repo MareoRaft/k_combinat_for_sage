@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 name = 'k_combinat_for_sage'
-version = '0.0.1'
+version = '0.0.7'
 url = 'https://github.com/mareoraft/{name}'.format(name=name)
 download_url = '{url}/archive/{tag}.tar.gz'.format(url=url, tag=version)
 

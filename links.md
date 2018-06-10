@@ -94,3 +94,10 @@ https://peterdowns.com/posts/first-time-with-pypi.html
 , now trying
 https://stackoverflow.com/questions/45207128/failed-to-upload-packages-to-pypi-410-gone/45209514#45209514
 
+
+
+
+
+
+python setup.py sdist
+twine upload dist/*
