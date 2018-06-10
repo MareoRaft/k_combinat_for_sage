@@ -35,3 +35,10 @@ To build the documentation, comment out all sage-specific imports (such as `from
 our config file `doc/source/conf.py` may try to be similar to the official sage config file `src/doc/common/conf.py`.  Documentation can contain mathjax using backticks, for example, `\\sum \\frac{h}{l}`.
 
 To automatically generate for gh pages, try "https://gist.github.com/brantfaircloth/791759" or "https://github.com/sphinx-doc/sphinx/issues/3382" or "https://daler.github.io/sphinxdoc-test/includeme.html"
+
+misc
+--------------
+Trying to add repo to PyPI.  First tried
+https://peterdowns.com/posts/first-time-with-pypi.html
+, now trying
+https://stackoverflow.com/questions/45207128/failed-to-upload-packages-to-pypi-410-gone/45209514#45209514

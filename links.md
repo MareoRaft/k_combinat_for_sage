@@ -73,3 +73,24 @@ Planning to go with (1) because it seems consistent with what I'm seeing: In the
 Questions
 -----------
 I think a lot of these objects will be SkewPartitions or ferrers diagrams, but then should have a .to_hook_length_SkewTableau method which gives you back the shape with hook lengths filled in.
+
+
+build
+---------------
+
+To build the documentation, comment out all sage-specific imports (such as `from sage.all import *`), cd into `doc` folder, and run::
+
+	make html
+
+our config file `doc/source/conf.py` may try to be similar to the official sage config file `src/doc/common/conf.py`.  Documentation can contain mathjax using backticks, for example, `\\sum \\frac{h}{l}`.
+
+To automatically generate for gh pages, try "https://gist.github.com/brantfaircloth/791759" or "https://github.com/sphinx-doc/sphinx/issues/3382" or "https://daler.github.io/sphinxdoc-test/includeme.html"
+
+
+listing in PyPI
+------------------
+Trying to add repo to PyPI.  First tried
+https://peterdowns.com/posts/first-time-with-pypi.html
+, now trying
+https://stackoverflow.com/questions/45207128/failed-to-upload-packages-to-pypi-410-gone/45209514#45209514
+
