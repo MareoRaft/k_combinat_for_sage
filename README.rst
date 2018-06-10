@@ -44,7 +44,7 @@ Put your code in a file such as `myscript.py`.  Import all the functions with::
 and then use functions at will, such as::
 
 	sp = SkewPartition([[4,3,3,1], [1]])
-	if SP.is_symmetric(sp):
+	if is_symmetric(sp):
 		print "it's symmetric, boogie woogie woogie!"	
 	
 Alternatively, you can import each module you need under a name of your choice::
