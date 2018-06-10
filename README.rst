@@ -8,8 +8,8 @@ k-Schur and other "k-math-objects" for combinatorics.  This code is meant to be 
 Quicklinks
 --------------
 
-  * `Documentation <https://mareoraft.github.io/morse-code/>`_
-  * `proof of work <https://github.com/MareoRaft/morse-code/blob/master/src/proof_of_work.py>`_
+  * `documentation <https://mareoraft.github.io/k_combinat_for_sage/>`_
+  * `proof of work <https://github.com/MareoRaft/k_combinat_for_sage/blob/master/src/proof_of_work.py>`_
 
 
 Contents
@@ -40,20 +40,20 @@ Usage
 Put your code in a file such as `myscript.py`.  Import all the functions with::
 
 	from k_combinat_for_sage.all import *
-	
+
 and then use functions at will, such as::
 
 	sp = SkewPartition([[4,3,3,1], [1]])
 	if is_symmetric(sp):
-		print "it's symmetric, boogie woogie woogie!"	
-	
+		print "it's symmetric, boogie woogie woogie!"
+
 Alternatively, you can import each module you need under a name of your choice::
 
 	from k_combinat_for_sage import partition as P
 	from k_combinat_for_sage import skew_partition as SP
 	from k_combinat_for_sage import k_shape as kS
 	from k_combinat_for_sage import root_ideal as RI
-	
+
 and then use functions appropriately.  For example::
 
 	sp = SkewPartition([[4,3,3,1], [1]])
