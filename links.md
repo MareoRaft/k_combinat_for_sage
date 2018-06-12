@@ -40,6 +40,7 @@ things that definitely exist in sage
   * k_conjugate (whatever that is)
   * k_atom
   * k_split
+  * hl_creation_operator(nu, t=None) -- supposedly more general than Jing's Hall Littlewood operators!  However, I believe they may *not* be Garsia's variant!  Reading https://core.ac.uk/download/pdf/82361294.pdf. "If k=1, this is Garsia's version of JHLVO".
 
 
 things mentioned in sage (and might exist)
@@ -51,7 +52,7 @@ things mentioned in sage (and might exist)
 
 things that definitely do not exist in sage
 -------------------------------------------
-  * 
+  *
 
 
 
@@ -106,4 +107,28 @@ instructions:
   6. twine upload dist/*
 
 detailed instructions here: https://packaging.python.org/tutorials/packaging-projects/
+
+
+https://doc.sagemath.org/html/en/thematic_tutorials/tutorial-implementing-algebraic-structures.html
+read also:
+https://doc.sagemath.org/html/en/thematic_tutorials/coercion_and_categories.html#coercion-and-categories
+and now
+https://doc.sagemath.org/html/en/reference/categories/sage/categories/algebras_with_basis.html#sage.categories.algebras_with_basis.AlgebrasWithBasis
+to get the generators:
+A.algebra_generators()
+a free algebra:
+sage.categories.examples.algebras_with_basis.FreeAlgebra_with_category
+sage.categories.examples.algebras_with_basis.FreeAlgebra(R, alphabet=('a', 'b', 'c'))
+
+magmatic:
+C = sage.categories.magmatic_algebras.MagmaticAlgebras.WithBasis(QQ)
+
+there is also a plain ole 'FreeAlgebra' category in sage.all
+See :mod:`~sage.algebras.free_algebra` for examples and corner cases.
+
+
+we need to figure out how to make a direct sum in sage.  It may be overfill, but we could always use CombinatorialFreeModule again, this time in the category of groups or modules, with basis [0, 1, 2, 3, 4, ...] and over the ring ZZ.
+
+That would give just what we want.
+
 
