@@ -9,7 +9,7 @@ Quicklinks
 --------------
 
   * `documentation <https://mareoraft.github.io/k_combinat_for_sage/>`_
-  * `proof of work <https://github.com/MareoRaft/k_combinat_for_sage/blob/master/src/proof_of_work.py>`_
+  * `proof of work <https://github.com/MareoRaft/k_combinat_for_sage/blob/master/k_combinat_for_sage/proof_of_work.py>`_
 
 
 Contents

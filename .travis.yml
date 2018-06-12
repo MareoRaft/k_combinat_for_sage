@@ -6,7 +6,7 @@ python:
 - "2.7"
 script:
 - pwd
-- cd src
+- cd k_combinat_for_sage
 - pwd
 - # comment-out/delete sage imports (workaround)
 - src_files=$(ls -R | grep ".py$")
