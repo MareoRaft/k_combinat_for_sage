@@ -990,6 +990,8 @@ TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R(), R(0))
 a(R((1, -1)) * R((0, 1, 0, -1)), R((1, 0, 0, -1)))
+# create 'R_ij' element
+a(R.ij(1, 3), R((0, 1, 0, -1)))
 # retrieve indecis
 a(R((1, -1)).indecis(), [(1, -1)])
 a((R((1, -1)) + 2 * R((1, 0, -1))).indecis(), [(1, -1), (1, 0, -1)])

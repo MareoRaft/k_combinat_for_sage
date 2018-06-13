@@ -132,3 +132,19 @@ we need to figure out how to make a direct sum in sage.  It may be overfill, but
 That would give just what we want.
 
 
+A workaround for sphinx import errors (NEVERMIND.  IT STILL TRIES TO IMPORT SAGE).  Create a file called sage_imports.  Import all sage things in THAT file.  Other files simply
+from sage_imports import *
+This would fool sphinx since sage_imports is in the project. NEVERMIND.  IT STILL TRIES TO IMPORT SAGE
+
+new idea, have a fake imports file that defines each of the variables:
+"
+class UniqueRepresentation:
+	pass
+class ZZ:
+	pass
+"
+and see if it fools sphinx.
+
+
+
+

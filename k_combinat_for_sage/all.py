@@ -224,7 +224,9 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
     R((1, 0, -1)) is the raising operator that raises the first part by 1 and lowers the third part by 1.
 
-    If you do NOT want any restrictions on the allowed sequences, use ShiftingOperatorAlgebra instead.
+    For a definition of raising operators, see [cat]_ Definition 2.1, but be wary that the notation is different there.  See :meth:`ij` for a way to create operators using the notation in the paper.
+
+    If you do NOT want any restrictions on the allowed sequences, simply use 'ShiftingOperatorAlgebra' instead of 'RaisingOperatorAlgebra'.
 
     OPTIONAL ARGUMENTS:
     - ``base_ring`` -- (default ``QQ['t']``) the ring you will use on the raising operators.
@@ -236,11 +238,11 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         sage: s = SymmetricFunctions(QQ['t']).s()
         sage: h = SymmetricFunctions(QQ['t']).h()
 
-        sage: R((1,-1))
+        sage: R((1, -1))
         R(1, -1)
-        sage: R((1,-1))(s[5,4])
+        sage: R((1, -1))(s[5, 4])
         s[6, 3]
-        sage: R((1,-1))(h[5,4])
+        sage: R((1, -1))(h[5, 4])
         h[6, 3]
 
         sage: (1 - R((1,-1))) * (1 - R((0,1,-1)))
@@ -253,6 +255,22 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
             base_ring=base_ring,
             prefix=prefix,
             basis_indecis=RaisingSequenceSpace())
+
+    def ij(self, i, j):
+        """ Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indecis here are 0-based, not 1-based.
+
+        EXAMPLE::
+
+            # create the raising operator which raises part 0 and lowers part 2 (indecis are 0-based)
+            sage: R.ij(0, 2)
+            R((1, 0, -1))
+
+        """
+        seq = [0] * (max(i, j) + 1)
+        seq[i] = 1
+        seq[j] = -1
+        seq = tuple(seq)
+        return self._element_constructor_(seq)
 
 
 def straighten(s, gamma):
@@ -367,17 +385,10 @@ def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
     t = base_ring.gen()
     def prod(iterable):
         return reduce(R.Element._mul_, iterable, R.one())
-    def ij_to_seq(ij):
-        (i, j) = ij
-        seq = [0] * (max(i, j) + 1)
-        seq[i] = 1
-        seq[j] = -1
-        return tuple(seq)
     # formula
     n = len(index)
     ri_complement = RI.complement(ri, n)
-    ri_complement_seq = [ij_to_seq(ij) for ij in ri_complement]
-    op = prod([1 - t*R(seq) for seq in ri_complement_seq])
+    op = prod([1 - t*R.ij(ij) for ij in ri_complement])
     cat_func = op(hl(index))
     return cat_func
 
