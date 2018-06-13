@@ -3,9 +3,9 @@
 This module contains all functionalities that are not already organized into the other files.  New functionalities written to the library often appear here, and eventually get organized into separate files.
 """
 from sage.all import *
-from sage.structure.unique_representation import UniqueRepresentation
-from sage.structure.parent import Parent
-from sage.categories.infinite_enumerated_sets import InfiniteEnumeratedSets
+# from sage.structure.unique_representation import UniqueRepresentation
+# from sage.structure.parent import Parent
+# from sage.categories.infinite_enumerated_sets import InfiniteEnumeratedSets
 
 from partition import *
 import partition as P
@@ -81,54 +81,50 @@ def n_to_num_symmetric_k_shape_boundaries(n, k):
     return len(n_to_symmetric_k_shape_boundaries(n, k))
 
 
-
-class SequenceSpace(Parent, UniqueRepresentation):
+class ShiftingSequenceSpace():
+    # A helper for ShiftingOperatorAlgebra
     def __init__(self, base=ZZ):
         self.base = base
-        category = InfiniteEnumeratedSets()
-        Parent.__init__(self, category=category)
-    def __iter__(self):
-        first = self.base.__iter__().next()
-        return ((first,) * n for n in NN if n >= 1)
-    def __contains__(self, obj):
-        if isinstance(obj, tuple):
-            return not any(i not in self.base for i in obj)
-        else:
+        # category = InfiniteEnumeratedSets()
+        # Parent.__init__(self, category=category)
+
+    def __contains__(self, seq):
+        if not isinstance(seq, tuple):
             return False
+        return not any(i not in self.base for i in seq)
 
-class RaisingOperatorAlgebra(CombinatorialFreeModule):
-    """
-    We follow the following convention!:
+    VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base}), but instead received {seq}.'
+    def validate(self, seq):
+        if not self.__contains__(seq):
+            raise ValueError(self.VALIDATION_ERROR_MESSAGE.format(base=self.base, seq=seq))
 
-    R((1, 0, -1)) is the raising operator that raises the first part by 1 and lowers the third part by 1.
 
-    OPTIONAL ARGUMENTS:
-    - ``base_ring`` -- (default ``QQ['t']``) the ring you will use on the raising operators.
-    - ``prefix`` -- (default ``"R"``) the label for the raising operators.
+class RaisingSequenceSpace(ShiftingSequenceSpace):
+    # helper for RaisingOperatorAlgebra
+    VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base} elements, where every partial sum is nonnegative and every total sum is 0), but instead received {seq}.'
+    def __contains__(self, seq):
+        # check that it is a shifting sequence
+        if not ShiftingSequenceSpace.__contains__(self, seq):
+            return False
+        # check that every partial sum is nonnegative
+        partial_sum = 0
+        for term in seq:
+            partial_sum += term
+            if partial_sum < 0:
+                return False
+        # check that total sum is 0
+        if partial_sum != 0:
+            return False
+        # finally, succeed
+        return True
 
-    EXAMPLE::
 
-        sage: R = RaisingOperatorAlgebra()
-        sage: s = SymmetricFunctions(QQ['t']).s()
-        sage: h = SymmetricFunctions(QQ['t']).h()
-
-        sage: R((1,-1))
-        R(1, -1)
-        sage: R((1,-1))(s[5,4])
-        s[6, 3]
-        sage: R((1,-1))(h[5,4])
-        h[6, 3]
-
-        sage: (1 - R((1,-1))) * (1 - R((0,1,-1)))
-        R() - R(0, 1, -1) - R(1, -1) + R(1, 0, -1)
-        sage: ((1 - R((1,-1))) * (1 - R((0,1,-1))))(s[2, 2, 1])
-        (-3*t-2)*s[] + s[2, 2, 1] - s[3, 1, 1] + s[3, 2]
-    """
-    def __init__(self, base_ring=QQ['t'], prefix='R'):
+class ShiftingOperatorAlgebra(CombinatorialFreeModule):
+    def __init__(self, base_ring=QQ['t'], prefix='S', basis_indecis=ShiftingSequenceSpace()):
         self._prefix = prefix
         self._base_ring = base_ring
         # a single basis index looks like (1, 0, -1, 2), for example
-        self._basis_indecis = SequenceSpace()
+        self._basis_indecis = basis_indecis
         # category
         category = Algebras(self._base_ring.category()).WithBasis()
         category = category.or_subcategory(category)
@@ -142,13 +138,9 @@ class RaisingOperatorAlgebra(CombinatorialFreeModule):
             bracket=False)
 
     def __getitem__(self, seq):
-        # seq is a basis index
-        if not isinstance(seq, tuple):
-            raise ValueError('Basis indecis must be tuples.')
-        elif seq in self.basis().keys():
-            return self.basis()[seq]
-        else:
-            raise ValueError('Expected valid basis index (a tuple of integers), but instead received {index}.'.format(index=seq))
+        # seq should be a basis index
+        self._basis_indecis.validate(seq)
+        return self.basis()[seq]
 
     def _element_constructor_(self, seq):
         return self.__getitem__(seq)
@@ -159,10 +151,10 @@ class RaisingOperatorAlgebra(CombinatorialFreeModule):
         return tuple()
 
     def _repr_(self):
-        return "Raising Operator Algebra over {base_ring}".format(base_ring=self._base_ring)
+        return "Shifting Operator Algebra over {base_ring}".format(base_ring=self._base_ring)
 
     class Element(CombinatorialFreeModule.Element):
-        """ element of a RaisingOperatorAlgebra"""
+        """ element of a ShiftingOperatorAlgebra"""
         def indecis(self):
             return self.support()
 
@@ -184,9 +176,9 @@ class RaisingOperatorAlgebra(CombinatorialFreeModule):
                 for index2, coeff2 in other_index_coeff_list:
                     out_index_coeff = (index_mul(index1, index2), coeff1 * coeff2)
                     out_index_coeff_list.append(out_index_coeff)
-            ROA = RaisingOperatorAlgebra()
-            out_list = [coeff * ROA(index) for index, coeff in out_index_coeff_list]
-            out = ROA.sum(out_list)
+            R = self.parent()
+            out_list = [coeff * R(index) for index, coeff in out_index_coeff_list]
+            out = R.sum(out_list)
             return out
 
         def __call__(self, operand):
@@ -225,6 +217,43 @@ class RaisingOperatorAlgebra(CombinatorialFreeModule):
             else:
                 out = sum(coeff * mon for mon, coeff in out_list)
             return out
+
+class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
+    """
+    We follow the following convention!:
+
+    R((1, 0, -1)) is the raising operator that raises the first part by 1 and lowers the third part by 1.
+
+    If you do NOT want any restrictions on the allowed sequences, use ShiftingOperatorAlgebra instead.
+
+    OPTIONAL ARGUMENTS:
+    - ``base_ring`` -- (default ``QQ['t']``) the ring you will use on the raising operators.
+    - ``prefix`` -- (default ``"R"``) the label for the raising operators.
+
+    EXAMPLE::
+
+        sage: R = RaisingOperatorAlgebra()
+        sage: s = SymmetricFunctions(QQ['t']).s()
+        sage: h = SymmetricFunctions(QQ['t']).h()
+
+        sage: R((1,-1))
+        R(1, -1)
+        sage: R((1,-1))(s[5,4])
+        s[6, 3]
+        sage: R((1,-1))(h[5,4])
+        h[6, 3]
+
+        sage: (1 - R((1,-1))) * (1 - R((0,1,-1)))
+        R() - R(0, 1, -1) - R(1, -1) + R(1, 0, -1)
+        sage: ((1 - R((1,-1))) * (1 - R((0,1,-1))))(s[2, 2, 1])
+        (-3*t-2)*s[] + s[2, 2, 1] - s[3, 1, 1] + s[3, 2]
+    """
+    def __init__(self, base_ring=QQ['t'], prefix='R'):
+        ShiftingOperatorAlgebra.__init__(self,
+            base_ring=base_ring,
+            prefix=prefix,
+            basis_indecis=RaisingSequenceSpace())
+
 
 def straighten(s, gamma):
     """ Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).

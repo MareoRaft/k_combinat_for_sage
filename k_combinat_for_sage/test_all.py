@@ -945,40 +945,69 @@ print('Sage loaded.  Testing...')
 # test raise
 # a(raise_func(0, 1, [3, 4, 5]), [4, 3, 5])
 
+
 # seq space
-# SS = SequenceSpace()
-# print('ss')
-# print(SS)
-# print((1, -1) in SS)
-# print([1, -1] in SS)
-# print((0.5) in SS)
+S = ShiftingSequenceSpace()
+a((1, -1) in S, True)
+a((1, -1, 0, 9) in S, True)
+a((0, 1, -1, 0, 9) in S, True)
+a((1, -1, 0, 9, -9) in S, True)
+a((1, -1, 0, -9, 9) in S, True)
+a((1, 2, 1, -1, -2, 0, -1) in S, True)
+a([1, -1] in S, False)
+a((0.5,) in S, False)
+
+
+# raising sequence space
+S = RaisingSequenceSpace()
+a((1, -1) in S, True)
+a((1, -1, 0, 9) in S, False)
+a((1, -1, 0, 9, -9) in S, True)
+a((1, -1, 0, -9, 9) in S, False)
+a((1, 2, 1, -1, -2, 0, -1) in S, True)
+a([1, -1] in S, False)
+a((0.5,) in S, False)
+
+
+# test ShiftingOperatorAlgebra
+R = ShiftingOperatorAlgebra()
+TestSuite(R).run(verbose=False)
+a(R(), R())
+a(R(), R(0))
+a(R((1, 2, 1)) * R((0, 1, 0, 1)), R((1, 3, 1, 1)))
+# retrieve indecis
+a(R((1, -1)).indecis(), [(1, -1)])
+a((R((1, -1)) + 2 * R((1, 0, -1))).indecis(), [(1, -1), (1, 0, -1)])
+# retrieve index
+a(R((1,-1)).index(), (1,-1))
+# act on lists
+a(R((1,0,-3))([2,2]), [([3,2,-3], 1)])
 
 
 # test RaisingOperatorAlgebra
-ROA = RaisingOperatorAlgebra()
-TestSuite(ROA).run(verbose=False)
-a(ROA(), ROA())
-a(ROA(), ROA(0))
-a(ROA((1, 2, 1)) * ROA((0, 1, 0, 1)), ROA((1, 3, 1, 1)))
+R = RaisingOperatorAlgebra()
+TestSuite(R).run(verbose=False)
+a(R(), R())
+a(R(), R(0))
+a(R((1, -1)) * R((0, 1, 0, -1)), R((1, 0, 0, -1)))
 # retrieve indecis
-a(ROA((1, -1)).indecis(), [(1, -1)])
-a((ROA((1, -1)) + 2 * ROA((1, 0, -1))).indecis(), [(1, -1), (1, 0, -1)])
+a(R((1, -1)).indecis(), [(1, -1)])
+a((R((1, -1)) + 2 * R((1, 0, -1))).indecis(), [(1, -1), (1, 0, -1)])
 # retrieve index
-a(ROA((1,-1)).index(), (1,-1))
-
+a(R((1, -1)).index(), (1, -1))
 # act on lists
-a(ROA((1,0,-3))([2,2]), [([3,2,-3], 1)])
-
+a(R((2, 1, -1, -2))([2, 2]), [([4, 3, -1, -2], 1)])
 # act on symmetric functions
 Sym = SymmetricFunctions(QQ['t'])
+# act on s
 s = Sym.s()
-a(ROA((1, -1))(s[2, 1]), s[3])
-
+a(R((1, -1))(s[2, 1]), s[3])
+# act on h
 h = Sym.h()
-a(ROA((1, -1))(h[2, 1]), h[3])
-
+a(R((1, -1))(h[2, 1]), h[3])
+# act on HL Q'
 hl = Sym.hall_littlewood().Qp()
-a(ROA((1, -1))(hl[2, 1]), hl[3])
+a(R((1, -1))(hl[2, 1]), hl[3])
 
 
 # test_straighten
