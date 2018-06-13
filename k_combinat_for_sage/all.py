@@ -184,7 +184,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         def __call__(self, operand):
             def raise_func(seq, operand):
                 # seq is the index
-                if isinstance(operand, list) or isinstance(operand, Partition):
+                if isinstance(operand, (list, Composition, Partition)):
                     # pad sequence and operand with 0's
                     operand = operand + [0] * (len(seq) - len(operand))
                     seq = seq + (0,) * (len(operand) - len(seq))
@@ -336,7 +336,7 @@ class HallLittlewoodVertexOperator:
     def __init__(self, composition, base_ring=QQ['t']):
         if composition in NN:
             self.composition = [composition]
-        elif isinstance(composition, list) or isinstance(composition, Partition):
+        elif isinstance(composition, (list, Composition, Partition)):
             self.composition = composition
         else:
             raise ValueError('Bad composition.')
