@@ -207,6 +207,10 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                 for _ in range(power):
                     operand = raise_func(seq, operand)
                 return (operand, coeff)
+            # start here
+            if isinstance(operand, tuple):
+                # if the operand is a tuple, perform __call__ on each piece (RECURSE)
+                return tuple(self.__call__(op) for op in operand)
             # break into basis pieces
             index_coeff_list = self.monomial_coefficients().items()
             # perform raise_func on each piece
