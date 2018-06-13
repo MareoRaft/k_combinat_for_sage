@@ -44,7 +44,7 @@ def get_k_irreducible_partitions(k):
     """ Given k, return the n! k-irreducible-partitions. """
     return [Partition(e) for e in get_k_irreducible_partition_lists(k)]
 
-def n_to_number_of_linked_partition_self_pairs(n):
+def size_to_num_linked_partition_self_pairs(n):
     # Given a natural number n, count how many partitions l of size n have the property that (l, l) has a corresponding linked-skew-diagram.
     ps = Partitions(n)
     count = 0
@@ -62,23 +62,50 @@ def print_sequence(func, num_terms=float('inf')):
     while n < num_terms:
         print('n={}\t{}=f(n)'.format(n, func(n)))
 
-def n_to_k_shapes(n, k):
-    """ Given n, find all partitions of size n that are k-shapes. """
+def size_to_k_shapes(n, k):
+    """ Find all partitions of size n that are k-shapes. """
     return [ptn for ptn in Partitions(n) if is_k_shape(ptn, k)]
 
-def n_to_num_k_shapes(n, k):
-    return len(n_to_k_shapes(n, k))
+def size_to_num_k_shapes(n, k):
+    return len(size_to_k_shapes(n, k))
 
-def n_to_k_shape_boundaries(n, k):
-    # Given n, find all k-boundaries of all k-shapes of size n.
-    return [ptn.k_boundary(k) for ptn in Partitions(n) if is_k_shape(ptn, k)]
+def straighten(s, gamma):
+    """ Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).
 
-def n_to_symmetric_k_shape_boundaries(n, k):
-    k_shape_boundaries = n_to_k_shape_boundaries(n, k)
-    return [ks for ks in k_shape_boundaries if kS.is_symmetric(ks)]
+    `s_\\gamma(\\mathbf{x}) = \\begin{cases}
+        \\sgn(\\gamma+\rho) s_{\\text{sort}(\\gamma+\\rho) -\\rho}(\\mathbf{x}) & \\text{if $\\gamma + \\rho$ has distinct nonnegative parts,}\\
+        0                                                          & \\text{otherwise,}
+    \\end{cases}`
 
-def n_to_num_symmetric_k_shape_boundaries(n, k):
-    return len(n_to_symmetric_k_shape_boundaries(n, k))
+    where `\\rho=(\\ell-1,\\ell-2,\\dots,0)`, `\\text{sort}(\\beta)` denotes the weakly decreasing sequence obtained by sorting `\\beta`, and `\\sgn(\\beta)` denotes the sign of the (shortest possible) sorting permutation.
+
+    EXAMPLE::
+
+        sage: straighten([2, 1, 3])
+        -s[2, 2, 2]
+        # because s[2, 1, 3] := -s[2, 2, 2]
+    """
+    def has_nonnegative_parts(lis):
+        return all(e >= 0 for e in lis)
+    def has_distinct_parts(lis):
+        return len(set(lis)) == len(lis)
+    def number_of_noninversions(lis):
+        num = 0
+        for i in range(len(lis)):
+            for j in range(i + 1, len(lis)):
+                # i < j is already enforced
+                if lis[i] < lis[j]:
+                    num += 1
+        return num
+    rho = list(range(len(gamma) - 1, -1, -1))
+    combined = [g + r for g, r in zip(gamma, rho)]
+    if has_distinct_parts(combined) and has_nonnegative_parts(combined):
+        sign = (-1)**number_of_noninversions(combined)
+        sort_combined = reversed(sorted(combined))
+        new_gamma = [sc - r for sc, r in zip(sort_combined, rho)]
+        return sign * s(new_gamma)
+    else:
+        return 0
 
 
 class ShiftingSequenceSpace():
@@ -201,7 +228,10 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                     out_composition = raise_func(seq, composition)
                     # TODO: check if out_composition is a valid partition.  when it's not, out becomes 0
                     # TODO: change below to 'out_partition' once validated
-                    out = parent_basis(out_composition)
+                    if parent_basis.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
+                        out = straighten(parent_basis, out_composition)
+                    else:
+                        out = parent_basis(out_composition)
                 return out
             def call_monomial(seq, coeff, operand, power=1):
                 for _ in range(power):
@@ -275,46 +305,6 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         seq[j] = -1
         seq = tuple(seq)
         return self._element_constructor_(seq)
-
-
-def straighten(s, gamma):
-    """ Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).
-
-    `s_\\gamma(\\mathbf{x}) = \\begin{cases}
-        \\sgn(\\gamma+\rho) s_{\\text{sort}(\\gamma+\\rho) -\\rho}(\\mathbf{x}) & \\text{if $\\gamma + \\rho$ has distinct nonnegative parts,}\\
-        0                                                          & \\text{otherwise,}
-    \\end{cases}`
-
-    where `\\rho=(\\ell-1,\\ell-2,\\dots,0)`, `\\text{sort}(\\beta)` denotes the weakly decreasing sequence obtained by sorting `\\beta`, and `\\sgn(\\beta)` denotes the sign of the (shortest possible) sorting permutation.
-
-    EXAMPLE::
-
-        sage: straighten([2, 1, 3])
-        -s[2, 2, 2]
-        # because s[2, 1, 3] := -s[2, 2, 2]
-    """
-    def has_nonnegative_parts(lis):
-        return all(e >= 0 for e in lis)
-    def has_distinct_parts(lis):
-        return len(set(lis)) == len(lis)
-    def number_of_noninversions(lis):
-        num = 0
-        for i in range(len(lis)):
-            for j in range(i + 1, len(lis)):
-                # i < j is already enforced
-                if lis[i] < lis[j]:
-                    num += 1
-        return num
-    rho = list(range(len(gamma) - 1, -1, -1))
-    combined = [g + r for g, r in zip(gamma, rho)]
-    if has_distinct_parts(combined) and has_nonnegative_parts(combined):
-        sign = (-1)**number_of_noninversions(combined)
-        sort_combined = reversed(sorted(combined))
-        new_gamma = [sc - r for sc, r in zip(sort_combined, rho)]
-        return sign * s(new_gamma)
-    else:
-        return 0
-
 
 
 class HallLittlewoodVertexOperator:

@@ -293,7 +293,7 @@ def complement(ri, n=None):
     ri_complement = sorted(ri_complement_set)
     return ri_complement
 
-def partition_to_k_Schur_root_ideal(ptn, k, n=None):
+def partition_to_k_schur_root_ideal(ptn, k, n=None):
     """ Given a `k`-bounded partition `ptn` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal.
     """
     ptn = Partition(ptn)

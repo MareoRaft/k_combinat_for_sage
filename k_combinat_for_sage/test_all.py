@@ -903,26 +903,26 @@ ri = [(0,1), (1,2), (3,4)]
 a(RI.complement(ri, 5), [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)])
 
 
-# test_partition_to_k_Schur_root_ideal
+# test_partition_to_k_schur_root_ideal
 p = [2, 1]
 n = 4
 k = 2
-a(partition_to_k_Schur_root_ideal(p, k, n), [(0,1), (0,2), (0,3), (1,3)])
+a(partition_to_k_schur_root_ideal(p, k, n), [(0,1), (0,2), (0,3), (1,3)])
 
 p = [2, 1]
 n = 4
 k = 3
-a(partition_to_k_Schur_root_ideal(p, k, n), [(0,2), (0,3)])
+a(partition_to_k_schur_root_ideal(p, k, n), [(0,2), (0,3)])
 
 p = [2, 1]
 n = 4
 k = 4
-a(partition_to_k_Schur_root_ideal(p, k, n), [(0,3)])
+a(partition_to_k_schur_root_ideal(p, k, n), [(0,3)])
 
 p = [2, 1]
 n = 4
 k = 5
-a(partition_to_k_Schur_root_ideal(p, k, n), [])
+a(partition_to_k_schur_root_ideal(p, k, n), [])
 
 
 # seq space
@@ -967,6 +967,8 @@ Sym = SymmetricFunctions(QQ['t'])
 # act on s
 s = Sym.s()
 a(R((1, -1))(s[2, 1]), s[3])
+# act on s with straightening
+a(R((1, 0, 2))(s[1, 1, 1]), -s[2, 2, 2])
 # act on h
 h = Sym.h()
 a(R((1, -1))(h[2, 1]), h[3])

@@ -53,28 +53,24 @@ assert is_symmetric(p)
 
 
 # 7. Get the first 20 terms of the sequence (a_n) where a_n is the number of pairs (λ, λ) where λ has size n and there exists a skew-partition whose row and col shapes are λ
-seq = [n_to_number_of_linked_partition_self_pairs(n) for n in range(0, 20)]
+seq = [size_to_num_linked_partition_self_pairs(n) for n in range(0, 20)]
 assert seq == [1, 1, 1, 2, 3, 4, 4, 7, 9, 13, 12, 20, 24, 32, 31, 50, 55, 74, 76, 109]
-# To get only the first 10 terms, use sequence(n_to_number_of_linked_partition_self_pairs, num_terms=10).
-# To print out a sequence, use print_sequence(n_to_number_of_linked_partition_self_pairs).
+# To get only the first 10 terms, use sequence(size_to_num_linked_partition_self_pairs, num_terms=10).
+# To print out a sequence, use print_sequence(size_to_num_linked_partition_self_pairs).
 
 
 # 8. Find some more interesting sequences:
 # Get the sequence (a_n) where where a_n is the number of 1-shapes of size n.
-seq = [n_to_num_k_shapes(n, k=1) for n in range(0, 20)]
+seq = [size_to_num_k_shapes(n, k=1) for n in range(0, 20)]
 assert seq == [1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0] # A010054
-seq = [n_to_num_k_shapes(n, k=2) for n in range(0, 20)]
+seq = [size_to_num_k_shapes(n, k=2) for n in range(0, 20)]
 assert seq == [1, 1, 2, 1, 2, 1, 3, 2, 1, 2, 3, 2, 3, 2, 2, 1, 5, 3, 2, 2]
-seq = [n_to_num_k_shapes(n, k=3) for n in range(0, 20)]
+seq = [size_to_num_k_shapes(n, k=3) for n in range(0, 20)]
 assert seq == [1, 1, 2, 3, 3, 3, 5, 5, 5, 8, 6, 6, 10, 9, 11, 10, 9, 13, 15, 13]
 # n to number of k-shapes of size n (for any k between 1 and n-1)
-seq = [n_to_num_k_shapes(n, k=None) for n in range(0, 20)]
+seq = [size_to_num_k_shapes(n, k=None) for n in range(0, 20)]
 assert seq == [0, 0, 0, 1, 3, 5, 9, 13, 20, 28, 40, 54, 75, 99, 133, 174, 229, 295, 383, 488]
-# n to number of self-conjugate k-shape-boundaries
-# seq = [n_to_num_symmetric_k_shape_boundaries(n, k=0) for n in range(0, 20)]
-# assert seq == [1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 5, 5, 5, 6] # A000700
-# seq = [n_to_num_symmetric_k_shape_boundaries(n, 2) for n in range(0, 20)]
-# assert seq == [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0]
+# more sequences
 seq = [len(size_to_linked_skew_partitions(n)) for n in range(0, 9)]
 assert seq == [1, 1, 3, 6, 13, 24, 46, 81, 143] # I think we should submit this sequence to OEIS
 # TODO: number of k-shape-boundaries of size n.
@@ -125,13 +121,18 @@ hl = Sym.hall_littlewood().Qp()
 assert compositional_hall_littlewood_Qp([3, 3, 2]) == hl[3, 3, 2]
 
 
-
-# 15. Given (maybe optional: maximum partition length l) and a k-bounded partition μ, get the corresponding k-Schur root ideal.
-
+# 15. Given a maximum partition length n and a k-bounded partition μ, get the corresponding k-Schur root ideal.
+mu = [2, 1]
+n = 4
+k = 3
+assert partition_to_k_schur_root_ideal(mu, k, n) == [(0,2), (0,3)]
 
 
 # 16. Given an indexed root ideal (\Psi, \gamma), produce the Catalan function H(\Psi, \gamma) by the definition \prod_{(i,j) \in \Psi} (1 - R_{i,j})^{-1} s_\gamma(x).
-
+Sym = SymmetricFunctions(QQ['t'])
+hl = Sym.hall_littlewood().Qp()
+root_ideal = partition_to_root_ideal([2, 1], n=3)
+assert indexed_root_ideal_to_catalan_function(root_ideal, [3, 1, 1]) == hl[3, 1, 1]
 
 
 
