@@ -28,11 +28,11 @@ This code computes combinatorial things such as
 etc.  For a full list of functions, read the documentation.
 
 
-Install
----------------
+Install or upgrade
+--------------------
 ::
 
-	$ sage -pip install k_combinat_for_sage
+	$ sage -pip install --upgrade k_combinat_for_sage
 
 
 Usage
