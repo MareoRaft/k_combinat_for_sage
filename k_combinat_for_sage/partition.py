@@ -229,3 +229,21 @@ def next(p, min=[], max=None, type=None):
                 next_p[r] = min[r]
                 continue
     return Partition(next_p)
+
+def is_k_core(ptn, k):
+    """ Returns a boolean saying whether or not the Partition `ptn` is a `k`-core.
+
+    EXAMPLES::
+
+        # a hook length of 2 does not occur, but a hook length of 3 does
+        sage: is_k_core(Partition([2, 1]), 2)
+        True
+        sage: is_k_core(Partition([2, 1]), 3)
+        False
+
+    """
+    hook_lengths = reduce(operator.add, ptn.hook_lengths())
+    return all(hook_length != k for hook_length in hook_lengths)
+
+
+

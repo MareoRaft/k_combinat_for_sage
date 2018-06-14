@@ -817,6 +817,20 @@ ptns = k_to_irreducible_k_shapes(3)
 a(ptns, [[], [1], [2, 1]])
 
 
+# test_is_k_core
+a(is_k_core(Partition([2, 1]), 1), False)
+a(is_k_core(Partition([2, 1]), 2), True)
+a(is_k_core(Partition([2, 1]), 3), False)
+a(is_k_core(Partition([2, 1]), 4), True)
+a(is_k_core(Partition([4, 2, 2]), 1), False)
+a(is_k_core(Partition([4, 2, 2]), 2), False)
+a(is_k_core(Partition([4, 2, 2]), 3), False)
+a(is_k_core(Partition([4, 2, 2]), 4), True)
+a(is_k_core(Partition([4, 2, 2]), 5), False)
+a(is_k_core(Partition([4, 2, 2]), 6), False)
+a(is_k_core(Partition([4, 2, 2]), 7), True)
+
+
 # test_is_linked
 # empty skew
 sp = SkewPartition([[], []])
@@ -1032,6 +1046,9 @@ a(cat_func, hl[3, 1, 1])
 # g = [3, 1, 1]
 # cat_func = indexed_root_ideal_to_catalan_function(ri, g)
 # a(cat_func, hl[3, 1, 1])
+
+
+# TODO: test all catalan function methods with some example.  Ask Jennifer morse.
 
 
 # ALL DONE!

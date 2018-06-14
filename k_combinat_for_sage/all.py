@@ -79,7 +79,7 @@ def straighten(s, gamma):
 
     where `\\rho=(\\ell-1,\\ell-2,\\dots,0)`, `\\text{sort}(\\beta)` denotes the weakly decreasing sequence obtained by sorting `\\beta`, and `\\sgn(\\beta)` denotes the sign of the (shortest possible) sorting permutation.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: straighten([2, 1, 3])
         -s[2, 2, 2]
@@ -266,7 +266,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
     - ``base_ring`` -- (default ``QQ['t']``) the ring you will use on the raising operators.
     - ``prefix`` -- (default ``"R"``) the label for the raising operators.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: R = RaisingOperatorAlgebra()
         sage: s = SymmetricFunctions(QQ['t']).s()
@@ -293,13 +293,19 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
     def ij(self, i, j):
         """ Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indecis here are 0-based, not 1-based.
 
-        EXAMPLE::
+        EXAMPLES::
 
             # create the raising operator which raises part 0 and lowers part 2 (indecis are 0-based)
             sage: R.ij(0, 2)
             R((1, 0, -1))
 
         """
+        if not i in NN:
+            raise ValueError('i must be a natural number.  You input i = {i}.'.format(i=i))
+        if not j in NN:
+            raise ValueError('j must be a natural number.  You input j = {j}.'.format(j=j))
+        if not i < j:
+            raise ValueError('Index j must be greater than index i.  You input (i, j) = ({i}, {j}).'.format(i=i, j=j))
         seq = [0] * (max(i, j) + 1)
         seq[i] = 1
         seq[j] = -1
@@ -315,7 +321,7 @@ class HallLittlewoodVertexOperator:
 
     base_ring: (defaults to QQ['t']) the base ring to build the SymmetricFunctions upon.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: H = HallLittlewoodVertexOperator
         sage: one = SymmetricFunctions(QQ['t']).hall_littlewood().Qp().one()
@@ -349,7 +355,7 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
 
     If the composition gamma is a partition, this is just the Hall-Littlewood Q' polynomial.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: hl = SymmetricFunctions(QQ['t']).hall_littlewood().Qp()
         sage: compositional_hall_littlewood_Qp([3, 3, 2]) == hl[3, 3, 2]
@@ -385,4 +391,32 @@ def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
     op = prod([1 - t*R.ij(ij) for ij in ri_complement])
     cat_func = op(hl(index))
     return cat_func
+
+def skew_partition_to_catalan_function(sp, base_ring=QQ['t']):
+    """ Given a SkewPartition `sp = (\\lambda, \\mu)`, return the catalan function `H(\\Phi^+(sp); \\lambda)`.
+    """
+    ri = skew_partition_to_root_ideal(sp, type='max')
+    rs = sp.row_lengths()
+    return indexed_root_ideal_to_catalan_function(ri, rs, base_ring)
+
+def row_and_column_lengths_to_catalan_function(row_lengths, column_lengths, base_ring=QQ['t']):
+    """ Determine the skew partition `D` with row-shape `row_lengths` and column-shape `column_lengths`, and return the catalan function `H(\\Phi^+(D); row_lengths)`.
+    """
+    sp = SkewPartitions().from_row_and_column_length(row_lengths, column_lengths)
+    return skew_partition_to_catalan_function(sp, base_ring)
+
+def k_shape_to_catalan_function(p, k, base_ring=QQ['t']):
+    """ Given `k` and a `k`-shape `p`, return the catalan function `H(\\Psi^+((rs(p),cs(p))), rs(p))`.
+    """
+    assert is_k_shape(p, k)
+    rs = p.row_lengths()
+    cs = p.column_lengths()
+    return row_and_column_lengths_to_catalan_function(rs, cs, base_ring)
+
+def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
+    # TODO: compare the performance of this function to existing k-schur function.
+    assert is_k_core(p, k + 1)
+    return k_shape_to_catalan_function(p, k, base_ring)
+
+
 

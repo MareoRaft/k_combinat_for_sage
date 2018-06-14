@@ -46,7 +46,7 @@ def h_bounds(p, k, width):
 
     Given a natural number `k` (used for the `k`-shape or `k`-boundary) and a width `width`, returns `(y_\\text{min}, y_\\text{max})`, the two vertical coordinates which define the horizontal strip.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=3)
         (0, 2)
@@ -67,7 +67,7 @@ def h_bounds(p, k, width):
 def v_bounds(p, k, height):
     """ This is `V_i`, the vertical analog of :meth:`h_bounds`.
 
-    EXAMPLE::
+    EXAMPLES::
 
         sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=4)
         (0, 1)
