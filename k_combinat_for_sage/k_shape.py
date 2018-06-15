@@ -81,10 +81,11 @@ def v_bounds(p, k, height):
     """
     return h_bounds(p.conjugate(), k, height)
 
-def is_k_reducible_by_rectangle(p, k, (a,b)):
+def is_k_reducible_by_rectangle(p, k, ab):
     # Checks if the k-shape is k-reducible for a k-rectangle of specific dimensions a x b.
     # See Proposition 3.8 in Combinatorics of k-shapes and Genocchi numbers
     assert is_k_shape(p, k)
+    (a, b) = ab
     assert a + b - 1 == k or a + b - 1 == k - 1
     # get intersection H_a \cap V_b \cap k_rim
     rim = k_rim(p, k)

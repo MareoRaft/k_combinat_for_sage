@@ -4,6 +4,17 @@ Sage has a builtin `Partition <https://doc.sagemath.org/html/en/reference/combin
 """
 from sage.all import *
 
+channels = None
+codes = None
+game_theory = None
+graph_coloring = None
+groups = None
+iet = None
+matroids = None
+simplicial_complexes = None
+simplicial_sets = None
+valuations = None
+
 # HELPERS
 def k_rectangle_dimension_list(k):
     return [(k-i+1, i) for i in range(1, k+1)]
@@ -24,7 +35,8 @@ def boundary(ptn):
         [(3,0), (3,1), (2,1), (1,1), (1,2), (0,2)]
 
     """
-    def horizontal_piece((start_x, start_y), bdy):
+    def horizontal_piece(xy, bdy):
+        (start_x, start_y) = xy
         if not bdy:
             h_piece = [(start_x, start_y)]
         else:

@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = python -msphinx
+SPHINXBUILD   = sage -python -msphinx
 SPHINXPROJ    = MorseCodeforSageMath
 SOURCEDIR     = source
 BUILDDIR      = build
