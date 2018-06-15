@@ -367,6 +367,15 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
     H = HallLittlewoodVertexOperator
     return H(gamma)(hl.one())
 
+def raising_root_ideal_operator(ri, t=1):
+    """ Given a root ideal `ri = \\Phi` (and optionally a variable `t`), return the operator `\\Prod_{(i,j) \\in \\Phi} (1 - tR_{ij})`.
+    """
+    R = RaisingOperatorAlgebra()
+    def prod(iterable):
+        return reduce(R.Element._mul_, iterable, R.one())
+    op = prod([1 - t*R.ij(ij) for ij in ri])
+    return op
+
 def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
     """
     INPUTS:
@@ -379,16 +388,12 @@ def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
     The catalan function
     """
     # setup
-    sym = SymmetricFunctions(base_ring)
-    hl = sym.hall_littlewood().Qp()
-    R = RaisingOperatorAlgebra()
+    hl = SymmetricFunctions(base_ring).hall_littlewood().Qp()
     t = base_ring.gen()
-    def prod(iterable):
-        return reduce(R.Element._mul_, iterable, R.one())
     # formula
     n = len(index)
     ri_complement = RI.complement(ri, n)
-    op = prod([1 - t*R.ij(ij) for ij in ri_complement])
+    op = raising_root_ideal_operator(ri_complement, t=t)
     cat_func = op(hl(index))
     return cat_func
 
