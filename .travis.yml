@@ -37,32 +37,17 @@ before_install:
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pip ${TEST_OPT_DEPENDENCY/sage};
       source activate test-environment;
       conda clean --all;
-      if [[ "$TEST_OPT_DEPENDENCY" == *"sage"* ]]; then
-          conda install -q "sage==8.1";
-          conda remove --force sympy;
-          conda clean --all;
-      fi
+      conda install -q "sage==8.1";
+      conda clean --all;
   elif [ "$TRAVIS_PYTHON_VERSION" != "pypy" ]; then
       pip list --format=legacy | grep "numpy" && pip uninstall -y numpy;
   fi
 - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
     pip install matchpy;
   fi
+- which sage
+- sudo find / -name "sage"
 script:
-- pwd
-- cd k_combinat_for_sage
-- pwd
-- # comment-out/delete sage imports (workaround)
-- src_files=$(ls -R | grep ".py$")
-- echo "$src_files"
-- # note that $src_files below is NOT in quotes on purpose
-- |
-  for file_path in $src_files; do
-    echo " "
-    echo "$file_path"
-    cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path" > /dev/null 2>&1
-  done
-- cd ..
 - pwd
 - cd docs
 - pwd
