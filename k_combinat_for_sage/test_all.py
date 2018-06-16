@@ -968,9 +968,9 @@ TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R(), R(0))
 a(R((1, 2, 1)) * R((0, 1, 0, 1)), R((1, 3, 1, 1)))
-# retrieve indecis
-a(R((1, -1)).indecis(), [(1, -1)])
-a((R((1, -1)) + 2 * R((1, 0, -1))).indecis(), [(1, -1), (1, 0, -1)])
+# retrieve indices
+a(R((1, -1)).indices(), [(1, -1)])
+a((R((1, -1)) + 2 * R((1, 0, -1))).indices(), [(1, -1), (1, 0, -1)])
 # retrieve index
 a(R((1,-1)).index(), (1,-1))
 # act on lists
@@ -1004,9 +1004,9 @@ a(R(), R(0))
 a(R((1, -1)) * R((0, 1, 0, -1)), R((1, 0, 0, -1)))
 # create 'R_ij' element
 a(R.ij(1, 3), R((0, 1, 0, -1)))
-# retrieve indecis
-a(R((1, -1)).indecis(), [(1, -1)])
-a((R((1, -1)) + 2 * R((1, 0, -1))).indecis(), [(1, -1), (1, 0, -1)])
+# retrieve indices
+a(R((1, -1)).indices(), [(1, -1)])
+a((R((1, -1)) + 2 * R((1, 0, -1))).indices(), [(1, -1), (1, 0, -1)])
 # retrieve index
 a(R((1, -1)).index(), (1, -1))
 
@@ -1049,6 +1049,62 @@ a(cat_func, hl[3, 1, 1])
 
 
 # TODO: test all catalan function methods with some example.  Ask Jennifer morse.
+
+
+# test staircase shape
+a(staircase_shape(3), [2, 1, 0])
+
+
+# test staircase root ideal
+a(staircase_root_ideal(3), [(0,1), (0,2), (1,2)])
+a(staircase_root_ideal(4), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
+
+
+# test dual k theoretic h
+a(dual_k_theoretic_h(0, 0), 1)
+a(dual_k_theoretic_h(0, 13), 1)
+
+Sym = SymmetricFunctions(QQ)
+h = Sym.h()
+a(dual_k_theoretic_h(1, 1), h[1] + 1)
+
+Sym = SymmetricFunctions(QQ['t'])
+h = Sym.h()
+a(dual_k_theoretic_h(1, 1, base_ring=QQ['t']), h[1] + 1)
+
+Sym = SymmetricFunctions(QQ['t'])
+h = Sym.h()
+a(dual_k_theoretic_h(1, 2, base_ring=QQ['t']), h[1] + 2)
+
+Sym = SymmetricFunctions(QQ['t'])
+h = Sym.h()
+a(dual_k_theoretic_h(2, 1, base_ring=QQ['t']), h[2] + h[1] + 1)
+
+Sym = SymmetricFunctions(QQ['t'])
+h = Sym.h()
+a(dual_k_theoretic_h(2, 2, base_ring=QQ['t']), h[2] + 2*h[1] + 3)
+
+Sym = SymmetricFunctions(QQ['t'])
+h = Sym.h()
+a(dual_k_theoretic_h(2, 3, base_ring=QQ['t']), h[2] + 3*h[1] + 6)
+
+# h_[2,1](x, [1, 1])
+Sym = SymmetricFunctions(QQ)
+h = Sym.h()
+a(dual_k_theoretic_h([2, 1], [1, 1]), h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1)
+
+# h_[1, 2](x, [2, 3])
+Sym = SymmetricFunctions(QQ)
+h = Sym.h()
+a(dual_k_theoretic_h([1, 2], [2, 3]), 3*h[1]**2 + h[1]*h[2] + 2*h[2] + 12*h[1] + 12)
+
+
+# test dual grothendieck function
+Sym = SymmetricFunctions(QQ)
+h = Sym.h()
+a(dual_grothendieck_function([2, 1]), h[1]*h[2] + h[2] - h[3])
+
+
 
 
 # ALL DONE!

@@ -81,18 +81,18 @@ def skew_partition_to_selected_rows(sp):
             new_blocked_rows = bump_path(sp, row_index, blocked_rows)
             blocked_rows.update(new_blocked_rows)
     return sorted(selected_rows)
-def selected_rows_to_maximum_root_ideal(n, selected_indecis):
+def selected_rows_to_maximum_root_ideal(n, selected_indices):
     # Given the dimension of the square n and the selected rows, output the root ideal
     root_ideal_cells = []
-    selected_indecis = set(selected_indecis)
-    permitted_col_indecis = set(range(n)) - selected_indecis
+    selected_indices = set(selected_indices)
+    permitted_col_indices = set(range(n)) - selected_indices
     for i in range(n):
-        if i in selected_indecis:
-            if permitted_col_indecis:
-                smallest_unblocked_index = min(permitted_col_indecis)
+        if i in selected_indices:
+            if permitted_col_indices:
+                smallest_unblocked_index = min(permitted_col_indices)
                 root_ideal_cells += [(i, j) for j in range(smallest_unblocked_index, n)]
-                permitted_col_indecis.remove(smallest_unblocked_index)
-                selected_indecis.add(smallest_unblocked_index)
+                permitted_col_indices.remove(smallest_unblocked_index)
+                selected_indices.add(smallest_unblocked_index)
     return root_ideal_cells
 
 def skew_partition_to_removable_roots(sp, type='max'):
@@ -153,9 +153,9 @@ def skew_partition_to_root_ideal(sp, type='max', method='removable roots'):
     elif method == 'bounce':
         if type != 'max':
             raise Exception('The bounce method can only yield the maximum root ideal (type=max).')
-        selected_indecis = skew_partition_to_selected_rows(sp)
+        selected_indices = skew_partition_to_selected_rows(sp)
         n = len(sp.outer())
-        root_ideal = selected_rows_to_maximum_root_ideal(n, selected_indecis)
+        root_ideal = selected_rows_to_maximum_root_ideal(n, selected_indices)
     else:
         raise ValueError('Unknown method.')
     return RootIdeal(root_ideal)
@@ -211,7 +211,7 @@ def generate_path(next_func, start):
     return path
 
 def down_path(root_ideal, start_index):
-    """ Given a starting row index `start_index`, perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indecis as a list.
+    """ Given a starting row index `start_index`, perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indices as a list.
     """
     next_func = lambda index: down(root_ideal, index)
     return generate_path(next_func, start_index)
@@ -243,14 +243,14 @@ def down_path_column_lengths(root_ideal, ptn):
         mu = []
         # n is the side length of the square
         n = get_n_from_root_ideal(root_ideal)
-        indecis_available = set(range(0, n))
+        indices_available = set(range(0, n))
         for index in range(0, n):
-            if index in indecis_available:
+            if index in indices_available:
                 # add the kthing to mu
                 mu.append(down_path_column_lengths_part(root_ideal, ptn, index))
-                # remove indecis from future draws
+                # remove indices from future draws
                 dpath = down_path(root_ideal, index)
-                indecis_available -= set(dpath)
+                indices_available -= set(dpath)
     return Partition(mu)
 
 def root_ideal_to_partition(root_ideal):
@@ -276,6 +276,24 @@ def partition_to_root_ideal(ptn, n):
     for r, part in enumerate(ptn):
         root_ideal += [(r, c) for c in range(n-part, n)]
     return RootIdeal(root_ideal)
+
+def staircase_shape(n):
+    """ Given `n`, return the composition `Composition([n-1, n-2, \\ldots, 0])` commonly denoted ``\\rho``.
+    """
+    return Composition(range(n - 1, -1, -1))
+
+def staircase_root_ideal(n):
+    """ Given `n`, return the root ideal commonly denoted `\\Delta^+`, which is the maximum possible root ideal in an `n` x `n` grid.
+
+    EXAMPLES::
+
+        sage: staircase_root_ideal(3)
+        [(0,1), (0,2), (1,2)]
+        sage: staircase_root_ideal(4)
+        [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
+
+    """
+    return partition_to_root_ideal(staircase_shape(n), n)
 
 def is_strict(ri):
     """ Given a root ideal `ri`, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!

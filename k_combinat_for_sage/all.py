@@ -153,11 +153,11 @@ class RaisingSequenceSpace(ShiftingSequenceSpace):
 
 
 class ShiftingOperatorAlgebra(CombinatorialFreeModule):
-    def __init__(self, base_ring=QQ['t'], prefix='S', basis_indecis=ShiftingSequenceSpace()):
+    def __init__(self, base_ring=QQ['t'], prefix='S', basis_indices=ShiftingSequenceSpace()):
         self._prefix = prefix
         self._base_ring = base_ring
         # a single basis index looks like (1, 0, -1, 2), for example
-        self._basis_indecis = basis_indecis
+        self._basis_indices = basis_indices
         # category
         category = Algebras(self._base_ring.category()).WithBasis()
         category = category.or_subcategory(category)
@@ -165,14 +165,14 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         CombinatorialFreeModule.__init__(
             self,
             self._base_ring,
-            self._basis_indecis,
+            self._basis_indices,
             category=category,
             prefix=self._prefix,
             bracket=False)
 
     def __getitem__(self, seq):
         # seq should be a basis index
-        self._basis_indecis.validate(seq)
+        self._basis_indices.validate(seq)
         return self.basis()[seq]
 
     def _element_constructor_(self, seq):
@@ -186,33 +186,24 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
     def _repr_(self):
         return "Shifting Operator Algebra over {base_ring}".format(base_ring=self._base_ring)
 
+    def product_on_basis(self, index1, index2):
+        # pad with 0's
+        max_len = max(len(index1), len(index2))
+        index1 = index1 + (0,) * (max_len - len(index1))
+        index2 = index2 + (0,) * (max_len - len(index2))
+        # add the vectors
+        index_product = tuple(i1 + i2 for i1, i2 in zip(index1, index2))
+        return self.__getitem__(index_product)
+
     class Element(CombinatorialFreeModule.Element):
         """ element of a ShiftingOperatorAlgebra"""
-        def indecis(self):
+        def indices(self):
             return self.support()
 
         def index(self):
             if len(self) != 1:
-                raise ValueError("This is only defined for basis elements.  For other elements, use indecis() instead.")
-            return self.indecis()[0]
-
-        def _mul_(self, other):
-            def index_mul(index1, index2):
-                max_len = max(len(index1), len(index2))
-                index1 = index1 + (0,) * (max_len - len(index1))
-                index2 = index2 + (0,) * (max_len - len(index2))
-                return tuple(i1 + i2 for i1, i2 in zip(index1, index2))
-            self_index_coeff_list = self.monomial_coefficients().items()
-            other_index_coeff_list = other.monomial_coefficients().items()
-            out_index_coeff_list = []
-            for index1, coeff1 in self_index_coeff_list:
-                for index2, coeff2 in other_index_coeff_list:
-                    out_index_coeff = (index_mul(index1, index2), coeff1 * coeff2)
-                    out_index_coeff_list.append(out_index_coeff)
-            R = self.parent()
-            out_list = [coeff * R(index) for index, coeff in out_index_coeff_list]
-            out = R.sum(out_list)
-            return out
+                raise ValueError("This is only defined for basis elements.  For other elements, use indices() instead.")
+            return self.indices()[0]
 
         def __call__(self, operand):
             def raise_func(seq, operand):
@@ -294,14 +285,14 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         ShiftingOperatorAlgebra.__init__(self,
             base_ring=base_ring,
             prefix=prefix,
-            basis_indecis=RaisingSequenceSpace())
+            basis_indices=RaisingSequenceSpace())
 
     def ij(self, i, j):
-        """ Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indecis here are 0-based, not 1-based.
+        """ Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indices here are 0-based, not 1-based.
 
         EXAMPLES::
 
-            # create the raising operator which raises part 0 and lowers part 2 (indecis are 0-based)
+            # create the raising operator which raises part 0 and lowers part 2 (indices are 0-based)
             sage: R.ij(0, 2)
             R((1, 0, -1))
 
@@ -378,8 +369,8 @@ def raising_root_ideal_operator(ri, t=1, base_ring=QQ['t']):
     """
     R = RaisingOperatorAlgebra(base_ring=base_ring)
     def prod(iterable):
-        return reduce(R.Element._mul_, iterable, R.one())
-    op = prod([1 - t*R.ij(ij) for ij in ri])
+        return reduce(operator.mul, iterable, R.one())
+    op = prod([1 - t*R.ij(i, j) for (i, j) in ri])
     return op
 
 def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
@@ -443,10 +434,10 @@ def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
 # class DoubleRing(CombinatorialFreeModule):
 #     # it's an algebra if you consider the a's and the decorative integers as 'separate'.
 #     # if you consider them all together, it's a ring
-#     def __init__(self, base_ring=IntegerRing(), prefix='a', basis_indecis=DoubleIntegers()):
+#     def __init__(self, base_ring=IntegerRing(), prefix='a', basis_indices=DoubleIntegers()):
 #         self._prefix = prefix
 #         self._base_ring = base_ring
-#         self._basis_indecis = basis_indecis
+#         self._basis_indices = basis_indices
 #         # category
 #         # TODO: make commutative? make free?
 #         category = Algebras(self._base_ring.category()).WithBasis()
@@ -455,13 +446,13 @@ def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
 #         CombinatorialFreeModule.__init__(
 #             self,
 #             self._base_ring,
-#             self._basis_indecis,
+#             self._basis_indices,
 #             category=category,
 #             prefix=self._prefix,
 #             bracket=False)
 
 #     def __getitem__(self, index):
-#         assert index in self._basis_indecis
+#         assert index in self._basis_indices
 #         return self.basis()[index]
 
 #     def _element_constructor_(self, index):
@@ -476,31 +467,72 @@ def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
 #         return "DoubleRing over {base_ring}".format(base_ring=self._base_ring)
 
 #     class Element(CombinatorialFreeModule.Element):
-#         def indecis(self):
+#         def indices(self):
 #             return self.support()
 
 #         def index(self):
 #             if len(self) != 1:
-#                 raise ValueError("This is only defined for basis elements.  For other elements, use indecis() instead.")
-#             return self.indecis()[0]
+#                 raise ValueError("This is only defined for basis elements.  For other elements, use indices() instead.")
+#             return self.indices()[0]
 
 #         # def _mul_(self, other):
 #             # TODO: make it free
 #             # we could change basis elements to a_dic where dic keys is an increasing list of integers and values are multiplicities
 #             # this would be free and have multiplication and be commutative.
 
-class DoubleRing(PolynomialRing)
-    def __init__(self, base_ring=QQ, bound=999, name='a'):
-        PolynomialRing.__init__(self,
-            base_ring,
-            bound,
-            names=name)
+# class DoubleRing(PolynomialRing):
+#     def __init__(self, base_ring=QQ, bound=999, name='a'):
+#         PolynomialRing.__init__(self,
+#             base_ring,
+#             bound,
+#             names=name)
 
-LambdaA = SymmetricFunctions(DoubleRing())
+double_ring = PolynomialRing(QQ, 999, names='a')
 
+LambdaA = SymmetricFunctions(double_ring)
 
+def dual_k_theoretic_h(k, r, base_ring=QQ):
+    """ The dual ktheoretic h, often denoted Kh, is defined for any integer `k` by the formula `h_k(x, r) = \\sum_{i=0}^{k} \\binom{r + i - 1}{i} h_{k - i}(x)` in [LN]_ p.88 top-right.
 
+    If `k` and `r` are compositions, then it is recursively defined as `h_k(x, r) = \\prod_j h_{k_j}(x, r_j)`.
 
+    EXAMPLES::
 
+        sage: dual_k_theoretic_h(0, 0)
+        1
 
+        sage: dual_k_theoretic_h(1, 2, base_ring=QQ['t'])
+        h[1] + 2
+
+        sage: dual_k_theoretic_h([2, 1], [1, 1])
+        h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1
+
+    """
+    if isinstance(k, (list, Composition, Partition)):
+        # pad with 0's
+        max_len = max(len(k), len(r))
+        k = list(k) + [0] * (max_len - len(k))
+        r = list(r) + [0] * (max_len - len(r))
+        # multiply
+        h_list = [dual_k_theoretic_h(k_el, r_el, base_ring) for k_el, r_el in zip(k, r)]
+        return reduce(operator.mul, h_list)
+    else:
+        assert k >= 0
+        h = SymmetricFunctions(base_ring).h()
+        return sum(binomial(r + i - 1, i) * h[k - i] for i in range(k + 1))
+
+def dual_grothendieck_function(composition):
+    """ Given a composition `composition = \\lambda`, return the dual Grothendieck function defined by `g_\\lambda(x) = \\text{det}(h_{\\lambda_i + j - i}(x, i - 1))` in [LN]_ p.88 equation (4).
+
+    EXAMPLES::
+
+        sage:
+    """
+    n = len(composition)
+    staircase_ri = staircase_root_ideal(n)
+    op = raising_root_ideal_operator(staircase_ri)
+    reversed_staircase_ptn = list(reversed(staircase_shape(n)))
+    print(reversed_staircase_ptn)
+    Kh = dual_k_theoretic_h(composition, reversed_staircase_ptn)
+    return op(Kh)
 

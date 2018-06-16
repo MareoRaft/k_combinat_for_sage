@@ -44,7 +44,7 @@ assert max_root_ideal == [(0,3), (0,4), (0,5), (1,4), (1,5)]
 max_removable_roots = skew_partition_to_removable_roots(sp, type='max')
 assert max_removable_roots == [(0,3), (1,4)]
 # Note that down, down_path, up, up_path, top, and bottom all exist in main.py too.
-# note that all indecis are 0-based
+# note that all indices are 0-based
 
 
 # 6. Given a partition λ, detect if λ = λ'
