@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 This module contains all functionalities that are not already organized into the other files.  New functionalities written to the library often appear here, and eventually get organized into separate files.
+
+REFERENCES:
+
+.. [fun] `Raising operators and the Littlewood-Richardson polynomials <https://arxiv.org/pdf/1203.4729.pdf>`_.  Fun, Alex.
 """
 from sage.all import *
 # from sage.structure.unique_representation import UniqueRepresentation
@@ -27,7 +31,7 @@ def get_k_irreducible_partition_lists(k):
 
     # Since there are n! such partitions, the big-O time can't be better than that.
     # We could have a yeild in the function to be an iterator.
-    k = NN(k)
+    k = NonNegativeIntegerSemiring()(k)
     k_irr_ptns = [[]]
     # NO rows of length k
     for i in range(1, k):
@@ -70,7 +74,7 @@ def size_to_num_k_shapes(n, k):
     return len(size_to_k_shapes(n, k))
 
 def straighten(s, gamma):
-    """ Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).
+    """ Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).  Also known as the slinky rule.
 
     `s_\\gamma(\\mathbf{x}) = \\begin{cases}
         \\sgn(\\gamma+\rho) s_{\\text{sort}(\\gamma+\\rho) -\\rho}(\\mathbf{x}) & \\text{if $\\gamma + \\rho$ has distinct nonnegative parts,}\\
@@ -110,7 +114,7 @@ def straighten(s, gamma):
 
 class ShiftingSequenceSpace():
     # A helper for ShiftingOperatorAlgebra
-    def __init__(self, base=ZZ):
+    def __init__(self, base=IntegerRing()):
         self.base = base
         # category = InfiniteEnumeratedSets()
         # Parent.__init__(self, category=category)
@@ -300,9 +304,9 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
             R((1, 0, -1))
 
         """
-        if not i in NN:
+        if not i in NonNegativeIntegerSemiring():
             raise ValueError('i must be a natural number.  You input i = {i}.'.format(i=i))
-        if not j in NN:
+        if not j in NonNegativeIntegerSemiring():
             raise ValueError('j must be a natural number.  You input j = {j}.'.format(j=j))
         if not i < j:
             raise ValueError('Index j must be greater than index i.  You input (i, j) = ({i}, {j}).'.format(i=i, j=j))
@@ -330,7 +334,7 @@ class HallLittlewoodVertexOperator:
 
     """
     def __init__(self, composition, base_ring=QQ['t']):
-        if composition in NN:
+        if composition in NonNegativeIntegerSemiring():
             self.composition = [composition]
         elif isinstance(composition, (list, Composition, Partition)):
             self.composition = composition
@@ -367,10 +371,10 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
     H = HallLittlewoodVertexOperator
     return H(gamma)(hl.one())
 
-def raising_root_ideal_operator(ri, t=1):
+def raising_root_ideal_operator(ri, t=1, base_ring=QQ['t']):
     """ Given a root ideal `ri = \\Phi` (and optionally a variable `t`), return the operator `\\Prod_{(i,j) \\in \\Phi} (1 - tR_{ij})`.
     """
-    R = RaisingOperatorAlgebra()
+    R = RaisingOperatorAlgebra(base_ring=base_ring)
     def prod(iterable):
         return reduce(R.Element._mul_, iterable, R.one())
     op = prod([1 - t*R.ij(ij) for ij in ri])
@@ -423,5 +427,64 @@ def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
     assert is_k_core(p, k + 1)
     return k_shape_to_catalan_function(p, k, base_ring)
 
+# def k_bdd_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
+#     # TODO: compare the performance of this function to existing k-schur function.
+#     assert is_k_core(p, k + 1)
+#     return k_shape_to_catalan_function(p, k, base_ring)
+
+class DoubleIntegers():
+    # merely a helper for DoubleRing
+    def __contains__(self, el):
+        return el in IntegerRing() or el == '*'
+
+# NEW IDEA.  Can we just use SYMMETRIC FUNCTIONS plugging in x = a and LOSING the SYMMETRIC PART?
+class DoubleRing(CombinatorialFreeModule):
+    # it's an algebra if you consider the a's and the decorative integers as 'separate'.
+    # if you consider them all together, it's a ring
+    def __init__(self, base_ring=IntegerRing(), prefix='a', basis_indecis=DoubleIntegers()):
+        self._prefix = prefix
+        self._base_ring = base_ring
+        self._basis_indecis = basis_indecis
+        # category
+        # TODO: make commutative? make free?
+        category = Algebras(self._base_ring.category()).WithBasis()
+        category = category.or_subcategory(category)
+        # init
+        CombinatorialFreeModule.__init__(
+            self,
+            self._base_ring,
+            self._basis_indecis,
+            category=category,
+            prefix=self._prefix,
+            bracket=False)
+
+    def __getitem__(self, index):
+        assert index in self._basis_indecis
+        return self.basis()[index]
+
+    def _element_constructor_(self, index):
+        return self.__getitem__(index)
+
+    @cached_method
+    def one_basis(self):
+        # identity index
+        return '*'
+
+    def _repr_(self):
+        return "DoubleRing over {base_ring}".format(base_ring=self._base_ring)
+
+    class Element(CombinatorialFreeModule.Element):
+        def indecis(self):
+            return self.support()
+
+        def index(self):
+            if len(self) != 1:
+                raise ValueError("This is only defined for basis elements.  For other elements, use indecis() instead.")
+            return self.indecis()[0]
+
+        # def _mul_(self, other):
+            # TODO: make it free
+            # we could change basis elements to a_dic where dic keys is an increasing list of integers and values are multiplicities
+            # this would be free and have multiplication and be commutative.
 
 
