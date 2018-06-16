@@ -9,6 +9,7 @@ env:
 # space separated list of optional dependencies(conda packages) to install and test
 # autowrap installs libgfortran libgcc gcc cython
 - TEST_OPT_DEPENDENCY="numpy scipy gmpy2 matplotlib>=2.2 theano llvmlite autowrap python-symengine=0.3.* tensorflow numexpr ipython antlr-python-runtime>=4.7,<4.8 antlr>=4.7,<4.8 sage"
+- TEST_SAGE="true"
 before_install:
 - python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
 - if [[ "${FASTCACHE}" != "false" ]]; then
@@ -40,7 +41,6 @@ before_install:
           conda install -q "sage==8.1";
           conda remove --force sympy;
           conda clean --all;
-          sage -pip install jupyter
       fi
   elif [ "$TRAVIS_PYTHON_VERSION" != "pypy" ]; then
       pip list --format=legacy | grep "numpy" && pip uninstall -y numpy;
@@ -49,6 +49,20 @@ before_install:
     pip install matchpy;
   fi
 script:
+- pwd
+- cd k_combinat_for_sage
+- pwd
+- # comment-out/delete sage imports (workaround)
+- src_files=$(ls -R | grep ".py$")
+- echo "$src_files"
+- # note that $src_files below is NOT in quotes on purpose
+- |
+  for file_path in $src_files; do
+    echo " "
+    echo "$file_path"
+    cat "$file_path" | sed 's/from sage\.all import \*//g' | tee "$file_path" > /dev/null 2>&1
+  done
+- cd ..
 - pwd
 - cd docs
 - pwd
