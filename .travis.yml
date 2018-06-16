@@ -37,6 +37,7 @@ before_install:
       source activate test-environment;
       conda clean --all;
       if [[ "$TEST_OPT_DEPENDENCY" == *"sage"* ]]; then
+          conda install jupyter
           conda install -q "sage==8.1";
           conda remove --force sympy;
           conda clean --all;
