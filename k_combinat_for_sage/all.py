@@ -5,6 +5,8 @@ This module contains all functionalities that are not already organized into the
 REFERENCES:
 
 .. [fun] `Raising operators and the Littlewood-Richardson polynomials <https://arxiv.org/pdf/1203.4729.pdf>`_.  Fun, Alex.
+.. [LN] `Finite sum Cauchy identity for dual Grothendieck polynomials <https://projecteuclid.org/download/pdf_1/euclid.pja/1407415930>`_.
+
 """
 from sage.all import *
 # from sage.structure.unique_representation import UniqueRepresentation
@@ -432,59 +434,73 @@ def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
 #     assert is_k_core(p, k + 1)
 #     return k_shape_to_catalan_function(p, k, base_ring)
 
-class DoubleIntegers():
-    # merely a helper for DoubleRing
-    def __contains__(self, el):
-        return el in IntegerRing() or el == '*'
+# class DoubleIntegers():
+#     # merely a helper for DoubleRing
+#     def __contains__(self, el):
+#         return el in IntegerRing() or el == '*'
 
-# NEW IDEA.  Can we just use SYMMETRIC FUNCTIONS plugging in x = a and LOSING the SYMMETRIC PART?
-class DoubleRing(CombinatorialFreeModule):
-    # it's an algebra if you consider the a's and the decorative integers as 'separate'.
-    # if you consider them all together, it's a ring
-    def __init__(self, base_ring=IntegerRing(), prefix='a', basis_indecis=DoubleIntegers()):
-        self._prefix = prefix
-        self._base_ring = base_ring
-        self._basis_indecis = basis_indecis
-        # category
-        # TODO: make commutative? make free?
-        category = Algebras(self._base_ring.category()).WithBasis()
-        category = category.or_subcategory(category)
-        # init
-        CombinatorialFreeModule.__init__(
-            self,
-            self._base_ring,
-            self._basis_indecis,
-            category=category,
-            prefix=self._prefix,
-            bracket=False)
+# # NEW IDEA.  Can we just use SYMMETRIC FUNCTIONS plugging in x = a and LOSING the SYMMETRIC PART?
+# class DoubleRing(CombinatorialFreeModule):
+#     # it's an algebra if you consider the a's and the decorative integers as 'separate'.
+#     # if you consider them all together, it's a ring
+#     def __init__(self, base_ring=IntegerRing(), prefix='a', basis_indecis=DoubleIntegers()):
+#         self._prefix = prefix
+#         self._base_ring = base_ring
+#         self._basis_indecis = basis_indecis
+#         # category
+#         # TODO: make commutative? make free?
+#         category = Algebras(self._base_ring.category()).WithBasis()
+#         category = category.or_subcategory(category)
+#         # init
+#         CombinatorialFreeModule.__init__(
+#             self,
+#             self._base_ring,
+#             self._basis_indecis,
+#             category=category,
+#             prefix=self._prefix,
+#             bracket=False)
 
-    def __getitem__(self, index):
-        assert index in self._basis_indecis
-        return self.basis()[index]
+#     def __getitem__(self, index):
+#         assert index in self._basis_indecis
+#         return self.basis()[index]
 
-    def _element_constructor_(self, index):
-        return self.__getitem__(index)
+#     def _element_constructor_(self, index):
+#         return self.__getitem__(index)
 
-    @cached_method
-    def one_basis(self):
-        # identity index
-        return '*'
+#     @cached_method
+#     def one_basis(self):
+#         # identity index
+#         return '*'
 
-    def _repr_(self):
-        return "DoubleRing over {base_ring}".format(base_ring=self._base_ring)
+#     def _repr_(self):
+#         return "DoubleRing over {base_ring}".format(base_ring=self._base_ring)
 
-    class Element(CombinatorialFreeModule.Element):
-        def indecis(self):
-            return self.support()
+#     class Element(CombinatorialFreeModule.Element):
+#         def indecis(self):
+#             return self.support()
 
-        def index(self):
-            if len(self) != 1:
-                raise ValueError("This is only defined for basis elements.  For other elements, use indecis() instead.")
-            return self.indecis()[0]
+#         def index(self):
+#             if len(self) != 1:
+#                 raise ValueError("This is only defined for basis elements.  For other elements, use indecis() instead.")
+#             return self.indecis()[0]
 
-        # def _mul_(self, other):
-            # TODO: make it free
-            # we could change basis elements to a_dic where dic keys is an increasing list of integers and values are multiplicities
-            # this would be free and have multiplication and be commutative.
+#         # def _mul_(self, other):
+#             # TODO: make it free
+#             # we could change basis elements to a_dic where dic keys is an increasing list of integers and values are multiplicities
+#             # this would be free and have multiplication and be commutative.
+
+class DoubleRing(PolynomialRing)
+    def __init__(self, base_ring=QQ, bound=999, name='a'):
+        PolynomialRing.__init__(self,
+            base_ring,
+            bound,
+            names=name)
+
+LambdaA = SymmetricFunctions(DoubleRing())
+
+
+
+
+
 
 
