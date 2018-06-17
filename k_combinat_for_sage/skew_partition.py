@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 Sage has a builtin `SkewPartition <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/skew_partition.html>`_ object (a.k.a. skew-shape).  *This* module adds extra useful functions for skew partitions:
 
 REFERENCES:
@@ -18,14 +18,14 @@ def is_strictly_decreasing(li):
 
 # SkewPartition stuff
 def is_symmetric(sp):
-    """ A SkewPartition is *symmetric* if its inner and outer shapes are symmetric.
+    r""" A SkewPartition is *symmetric* if its inner and outer shapes are symmetric.
 
     Returns True iff the SkewPartition `sp` is equal to its own conjugate.
     """
     return sp == sp.conjugate()
 
 def right(sp, row_index):
-    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *rightmost* cell in the corresponding row.  (Section 2.1 of [mem]_)
+    r""" Given a SkewPartition and a 0-based row index, return the 0-based column index of the *rightmost* cell in the corresponding row.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -43,7 +43,7 @@ def right(sp, row_index):
     return col_index
 
 def left(sp, row_index):
-    """ Given a SkewPartition and a 0-based row index, return the 0-based column index of the *leftmost* cell in the corresponding row.  (Section 2.1 of [mem]_)
+    r""" Given a SkewPartition and a 0-based row index, return the 0-based column index of the *leftmost* cell in the corresponding row.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -65,7 +65,7 @@ def left(sp, row_index):
     return col_index
 
 def top(sp, col_index):
-    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *topmost* cell in the corresponding column.  (Section 2.1 of [mem]_)
+    r""" Given a SkewPartition and a 0-based column index, return the 0-based row index of the *topmost* cell in the corresponding column.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -79,7 +79,7 @@ def top(sp, col_index):
     return right(sp.conjugate(), col_index)
 
 def bottom(sp, col_index):
-    """ Given a SkewPartition and a 0-based column index, return the 0-based row index of the *bottommost* cell in the corresponding column.  (Section 2.1 of [mem]_)
+    r""" Given a SkewPartition and a 0-based column index, return the 0-based row index of the *bottommost* cell in the corresponding column.  (Section 2.1 of [mem]_)
 
     EXAMPLES::
 
@@ -93,7 +93,7 @@ def bottom(sp, col_index):
     return left(sp.conjugate(), col_index)
 
 def is_linked(sp):
-    """
+    r"""
     A skew-shape `sp` is a *skew-linked diagram* if both the row-shape and column-shape of `sp` are partitions.
 
     EXAMPLES::
@@ -134,7 +134,7 @@ def row_col_to_skew_partition(rs, cs):
     return SkewPartition([outer, inner])
 
 def k_boundary_to_partition(sp, k=None, strict=True):
-    """
+    r"""
     Given a `k`-boundary `sp` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.  (For definition of `k`-boundary, see Section 2.2 of [mem]_)
 
     If strict is set to True, the program will assert that the skew-shape really is a `k`-boundary.
@@ -157,7 +157,7 @@ def k_boundary_to_partition(sp, k=None, strict=True):
     return sp.outer()
 
 def is_k_boundary(sp, k=None):
-    """
+    r"""
     Given a skew-shape `sp` and natural number `k`, return True iff `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
 
     Given a skew-shape `sp` *only*, return True iff there exists some `k` such that `sp` is a `k`-boundary.
@@ -181,12 +181,12 @@ def is_k_boundary(sp, k=None):
         # the only valid 0-boundary is the empty shape
         return sp.outer() == sp.inner()
     else:
-        """We go down and left of each cell to create the only possible partition that could have led to this potential k-boundary
+        r"""We go down and left of each cell to create the only possible partition that could have led to this potential k-boundary
 
         (Any other partition containing this skew_shape would necessarily have a northeast corner that the skew_shape does *not have*.  But in order for the skew-shape to be a k-boundary, it *must have* that northeast corner.)
         """
         l = k_boundary_to_partition(sp, strict=False)
-        """now that we have the partition, we simply compute it's hook-length for each cell and verify that for each cell of values k or less, it appears in the sp"""
+        r"""now that we have the partition, we simply compute it's hook-length for each cell and verify that for each cell of values k or less, it appears in the sp"""
         correct_k_boundary = l.k_boundary(k)
         return sp == correct_k_boundary
 
@@ -233,7 +233,7 @@ def ptn_to_linked_things(p):
             almost_complete_things += thing_to_added_row_things(incomplete_thing, p[-1])
         return almost_complete_things
 def row_shape_to_linked_skew_partitions(rs):
-    """ Given a partition `rs`, find all linked SkewPartitions whose row-shape is `rs`.
+    r""" Given a partition `rs`, find all linked SkewPartitions whose row-shape is `rs`.
 
     EXAMPLES::
 
@@ -245,7 +245,7 @@ def row_shape_to_linked_skew_partitions(rs):
     rs_zero = list(Partition(rs)) + [0]
     return ptn_to_linked_things(rs_zero)
 def size_to_linked_skew_partitions(size):
-    """ Given a natural number `size`, return all linked SkewPartitions of size `size`.
+    r""" Given a natural number `size`, return all linked SkewPartitions of size `size`.
 
     EXAMPLES::
 

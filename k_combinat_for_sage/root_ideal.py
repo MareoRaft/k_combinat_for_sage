@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 Sage does *not* have a builtin 'RootIdeal' object.  *This* module contains a RootIdeal class and useful functions pertaining to root ideals:
 
 REFERENCES:
@@ -33,9 +33,9 @@ def get_dim(n, ri_list):
 
 # RootIdeal stuff
 class RootIdeal(list):
-    """ An upper root ideal.
+    r""" An upper root ideal.
 
-    Consider the k-1 staircase partition `[k-1, k-2, \\ldots, 1]` positioned in the upper-right corner of a `k` x `k` grid.  The cells in the grid are labeled with (row_index, col_index) 0-based coordinates.  Now consider any right-justified subpartition of the staircase partition.  This is a RootIdeal.  However, it is expressed not as a partition but as a list of the cells it contains.
+    Consider the k-1 staircase partition `[k-1, k-2, \ldots, 1]` positioned in the upper-right corner of a `k` x `k` grid.  The cells in the grid are labeled with (row_index, col_index) 0-based coordinates.  Now consider any right-justified subpartition of the staircase partition.  This is a RootIdeal.  However, it is expressed not as a partition but as a list of the cells it contains.
 
     For example, the partition `[3, 1]` in the 7 x 7 grid is the root ideal `[(0,4), (0,5), (0,6), (1,6)]`.
 
@@ -96,7 +96,7 @@ def selected_rows_to_maximum_root_ideal(n, selected_indecis):
     return root_ideal_cells
 
 def skew_partition_to_removable_roots(sp, type='max'):
-    """
+    r"""
     Given a SkewPartition `sp`, return the removable roots of the corresponding 'min' or 'max' root ideal.
 
     type: 'min' or 'max'
@@ -139,13 +139,13 @@ def removable_roots_to_partition(corners, n):
     return Partition(ptn)
 
 def removable_roots_to_root_ideal(corners, n):
-    """ Given the removable roots `corners` of a root ideal and the size length `n` of the n x n grid, return the root ideal itself. """
+    r""" Given the removable roots `corners` of a root ideal and the size length `n` of the n x n grid, return the root ideal itself. """
     ptn = removable_roots_to_partition(corners, n)
     ri = partition_to_root_ideal(ptn, n)
     return ri
 
 def skew_partition_to_root_ideal(sp, type='max', method='removable roots'):
-    """ Given a SkewPartition `sp` and a type of root ideal ('max' or 'min'), return the corresponding root ideal. """
+    r""" Given a SkewPartition `sp` and a type of root ideal ('max' or 'min'), return the corresponding root ideal. """
     if method == 'removable roots':
         corners = skew_partition_to_removable_roots(sp, type)
         n = len(sp.outer())
@@ -173,7 +173,7 @@ def RootIdeal_next(ri, min=[], max=None, n=None, type='strict'):
     return next_ri
 
 def skew_partition_to_root_ideals(sp, type='strict'):
-    """ Given a skew partition `sp`, find the corresponding set (but given as a list here) of root ideals.
+    r""" Given a skew partition `sp`, find the corresponding set (but given as a list here) of root ideals.
     """
     # We could change this to an iterator if users may not want all the root ideals.
     min_ri = skew_partition_to_root_ideal(sp, type='min')
@@ -184,7 +184,7 @@ def skew_partition_to_root_ideals(sp, type='strict'):
     return ris
 
 def down(ri, row_index):
-    """ Given a root ideal `ri` and a starting position `row_index`, move right on that row until you hit the root ideal (you are now standing ontop of a cell of the root ideal), then move straight down until you hit the diagonal, and return the new index.
+    r""" Given a root ideal `ri` and a starting position 'row_index', move right on that row until you hit the root ideal (you are now standing ontop of a cell of the root ideal), then move straight down until you hit the diagonal, and return the new index.
     """
     # Note: I am assuming the cells in the root ideal are IN ORDER with y coordinates weakly increasing, and for fixed y, x strictly increasing
     for (r,c) in ri:
@@ -193,7 +193,7 @@ def down(ri, row_index):
     return None
 
 def up(root_ideal, col_index):
-    """ Same as :meth:`down`, but this time you start in the *column* indicated by `column_index`, and move *up* until you hit the root ideal, then move *left* until you hit the diagonal.
+    r""" Same as :meth:`down`, but this time you start in the *column* indicated by 'column_index', and move *up* until you hit the root ideal, then move *left* until you hit the diagonal.
     """
     for (r,c) in reversed(root_ideal):
         if c == index:
@@ -211,32 +211,32 @@ def generate_path(next_func, start):
     return path
 
 def down_path(root_ideal, start_index):
-    """ Given a starting row index `start_index`, perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indecis as a list.
+    r""" Given a starting row index 'start_index', perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indecis as a list.
     """
     next_func = lambda index: down(root_ideal, index)
     return generate_path(next_func, start_index)
 
 def up_path(root_ideal, start_index):
-    """ Same as :meth:`down_path`, but uses a *column* index to start with, and applies *up* operations repeatedly.
+    r""" Same as :meth:`down_path`, but uses a *column* index to start with, and applies *up* operations repeatedly.
     """
     next_func = lambda index: up(root_ideal, index)
     return generate_path(next_func, start_index)
 
 def top(root_ideal, start_index):
-    """ Given a column index `start_index`, look at it's :meth:`up_path` and return the final index.
+    r""" Given a column index 'start_index', look at it's :meth:`up_path` and return the final index.
     """
     return up_path(root_ideal, start_index)[-1]
 
 def bottom(root_ideal, start_index):
-    """ Given a row index `start_index`, look at it's :meth:`down_path` and return the final index.
+    r""" Given a row index 'start_index', look at it's :meth:`down_path` and return the final index.
     """
     return down_path(root_ideal, start_index)[-1]
 
 def down_path_column_lengths_part(root_ideal, ptn, start_index):
-    """ This is `\\mu_i` in Definition 2.3 of [scat]_. """
+    r""" This is `\mu_i` in Definition 2.3 of [scat]_. """
     return sum(ptn[j] for j in down_path(root_ideal, start_index))
 def down_path_column_lengths(root_ideal, ptn):
-    """ This is the column shape `\\mu'` as defined by Definition 2.3 of [scat]_.  It is also introduced in the second paragraph of the overview as `\\mathfrak{cs}(\\Psi, \\lambda)`. """
+    r""" This is the column shape `\mu'` as defined by Definition 2.3 of [scat]_.  It is also introduced in the second paragraph of the overview as `\mathfrak{cs}(\Psi, \lambda)`. """
     if not root_ideal:
         mu = ptn
     else:
@@ -254,7 +254,7 @@ def down_path_column_lengths(root_ideal, ptn):
     return Partition(mu)
 
 def root_ideal_to_partition(root_ideal):
-    """ Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal).
+    r""" Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal).
     """
     if root_ideal is None or root_ideal == False:
         return root_ideal
@@ -268,7 +268,7 @@ def root_ideal_to_partition(root_ideal):
     return Partition(ptn)
 
 def partition_to_root_ideal(ptn, n):
-    """ Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to :meth:`root_ideal_to_partition` in the context of an `n` x `n` grid.)
+    r""" Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to :meth:`root_ideal_to_partition` in the context of an `n` x `n` grid.)
     """
     if ptn is None or ptn == False:
         return ptn
@@ -278,13 +278,13 @@ def partition_to_root_ideal(ptn, n):
     return RootIdeal(root_ideal)
 
 def is_strict(ri):
-    """ Given a root ideal `ri`, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!
+    r""" Given a root ideal `ri`, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!
     """
     ptn = root_ideal_to_partition(ri)
     return is_strictly_decreasing(ptn)
 
 def complement(ri, n=None):
-    """ Given a root ideal (could be upper or lower), return it's complement in the upper-staircase-shape, the result being a root ideal.
+    r""" Given a root ideal (could be upper or lower), return it's complement in the upper-staircase-shape, the result being a root ideal.
     """
     n = get_dim(n, [ri])
     p_staircase = Partition(list(range(n-1, 0, -1)))
@@ -294,7 +294,7 @@ def complement(ri, n=None):
     return ri_complement
 
 def partition_to_k_schur_root_ideal(ptn, k, n=None):
-    """ Given a `k`-bounded partition `ptn` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal.
+    r""" Given a `k`-bounded partition `ptn` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal.
     """
     ptn = Partition(ptn)
     if n is None:

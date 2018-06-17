@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 Sage does *not* have a builtin 'kShape' object.  *This* module contains useful functions pertaining to `k`-shapes:
 
 REFERENCES:
@@ -17,11 +17,11 @@ def k_rectangle_dimension_list(k):
 
 # kShape verifier
 def is_k_shape(ptn, k):
-    """ A partition is a `k`-*shape* if its `k`-boundary has row-shape and col-shape that are partitions themselves. (Definition 2.1 of [genocchi]_)
+    r""" A partition is a `k`-*shape* if its `k`-boundary has row-shape and col-shape that are partitions themselves. (Definition 2.1 of [genocchi]_)
 
     Given a partition `ptn` and a natural number `k`, returns True iff `ptn` is a `k`-shape.
 
-    Given a partition `ptn` *only*, returns True iff there exists some `k \\in [1, n-1]` such that `ptn` is a `k`-shape.
+    Given a partition `ptn` *only*, returns True iff there exists some `k \in [1, n-1]` such that `ptn` is a `k`-shape.
 
     EXAMPLES::
 
@@ -42,9 +42,9 @@ def is_k_shape(ptn, k):
 
 #kShape stuff
 def h_bounds(p, k, width):
-    """ Recall the `H_i` as defined in Definition 3.3 of [genocchi]_.
+    r""" Recall the `H_i` as defined in Definition 3.3 of [genocchi]_.
 
-    Given a natural number `k` (used for the `k`-shape or `k`-boundary) and a width `width`, returns `(y_\\text{min}, y_\\text{max})`, the two vertical coordinates which define the horizontal strip.
+    Given a natural number `k` (used for the `k`-shape or `k`-boundary) and a width `width`, returns `(y_\text{min}, y_\text{max})`, the two vertical coordinates which define the horizontal strip.
 
     EXAMPLES::
 
@@ -65,7 +65,7 @@ def h_bounds(p, k, width):
     return (y_min, y_max)
 
 def v_bounds(p, k, height):
-    """ This is `V_i`, the vertical analog of :meth:`h_bounds`.
+    r""" This is `V_i`, the vertical analog of :meth:`h_bounds`.
 
     EXAMPLES::
 
@@ -110,7 +110,7 @@ def is_reducible2(p, k):
     return False
 
 def is_reducible(ptn, k, method=2):
-    """ A `k`-shape `ptn` is called *reducible* if there exists a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
+    r""" A `k`-shape `ptn` is called *reducible* if there exists a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
 
     Note that this is different than the definition of a reducible partition!
 
@@ -134,7 +134,7 @@ def is_reducible(ptn, k, method=2):
         raise ValueError('Unknown reducibility method.')
 
 def is_irreducible(s, k, method=2):
-    """ A `k`-shape `ptn` is called *irreducible* if there does *not* exist a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
+    r""" A `k`-shape `ptn` is called *irreducible* if there does *not* exist a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
 
     Given a `k`-shape `ptn` and a natural number `k`, returns True iff `ptn` is irreducible.
 
@@ -155,7 +155,7 @@ def is_irreducible(s, k, method=2):
 
 ############# GETTER FUNCS ############
 def k_to_irreducible_k_shapes(k, method=2):
-    """ Given a natural number `k`, return a list of all irreducible `k`-shapes.
+    r""" Given a natural number `k`, return a list of all irreducible `k`-shapes.
 
     Note that the algorithm runs very slowly after `k=4` :(.
 

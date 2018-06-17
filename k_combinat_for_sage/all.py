@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+r"""
 This module contains all functionalities that are not already organized into the other files.  New functionalities written to the library often appear here, and eventually get organized into separate files.
 """
 from sage.all import *
@@ -41,7 +41,7 @@ def get_k_irreducible_partition_lists(k):
     return k_irr_ptns
 
 def get_k_irreducible_partitions(k):
-    """ Given k, return the n! k-irreducible-partitions. """
+    r""" Given k, return the n! k-irreducible-partitions. """
     return [Partition(e) for e in get_k_irreducible_partition_lists(k)]
 
 def size_to_num_linked_partition_self_pairs(n):
@@ -63,27 +63,30 @@ def print_sequence(func, num_terms=float('inf')):
         print('n={}\t{}=f(n)'.format(n, func(n)))
 
 def size_to_k_shapes(n, k):
-    """ Find all partitions of size n that are k-shapes. """
+    r""" Find all partitions of size n that are k-shapes. """
     return [ptn for ptn in Partitions(n) if is_k_shape(ptn, k)]
 
 def size_to_num_k_shapes(n, k):
     return len(size_to_k_shapes(n, k))
 
 def straighten(s, gamma):
-    """ Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).
+    r""" Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).
 
-    `s_\\gamma(\\mathbf{x}) = \\begin{cases}
-        \\sgn(\\gamma+\rho) s_{\\text{sort}(\\gamma+\\rho) -\\rho}(\\mathbf{x}) & \\text{if $\\gamma + \\rho$ has distinct nonnegative parts,}\\
-        0                                                          & \\text{otherwise,}
-    \\end{cases}`
+    .. MATH::
 
-    where `\\rho=(\\ell-1,\\ell-2,\\dots,0)`, `\\text{sort}(\\beta)` denotes the weakly decreasing sequence obtained by sorting `\\beta`, and `\\sgn(\\beta)` denotes the sign of the (shortest possible) sorting permutation.
+        s_{\gamma}(\mathbf{x}) = \begin{cases}
+            \text{sgn}(\gamma+\rho) s_{\text{sort}(\gamma+\rho) -\rho}(\mathbf{x}) & \text{if } \gamma + \rho \text{ has distinct nonnegative parts,} \\
+            0 & \text{otherwise,}
+        \end{cases}
+
+    where `\rho=(\ell-1,\ell-2,\dots,0)`, `\text{sort}(\beta)` denotes the weakly decreasing sequence obtained by sorting `\beta`, and `\text{sgn}(\beta)` denotes the sign of the (shortest possible) sorting permutation.
 
     EXAMPLES::
 
         sage: straighten([2, 1, 3])
         -s[2, 2, 2]
         # because s[2, 1, 3] := -s[2, 2, 2]
+
     """
     def has_nonnegative_parts(lis):
         return all(e >= 0 for e in lis)
@@ -181,7 +184,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         return "Shifting Operator Algebra over {base_ring}".format(base_ring=self._base_ring)
 
     class Element(CombinatorialFreeModule.Element):
-        """ element of a ShiftingOperatorAlgebra"""
+        r""" element of a ShiftingOperatorAlgebra"""
         def indecis(self):
             return self.support()
 
@@ -253,7 +256,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             return out
 
 class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
-    """
+    r"""
     We follow the following convention!:
 
     R((1, 0, -1)) is the raising operator that raises the first part by 1 and lowers the third part by 1.
@@ -263,7 +266,9 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
     If you do NOT want any restrictions on the allowed sequences, simply use 'ShiftingOperatorAlgebra' instead of 'RaisingOperatorAlgebra'.
 
     OPTIONAL ARGUMENTS:
+
     - ``base_ring`` -- (default ``QQ['t']``) the ring you will use on the raising operators.
+
     - ``prefix`` -- (default ``"R"``) the label for the raising operators.
 
     EXAMPLES::
@@ -291,7 +296,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
             basis_indecis=RaisingSequenceSpace())
 
     def ij(self, i, j):
-        """ Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indecis here are 0-based, not 1-based.
+        r""" Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indecis here are 0-based, not 1-based.
 
         EXAMPLES::
 
@@ -314,12 +319,12 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
 
 class HallLittlewoodVertexOperator:
-    """
+    r"""
     Garsia's version of Jing's Hall-Littlewood vertex operators.  These are defined in equations 4.2 and 4.3 of [cat]_ and appear visually as a bold capital H.
 
     INPUTS:
 
-    base_ring: (defaults to QQ['t']) the base ring to build the SymmetricFunctions upon.
+    - ``base_ring``: (default ``QQ['t']``) the base ring to build the SymmetricFunctions upon.
 
     EXAMPLES::
 
@@ -350,8 +355,8 @@ class HallLittlewoodVertexOperator:
 
 
 def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
-    """
-    Given gamma, returns the compositional Hall-Littlewood polynomial `H_{\\gamma}(\\mathbf{x}; t)` in the Q' basis, as defined in [cat]_ section 4.4.
+    r"""
+    Given gamma, returns the compositional Hall-Littlewood polynomial `H_{\gamma}(\mathbf{x}; t)` in the Q' basis, as defined in [cat]_ section 4.4.
 
     If the composition gamma is a partition, this is just the Hall-Littlewood Q' polynomial.
 
@@ -368,7 +373,7 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
     return H(gamma)(hl.one())
 
 def raising_root_ideal_operator(ri, t=1):
-    """ Given a root ideal `ri = \\Phi` (and optionally a variable `t`), return the operator `\\Prod_{(i,j) \\in \\Phi} (1 - tR_{ij})`.
+    r""" Given a root ideal `ri = \Phi` (and optionally a variable `t`), return the operator `\prod_{(i,j) \in \Phi} (1 - tR_{ij})`.
     """
     R = RaisingOperatorAlgebra()
     def prod(iterable):
@@ -377,11 +382,12 @@ def raising_root_ideal_operator(ri, t=1):
     return op
 
 def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
-    """
+    r"""
     INPUTS:
 
-    ri: root_ideal
-    index: composition that indexes the root ideal
+    - ``ri``: the root ideal
+
+    - ``index``: composition that indexes the root ideal
 
     OUTPUTS:
 
@@ -398,20 +404,20 @@ def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
     return cat_func
 
 def skew_partition_to_catalan_function(sp, base_ring=QQ['t']):
-    """ Given a SkewPartition `sp = (\\lambda, \\mu)`, return the catalan function `H(\\Phi^+(sp); \\lambda)`.
+    r""" Given a SkewPartition `sp = (\lambda, \mu)`, return the catalan function `H(\Phi^+(sp); \lambda)`.
     """
     ri = skew_partition_to_root_ideal(sp, type='max')
     rs = sp.row_lengths()
     return indexed_root_ideal_to_catalan_function(ri, rs, base_ring)
 
 def row_and_column_lengths_to_catalan_function(row_lengths, column_lengths, base_ring=QQ['t']):
-    """ Determine the skew partition `D` with row-shape `row_lengths` and column-shape `column_lengths`, and return the catalan function `H(\\Phi^+(D); row_lengths)`.
+    r""" Determine the skew partition `D` with row-shape `row_lengths` and column-shape `column_lengths`, and return the catalan function `H(\Phi^+(D); row_lengths)`.
     """
     sp = SkewPartitions().from_row_and_column_length(row_lengths, column_lengths)
     return skew_partition_to_catalan_function(sp, base_ring)
 
 def k_shape_to_catalan_function(p, k, base_ring=QQ['t']):
-    """ Given `k` and a `k`-shape `p`, return the catalan function `H(\\Psi^+((rs(p),cs(p))), rs(p))`.
+    r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Psi^+((rs(p),cs(p))), rs(p))`.
     """
     assert is_k_shape(p, k)
     rs = p.row_lengths()
