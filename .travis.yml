@@ -7,14 +7,15 @@ python:
 before_install:
 - pwd
 - DIR_BASE=$(pwd)
-- mkdir temp-install-sage
-- cd temp-install-sage
+- DIR_INSTALL="${DIR_BASE}"/temp-install-sage
+- mkdir "${DIR_INSTALL}"
+- cd "${DIR_INSTALL}"
 - pwd
-- wget http://mirrors.mit.edu/sage/linux/64bit/sage-8.2-Ubuntu_16.04-x86_64.tar.bz2
+- wget -q http://mirrors.mit.edu/sage/linux/64bit/sage-8.2-Ubuntu_16.04-x86_64.tar.bz2
 - ls
 - tar -xf sage-8.2-Ubuntu_16.04-x86_64.tar.bz2
 - ls
-- ln -s "${DIR_BASE}"/temp-install-sage/SageMath/sage /usr/local/bin/sage
+- sudo ln -s "${DIR_INSTALL}"/SageMath/sage /usr/local/bin/sage
 - which sage
 - sage --version
 script:
