@@ -4,7 +4,19 @@ sudo: required
 language: python # python will be pre-installed on server thanks to this
 python:
 - "2.7"
-# before_install:
+before_install:
+- pwd
+- DIR_BASE=$(pwd)
+- mkdir temp-install-sage
+- cd temp-install-sage
+- pwd
+- wget http://mirrors.mit.edu/sage/linux/64bit/sage-8.2-Ubuntu_16.04-x86_64.tar.bz2
+- ls
+- tar -xf sage-8.2-Ubuntu_16.04-x86_64.tar.bz2
+- ls
+- ln -s "${DIR_BASE}"/temp-install-sage/SageMath/sage /usr/local/bin/sage
+- which sage
+- sage --version
 script:
 - uname -a
 - pwd
