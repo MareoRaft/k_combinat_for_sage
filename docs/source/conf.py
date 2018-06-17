@@ -13,11 +13,11 @@
 # serve to show the default.
 
 # General information about the project.
-project = u"An example of a basic sage package"
-copyright = u'2016, Viviane Pons'
+project = u'k-Schur combinatorics for SageMath'
+copyright = u'2018, Matthew Lancellotti, George Seelinger, Jennifer Morse'
 package_name = 'k_combinat_for_sage'
-package_folder = "../../k_combinat_for_sage"
-authors = u"Matthias Koeppe, Sébastien Labbé, Viviane Pons, Nicolas M. Thiéry, ... with inspiration from many"
+package_folder = '../../k_combinat_for_sage'
+author = authors = u'Matthew Lancellotti with special thanks to George Seelinger and Jennifer Morse'
 
 import sys
 import os
@@ -46,13 +46,14 @@ sys.path.append(os.path.join(SAGE_SRC, "sage_setup", "docbuild", "ext"))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    #'sphinx.ext.autodoc',
-    'sage_autodoc',
+    'sage_autodoc', # <-- overhauls sphinx.ext.autodoc
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.extlinks',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -75,8 +76,7 @@ master_doc = 'index'
 # built documents.
 #
 # The short X.Y version.
-# version = open("../../VERSION").read().strip()
-version = ''
+version = open('../../VERSION').read().strip()
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -107,7 +107,7 @@ default_role = 'math'
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-#show_authors = False
+show_authors = True
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -134,7 +134,7 @@ extlinks = {
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'sage' # if this gives you trouble, you can just switch the theme to 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -145,7 +145,10 @@ html_theme_options = {}
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 #html_theme_path = [os.path.join(SAGE_DOC_SRC, 'common', 'themes')]
-html_theme_path = [os.path.join(SAGE_DOC_SRC, 'common', 'themes', 'sage')]
+html_theme_path = [
+    os.path.join(SAGE_DOC_SRC, 'common', 'themes', 'sage'),
+    '_themes',
+]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -351,3 +354,24 @@ latex_elements['preamble'] += r'''
 \makeatother
 \renewcommand{\ttdefault}{txtt}
 '''
+
+# -- Options for Epub output ----------------------------------------------
+
+# Bibliographic Dublin Core info.
+epub_title = project
+epub_author = author
+epub_publisher = author
+epub_copyright = copyright
+
+# The unique identifier of the text. This can be a ISBN number
+# or the project homepage.
+#
+# epub_identifier = ''
+
+# A unique identification for the text.
+#
+# epub_uid = ''
+
+# A list of files that should not be packed into the epub file.
+epub_exclude_files = ['search.html']
+

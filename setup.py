@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 name = 'k_combinat_for_sage'
-version = '0.0.8'
+version = open('VERSION').read().strip()
 url = 'https://github.com/mareoraft/{name}'.format(name=name)
 download_url = '{url}/archive/{tag}.tar.gz'.format(url=url, tag=version)
 
@@ -14,6 +14,6 @@ setup(
 	author_email='mvlancellotti@gmail.com',
 	url=url, # URL to github repo
 	download_url=download_url,
-	keywords=['morse', 'k-boundary', 'k-rim', 'k-shape', 'skew-linked diagram', 'k-irreducible', 'root ideals'], # arbitrary keywords
+	keywords=['morse', 'k-boundary', 'k-rim', 'k-shape', 'skew-linked diagram', 'k-irreducible', 'root ideals', 'k-schur', 'combinatorics', 'sage', 'sagemath'],
 	classifiers=[],
 )
