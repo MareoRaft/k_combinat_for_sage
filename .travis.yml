@@ -1,36 +1,32 @@
 # For deployment to github pages, check resource https://docs.travis-ci.com/user/deployment/pages/
 # In GitHub settings, go to GitHub Pages section, Source subsection, and select "gh-pages branch" from dropdown.  That option WON'T APPEAR if you don't have a branch called 'gh-pages'.
 sudo: required
+dist: trusty # use Ubuntu Trusty Thar
 language: python # python will be pre-installed on server thanks to this
 python:
 - "2.7"
 before_install:
-- pwd
+- uname -a
 - DIR_REPO=$(pwd)
 - DIR_INSTALL="${DIR_REPO}"/temp-install-sage
 - mkdir "${DIR_INSTALL}"
 - cd "${DIR_INSTALL}"
-- pwd
 - FILE_NAME="sage-8.2-Ubuntu_16.04-x86_64.tar.bz2"
 - wget -q http://mirrors.mit.edu/sage/linux/64bit/"${FILE_NAME}"
-- ls
 - tar -xf "${FILE_NAME}"
-- ls
 - sudo ln -s "${DIR_INSTALL}"/SageMath/sage /usr/local/bin/sage
-- which sage
 - sage --version
+- sage --version
+- sudo apt-get update
+- sudo apt-get install libc6
 - cd "${DIR_REPO}"
 script:
-- uname -a
-- pwd
 - cd "${DIR_REPO}"/docs
-- pwd
 - make html
 - # move html files into place
 - mv "${DIR_REPO}"/docs/build/html/* "${DIR_REPO}"/docs/.
 - # include .nojekyll (see https://help.github.com/articles/files-that-start-with-an-underscore-are-missing/)
 - touch "${DIR_REPO}"/docs/.nojekyll
-- ls -a
 deploy:
   provider: pages
   skip_cleanup: true
