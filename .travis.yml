@@ -4,17 +4,9 @@ sudo: required
 language: python # python will be pre-installed on server thanks to this
 python:
 - "2.7"
-before_install:
-- wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -q -O miniconda.sh
-- bash miniconda.sh -b -p $HOME/miniconda
-- export PATH="$HOME/miniconda/bin:$PATH"
-- hash -r
-- conda config --set always_yes yes --set changeps1 no
-- conda update -q conda
-- conda config --prepend channels conda-forge --prepend channels symengine/label/dev
-- conda info -a
-- conda install -q sage
+# before_install:
 script:
+- uname -a
 - pwd
 - cd docs
 - pwd
