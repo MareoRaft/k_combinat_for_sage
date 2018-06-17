@@ -15,8 +15,8 @@
 # General information about the project.
 project = u"An example of a basic sage package"
 copyright = u'2016, Viviane Pons'
-package_name = 'sage_sample'
-package_folder = "../../sage_sample"
+package_name = 'k_combinat_for_sage'
+package_folder = "../../k_combinat_for_sage"
 authors = u"Matthias Koeppe, Sébastien Labbé, Viviane Pons, Nicolas M. Thiéry, ... with inspiration from many"
 
 import sys
@@ -75,7 +75,8 @@ master_doc = 'index'
 # built documents.
 #
 # The short X.Y version.
-version = open("../../VERSION").read().strip()
+# version = open("../../VERSION").read().strip()
+version = ''
 # The full version, including alpha/beta/rc tags.
 release = version
 

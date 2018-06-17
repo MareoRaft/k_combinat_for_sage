@@ -19,6 +19,7 @@ before_install:
 - sudo ln -s "${DIR_INSTALL}"/SageMath/sage /usr/local/bin/sage
 - sage --version
 - sage --version
+- sage -pip install sphinxcontrib-websupport
 - cd "${DIR_REPO}"
 script:
 - cd "${DIR_REPO}"/docs
