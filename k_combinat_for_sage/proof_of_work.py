@@ -140,8 +140,8 @@ assert indexed_root_ideal_to_catalan_function(root_ideal, [3, 1, 1]) == hl[3, 1,
 n = 2
 base_ring = QQ['t', 'q']
 (t, q) = base_ring.gens()
-op1 = raising_root_ideal_operator(n, t=q, base_ring=base_ring)
-op2 = raising_root_ideal_operator(n, t=t, base_ring=base_ring)
+op1 = raising_roots_operator(n, t=q, base_ring=base_ring)
+op2 = raising_roots_operator(n, t=t, base_ring=base_ring)
 # try out
 s = SymmetricFunctions(base_ring).s()
 assert op2(op1(s[4, 2])) == s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6]
@@ -149,13 +149,13 @@ assert op2(op1(s[4, 2])) == s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6]
 n = 3
 base_ring = QQ['t', 'q']
 (t, q) = base_ring.gens()
-op1 = raising_root_ideal_operator(n, t=q, base_ring=base_ring)
-op2 = raising_root_ideal_operator(n, t=t, base_ring=base_ring)
+op1 = raising_roots_operator(n, t=q, base_ring=base_ring)
+op2 = raising_roots_operator(n, t=t, base_ring=base_ring)
 # try out
 s = SymmetricFunctions(base_ring).s()
 assert op2(op1(s[4, 2])) == s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6]
 # for convenience, the double operator
-op = double_raising_root_ideal_operator(3)
+op = double_raising_roots_operator(3)
 assert op(s[4, 2]) == s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6]
 
 

@@ -388,29 +388,29 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
     H = HallLittlewoodVertexOperator
     return H(gamma)(hl.one())
 
-def double_raising_root_ideal_operator(ri, t=None, q=None, base_ring=QQ['t', 'q']):
-    r""" The q-t analogue of :meth:`raising_root_ideal_operator`. """
+def double_raising_roots_operator(ri, t=None, q=None, base_ring=QQ['t', 'q']):
+    r""" The q-t analogue of :meth:`raising_roots_operator`. """
     if ri in NonNegativeIntegerSemiring():
         ri = staircase_root_ideal(ri)
     if t is None:
         t = base_ring.gens()[0]
     if q is None:
         q = base_ring.gens()[1]
-    op1 = raising_root_ideal_operator(ri, t=q, base_ring=base_ring)
-    op2 = raising_root_ideal_operator(ri, t=t, base_ring=base_ring)
+    op1 = raising_roots_operator(ri, t=q, base_ring=base_ring)
+    op2 = raising_roots_operator(ri, t=t, base_ring=base_ring)
     return lambda x: op2(op1(x))
 
-def raising_root_ideal_operator(ri, t=1, base_ring=QQ['t']):
-    r""" Given a root ideal `ri = \Phi` (and optionally a variable `t`), return the operator `\prod_{(i,j) \in \Phi} (1 - tR_{ij})`.
+def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
+    r""" Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator `\prod_{(i,j) \in \Phi} (1 - tR_{ij})`.
 
-    If you input an integer for the root ideal `ri = n`, it will use the biggest possible root ideal in the `n` x `n` grid (the '`n`-th staircase root ideal').
+    If you input an integer for roots (e.g. ``roots = 3``), it will use the biggest possible root ideal in the `n` x `n` grid (the '`n`-th staircase root ideal').
     """
     R = RaisingOperatorAlgebra(base_ring=base_ring)
     def prod(iterable):
         return reduce(operator.mul, iterable, R.one())
-    if ri in NonNegativeIntegerSemiring():
-        ri = staircase_root_ideal(ri)
-    op = prod([1 - t*R.ij(i, j) for (i, j) in ri])
+    if roots in NonNegativeIntegerSemiring():
+        roots = staircase_root_ideal(roots)
+    op = prod([1 - t*R.ij(i, j) for (i, j) in roots])
     return op
 
 def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
@@ -431,7 +431,7 @@ def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
     # formula
     n = len(index)
     ri_complement = RI.complement(ri, n)
-    op = raising_root_ideal_operator(ri_complement, t=t)
+    op = raising_roots_operator(ri_complement, t=t)
     cat_func = op(hl(index))
     return cat_func
 
@@ -471,7 +471,7 @@ DoubleRing = InfiniteDimensionalFreeAlgebra(prefix='a', index_set=IntegerRing())
 
 
 def dual_k_theoretic_h(k, r, base_ring=QQ):
-    r""" The dual ktheoretic h, often denoted Kh, is defined for any integer `k` by the formula `h_k(x, r) = \sum_{i=0}^{k} \binom{r + i - 1}{i} h_{k - i}(x)` in [LN]_ p.88 top-right.
+    r""" The dual K-theoretic h, often denoted Kh, is defined for any integer `k` by the formula `h_k(x, r) = \sum_{i=0}^{k} \binom{r + i - 1}{i} h_{k - i}(x)` in [LN]_ p.88 top-right.
 
     If `k` and `r` are compositions, then it is recursively defined as `h_k(x, r) = \prod_j h_{k_j}(x, r_j)`.
 
@@ -512,9 +512,8 @@ def dual_grothendieck_function(composition):
     """
     n = len(composition)
     staircase_ri = staircase_root_ideal(n)
-    op = raising_root_ideal_operator(staircase_ri)
+    op = raising_roots_operator(staircase_ri)
     reversed_staircase_ptn = list(reversed(staircase_shape(n)))
-    print(reversed_staircase_ptn)
     Kh = dual_k_theoretic_h(composition, reversed_staircase_ptn)
     return op(Kh)
 
