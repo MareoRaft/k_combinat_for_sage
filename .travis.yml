@@ -1,6 +1,6 @@
 # For deployment to github pages, check resource https://docs.travis-ci.com/user/deployment/pages/
 # In GitHub settings, go to GitHub Pages section, Source subsection, and select "gh-pages branch" from dropdown.  That option WON'T APPEAR if you don't have a branch called 'gh-pages'.
-os: osx
+dist: trusty # use Ubuntu Trusty Thar
 sudo: required
 language: python # python will be pre-installed on server thanks to this
 python:
@@ -11,7 +11,7 @@ before_install:
 - DIR_INSTALL="${DIR_REPO}"/temp-install-sage
 - mkdir "${DIR_INSTALL}"
 - cd "${DIR_INSTALL}"
-- FILE_NAME="sage-8.2-Ubuntu_16.04-x86_64.tar.bz2"
+- FILE_NAME="sage-7.6-Ubuntu_14.04-x86_64.tar.bz2"
 - wget -q http://mirrors.mit.edu/sage/linux/64bit/"${FILE_NAME}"
 - tar -xf "${FILE_NAME}"
 - sudo ln -s "${DIR_INSTALL}"/SageMath/sage /usr/local/bin/sage
