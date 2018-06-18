@@ -4,16 +4,16 @@ Sage has a builtin `Partition <https://doc.sagemath.org/html/en/reference/combin
 """
 from sage.all import *
 
-channels = None
-codes = None
-game_theory = None
-graph_coloring = None
-groups = None
-iet = None
-matroids = None
-simplicial_complexes = None
-simplicial_sets = None
-valuations = None
+# channels = None
+# codes = None
+# game_theory = None
+# graph_coloring = None
+# groups = None
+# iet = None
+# matroids = None
+# simplicial_complexes = None
+# simplicial_sets = None
+# valuations = None
 
 # HELPERS
 def k_rectangle_dimension_list(k):
