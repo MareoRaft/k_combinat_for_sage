@@ -388,6 +388,18 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
     H = HallLittlewoodVertexOperator
     return H(gamma)(hl.one())
 
+def double_raising_root_ideal_operator(ri, t=None, q=None, base_ring=QQ['t', 'q']):
+    r""" The q-t analogue of :meth:`raising_root_ideal_operator`. """
+    if ri in NonNegativeIntegerSemiring():
+        ri = staircase_root_ideal(ri)
+    if t is None:
+        t = base_ring.gens()[0]
+    if q is None:
+        q = base_ring.gens()[1]
+    op1 = raising_root_ideal_operator(ri, t=q, base_ring=base_ring)
+    op2 = raising_root_ideal_operator(ri, t=t, base_ring=base_ring)
+    return lambda x: op2(op1(x))
+
 def raising_root_ideal_operator(ri, t=1, base_ring=QQ['t']):
     r""" Given a root ideal `ri = \Phi` (and optionally a variable `t`), return the operator `\prod_{(i,j) \in \Phi} (1 - tR_{ij})`.
 
@@ -459,9 +471,9 @@ DoubleRing = InfiniteDimensionalFreeAlgebra(prefix='a', index_set=IntegerRing())
 
 
 def dual_k_theoretic_h(k, r, base_ring=QQ):
-    """ The dual ktheoretic h, often denoted Kh, is defined for any integer `k` by the formula `h_k(x, r) = \\sum_{i=0}^{k} \\binom{r + i - 1}{i} h_{k - i}(x)` in [LN]_ p.88 top-right.
+    r""" The dual ktheoretic h, often denoted Kh, is defined for any integer `k` by the formula `h_k(x, r) = \sum_{i=0}^{k} \binom{r + i - 1}{i} h_{k - i}(x)` in [LN]_ p.88 top-right.
 
-    If `k` and `r` are compositions, then it is recursively defined as `h_k(x, r) = \\prod_j h_{k_j}(x, r_j)`.
+    If `k` and `r` are compositions, then it is recursively defined as `h_k(x, r) = \prod_j h_{k_j}(x, r_j)`.
 
     EXAMPLES::
 
@@ -489,11 +501,14 @@ def dual_k_theoretic_h(k, r, base_ring=QQ):
         return sum(binomial(r + i - 1, i) * h[k - i] for i in range(k + 1))
 
 def dual_grothendieck_function(composition):
-    """ Given a composition `composition = \\lambda`, return the dual Grothendieck function defined by `g_\\lambda(x) = \\text{det}(h_{\\lambda_i + j - i}(x, i - 1))` in [LN]_ p.88 equation (4).
+    r""" Given a composition `composition = \lambda`, return the dual Grothendieck function defined by `g_\lambda(x) = \text{det}(h_{\lambda_i + j - i}(x, i - 1))` in [LN]_ p.88 equation (4).
 
     EXAMPLES::
 
-        sage:
+        sage: h = SymmetricFunctions(QQ).h()
+        sage: dual_grothendieck_function([2, 1])
+        h[1]*h[2] + h[2] - h[3]
+
     """
     n = len(composition)
     staircase_ri = staircase_root_ideal(n)
