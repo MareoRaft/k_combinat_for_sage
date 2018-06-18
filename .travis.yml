@@ -10,7 +10,7 @@ before_install:
 - sudo apt-get update
 - sudo apt-get install libc6
 - sudo apt-get install build-essential
-- sudo apt-get install eglibc-source glibc-doc libc-bin libc-dev-bin libc6 libc6-amd64 libc6-dbg libc6-dev libc6-dev-amd64 libc6-dev-i386 libc6-dev-x32 libc6-i386 libc6-pic libc6-prof libc6-udeb libc6-x32 libnss-dns-udeb libnss-files-udeb multiarch-support nscd
+- sudo apt-get install eglibc-source glibc-doc libc-bin libc-dev-bin libc6 libc6-amd64 libc6-dbg libc6-dev libc6-dev-amd64 libc6-dev-i386 libc6-dev-x32 libc6-i386 libc6-pic libc6-prof libc6-x32 multiarch-support nscd
 - DIR_REPO=$(pwd)
 - DIR_INSTALL="${DIR_REPO}"/temp-install-sage
 - mkdir "${DIR_INSTALL}"
