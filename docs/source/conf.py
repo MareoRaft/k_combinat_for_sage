@@ -24,10 +24,6 @@ import os
 
 from sage.env import SAGE_DOC_SRC, SAGE_DOC, SAGE_SRC
 
-try:
-    import sage.all
-except ImportError:
-    raise RuntimeError("to build the documentation you need to be inside a Sage shell (run first the command 'sage -sh' in a shell")
 
 
 

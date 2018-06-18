@@ -148,3 +148,8 @@ and see if it fools sphinx.
 
 
 
+
+documentation:
+look at
+https://groups.google.com/forum/#!topic/sage-support/oJhV0fLdv7s
+for help
