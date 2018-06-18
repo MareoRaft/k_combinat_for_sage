@@ -3,6 +3,7 @@ sandbox.py
 questions.md
 MANIFEST
 pdfs
+*.orig
 
 
 ### JupyterNotebook ###
