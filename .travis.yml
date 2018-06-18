@@ -7,6 +7,8 @@ python:
 - "2.7"
 before_install:
 - uname -a
+- sudo apt-get update
+- sudo apt-get install libc6
 - DIR_REPO=$(pwd)
 - DIR_INSTALL="${DIR_REPO}"/temp-install-sage
 - mkdir "${DIR_INSTALL}"
