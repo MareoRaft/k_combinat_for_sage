@@ -966,49 +966,69 @@ a((0.5,) in S, False)
 R = ShiftingOperatorAlgebra()
 TestSuite(R).run(verbose=False)
 a(R(), R())
-a(R(), R(0))
-a(R((1, 2, 1)) * R((0, 1, 0, 1)), R((1, 3, 1, 1)))
+a(R[(1, 2, 1)] * R[(0, 1, 0, 1)], R[(1, 3, 1, 1)])
 # retrieve indices
-a(R((1, -1)).indices(), [(1, -1)])
-a((R((1, -1)) + 2 * R((1, 0, -1))).indices(), [(1, -1), (1, 0, -1)])
+a(R[(1, -1)].indices(), [(1, -1)])
+a((R[(1, -1)] + 2 * R[(1, 0, -1)]).indices(), [(1, -1), (1, 0, -1)])
 # retrieve index
-a(R((1,-1)).index(), (1,-1))
+a(R[(1,-1)].index(), (1,-1))
 # act on lists
-a(R((1, 0, -3))([2, 2]), [([3, 2, -3], 1)])
-a(R((2, 1, -1, -2))([2, 2]), [([4, 3, -1, -2], 1)])
+a(R[(1, 0, -3)]([2, 2]), [([3, 2, -3], 1)])
+a(R[(2, 1, -1, -2)]([2, 2]), [([4, 3, -1, -2], 1)])
 # act on symmetric functions
 Sym = SymmetricFunctions(QQ['t'])
 # act on s
 s = Sym.s()
-a(R((1, -1))(s[2, 1]), s[3])
+a(R[(1, -1)](s[2, 1]), s[3])
 # act on s with straightening
-a(R((1, 0, 2))(s[1, 1, 1]), -s[2, 2, 2])
+a(R[(1, 0, 2)](s[1, 1, 1]), -s[2, 2, 2])
 # act on h
 h = Sym.h()
-a(R((1, -1))(h[2, 1]), h[3])
+a(R[(1, -1)](h[2, 1]), h[3])
 # act on HL Q'
 hl = Sym.hall_littlewood().Qp()
-a(R((1, -1))(hl[2, 1]), hl[3])
+a(R[(1, -1)](hl[2, 1]), hl[3])
 # act on tuple of lists
-a(R((1, 0, -3))(([2, 2], [1], [-1])), ([([3, 2, -3], 1)], [([2, 0, -3], 1)], [([0, 0, -3], 1)]))
+a(R[(1, 0, -3)](([2, 2], [1], [-1])), ([([3, 2, -3], 1)], [([2, 0, -3], 1)], [([0, 0, -3], 1)]))
 # act on tuple of partitions
 s = Sym.s()
-a(R((3, 2, 2))((s[4, 4], s[1], s[2, 1])), (s[7, 6, 2], s[4, 2, 2], s[5, 3, 2]))
+a(R[(3, 2, 2)]((s[4, 4], s[1], s[2, 1])), (s[7, 6, 2], s[4, 2, 2], s[5, 3, 2]))
 
 
 # test RaisingOperatorAlgebra
 R = RaisingOperatorAlgebra()
 TestSuite(R).run(verbose=False)
+a(R[(1, -1)] * R[(0, 1, 0, -1)], R[(1, 0, 0, -1)])
+# create 'R_ij' element
+a(R.ij(1, 3), R[(0, 1, 0, -1)])
+# retrieve indices
+a(R[(1, -1)].indices(), [(1, -1)])
+a((R[(1, -1)] + 2 * R[(1, 0, -1)]).indices(), [(1, -1), (1, 0, -1)])
+# retrieve index
+a(R[(1, -1)].index(), (1, -1))
+
+
+# test infinite dimensional free algebra ('x' variables indexed by NN)
+R = InfiniteDimensionalFreeAlgebra()
+TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R(), R(0))
-a(R((1, -1)) * R((0, 1, 0, -1)), R((1, 0, 0, -1)))
-# create 'R_ij' element
-a(R.ij(1, 3), R((0, 1, 0, -1)))
+a(R.one(), R(1))
+a(2 * R.one(), R(2))
+a(R[1] + R[1], R(2 * R[1]))
+a(5 * R[3] + R[4], 5 * R[3] + R[4])
+a(R[1] * R[2], R[2] * R[1])
+a(R[1] + R[2], R[2] + R[1])
 # retrieve indices
-a(R((1, -1)).indices(), [(1, -1)])
-a((R((1, -1)) + 2 * R((1, 0, -1))).indices(), [(1, -1), (1, 0, -1)])
+# not implemented
 # retrieve index
-a(R((1, -1)).index(), (1, -1))
+# not implemented
+
+
+# test double ring
+DR = DoubleRing
+TestSuite(DR).run(verbose=False)
+a(5 * DR[3] + DR[-4], DR[-4] + DR[3] * 5)
 
 
 # test_straighten
