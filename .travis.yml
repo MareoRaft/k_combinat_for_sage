@@ -9,6 +9,8 @@ before_install:
 - uname -a
 - sudo apt-get update
 - sudo apt-get install libc6
+- sudo apt-get install glibc
+- sudo apt-get upgrade glibc
 - DIR_REPO=$(pwd)
 - DIR_INSTALL="${DIR_REPO}"/temp-install-sage
 - mkdir "${DIR_INSTALL}"
