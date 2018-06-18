@@ -11,6 +11,11 @@ print('Sage loaded.  Testing...')
 
 
 
+# test summands
+s = SymmetricFunctions(QQ).s()
+a(set(summands(s[1] + 2 + 3*s[34])), set([2*s[[]], s[1], 3*s[34]]))
+
+
 # test_SP_is_symmetric
 sp = SkewPartition([[], []])
 b = SP.is_symmetric(sp)
@@ -993,6 +998,10 @@ a(R[(1, 0, -3)](([2, 2], [1], [-1])), ([([3, 2, -3], 1)], [([2, 0, -3], 1)], [([
 # act on tuple of partitions
 s = Sym.s()
 a(R[(3, 2, 2)]((s[4, 4], s[1], s[2, 1])), (s[7, 6, 2], s[4, 2, 2], s[5, 3, 2]))
+# act on things added together
+s = Sym.s()
+a(R[(1, -1)](s[2, 1] + s[3, 1]), s[3] + s[4])
+
 
 
 # test RaisingOperatorAlgebra
@@ -1035,6 +1044,14 @@ a(5 * DR[3] + DR[-4], DR[-4] + DR[3] * 5)
 Sym = SymmetricFunctions(QQ)
 s = Sym.s()
 a(straighten(s, [2, 1, 3]), -s[2, 2, 2])
+h = Sym.h()
+a(straighten(h, [5, 1, 7]), h[7, 5, 1])
+e = Sym.e()
+a(straighten(e, [5, 1, 7]), e[7, 5, 1])
+p = Sym.p()
+a(straighten(p, [5, 1, 7]), p[7, 5, 1])
+w = Sym.w()
+a(straighten(w, [5, 1, 7]), w[7, 5, 1])
 
 
 # test hall littlewood vertex operator
@@ -1123,7 +1140,6 @@ a(dual_k_theoretic_h([1, 2], [2, 3]), 3*h[1]**2 + h[1]*h[2] + 2*h[2] + 12*h[1] +
 Sym = SymmetricFunctions(QQ)
 h = Sym.h()
 a(dual_grothendieck_function([2, 1]), h[1]*h[2] + h[2] - h[3])
-
 
 
 

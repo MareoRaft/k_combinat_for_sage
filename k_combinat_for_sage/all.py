@@ -9,10 +9,12 @@ REFERENCES:
 
 """
 from sage.all import *
+# TODO: see where these go again:
 # from sage.structure.unique_representation import UniqueRepresentation
 # from sage.structure.parent import Parent
 # from sage.categories.infinite_enumerated_sets import InfiniteEnumeratedSets
 
+from core import *
 from partition import *
 import partition as P
 from skew_partition import *
@@ -89,7 +91,7 @@ def straighten(s, gamma):
 
     EXAMPLES::
 
-        sage: s = SymmetricFunctions().s()
+        sage: s = SymmetricFunctions(QQ).s()
         sage: straighten(s, [2, 1, 3])
         -s[2, 2, 2]
         # because s[2, 1, 3] := -s[2, 2, 2]
@@ -107,15 +109,26 @@ def straighten(s, gamma):
                 if lis[i] < lis[j]:
                     num += 1
         return num
-    rho = list(range(len(gamma) - 1, -1, -1))
-    combined = [g + r for g, r in zip(gamma, rho)]
-    if has_distinct_parts(combined) and has_nonnegative_parts(combined):
-        sign = (-1)**number_of_noninversions(combined)
-        sort_combined = reversed(sorted(combined))
-        new_gamma = [sc - r for sc, r in zip(sort_combined, rho)]
-        return sign * s(new_gamma)
+    if s.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
+        raise NotImplemented('Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
+    elif s.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
+        new_gamma = list(reversed(sorted(gamma)))
+        if has_nonnegative_parts(new_gamma):
+            return s(new_gamma)
+        else:
+            return 0
+    elif s.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
+        rho = list(range(len(gamma) - 1, -1, -1))
+        combined = [g + r for g, r in zip(gamma, rho)]
+        if has_distinct_parts(combined) and has_nonnegative_parts(combined):
+            sign = (-1)**number_of_noninversions(combined)
+            sort_combined = reversed(sorted(combined))
+            new_gamma = [sc - r for sc, r in zip(sort_combined, rho)]
+            return sign * s(new_gamma)
+        else:
+            return 0
     else:
-        return 0
+        raise ValueError("The input parameter 's' should be a symmetric function basis.  For example, 's = SymmetricFunctions(QQ).s(); straighten(s, [2, 1, 3])', or one could use 'h' instead of 's'.")
 
 
 class ShiftingSequenceSpace():
@@ -217,41 +230,45 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                     operand = operand + [0] * (len(seq) - len(operand))
                     seq = seq + (0,) * (len(operand) - len(seq))
                     # raise and drop
-                    out = [v + s for v, s in zip(operand, seq)]
+                    return [v + s for v, s in zip(operand, seq)]
                 else:
                     # it's some symmetric function basis element
                     parent_basis = operand.parent()
                     # process the vectors
                     dic = operand.monomial_coefficients()
                     assert len(dic) == 1
-                    assert dic.values()[0] == 1
-                    composition = dic.keys()[0]
+                    (composition, coeff) = dic.items()[0] # occasionally a coefficient can show up (not cool, so consider the inclusion of coeff here a patch)
                     out_composition = raise_func(seq, composition)
-                    # TODO: check if out_composition is a valid partition.  when it's not, out becomes 0
-                    # TODO: change below to 'out_partition' once validated
-                    if parent_basis.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
-                        out = straighten(parent_basis, out_composition)
+                    if parent_basis.__class__.__name__ in (
+                            'SymmetricFunctionAlgebra_homogeneous_with_category',
+                            'SymmetricFunctionAlgebra_elementary_with_category',
+                            'SymmetricFunctionAlgebra_power_with_category',
+                            'SymmetricFunctionAlgebra_witt_with_category',
+                            'SymmetricFunctionAlgebra_schur_with_category'):
+                        return coeff * straighten(parent_basis, out_composition)
                     else:
-                        out = parent_basis(out_composition)
-                return out
+                        return coeff * parent_basis(out_composition)
             def call_monomial(seq, coeff, operand, power=1):
                 for _ in range(power):
                     operand = raise_func(seq, operand)
                 return (operand, coeff)
             # start here
             if isinstance(operand, tuple):
-                # if the operand is a tuple, perform __call__ on each piece (RECURSE)
+                # the operand is actually a tuple of operands, so perform __call__ on each piece
                 return tuple(self.__call__(op) for op in operand)
-            # break into basis pieces
-            index_coeff_list = self.monomial_coefficients().items()
-            # perform raise_func on each piece
-            out_list = [call_monomial(index, coeff, operand) for index, coeff in index_coeff_list]
-            # recombine
-            if isinstance(operand, list):
-                out = out_list
+            elif isinstance(operand, (list, Composition, Partition)):
+                # the operand is some kind of composition
+                return [call_monomial(index, coeff, operand) for index, coeff in self]
             else:
-                out = sum(coeff * mon for mon, coeff in out_list)
-            return out
+                # the operand is a symmetric function
+                if len(operand) > 1:
+                    # the operand looks like s[2, 1] + s[3], for example
+                    return sum(self.__call__(summand) for summand in summands(operand))
+                else:
+                    out_list = [call_monomial(index, coeff, operand) for index, coeff in self]
+                    return sum(coeff * mon for mon, coeff in out_list)
+
+
 
 class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
     r"""
@@ -373,10 +390,14 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
 
 def raising_root_ideal_operator(ri, t=1, base_ring=QQ['t']):
     r""" Given a root ideal `ri = \Phi` (and optionally a variable `t`), return the operator `\prod_{(i,j) \in \Phi} (1 - tR_{ij})`.
+
+    If you input an integer for the root ideal `ri = n`, it will use the biggest possible root ideal in the `n` x `n` grid (the '`n`-th staircase root ideal').
     """
     R = RaisingOperatorAlgebra(base_ring=base_ring)
     def prod(iterable):
         return reduce(operator.mul, iterable, R.one())
+    if ri in NonNegativeIntegerSemiring():
+        ri = staircase_root_ideal(ri)
     op = prod([1 - t*R.ij(i, j) for (i, j) in ri])
     return op
 
@@ -432,58 +453,6 @@ def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
 #     # TODO: compare the performance of this function to existing k-schur function.
 #     assert is_k_core(p, k + 1)
 #     return k_shape_to_catalan_function(p, k, base_ring)
-
-
-class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
-    """
-    By default, the algebra generated by ``x[0], x[1], x[2], ...`` over the integers.
-
-    To change the index set of the generators, use ``index_set=`` (default ``NN``).  To overhaul the set of generators entirely (not recommended), use ``basis_indices=``.
-
-    To change the ring that the algebra works over, use ``base_ring=`` (default ``ZZ``).
-
-    To change the prefix of the generators, use ``prefix=`` (default ``'x'``).
-    """
-    def __init__(self,
-            base_ring=IntegerRing(),
-            prefix='x',
-            basis_indices=None,
-            index_set=NonNegativeIntegerSemiring()):
-        self._base_ring = base_ring
-        self._basis_monoid = FreeMonoid(index_set=index_set, commutative=True, prefix=prefix) if basis_indices is None else basis_indices
-        # category
-        category = Algebras(self._base_ring.category()).WithBasis()
-        category = category.or_subcategory(category)
-        # init
-        CombinatorialFreeModule.__init__(
-            self,
-            self._base_ring,
-            self._basis_monoid,
-            category=category,
-            prefix='',
-            bracket=False)
-
-    def _element_constructor_(self, monoid_el):
-        assert monoid_el in self._basis_monoid
-        return self.basis()[monoid_el]
-
-    def __getitem__(self, user_input):
-        # USER front entrance to creating elements "x[4]"
-        assert user_input in IntegerRing()
-        monoid_el = self._basis_monoid.gen(user_input)
-        return self.basis()[monoid_el]
-
-    @cached_method
-    def one_basis(self):
-        # identity index
-        return self._basis_monoid.one()
-
-    def product_on_basis(self, monoid_el1, monoid_el2):
-        monoid_el_product = monoid_el1 * monoid_el2
-        return self._element_constructor_(monoid_el_product)
-
-    def _repr_(self):
-        return "{class_name} with generators indexed by integers, over {base_ring}".format(class_name=self.__class__.__name__, base_ring=self._base_ring)
 
 
 DoubleRing = InfiniteDimensionalFreeAlgebra(prefix='a', index_set=IntegerRing())
