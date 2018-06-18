@@ -1,15 +1,12 @@
 # For deployment to github pages, check resource https://docs.travis-ci.com/user/deployment/pages/
 # In GitHub settings, go to GitHub Pages section, Source subsection, and select "gh-pages branch" from dropdown.  That option WON'T APPEAR if you don't have a branch called 'gh-pages'.
+os: osx
 sudo: required
-dist: trusty # use Ubuntu Trusty Thar
 language: python # python will be pre-installed on server thanks to this
 python:
 - "2.7"
 before_install:
 - uname -a
-- sudo apt-get update
-- sudo apt-get install libc6
-- sudo apt-get install eglibc-source glibc-doc libc-bin libc-dev-bin libc6 libc6-dbg libc6-dev libc6-pic libc6-prof multiarch-support nscd
 - DIR_REPO=$(pwd)
 - DIR_INSTALL="${DIR_REPO}"/temp-install-sage
 - mkdir "${DIR_INSTALL}"
@@ -21,7 +18,6 @@ before_install:
 - sage --version
 - sage --version
 - sage -pip install sphinxcontrib-websupport
-- cd "${DIR_REPO}"
 script:
 - cd "${DIR_REPO}"/docs
 - sage -sh -c "make html"
