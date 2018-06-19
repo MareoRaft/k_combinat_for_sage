@@ -154,8 +154,8 @@ op2 = raising_roots_operator(n, t=t, base_ring=base_ring)
 # try out
 s = SymmetricFunctions(base_ring).s()
 assert op2(op1(s[4, 2])) == s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6]
-# for convenience, the double operator
-op = double_raising_roots_operator(3)
+# for convenience, the qt operator
+op = qt_raising_roots_operator(3)
 assert op(s[4, 2]) == s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6]
 
 

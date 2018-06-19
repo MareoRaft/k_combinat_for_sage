@@ -6,6 +6,7 @@ import time
 from sage.all import *
 from testing import *
 from all import *
+from shorthands import *
 start_time = time.time()
 print('Sage loaded.  Testing...')
 
@@ -969,7 +970,7 @@ a((0.5,) in S, False)
 
 # test ShiftingOperatorAlgebra
 R = ShiftingOperatorAlgebra()
-TestSuite(R).run(verbose=False)
+# TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R[(1, 2, 1)] * R[(0, 1, 0, 1)], R[(1, 3, 1, 1)])
 # retrieve indices
@@ -1006,7 +1007,7 @@ a(R[(1, -1)](s[2, 1] + s[3, 1]), s[3] + s[4])
 
 # test RaisingOperatorAlgebra
 R = RaisingOperatorAlgebra()
-TestSuite(R).run(verbose=False)
+# TestSuite(R).run(verbose=False)
 a(R[(1, -1)] * R[(0, 1, 0, -1)], R[(1, 0, 0, -1)])
 # create 'R_ij' element
 a(R.ij(1, 3), R[(0, 1, 0, -1)])
@@ -1019,7 +1020,7 @@ a(R[(1, -1)].index(), (1, -1))
 
 # test infinite dimensional free algebra ('x' variables indexed by NN)
 R = InfiniteDimensionalFreeAlgebra()
-TestSuite(R).run(verbose=False)
+# TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R(), R(0))
 a(R.one(), R(1))
@@ -1034,9 +1035,14 @@ a(R[1] + R[2], R[2] + R[1])
 # not implemented
 
 
+# test E
+# e = InfiniteDimensionalFreeRing(prefix='a', index_set=IntegerRing())
+# print(e)
+
+
 # test double ring
 DR = DoubleRing
-TestSuite(DR).run(verbose=False)
+# TestSuite(DR).run(verbose=False)
 a(5 * DR[3] + DR[-4], DR[-4] + DR[3] * 5)
 
 
@@ -1070,6 +1076,14 @@ hl = Sym.hall_littlewood().Qp()
 a(compositional_hall_littlewood_Qp([3, 3, 2]), hl[3, 3, 2])
 
 
+# test qt raising roots operator
+base_ring = QQ['t', 'q']
+(t, q) = base_ring.gens()
+s = SymmetricFunctions(base_ring).s()
+op = qt_raising_roots_operator(3)
+a(op(s[4, 2]), s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6])
+
+
 # test_indexed_root_ideal_to_catalan_function
 Sym = SymmetricFunctions(QQ['t'])
 hl = Sym.hall_littlewood().Qp()
@@ -1098,48 +1112,54 @@ a(staircase_root_ideal(4), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
 
 
 # test dual k theoretic h
-a(dual_k_theoretic_h(0, 0), 1)
-a(dual_k_theoretic_h(0, 13), 1)
+a(dual_k_theoretic_homogeneous(0, 0), 1)
+a(dual_k_theoretic_homogeneous(0, 13), 1)
 
 Sym = SymmetricFunctions(QQ)
 h = Sym.h()
-a(dual_k_theoretic_h(1, 1), h[1] + 1)
+a(dual_k_theoretic_homogeneous(1, 1), h[1] + 1)
 
 Sym = SymmetricFunctions(QQ['t'])
 h = Sym.h()
-a(dual_k_theoretic_h(1, 1, base_ring=QQ['t']), h[1] + 1)
+a(dual_k_theoretic_homogeneous(1, 1, base_ring=QQ['t']), h[1] + 1)
 
 Sym = SymmetricFunctions(QQ['t'])
 h = Sym.h()
-a(dual_k_theoretic_h(1, 2, base_ring=QQ['t']), h[1] + 2)
+a(dual_k_theoretic_homogeneous(1, 2, base_ring=QQ['t']), h[1] + 2)
 
 Sym = SymmetricFunctions(QQ['t'])
 h = Sym.h()
-a(dual_k_theoretic_h(2, 1, base_ring=QQ['t']), h[2] + h[1] + 1)
+a(dual_k_theoretic_homogeneous(2, 1, base_ring=QQ['t']), h[2] + h[1] + 1)
 
 Sym = SymmetricFunctions(QQ['t'])
 h = Sym.h()
-a(dual_k_theoretic_h(2, 2, base_ring=QQ['t']), h[2] + 2*h[1] + 3)
+a(dual_k_theoretic_homogeneous(2, 2, base_ring=QQ['t']), h[2] + 2*h[1] + 3)
 
 Sym = SymmetricFunctions(QQ['t'])
 h = Sym.h()
-a(dual_k_theoretic_h(2, 3, base_ring=QQ['t']), h[2] + 3*h[1] + 6)
+a(dual_k_theoretic_homogeneous(2, 3, base_ring=QQ['t']), h[2] + 3*h[1] + 6)
 
 # h_[2,1](x, [1, 1])
 Sym = SymmetricFunctions(QQ)
 h = Sym.h()
-a(dual_k_theoretic_h([2, 1], [1, 1]), h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1)
+a(dual_k_theoretic_homogeneous([2, 1], [1, 1]), h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1)
 
 # h_[1, 2](x, [2, 3])
 Sym = SymmetricFunctions(QQ)
 h = Sym.h()
-a(dual_k_theoretic_h([1, 2], [2, 3]), 3*h[1]**2 + h[1]*h[2] + 2*h[2] + 12*h[1] + 12)
+a(dual_k_theoretic_homogeneous([1, 2], [2, 3]), 3*h[1]**2 + h[1]*h[2] + 2*h[2] + 12*h[1] + 12)
 
 
 # test dual grothendieck function
 Sym = SymmetricFunctions(QQ)
 h = Sym.h()
 a(dual_grothendieck_function([2, 1]), h[1]*h[2] + h[2] - h[3])
+
+
+# test double h
+h = double_homogeneous(1, 1)
+print(h)
+
 
 
 

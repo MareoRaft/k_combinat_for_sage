@@ -1,4 +1,6 @@
-r""" A place for things that may be useful in core sage (not specific to k-combinatorics) """
+r"""
+A place for things that may be useful in core sage (not specific to k-combinatorics)
+"""
 from sage.all import *
 
 
@@ -39,6 +41,8 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
             category=category,
             prefix='',
             bracket=False)
+        # TODO: make a SEPARATE class called InfiniteDimensionalFreeRing or similar
+        self._init_category_(CommutativeRings())
 
     def _element_constructor_(self, monoid_el):
         assert monoid_el in self._basis_monoid
@@ -61,3 +65,35 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
 
     def _repr_(self):
         return "{class_name} with generators indexed by integers, over {base_ring}".format(class_name=self.__class__.__name__, base_ring=self._base_ring)
+
+
+# class InfiniteDimensionalFreeRing (CommutativeRing, InfiniteDimensionalFreeAlgebra):
+# 	pass
+
+# base_ring=IntegerRing()
+# algebras = Algebras(base_ring.category()).WithBasis()
+# commutative_rings = CommutativeRings()
+# F = ForgetfulFunctor(algebras, commutative_rings)
+# InfiniteDimensionalFreeRing = F(InfiniteDimensionalFreeAlgebra)
+
+# idea: coerce
+
+# idea: manually change the category
+# found '_init_category_' '_initial_coerce_list' '_initial_convert_list' '_unset_category' 'category' 'categories' 'coerce' 'hom' 'is_ring'
+
+# Let us declare a coercion from `\ZZ[x]` to `\ZZ[z]`::
+#  |
+#  |                  sage: Z.<z> = ZZ[]
+#  |                  sage: phi = Hom(X, Z)(z)
+#  |                  sage: phi(x^2+1)
+#  |                  z^2 + 1
+#  |                  sage: phi.register_as_coercion()
+#  |
+#  |              Now we can add elements from `\ZZ[x]` and `\ZZ[z]`, because
+#  |              the elements of the former are allowed to be implicitly
+#  |              coerced into the later::
+#  |
+#  |                  sage: x^2 + z
+#  |                  z^2 + z
+
+# idea: patch SymmetricFunctions to accept Algebras, not just 'commutative rings'

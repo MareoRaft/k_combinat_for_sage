@@ -4,7 +4,7 @@ This module contains all functionalities that are not already organized into the
 
 REFERENCES:
 
-.. [fun] `Raising operators and the Littlewood-Richardson polynomials <https://arxiv.org/pdf/1203.4729.pdf>`_.  Fun, Alex.
+.. [Fun] `Raising operators and the Littlewood-Richardson polynomials <https://arxiv.org/pdf/1203.4729.pdf>`_.  Fun, Alex.
 .. [LN] `Finite sum Cauchy identity for dual Grothendieck polynomials <https://projecteuclid.org/download/pdf_1/euclid.pja/1407415930>`_.
 
 """
@@ -340,7 +340,7 @@ class HallLittlewoodVertexOperator:
 
     INPUTS:
 
-    - ``base_ring``: (default ``QQ['t']``) the base ring to build the SymmetricFunctions upon.
+    - ``base_ring`` -- (default ``QQ['t']``) the base ring to build the SymmetricFunctions upon.
 
     EXAMPLES::
 
@@ -388,20 +388,12 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
     H = HallLittlewoodVertexOperator
     return H(gamma)(hl.one())
 
-def double_raising_roots_operator(ri, t=None, q=None, base_ring=QQ['t', 'q']):
-    r""" The q-t analogue of :meth:`raising_roots_operator`. """
-    if ri in NonNegativeIntegerSemiring():
-        ri = staircase_root_ideal(ri)
-    if t is None:
-        t = base_ring.gens()[0]
-    if q is None:
-        q = base_ring.gens()[1]
-    op1 = raising_roots_operator(ri, t=q, base_ring=base_ring)
-    op2 = raising_roots_operator(ri, t=t, base_ring=base_ring)
-    return lambda x: op2(op1(x))
-
 def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
-    r""" Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator `\prod_{(i,j) \in \Phi} (1 - tR_{ij})`.
+    r""" Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator
+
+    ..  MATH::
+
+        \prod_{(i,j) \in \Phi} (1 - tR_{ij}).
 
     If you input an integer for roots (e.g. ``roots = 3``), it will use the biggest possible root ideal in the `n` x `n` grid (the '`n`-th staircase root ideal').
     """
@@ -413,25 +405,46 @@ def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     op = prod([1 - t*R.ij(i, j) for (i, j) in roots])
     return op
 
-def indexed_root_ideal_to_catalan_function(ri, index, base_ring=QQ['t']):
+def qt_raising_roots_operator(ri, t=None, q=None, base_ring=QQ['t', 'q']):
+    r""" The q-t analogue of :meth:`raising_roots_operator`. """
+    if ri in NonNegativeIntegerSemiring():
+        ri = staircase_root_ideal(ri)
+    if t is None:
+        t = base_ring.gens()[0]
+    if q is None:
+        q = base_ring.gens()[1]
+    op1 = raising_roots_operator(ri, t=q, base_ring=base_ring)
+    op2 = raising_roots_operator(ri, t=t, base_ring=base_ring)
+    return lambda x: (op2 * op1)(x)
+
+def indexed_root_ideal_to_catalan_function(roots, index, base_ring=QQ['t']):
     r"""
     INPUTS:
 
-    - ``ri``: the root ideal
+    - ``roots`` -- iterable of roots `\Phi` (typically a root ideal)
 
-    - ``index``: composition that indexes the root ideal
+    - ``index`` -- composition `\gamma` that indexes the root ideal and appears in the Hall-Littlewood Q' function `H_\gamma`
+
+    OPTIONAL INPUTS:
+
+    - ``base_ring`` -- (default ``QQ['t']``) the ring over which to build the `h_\gamma(x; \alpha)`'s
 
     OUTPUTS:
 
     The catalan function
+
+    ..  MATH::
+
+        \prod_{ij \in \Phi} (1 - R_{ij}) H_\gamma
+
     """
     # setup
     hl = SymmetricFunctions(base_ring).hall_littlewood().Qp()
     t = base_ring.gen()
     # formula
     n = len(index)
-    ri_complement = RI.complement(ri, n)
-    op = raising_roots_operator(ri_complement, t=t)
+    roots_complement = RI.complement(roots, n)
+    op = raising_roots_operator(roots_complement, t=t)
     cat_func = op(hl(index))
     return cat_func
 
@@ -443,7 +456,7 @@ def skew_partition_to_catalan_function(sp, base_ring=QQ['t']):
     return indexed_root_ideal_to_catalan_function(ri, rs, base_ring)
 
 def row_and_column_lengths_to_catalan_function(row_lengths, column_lengths, base_ring=QQ['t']):
-    r""" Determine the skew partition `D` with row-shape `row_lengths` and column-shape `column_lengths`, and return the catalan function `H(\Phi^+(D); row_lengths)`.
+    r""" Determine the skew partition `D` with row-shape ``row_lengths`` and column-shape ``column_lengths``, and return the catalan function `H(\Phi^+(D); \text{row_lengths})`.
     """
     sp = SkewPartitions().from_row_and_column_length(row_lengths, column_lengths)
     return skew_partition_to_catalan_function(sp, base_ring)
@@ -468,22 +481,23 @@ def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
 
 
 DoubleRing = InfiniteDimensionalFreeAlgebra(prefix='a', index_set=IntegerRing())
+r"""   ``DoubleRing`` is the ring `\Lambda(a)` found in [Fun]_ section 3. """
 
 
-def dual_k_theoretic_h(k, r, base_ring=QQ):
+def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
     r""" The dual K-theoretic h, often denoted Kh, is defined for any integer `k` by the formula `h_k(x, r) = \sum_{i=0}^{k} \binom{r + i - 1}{i} h_{k - i}(x)` in [LN]_ p.88 top-right.
 
     If `k` and `r` are compositions, then it is recursively defined as `h_k(x, r) = \prod_j h_{k_j}(x, r_j)`.
 
     EXAMPLES::
 
-        sage: dual_k_theoretic_h(0, 0)
+        sage: dual_k_theoretic_homogeneous(0, 0)
         1
 
-        sage: dual_k_theoretic_h(1, 2, base_ring=QQ['t'])
+        sage: dual_k_theoretic_homogeneous(1, 2, base_ring=QQ['t'])
         h[1] + 2
 
-        sage: dual_k_theoretic_h([2, 1], [1, 1])
+        sage: dual_k_theoretic_homogeneous([2, 1], [1, 1])
         h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1
 
     """
@@ -493,15 +507,49 @@ def dual_k_theoretic_h(k, r, base_ring=QQ):
         k = list(k) + [0] * (max_len - len(k))
         r = list(r) + [0] * (max_len - len(r))
         # multiply
-        h_list = [dual_k_theoretic_h(k_el, r_el, base_ring) for k_el, r_el in zip(k, r)]
+        h_list = [dual_k_theoretic_homogeneous(k_el, r_el, base_ring) for k_el, r_el in zip(k, r)]
         return reduce(operator.mul, h_list)
     else:
         assert k >= 0
         h = SymmetricFunctions(base_ring).h()
         return sum(binomial(r + i - 1, i) * h[k - i] for i in range(k + 1))
 
+def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
+    r"""
+    INPUTS:
+
+    - ``roots`` -- iterable of roots `\Phi` (typically a root ideal)
+
+    - ``index`` -- composition `\gamma` that indexes `h_\gamma(x; \alpha)`
+
+    - ``index2`` -- composition `\alpha` used in `h_\gamma(x; \alpha)`
+
+    OPTIONAL INPUTS:
+
+    - ``base_ring`` -- (default ``QQ``) the ring over which to build the `h_\gamma(x; \alpha)`'s
+
+    OUTPUTS:
+
+    The 'dual k' catalan function
+
+    ..  MATH::
+
+        \prod_{ij \in \Delta^+ \smallsetminus \Phi} (1 - R_{ij}) h_\gamma(x; \alpha).
+
+    """
+    # setup
+    Kh = dual_k_theoretic_homogeneous(index, index2, base_ring=base_ring)
+    # formula
+    n = len(index)
+    roots_complement = RI.complement(roots, n)
+    op = raising_roots_operator(roots_complement, t=1)
+    cat_func = op(Kh)
+    return cat_func
+
 def dual_grothendieck_function(composition):
     r""" Given a composition `composition = \lambda`, return the dual Grothendieck function defined by `g_\lambda(x) = \text{det}(h_{\lambda_i + j - i}(x, i - 1))` in [LN]_ p.88 equation (4).
+
+    Equivalently, the dual Grothendieck function is `g_\lambda(x) = \prod_{ij \in \Delta^+} (1 - R_{ij}) h_\lambda(x; (0, 1, \ldots, n-1))`.
 
     EXAMPLES::
 
@@ -510,10 +558,39 @@ def dual_grothendieck_function(composition):
         h[1]*h[2] + h[2] - h[3]
 
     """
+    roots = [] # because dual_k_catalan_function will take the complement
     n = len(composition)
-    staircase_ri = staircase_root_ideal(n)
-    op = raising_roots_operator(staircase_ri)
     reversed_staircase_ptn = list(reversed(staircase_shape(n)))
-    Kh = dual_k_theoretic_h(composition, reversed_staircase_ptn)
-    return op(Kh)
+    return dual_k_catalan_function(roots, composition, reversed_staircase_ptn)
 
+def double_homogeneous(p, n):
+    r""" The double complete homogeneous symmetric polynomials `h_p(x \,||\, a)` defined as
+
+    ..  MATH::
+
+        h_p(x_1, \ldots, x_n \,||\, a) \,= \sum_{n \geq i_1 \geq \ldots \geq i_p \geq 1} (x_{i_1} - a_{i_1})(x_{i_2} - a_{i_2 - 1}) \cdots (x_{i_p} - a_{i_p - p + 1})
+
+    in [Fun]_ section 3 between equation (6) and (7).  Note that our indices are 0-based.
+    """
+    def prod(iterable):
+        return reduce(operator.mul, iterable, a.one())
+    a = DoubleRing
+    sym = SymmetricFunctions(DoubleRing)
+    s = sym.s()
+    x = s.one().expand(n).parent().gens()
+    ptns = Partitions(max_part=n, length=p)
+    total_sum = 0
+    for ptn in ptns:
+        summand = prod([(x[ptn[b]] - a[ptn[b] - b]) for b in range(p)])
+        total_sum += summand
+    return total_sum
+
+def shifter():
+    pass
+    # idea, use .hom ``f = ZZ.hom(GF(3))``
+    # sage: R.<x> = ZZ[]
+    # sage: f = R.hom([x])
+
+    # idea, define something on x[i] in general and take the induces hom
+
+    # idea, manual

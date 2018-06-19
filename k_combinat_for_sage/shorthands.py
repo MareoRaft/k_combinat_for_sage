@@ -5,8 +5,10 @@
 """
 from all import *
 
+dual_k_theoretic_h = dual_k_theoretic_homogeneous
 Kh = dual_k_theoretic_h
 chl = compositional_hall_littlewood_Qp
 H = HallLittlewoodVertexOperator
 R = RaisingOperatorAlgebra
 st = straighten
+double_h = double_homogeneous

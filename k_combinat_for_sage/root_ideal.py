@@ -302,11 +302,10 @@ def is_strict(ri):
     return is_strictly_decreasing(ptn)
 
 def complement(ri, n=None):
-    r""" Given a root ideal (could be upper or lower), return it's complement in the upper-staircase-shape, the result being a root ideal.
+    r""" Given a root ideal (or just an iterable of roots), return it's complement in the upper-staircase-shape, the result being a root ideal (or just an iterable of roots).
     """
     n = get_dim(n, [ri])
-    p_staircase = Partition(list(range(n-1, 0, -1)))
-    ri_staircase = partition_to_root_ideal(p_staircase, n)
+    ri_staircase = staircase_root_ideal(n)
     ri_complement_set = set(ri_staircase) - set(ri)
     ri_complement = sorted(ri_complement_set)
     return ri_complement
