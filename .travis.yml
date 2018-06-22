@@ -8,18 +8,25 @@ python:
 before_install:
 - uname -a
 - DIR_REPO=$(pwd)
-- DIR_INSTALL="${DIR_REPO}"/temp-install-sage
+- DIR_INSTALL="${DIR_REPO}/temp-install-sage"
 - mkdir "${DIR_INSTALL}"
 - cd "${DIR_INSTALL}"
 - FILE_NAME="sage-7.6-Ubuntu_12.04-x86_64.tar.bz2" # note that this should probably match the version of ubuntu that Travis is using!
 - wget -q http://mirrors.mit.edu/sage/linux/64bit/"${FILE_NAME}"
 - tar -xf "${FILE_NAME}"
-- sudo ln -s "${DIR_INSTALL}"/SageMath/sage /usr/local/bin/sage
+- sudo ln -s "${DIR_INSTALL}/SageMath/sage" "/usr/local/bin/sage"
 - sage --version
 - sage --version
 - sage -pip install sphinxcontrib-websupport
 script:
-- cd "${DIR_REPO}"/docs
+- cd "${DIR_REPO}/docs"
+- # remove certain variables from the namespace
+- delete_content=$(cat "${DIR_REPO}/docs/namespace_deletions.py")
+- echo "$delete_content"
+- file_path="${DIR_REPO}/k_combinat_for_sage/partition.py"
+- cat "$file_path" | sed 's/# ^\*^ sphinx insert ^\*^/${delete_content}/g' | tee "$file_path"
+- echo "REPLACED"
+- cat "$file_path"
 - sage -sh -c "make html"
 - # move html files into place
 - mv "${DIR_REPO}"/docs/build/html/* "${DIR_REPO}"/docs/.
