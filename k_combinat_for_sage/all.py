@@ -222,15 +222,21 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                 raise ValueError("This is only defined for basis elements.  For other elements, use indices() instead.")
             return self.indices()[0]
 
+        def _call_basis_on_index(self, seq, index):
+            # a 'seq' is the sequence of the BASIS element to act WITH.
+            # an 'index' is a sequence (typically a composition or a partition) that we act UPON.
+            assert is_sequence(index)
+            # pad sequence and index with 0's
+            index = index + [0] * (len(seq) - len(index))
+            seq = seq + (0,) * (len(index) - len(seq))
+            # raise and drop
+            return [v + s for v, s in zip(index, seq)]
+
         def __call__(self, operand):
             def raise_func(seq, operand):
                 # seq is the index
-                if isinstance(operand, (list, Composition, Partition)):
-                    # pad sequence and operand with 0's
-                    operand = operand + [0] * (len(seq) - len(operand))
-                    seq = seq + (0,) * (len(operand) - len(seq))
-                    # raise and drop
-                    return [v + s for v, s in zip(operand, seq)]
+                if is_sequence(operand):
+                    return self._call_basis_on_index(seq, operand)
                 else:
                     # it's some symmetric function basis element
                     parent_basis = operand.parent()
@@ -253,10 +259,15 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                     operand = raise_func(seq, operand)
                 return (operand, coeff)
             # start here
-            if isinstance(operand, tuple):
+            if hasattr(operand, '_get_indices_for_index_operator'):
+                indices = operand._get_indices_for_index_operator()
+                new_indices = self.__call__(indices)
+                out = operand._new_object_for_index_operator(new_indices)
+                return out
+            elif isinstance(operand, tuple):
                 # the operand is actually a tuple of operands, so perform __call__ on each piece
                 return tuple(self.__call__(op) for op in operand)
-            elif isinstance(operand, (list, Composition, Partition)):
+            elif is_sequence(operand):
                 # the operand is some kind of composition
                 return [call_monomial(index, coeff, operand) for index, coeff in self]
             else:
@@ -267,7 +278,6 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                 else:
                     out_list = [call_monomial(index, coeff, operand) for index, coeff in self]
                     return sum(coeff * mon for mon, coeff in out_list)
-
 
 
 class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
@@ -334,6 +344,32 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         return self._element_constructor_(seq)
 
 
+class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
+    r""" The Pieri operator `u_i` """
+    def __init__(self, base_ring=QQ['t'], prefix='u'):
+        ShiftingOperatorAlgebra.__init__(self,
+            base_ring=base_ring,
+            prefix=prefix,
+            basis_indices=RaisingSequenceSpace())
+
+    def i(self, i):
+        r""" Shorthand element constructor that allows you to create Pieri operators using the familiar `u_i` notation, with the exception that indices here are 0-based, not 1-based.
+
+        EXAMPLES::
+
+            # create the Pieri operator which lowers part 2 (indices are 0-based)
+            sage: u.i(2)
+            u((0, 0, -1))
+
+        """
+        if not i in NonNegativeIntegerSemiring():
+            raise ValueError('i must be a natural number.  You input i = {i}.'.format(i=i))
+        seq = [0] * (i + 1)
+        seq[i] = -1
+        seq = tuple(seq)
+        return self._element_constructor_(seq)
+
+
 class HallLittlewoodVertexOperator:
     r"""
     Garsia's version of Jing's Hall-Littlewood vertex operators.  These are defined in equations 4.2 and 4.3 of [cat]_ and appear visually as a bold capital H.
@@ -353,7 +389,7 @@ class HallLittlewoodVertexOperator:
     def __init__(self, composition, base_ring=QQ['t']):
         if composition in NonNegativeIntegerSemiring():
             self.composition = [composition]
-        elif isinstance(composition, (list, Composition, Partition)):
+        elif is_sequence(composition):
             self.composition = composition
         else:
             raise ValueError('Bad composition.')
@@ -405,70 +441,111 @@ def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     op = prod([1 - t*R.ij(i, j) for (i, j) in roots])
     return op
 
-def qt_raising_roots_operator(ri, t=None, q=None, base_ring=QQ['t', 'q']):
-    r""" The q-t analogue of :meth:`raising_roots_operator`. """
-    if ri in NonNegativeIntegerSemiring():
-        ri = staircase_root_ideal(ri)
+def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
+    r""" The q-t analogue of :meth:`raising_roots_operator`, defined by
+
+    ..  MATH::
+        \prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in \Phi} (1 - qR_{ij}).
+
+    """
+    if roots in NonNegativeIntegerSemiring():
+        roots = staircase_root_ideal(roots)
     if t is None:
         t = base_ring.gens()[0]
     if q is None:
         q = base_ring.gens()[1]
-    op1 = raising_roots_operator(ri, t=q, base_ring=base_ring)
-    op2 = raising_roots_operator(ri, t=t, base_ring=base_ring)
+    op1 = raising_roots_operator(roots, t=q, base_ring=base_ring)
+    op2 = raising_roots_operator(roots, t=t, base_ring=base_ring)
     return lambda x: (op2 * op1)(x)
 
-def indexed_root_ideal_to_catalan_function(roots, index, base_ring=QQ['t']):
-    r"""
-    INPUTS:
 
-    - ``roots`` -- iterable of roots `\Phi` (typically a root ideal)
+class CatalanFunction:
+    r""" cat func yo """
+    def __repr__(self):
+        return 'H({}, {})'.format(self.roots, self.index)
 
-    - ``index`` -- composition `\gamma` that indexes the root ideal and appears in the Hall-Littlewood Q' function `H_\gamma`
+    def _get_indices_for_index_operator(self):
+        return self.index
 
-    OPTIONAL INPUTS:
+    def _new_object_for_index_operator(self, new_index):
+        new_obj = self.__class__(self.roots, new_index, base_ring=self.base_ring)
+        return new_obj
 
-    - ``base_ring`` -- (default ``QQ['t']``) the ring over which to build the `h_\gamma(x; \alpha)`'s
+    def __init__(self, obj1, obj2=None, base_ring=QQ['t']):
+        # triage.  figure out what obj1 and obj2 are
+        if is_roots(obj1) and is_sequence(obj2):
+            self.init_from_indexed_root_ideal(obj1, obj2, base_ring)
+        elif isinstance(obj1, SkewPartition) and obj2 is None:
+            self.init_from_skew_partition(obj1, base_ring)
+        elif is_sequence(obj1) and is_sequence(obj2):
+            self.init_from_row_and_column_lengths(obj1, obj2, base_ring)
+        elif isinstance(obj1, Partition) and obj2 in NonNegativeIntegerSemiring():
+            self.init_from_k_shape(obj1, obj2, base_ring)
+        else:
+            raise ValueError('Invalid inputs to create a Cataland function.  See the four "init_from_" methods in the documentation, and put the correct inputs for any one of them.')
 
-    OUTPUTS:
+    def init_from_indexed_root_ideal(roots, index, base_ring=QQ['t']):
+        r"""
+        INPUTS:
 
-    The catalan function
+        - ``roots`` -- iterable of roots `\Phi` (typically a root ideal)
 
-    ..  MATH::
+        - ``index`` -- composition `\gamma` that indexes the root ideal and appears in the Hall-Littlewood Q' function `H_\gamma`
 
-        \prod_{ij \in \Phi} (1 - R_{ij}) H_\gamma
+        OPTIONAL INPUTS:
 
-    """
-    # setup
-    hl = SymmetricFunctions(base_ring).hall_littlewood().Qp()
-    t = base_ring.gen()
-    # formula
-    n = len(index)
-    roots_complement = RI.complement(roots, n)
-    op = raising_roots_operator(roots_complement, t=t)
-    cat_func = op(hl(index))
-    return cat_func
+        - ``base_ring`` -- (default ``QQ['t']``) the ring over which to build the `h_\gamma(x; \alpha)`'s
 
-def skew_partition_to_catalan_function(sp, base_ring=QQ['t']):
-    r""" Given a SkewPartition `sp = (\lambda, \mu)`, return the catalan function `H(\Phi^+(sp); \lambda)`.
-    """
-    ri = skew_partition_to_root_ideal(sp, type='max')
-    rs = sp.row_lengths()
-    return indexed_root_ideal_to_catalan_function(ri, rs, base_ring)
+        OUTPUTS:
 
-def row_and_column_lengths_to_catalan_function(row_lengths, column_lengths, base_ring=QQ['t']):
-    r""" Determine the skew partition `D` with row-shape ``row_lengths`` and column-shape ``column_lengths``, and return the catalan function `H(\Phi^+(D); \text{row_lengths})`.
-    """
-    sp = SkewPartitions().from_row_and_column_length(row_lengths, column_lengths)
-    return skew_partition_to_catalan_function(sp, base_ring)
+        The catalan function
 
-def k_shape_to_catalan_function(p, k, base_ring=QQ['t']):
-    r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Psi^+((rs(p),cs(p))), rs(p))`.
-    """
-    assert is_k_shape(p, k)
-    rs = p.row_lengths()
-    cs = p.column_lengths()
-    return row_and_column_lengths_to_catalan_function(rs, cs, base_ring)
+        ..  MATH::
 
+            \prod_{ij \in \Phi} (1 - R_{ij}) H_\gamma
+
+        """
+        self.roots = roots
+        self.index = index
+        self.base_ring = base_ring
+        return self
+
+    def init_from_skew_partition(sp, base_ring=QQ['t']):
+        r""" Given a SkewPartition `sp = (\lambda, \mu)`, return the catalan function `H(\Phi^+(sp); \lambda)`.
+        """
+        ri = skew_partition_to_root_ideal(sp, type='max')
+        rs = sp.row_lengths()
+        return init_from_indexed_root_ideal(ri, rs, base_ring=base_ring)
+
+    def init_from_row_and_column_lengths(row_lengths, column_lengths, base_ring=QQ['t']):
+        r""" Determine the skew partition `D` with row-shape ``row_lengths`` and column-shape ``column_lengths``, and return the catalan function `H(\Phi^+(D); \text{row_lengths})`.
+        """
+        sp = SkewPartitions().init_from_row_and_column_length(row_lengths, column_lengths)
+        return init_from_skew_partition(sp, base_ring=base_ring)
+
+    def init_from_k_shape(self, p, k, base_ring=QQ['t']):
+        r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Psi^+((rs(p),cs(p))), rs(p))`.
+        """
+        assert is_k_shape(p, k)
+        rs = p.row_lengths()
+        cs = p.column_lengths()
+        return self.init_from_row_and_column_lengths(rs, cs, base_ring=base_ring)
+
+    def eval(self):
+        roots = self.roots
+        index = self.index
+        # setup
+        hl = SymmetricFunctions(base_ring).hall_littlewood().Qp()
+        t = base_ring.gen()
+        # formula
+        n = len(index)
+        roots_complement = RI.complement(roots, n)
+        op = raising_roots_operator(roots_complement, t=t)
+        cat_func = op(hl(index))
+        return cat_func
+
+
+##############
 def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
     # TODO: compare the performance of this function to existing k-schur function.
     assert is_k_core(p, k + 1)
@@ -501,7 +578,7 @@ def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
         h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1
 
     """
-    if isinstance(k, (list, Composition, Partition)):
+    if is_sequence(k):
         # pad with 0's
         max_len = max(len(k), len(r))
         k = list(k) + [0] * (max_len - len(k))
@@ -546,7 +623,7 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     cat_func = op(Kh)
     return cat_func
 
-def dual_grothendieck_function(composition):
+def dual_grothendieck_function(composition, base_ring=QQ):
     r""" Given a composition `composition = \lambda`, return the dual Grothendieck function defined by `g_\lambda(x) = \text{det}(h_{\lambda_i + j - i}(x, i - 1))` in [LN]_ p.88 equation (4).
 
     Equivalently, the dual Grothendieck function is `g_\lambda(x) = \prod_{ij \in \Delta^+} (1 - R_{ij}) h_\lambda(x; (0, 1, \ldots, n-1))`.
@@ -561,13 +638,12 @@ def dual_grothendieck_function(composition):
     roots = [] # because dual_k_catalan_function will take the complement
     n = len(composition)
     reversed_staircase_ptn = list(reversed(staircase_shape(n)))
-    return dual_k_catalan_function(roots, composition, reversed_staircase_ptn)
+    return dual_k_catalan_function(roots, composition, reversed_staircase_ptn, base_ring=base_ring)
 
 def double_homogeneous(p, n):
     r""" The double complete homogeneous symmetric polynomials `h_p(x \,||\, a)` defined as
 
     ..  MATH::
-
         h_p(x_1, \ldots, x_n \,||\, a) \,= \sum_{n \geq i_1 \geq \ldots \geq i_p \geq 1} (x_{i_1} - a_{i_1})(x_{i_2} - a_{i_2 - 1}) \cdots (x_{i_p} - a_{i_p - p + 1})
 
     in [Fun]_ section 3 between equation (6) and (7).  Note that our indices are 0-based.
@@ -585,8 +661,9 @@ def double_homogeneous(p, n):
         total_sum += summand
     return total_sum
 
-def shifter():
-    pass
+def shift(element):
+    r""" The function `\Tau` which acts on any element of `\Lambda(a)` (``DoubleRing``) by sending each element `a_i` to `a_{i+1}` for all `i`.  It can be found in [Fun]_ p.8 between equations (6) and (7).
+    """
     # idea, use .hom ``f = ZZ.hom(GF(3))``
     # sage: R.<x> = ZZ[]
     # sage: f = R.hom([x])
@@ -594,3 +671,89 @@ def shifter():
     # idea, define something on x[i] in general and take the induces hom
 
     # idea, manual
+    a = DoubleRing
+    new_monomials = []
+    for monomial, coeff in element.monomialomial_coefficients():
+        new_factors = []
+        for factor in monomial:
+            new_factor = a(factor.index() + 1)
+            new_factors.append(new_factor)
+        new_monomial = coeff * prod(new_factors)
+        new_monomials.append(new_monomial)
+    new_element = a.sum(new_monomials)
+    return new_element
+
+def double_homogeneous_shifted(r, s, n):
+    r""" [Fun]_ before eq (8) """
+    if n > 0:
+        out = double_homogeneous(r, n)
+        for _ in range(s):
+            out = shift(out)
+        return out
+    else:
+        raise NotImplemented
+
+class DoubleHomogeneous:
+    def __init__(self, index1, index2, n):
+        r"""
+        mu1 -- composition
+        mu2 -- composition
+        n -- number of `x` variables
+        """
+        self.index1 = index1
+        self.index2 = index2
+        self.n = n
+
+    def __repr__(self):
+        return 'h({})[{}, {}]'.format(self.n, self.index1, self.index2)
+
+    def _get_indices_for_index_operator(self):
+        pair = (self.index1, self.index2)
+        return pair
+
+    def _new_object_for_index_operator(self, indices):
+        (index1, index2) = indices
+        new_obj = self.__class__(index1, index2, self.n)
+        return new_obj
+
+    def eval(self):
+        (mu1, mu2, n) = (self.index1, self.index2, self.n)
+        # pad with 0's
+        max_len = max(len(mu1), len(mu2))
+        mu1 = list(mu1) + [0] * (max_len - len(mu1))
+        mu2 = list(mu2) + [0] * (max_len - len(mu2))
+        # compute
+        h_list = [double_homogeneous_shifted(mu1[i], mu2[i], n) for i in range(max_len)]
+        hp = prod(h_list)
+        return hp
+
+def double_schur(index, n):
+    r""" Given a composition `index = \lambda` and the number of variables `n`, return the double Schur function defined by
+
+    ..  MATH::
+        s_\lambda(x_1, \ldots, x_n \,||\, a) = \text{det}\left(h^{(n)}_{\lambda_i + i - j, j - 1}\right)
+
+    or equivalently, defined by
+
+    ..  MATH::
+        s_\lambda(x_1, \ldots, x_n \,||\, a) = \prod_{ij \in \Delta^+(l)} (1 - R_{ij}) h^{(n)}_{\lambda, (0, \ldots, l-1)}
+
+    where `l` is the length of `\lambda`, in [Fun]_ p.9 equation (9).
+
+    """
+    l = len(index)
+    op = raising_roots_operator(l, t=1, base_ring=ZZ)
+    rho = list(reversed(staircase_shape(l)))
+    h_index = DoubleHomogeneous(index, rho, n)
+    return op(h_index)
+
+def double_catalan_function(roots, index, n):
+    # setup
+    l = len(index)
+    rho = list(reversed(staircase_shape(l)))
+    h_index = DoubleHomogeneous(index, rho, n)
+    # formula
+    roots_complement = RI.complement(roots, l)
+    op = raising_roots_operator(roots_complement, t=1)
+    cat_func = op(h_index)
+    return cat_func

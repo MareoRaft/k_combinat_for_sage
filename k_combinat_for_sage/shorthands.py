@@ -5,6 +5,11 @@
 """
 from all import *
 
+# pre-initialized useful variables
+Sym = SymmetricFunctions(QQ['t'])
+Sym.inject_shorthands() # creates s, h, etc
+
+# shorter names for certain functions
 dual_k_theoretic_h = dual_k_theoretic_homogeneous
 Kh = dual_k_theoretic_h
 chl = compositional_hall_littlewood_Qp
@@ -12,3 +17,4 @@ H = HallLittlewoodVertexOperator
 R = RaisingOperatorAlgebra
 st = straighten
 double_h = double_homogeneous
+double_s = double_schur

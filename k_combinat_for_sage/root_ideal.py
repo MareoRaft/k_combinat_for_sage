@@ -278,12 +278,12 @@ def partition_to_root_ideal(ptn, n):
     return RootIdeal(root_ideal)
 
 def staircase_shape(n):
-    """ Given `n`, return the composition `Composition([n-1, n-2, \\ldots, 0])` commonly denoted ``\\rho``.
+    r""" Given `n`, return the composition `Composition([n-1, n-2, \\ldots, 0])` commonly denoted ``\\rho``.
     """
     return Composition(range(n - 1, -1, -1))
 
 def staircase_root_ideal(n):
-    """ Given `n`, return the root ideal commonly denoted `\\Delta^+`, which is the maximum possible root ideal in an `n` x `n` grid.
+    r""" Given `n`, return the root ideal commonly denoted `\\Delta^+`, which is the maximum possible root ideal in an `n` x `n` grid.
 
     EXAMPLES::
 
@@ -323,7 +323,12 @@ def partition_to_k_schur_root_ideal(ptn, k, n=None):
         ri += [(i,j) for j in range(k - part + i + 1, n)]
     return ri
 
-
-
-
-
+def is_roots(obj):
+    # Dirty indicator of whether object is roots (is it an iterable of pairs of natural numbers).
+    try:
+        iter(obj)
+    except:
+        return False
+    if not all(isinstance(el, tuple) and len(el) == 2 and el[0] in NonNegativeIntegerSemiring() and el[1] in NonNegativeIntegerSemiring() for el in obj):
+        return False
+    return True

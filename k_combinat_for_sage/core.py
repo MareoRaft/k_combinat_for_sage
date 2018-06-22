@@ -12,6 +12,9 @@ def summands(poly):
 	parent_basis = poly.parent()
 	return (coeff * parent_basis(index) for index, coeff in poly)
 
+def prod(lis):
+	return reduce(operator.mul, lis, 1)
+
 
 class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
     r"""
@@ -31,7 +34,7 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
         self._base_ring = base_ring
         self._basis_monoid = FreeMonoid(index_set=index_set, commutative=True, prefix=prefix) if basis_indices is None else basis_indices
         # category
-        category = Algebras(self._base_ring.category()).WithBasis()
+        category = Algebras(self._base_ring.category()).WithBasis().Commutative()
         category = category.or_subcategory(category)
         # init
         CombinatorialFreeModule.__init__(
@@ -42,7 +45,10 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
             prefix='',
             bracket=False)
         # TODO: make a SEPARATE class called InfiniteDimensionalFreeRing or similar
-        self._init_category_(CommutativeRings())
+        # self._init_category_(CommutativeRings()) # i think .Commutative() above is a better solution
+
+    def is_prime_field(self):
+    	return False
 
     def _element_constructor_(self, monoid_el):
         assert monoid_el in self._basis_monoid

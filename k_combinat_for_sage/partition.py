@@ -246,5 +246,6 @@ def is_k_core(ptn, k):
     hook_lengths = reduce(operator.add, ptn.hook_lengths())
     return all(hook_length != k for hook_length in hook_lengths)
 
-
-
+def is_sequence(obj):
+    # Check if something is one of our allowed 'compositions'.
+    return isinstance(obj, (list, Composition, Partition))
