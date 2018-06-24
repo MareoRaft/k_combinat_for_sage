@@ -24,9 +24,8 @@ script:
 - delete_content=$(cat "${DIR_REPO}/docs/namespace_deletions.py")
 - echo "$delete_content"
 - file_path="${DIR_REPO}/k_combinat_for_sage/partition.py"
-- cat "$file_path" | sed 's/# ^\*^ sphinx insert ^\*^/${delete_content}/g' | tee "$file_path"
+- cat "$file_path" | sed "s/# ^\*^ sphinx insert ^\*^/${delete_content}/g" | tee "$file_path"
 - echo "REPLACED"
-- cat "$file_path"
 - sage -sh -c "make html"
 - # move html files into place
 - mv "${DIR_REPO}"/docs/build/html/* "${DIR_REPO}"/docs/.

@@ -9,10 +9,17 @@ for explanation of import_statements and preparse
 classcall private explained:
 https://doc.sagemath.org/html/en/reference/structure/sage/structure/unique_representation.html
 
-sage track ticket:
+sage isk ticket:
+k_stuff:
 https://trac.sagemath.org/ticket/25295
+question:
 https://trac.sagemath.org/ticket/25298
+hall inner product:
 https://trac.sagemath.org/ticket/25538
+
+ICERM:
+https://app.icerm.brown.edu/Cube/#!status
+
 
 
 sage combinat things to take a look out and see what's there:
