@@ -8,6 +8,7 @@ python:
 before_install:
 - uname -a
 - DIR_REPO=$(pwd)
+- # install sage
 - DIR_INSTALL="${DIR_REPO}/temp-install-sage"
 - mkdir "${DIR_INSTALL}"
 - cd "${DIR_INSTALL}"
@@ -17,16 +18,12 @@ before_install:
 - sudo ln -s "${DIR_INSTALL}/SageMath/sage" "/usr/local/bin/sage"
 - sage --version
 - sage --version
+- # install a sphinx dependency
 - sage -pip install sphinxcontrib-websupport
 script:
+- # build docs
 - cd "${DIR_REPO}/docs"
-- # remove certain variables from the namespace
-- delete_content=$(cat "${DIR_REPO}/docs/namespace_deletions.py")
-- echo "$delete_content"
-- file_path="${DIR_REPO}/k_combinat_for_sage/partition.py"
-- cat "$file_path" | sed 's/# ^\*^ sphinx insert ^\*^/SetPartitionsAk = None\nSetPartitionsBk = None\nSetPartitionsIk = None\nSetPartitionsPRk = None\nSetPartitionsPk = None\nSetPartitionsRk = None\nSetPartitionsSk = None\\nSetPartitionsTk = None/g' | tee "$file_path"
-- echo "REPLACED"
-- sage -sh -c "make html"
+- ./build_docs.py
 - # move html files into place
 - mv "${DIR_REPO}"/docs/build/html/* "${DIR_REPO}"/docs/.
 - # include .nojekyll (see https://help.github.com/articles/files-that-start-with-an-underscore-are-missing/)
