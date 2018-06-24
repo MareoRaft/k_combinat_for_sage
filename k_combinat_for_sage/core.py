@@ -2,6 +2,7 @@ r"""
 A place for things that may be useful in core sage (not specific to k-combinatorics)
 """
 from sage.all import *
+# ^*^ sphinx insert ^*^
 
 
 def summands(poly):

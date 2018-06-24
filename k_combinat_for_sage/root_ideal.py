@@ -10,6 +10,7 @@ REFERENCES:
 from sage.all import *
 import partition as P
 import skew_partition as SP
+# ^*^ sphinx insert ^*^
 
 # HELPERS
 def is_weakly_decreasing(li):

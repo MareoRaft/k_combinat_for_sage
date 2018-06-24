@@ -10,6 +10,7 @@ REFERENCES:
 from sage.all import *
 from partition import *
 import skew_partition as SP
+# ^*^ sphinx insert ^*^
 
 # HELPERS
 def k_rectangle_dimension_list(k):

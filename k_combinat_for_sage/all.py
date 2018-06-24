@@ -23,6 +23,7 @@ from k_shape import *
 import k_shape as kS
 from root_ideal import *
 import root_ideal as RI
+# ^*^ sphinx insert ^*^
 
 
 # MAIN
@@ -662,7 +663,7 @@ def double_homogeneous(p, n):
     return total_sum
 
 def shift(element):
-    r""" The function `\Tau` which acts on any element of `\Lambda(a)` (``DoubleRing``) by sending each element `a_i` to `a_{i+1}` for all `i`.  It can be found in [Fun]_ p.8 between equations (6) and (7).
+    r""" The function `\tau` which acts on any element of `\Lambda(a)` (``DoubleRing``) by sending each element `a_i` to `a_{i+1}` for all `i`.  It can be found in [Fun]_ p.8 between equations (6) and (7).
     """
     # idea, use .hom ``f = ZZ.hom(GF(3))``
     # sage: R.<x> = ZZ[]

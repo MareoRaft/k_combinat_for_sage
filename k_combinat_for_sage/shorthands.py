@@ -4,6 +4,7 @@
 
 """
 from all import *
+# ^*^ sphinx insert ^*^
 
 # pre-initialized useful variables
 Sym = SymmetricFunctions(QQ['t'])
