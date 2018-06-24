@@ -22,8 +22,12 @@ This code computes combinatorial things such as
   * k-shape partitions
   * skew-linked diagrams
   * k-irreducible partitions
-  * k-irreducible-k-shapes
+  * irreducible k-shapes
   * root ideals
+  * raising root operators
+  * catalan functions
+  * dual symmetric functions
+  * double symmetric functions
 
 etc.  For a full list of functions, read the documentation.
 
@@ -45,20 +49,7 @@ and then use functions at will, such as::
 
 	sp = SkewPartition([[4,3,3,1], [1]])
 	if is_symmetric(sp):
-		print "it's symmetric, boogie woogie woogie!"
-
-Alternatively, you can import each module you need under a name of your choice::
-
-	from k_combinat_for_sage import partition as P
-	from k_combinat_for_sage import skew_partition as SP
-	from k_combinat_for_sage import k_shape as kS
-	from k_combinat_for_sage import root_ideal as RI
-
-and then use functions appropriately.  For example::
-
-	sp = SkewPartition([[4,3,3,1], [1]])
-	if SP.is_symmetric(sp):
-		print "it's symmetric, boogie woogie woogie!"
+		print("it's symmetric, boogie woogie woogie!")
 
 Finally, you can run your file with sage::
 

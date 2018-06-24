@@ -1,5 +1,4 @@
 #!/usr/bin/env python2.7
-""" To build the docs, one should *not* run `make html` or `sphinx-build` directly, but rather run this file with `./build_docs.py`. """
 from os import path
 import subprocess
 
