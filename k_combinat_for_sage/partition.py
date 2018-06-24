@@ -5,16 +5,6 @@ Sage has a builtin `Partition <https://doc.sagemath.org/html/en/reference/combin
 from sage.all import *
 # ^*^ sphinx insert ^*^
 
-# Because of namespace clobbering in sphinx docs generation, i wipe out these functions.  This should really be done in the docs build process only and not here!
-# SetPartitionsAk = None
-# SetPartitionsBk = None
-# SetPartitionsIk = None
-# SetPartitionsPRk = None
-# SetPartitionsPk = None
-# SetPartitionsRk = None
-# SetPartitionsSk = None
-# SetPartitionsTk = None
-
 # HELPERS
 def k_rectangle_dimension_list(k):
     return [(k-i+1, i) for i in range(1, k+1)]
