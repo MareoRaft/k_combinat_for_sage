@@ -269,7 +269,8 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             # start here
             if hasattr(operand, '_get_indices_for_index_operator'):
                 indices = operand._get_indices_for_index_operator()
-                new_indices = self.__call__(indices)
+                # TODO: see if this works for TUPLES of indices.  This has only been tested for a single index.
+                new_indices = self.__call__(indices)[0][0]
                 out = operand._new_object_for_index_operator(new_indices)
                 return out
             elif isinstance(operand, tuple):
@@ -358,7 +359,7 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
         ShiftingOperatorAlgebra.__init__(self,
             base_ring=base_ring,
             prefix=prefix,
-            basis_indices=RaisingSequenceSpace())
+            basis_indices=ShiftingSequenceSpace())
 
     def i(self, i):
         r""" Shorthand element constructor that allows you to create Pieri operators using the familiar `u_i` notation, with the exception that indices here are 0-based, not 1-based.
@@ -376,6 +377,21 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
         seq[i] = -1
         seq = tuple(seq)
         return self._element_constructor_(seq)
+
+    class Element(ShiftingOperatorAlgebra.Element):
+        def __call__(self, operand):
+            if is_k_schur(operand):
+                # convert to catalans
+                kschur = operand.parent()
+                base_ring = kschur.base_ring()
+                cat_coeff_pairs = [(CatalanFunction(kschur(index), base_ring=base_ring), coeff) for index, coeff in operand]
+                # act
+                new_cat_coeff_pairs = [(self.__call__(cat), coeff) for cat, coeff in cat_coeff_pairs]
+                # convert back to kschur
+                out_coeff_pairs = [(kschur(cat.eval()), coeff) for cat, coeff in cat_coeff_pairs]
+                return sum(coeff * func for func, coeff in out_coeff_pairs)
+            else:
+                return ShiftingOperatorAlgebra.Element.__call__(self, operand)
 
 
 class HallLittlewoodVertexOperator:
@@ -469,6 +485,10 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
 
 class CatalanFunction:
     r""" cat func yo """
+    def __eq__(self, other):
+        # TODO: account for the fact that DIFFERENT root/index pairs could actually give the SAME catalan function!!
+        return set(self.roots) == set(other.roots) and self.index == other.index and self.base_ring == other.base_ring
+
     def __repr__(self):
         return 'H({}, {})'.format(self.roots, self.index)
 
@@ -489,6 +509,8 @@ class CatalanFunction:
             self.init_from_row_and_column_lengths(obj1, obj2, base_ring)
         elif isinstance(obj1, Partition) and obj2 in NonNegativeIntegerSemiring():
             self.init_from_k_shape(obj1, obj2, base_ring)
+        elif is_k_schur(obj1) and obj2 is None:
+            self.init_from_k_schur(obj1, base_ring)
         else:
             raise ValueError('Invalid inputs to create a Cataland function.  See the four "init_from_" methods in the documentation, and put the correct inputs for any one of them.')
 
@@ -538,6 +560,17 @@ class CatalanFunction:
         rs = p.row_lengths()
         cs = p.column_lengths()
         return self.init_from_row_and_column_lengths(rs, cs, base_ring=base_ring)
+
+    def init_from_k_schur(self, ks, base_ring=QQ['t']):
+        # check inputs
+        assert is_k_schur(ks)
+        assert len(ks.support()) == 1
+        # gather roots
+        index = ks.support()[0]
+        k = ks.parent().k
+        roots = partition_to_k_schur_root_ideal(index, k)
+        # return
+        return self.init_from_indexed_root_ideal(roots, index)
 
     def eval(self):
         # setup

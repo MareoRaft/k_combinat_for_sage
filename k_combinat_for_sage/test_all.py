@@ -1163,6 +1163,22 @@ h = double_homogeneous(1, 1)
 print(h)
 
 
+# test pieri operator
+u = PieriOperatorAlgebra()
+a(u.i(0)([3, 2, 1]), [([2, 2, 1], 1)])
+a(u.i(1)([3, 2, 1]), [([3, 1, 1], 1)])
+# act on catalan function
+cf = CatalanFunction([(0,2), (1,2)], [6, 6, 6])
+a(u.i(2)(cf), CatalanFunction([(0,2), (1,2)], [6, 6, 5]))
+# act on k schur function
+base_ring = QQ['t']
+Sym = SymmetricFunctions(base_ring)
+t = base_ring.gen()
+ks = Sym.kBoundedSubspace(4, t).kschur()
+# TODO: verify by hand that below is really correct, or maybe a simpler example.
+a(u.i(2)(ks[2, 2, 1]), ks[2, 2, 1] + t**2*ks[3, 2] + t**3*ks[4, 1])
+
+
 
 
 # ALL DONE!

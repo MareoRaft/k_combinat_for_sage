@@ -312,7 +312,7 @@ def complement(ri, n=None):
     return ri_complement
 
 def partition_to_k_schur_root_ideal(ptn, k, n=None):
-    r""" Given a `k`-bounded partition `ptn` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal.
+    r""" Given a `k`-bounded partition `ptn = \lambda` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal `\Delta^k(\lambda)`.
     """
     ptn = Partition(ptn)
     if n is None:

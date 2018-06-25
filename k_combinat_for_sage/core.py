@@ -16,6 +16,13 @@ def summands(poly):
 def prod(lis):
 	return reduce(operator.mul, lis, 1)
 
+def is_k_schur(obj):
+	# checks if obj is a k-schur function (coming from the 'kSchur_with_category' class)
+	try:
+		classname = obj.parent().__class__.__name__
+		return classname == 'kSchur_with_category'
+	except:
+		return False
 
 
 # class InfiniteDimensionalFreeRing (CommutativeRing, InfiniteDimensionalFreeAlgebra):
