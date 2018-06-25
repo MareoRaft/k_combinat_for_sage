@@ -1,14 +1,16 @@
 #!/usr/bin/env sage
+# use `sage --python -m pdb test_all.py` for the debugger
 # A place to test my functions
 from __future__ import print_function
 import time
 
 from sage.all import *
+print('Sage loaded.  Now loading local modules...')
 from testing import *
 from all import *
 from shorthands import *
 start_time = time.time()
-print('Sage loaded.  Testing...')
+print('Modules loaded.  Testing...')
 
 
 
@@ -970,7 +972,7 @@ a((0.5,) in S, False)
 
 # test ShiftingOperatorAlgebra
 R = ShiftingOperatorAlgebra()
-# TestSuite(R).run(verbose=False)
+TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R[(1, 2, 1)] * R[(0, 1, 0, 1)], R[(1, 3, 1, 1)])
 # retrieve indices
@@ -1007,7 +1009,7 @@ a(R[(1, -1)](s[2, 1] + s[3, 1]), s[3] + s[4])
 
 # test RaisingOperatorAlgebra
 R = RaisingOperatorAlgebra()
-# TestSuite(R).run(verbose=False)
+TestSuite(R).run(verbose=False)
 a(R[(1, -1)] * R[(0, 1, 0, -1)], R[(1, 0, 0, -1)])
 # create 'R_ij' element
 a(R.ij(1, 3), R[(0, 1, 0, -1)])
@@ -1020,7 +1022,7 @@ a(R[(1, -1)].index(), (1, -1))
 
 # test infinite dimensional free algebra ('x' variables indexed by NN)
 R = InfiniteDimensionalFreeAlgebra()
-# TestSuite(R).run(verbose=False)
+TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R(), R(0))
 a(R.one(), R(1))
@@ -1042,7 +1044,7 @@ a(R[1] + R[2], R[2] + R[1])
 
 # test double ring
 DR = DoubleRing
-# TestSuite(DR).run(verbose=False)
+TestSuite(DR).run(verbose=False)
 a(5 * DR[3] + DR[-4], DR[-4] + DR[3] * 5)
 
 
@@ -1084,19 +1086,19 @@ op = qt_raising_roots_operator(3)
 a(op(s[4, 2]), s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6])
 
 
-# test_indexed_root_ideal_to_catalan_function
+# test catalan function
 Sym = SymmetricFunctions(QQ['t'])
 hl = Sym.hall_littlewood().Qp()
 # empty product
 ri = partition_to_root_ideal([2, 1], n=3)
 g = [3, 1, 1]
-cat_func = indexed_root_ideal_to_catalan_function(ri, g)
-a(cat_func, hl[3, 1, 1])
+cat_func = CatalanFunction(ri, g)
+a(cat_func.eval(), hl[3, 1, 1])
 # other
-# ri = partition_to_root_ideal([1, 1], n=3)
-# g = [3, 1, 1]
-# cat_func = indexed_root_ideal_to_catalan_function(ri, g)
-# a(cat_func, hl[3, 1, 1])
+ri = partition_to_root_ideal([1, 1], n=3)
+g = [3, 1, 1]
+cat_func = CatalanFunction(ri, g)
+a(cat_func.eval(), hl[3, 1, 1])
 
 
 # TODO: test all catalan function methods with some example.  Ask Jennifer morse.

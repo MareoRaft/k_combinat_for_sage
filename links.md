@@ -9,13 +9,17 @@ for explanation of import_statements and preparse
 classcall private explained:
 https://doc.sagemath.org/html/en/reference/structure/sage/structure/unique_representation.html
 
-sage isk ticket:
+sage trac ticket:
 k_stuff:
 https://trac.sagemath.org/ticket/25295
 question:
 https://trac.sagemath.org/ticket/25298
 hall inner product:
 https://trac.sagemath.org/ticket/25538
+
+codomain could not be determined error:
+https://ask.sagemath.org/question/42732/codomain-could-not-be-determined/
+
 
 ICERM:
 https://app.icerm.brown.edu/Cube/#!status
@@ -160,3 +164,29 @@ documentation:
 look at
 https://groups.google.com/forum/#!topic/sage-support/oJhV0fLdv7s
 for help
+
+
+SSL error:
+------------
+1. try injecting SSL certificates following:
+https://stackoverflow.com/questions/19377045/pip-cert-failed-but-curl-works#19398611
+try the --trusted-host option in the pip install line
+
+2. try updating openssl:
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew upgrade openssl
+and brew may tell you to then add something like
+export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
+export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
+or
+echo 'export PATH="/usr/local/opt/openssl/bin:$PATH"' >> ~/.bash_profile
+export LDFLAGS="-L/usr/local/opt/openssl/lib"
+export CPPFLAGS="-I/usr/local/opt/openssl/include"
+as according to
+https://stackoverflow.com/questions/41328451/ssl-module-in-python-is-not-available-when-installing-package-with-pip3#42328420
+try the --trusted-host option in the pip install line
+
+3. try downloading CORRECT version of sage for the OS.  We need the OS X El Capitan (10.11.6) version of sage
+
+
