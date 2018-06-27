@@ -108,17 +108,6 @@ https://stackoverflow.com/questions/45207128/failed-to-upload-packages-to-pypi-4
 
 
 
-instructions:
-
-  1. change version number in setup.py to new version number
-  2. commit all changes and push to master
-  3. git tag <version number>
-  4. git push --tags origin master
-  5. python setup.py sdist
-  6. twine upload dist/*
-
-detailed instructions here: https://packaging.python.org/tutorials/packaging-projects/
-
 
 https://doc.sagemath.org/html/en/thematic_tutorials/tutorial-implementing-algebraic-structures.html
 read also:
