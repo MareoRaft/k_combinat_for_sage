@@ -1,6 +1,7 @@
+# PyPI distribution configuration.
+# To actually BUILD/PACKAGE/SHIP TO PYPI a new version, run `build_version.py`.
 from os import path
 import subprocess
-
 from distutils.core import setup
 
 # get paths
