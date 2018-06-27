@@ -1,4 +1,5 @@
 #!/usr/bin/env python2.7
+print('building docs...')
 from os import path
 import subprocess
 
@@ -22,6 +23,7 @@ FILE_NAMES = [
 	'shorthands.py',
 ]
 file_name_to_code = dict()
+print('modifying code files...')
 for file_name in FILE_NAMES:
 	PATH_CODE = path.join(PATH_PACKAGE, file_name)
 	if path.exists(PATH_CODE):
@@ -39,12 +41,17 @@ for file_name in FILE_NAMES:
 			file.write(code_new)
 
 # run sphinx to build the docs
+print('running sphinx...')
 cmd = ['sage', '-sh', '-c', 'make html']
 subprocess.check_output(cmd)
 
 # restore code to original state
+print('reverting code files...')
 for file_name in FILE_NAMES:
 	PATH_CODE = path.join(PATH_PACKAGE, file_name)
 	if path.exists(PATH_CODE):
 		with open(PATH_CODE, 'w') as file:
 			file.write(file_name_to_code[file_name])
+
+# all done!
+print('building docs completed.')

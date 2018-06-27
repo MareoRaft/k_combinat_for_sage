@@ -17,5 +17,5 @@ chl = compositional_hall_littlewood_Qp
 H = HallLittlewoodVertexOperator
 R = RaisingOperatorAlgebra
 st = straighten
-double_h = double_homogeneous
+double_h = double_homogeneous_building_block
 double_s = double_schur

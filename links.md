@@ -1,10 +1,5 @@
 Notes/links just for me
 
-https://ask.sagemath.org/question/9302/import-sage-packages-in-python/
-
-see
-https://ask.sagemath.org/question/33954/can-i-create-a-sage-file-and-import-it-as-a-python-module/
-for explanation of import_statements and preparse
 
 classcall private explained:
 https://doc.sagemath.org/html/en/reference/structure/sage/structure/unique_representation.html
@@ -17,8 +12,13 @@ https://trac.sagemath.org/ticket/25298
 hall inner product:
 https://trac.sagemath.org/ticket/25538
 
+ask sage stuff:
 codomain could not be determined error:
 https://ask.sagemath.org/question/42732/codomain-could-not-be-determined/
+importing sage into python:
+https://ask.sagemath.org/question/9302/import-sage-packages-in-python/
+explanation of import_statements and preparse:
+https://ask.sagemath.org/question/33954/can-i-create-a-sage-file-and-import-it-as-a-python-module/
 
 
 ICERM:
@@ -188,5 +188,29 @@ https://stackoverflow.com/questions/41328451/ssl-module-in-python-is-not-availab
 try the --trusted-host option in the pip install line
 
 3. try downloading CORRECT version of sage for the OS.  We need the OS X El Capitan (10.11.6) version of sage
+trying sage 8.2 tar.bz2
+trying sage 7.6 app
+
+4. This is exactly the issue in ask sage:
+https://ask.sagemath.org/question/38746/sage-pip-not-compatible-with-pypi/
+suggested solution:
+sage -i openssl
+sage -f python2
+git clone https://github.com/pyca/pyopenssl.git
+cd pyopenssl
+sage -pip install -e
 
 
+
+
+
+todo:
+change example from is_symmetric to SOMETHING ELSE
+
+
+SageDays things to cover
+-----------------------------
+  1. `sage -pip install` is *not* working by default due to a common SSL issue.  This should somehow be patched with a more robust sage installation.
+  2. The 'codomain' error issue above.
+  3. The classcall thing for super rsk (attempt this on your own first)
+  4. Roadmap for migrating k_combinat_for_sage into sage

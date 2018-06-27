@@ -1155,12 +1155,19 @@ a(dual_k_theoretic_homogeneous([1, 2], [2, 3]), 3*h[1]**2 + h[1]*h[2] + 2*h[2] +
 # test dual grothendieck function
 Sym = SymmetricFunctions(QQ)
 h = Sym.h()
-a(dual_grothendieck_function([2, 1]), h[1]*h[2] + h[2] - h[3])
+func = dual_grothendieck_function([2, 1])
+a(func, h[1]*h[2] + h[2] - h[3])
 
+s = Sym.s()
+sfunc = s(func)
 
-# test double h
-h = double_homogeneous(1, 1)
-print(h)
+Sym = SymmetricFunctions(QQ['t'])
+h = Sym.h()
+func = dual_grothendieck_function([2, 1], base_ring=QQ['t'])
+a(func, h[1]*h[2] + h[2] - h[3])
+
+s = Sym.s()
+sfunc = s(func)
 
 
 # test pieri operator
@@ -1179,6 +1186,9 @@ ks = Sym.kBoundedSubspace(4, t).kschur()
 a(u.i(2)(ks[2, 2, 1]), ks[2, 2, 1] + t**2*ks[3, 2] + t**3*ks[4, 1])
 
 
+# test double h
+h = double_homogeneous_building_block(1, 1)
+print(h)
 
 
 # ALL DONE!

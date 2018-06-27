@@ -485,12 +485,15 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
 
 class CatalanFunction:
     r""" cat func yo """
+    BASE_RING_DEFAULT = QQ['t']
+    PREFIX_DEFAULT = 'H'
+
     def __eq__(self, other):
         # TODO: account for the fact that DIFFERENT root/index pairs could actually give the SAME catalan function!!
         return set(self.roots) == set(other.roots) and self.index == other.index and self.base_ring == other.base_ring
 
     def __repr__(self):
-        return 'H({}, {})'.format(self.roots, self.index)
+        return '{}({}, {})'.format(self.prefix, self.roots, self.index)
 
     def _get_indices_for_index_operator(self):
         return self.index
@@ -499,22 +502,22 @@ class CatalanFunction:
         new_obj = self.__class__(self.roots, new_index, base_ring=self.base_ring)
         return new_obj
 
-    def __init__(self, obj1, obj2=None, base_ring=QQ['t']):
+    def __init__(self, obj1, obj2=None, base_ring=None, prefix=None):
         # triage.  figure out what obj1 and obj2 are
         if is_roots(obj1) and is_sequence(obj2):
-            self.init_from_indexed_root_ideal(obj1, obj2, base_ring)
+            self.init_from_indexed_root_ideal(obj1, obj2, base_ring, prefix)
         elif isinstance(obj1, SkewPartition) and obj2 is None:
-            self.init_from_skew_partition(obj1, base_ring)
+            self.init_from_skew_partition(obj1, base_ring, prefix)
         elif is_sequence(obj1) and is_sequence(obj2):
-            self.init_from_row_and_column_lengths(obj1, obj2, base_ring)
+            self.init_from_row_and_column_lengths(obj1, obj2, base_ring, prefix)
         elif isinstance(obj1, Partition) and obj2 in NonNegativeIntegerSemiring():
-            self.init_from_k_shape(obj1, obj2, base_ring)
+            self.init_from_k_shape(obj1, obj2, base_ring, prefix)
         elif is_k_schur(obj1) and obj2 is None:
-            self.init_from_k_schur(obj1, base_ring)
+            self.init_from_k_schur(obj1, base_ring, prefix)
         else:
             raise ValueError('Invalid inputs to create a Cataland function.  See the four "init_from_" methods in the documentation, and put the correct inputs for any one of them.')
 
-    def init_from_indexed_root_ideal(self, roots, index, base_ring=QQ['t']):
+    def init_from_indexed_root_ideal(self, roots, index, base_ring=None, prefix=None):
         r"""
         INPUTS:
 
@@ -537,40 +540,57 @@ class CatalanFunction:
         """
         self.roots = roots
         self.index = index
-        self.base_ring = base_ring
+        self.base_ring = base_ring if base_ring is not None else self.BASE_RING_DEFAULT
+        self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
         return self
 
-    def init_from_skew_partition(self, sp, base_ring=QQ['t']):
+    def init_from_skew_partition(self, sp, base_ring=None, prefix=None):
         r""" Given a SkewPartition `sp = (\lambda, \mu)`, return the catalan function `H(\Phi^+(sp); \lambda)`.
         """
         ri = skew_partition_to_root_ideal(sp, type='max')
         rs = sp.row_lengths()
-        return self.init_from_indexed_root_ideal(ri, rs, base_ring=base_ring)
+        return self.init_from_indexed_root_ideal(ri, rs, base_ring, prefix)
 
-    def init_from_row_and_column_lengths(self, row_lengths, column_lengths, base_ring=QQ['t']):
+    def init_from_row_and_column_lengths(self, row_lengths, column_lengths, base_ring=None, prefix=None):
         r""" Determine the skew partition `D` with row-shape ``row_lengths`` and column-shape ``column_lengths``, and return the catalan function `H(\Phi^+(D); \text{row_lengths})`.
         """
         sp = SkewPartitions().init_from_row_and_column_length(row_lengths, column_lengths)
-        return self.init_from_skew_partition(sp, base_ring=base_ring)
+        return self.init_from_skew_partition(sp, base_ring, prefix)
 
-    def init_from_k_shape(self, p, k, base_ring=QQ['t']):
+    def init_from_k_shape(self, p, k, base_ring=None, prefix=None):
         r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Psi^+((rs(p),cs(p))), rs(p))`.
         """
         assert is_k_shape(p, k)
         rs = p.row_lengths()
         cs = p.column_lengths()
-        return self.init_from_row_and_column_lengths(rs, cs, base_ring=base_ring)
+        return self.init_from_row_and_column_lengths(rs, cs, base_ring, prefix)
 
-    def init_from_k_schur(self, ks, base_ring=QQ['t']):
+    def init_from_k_schur(self, func, base_ring=None, prefix=None):
+        r""" Given a k-schur function `func = s^k_\lambda(x;t)`, initialize the catalan function `H(\Delta^k(\lambda), \lambda)`.
+
+        Mathematically, these two functions are equal.  The usefulness of this method is that you input a ``sage.combinat.sf.new_kschur.kSchur_with_category`` object and you obtain a ``CatalanFunction`` object.
+
+        EXAMPLES::
+
+            sage: base_ring = QQ['t']
+            sage: Sym = SymmetricFunctions(base_ring)
+            sage: t = base_ring.gen()
+            sage: ks = Sym.kBoundedSubspace(4, t).kschur()
+            sage: func = ks[2, 1, 1]
+            sage: CatalanFunction(func, base_ring=base_ring)
+            H([], [2, 1, 1])
+
+            # TODO: make sure [] above is correct.  go by hand.
+        """
         # check inputs
-        assert is_k_schur(ks)
-        assert len(ks.support()) == 1
+        assert is_k_schur(func)
+        assert len(func.support()) == 1
         # gather roots
-        index = ks.support()[0]
-        k = ks.parent().k
+        index = func.support()[0]
+        k = func.parent().k
         roots = partition_to_k_schur_root_ideal(index, k)
         # return
-        return self.init_from_indexed_root_ideal(roots, index)
+        return self.init_from_indexed_root_ideal(roots, index, base_ring, prefix)
 
     def eval(self):
         # setup
@@ -579,7 +599,7 @@ class CatalanFunction:
         # formula
         n = len(self.index)
         roots_complement = RI.complement(self.roots, n)
-        op = raising_roots_operator(roots_complement, t=t)
+        op = raising_roots_operator(roots_complement, t=t, base_ring=self.base_ring)
         hl_poly = hl(self.index)
         cat_func = op(hl_poly)
         return cat_func
@@ -716,7 +736,7 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     # formula
     n = len(index)
     roots_complement = RI.complement(roots, n)
-    op = raising_roots_operator(roots_complement, t=1)
+    op = raising_roots_operator(roots_complement, t=1, base_ring=base_ring)
     cat_func = op(Kh)
     return cat_func
 
@@ -737,8 +757,8 @@ def dual_grothendieck_function(composition, base_ring=QQ):
     reversed_staircase_ptn = list(reversed(staircase_shape(n)))
     return dual_k_catalan_function(roots, composition, reversed_staircase_ptn, base_ring=base_ring)
 
-def double_homogeneous(p, n):
-    r""" The double complete homogeneous symmetric polynomials `h_p(x \,||\, a)` defined as
+def double_homogeneous_building_block(p, n):
+    r""" The double complete homogeneous symmetric polynomial building block `h_p(x \,||\, a)` defined as
 
     ..  MATH::
         h_p(x_1, \ldots, x_n \,||\, a) \,= \sum_{n \geq i_1 \geq \ldots \geq i_p \geq 1} (x_{i_1} - a_{i_1})(x_{i_2} - a_{i_2 - 1}) \cdots (x_{i_p} - a_{i_p - p + 1})
@@ -782,10 +802,11 @@ def shift(element):
     new_element = a.sum(new_monomials)
     return new_element
 
-def double_homogeneous_shifted(r, s, n):
-    r""" [Fun]_ before eq (8) """
+def double_homogeneous_building_block_shifted(r, s, n):
+    r""" Given `r` and `s`, returns `h_{r, s} = \tau^s h_r(x \,||\, a)`, as defined in [Fun]_ before eq (8).
+    """
     if n > 0:
-        out = double_homogeneous(r, n)
+        out = double_homogeneous_building_block(r, n)
         for _ in range(s):
             out = shift(out)
         return out
@@ -793,18 +814,32 @@ def double_homogeneous_shifted(r, s, n):
         raise NotImplemented
 
 class DoubleHomogeneous:
-    def __init__(self, index1, index2, n):
+    def __init__(self, index1, index2, prefix='h'):
         r"""
         mu1 -- composition
         mu2 -- composition
         n -- number of `x` variables
+
+        EXAMPLE::
+            # create the double homogeneous `h^{(4)}_{\mu, \beta}`
+            sage: DoubleHomogeneous(mu, beta, 4)
+
+            # create the double homogeneous shifted building block `h_{r, s}` in 4 variables
+            sage: r = 5
+            sage: s = 2
+            sage: DoubleHomogeneous([r], [s], 4)
+
+            # create the double homogeneous symmetric building block `h_p(x \,||\, a)` in 4 variables
+            sage: p = 3
+            sage: DoubleHomogeneous([p], [0], 4)
         """
         self.index1 = index1
         self.index2 = index2
-        self.n = n
+        self.prefix = prefix
 
     def __repr__(self):
-        return 'h({})[{}, {}]'.format(self.n, self.index1, self.index2)
+        r""" For example, h(n)[mu, beta], which represents `h^{(n)}_{\mu, \beta}`. """
+        return '{}({})[{}, {}]'.format(self.prefix, self.n, self.index1, self.index2)
 
     def _get_indices_for_index_operator(self):
         pair = (self.index1, self.index2)
@@ -815,8 +850,9 @@ class DoubleHomogeneous:
         new_obj = self.__class__(index1, index2, self.n)
         return new_obj
 
-    def eval(self):
-        (mu1, mu2, n) = (self.index1, self.index2, self.n)
+    def eval(self, n):
+        r""" Given the number of variables `n`, output self expanded in terms of the shifted double homogeneous building blocks `h_{r, s}`. """
+        (mu1, mu2) = (self.index1, self.index2)
         # pad with 0's
         max_len = max(len(mu1), len(mu2))
         mu1 = list(mu1) + [0] * (max_len - len(mu1))
@@ -853,6 +889,7 @@ def double_catalan_function(roots, index, n):
     h_index = DoubleHomogeneous(index, rho, n)
     # formula
     roots_complement = RI.complement(roots, l)
+    # TODO: see what to pass in for base_ring in below line.
     op = raising_roots_operator(roots_complement, t=1)
     cat_func = op(h_index)
     return cat_func

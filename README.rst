@@ -34,9 +34,10 @@ etc.  For a full list of functions, read the documentation.
 
 Install or upgrade
 --------------------
-::
 
 	$ sage -pip install --upgrade k_combinat_for_sage
+
+If you get an SSL error, you can download the latest version manually at [pypi](https://pypi.org/project/k-combinat-for-sage/#files) and then install/upgrade with `sage -pip install --upgrade /path/to/downloaded/file`.  If you want to fix the SSL issue permanently, look [here](https://ask.sagemath.org/question/38746/sage-pip-not-compatible-with-pypi/).
 
 
 Usage
@@ -47,8 +48,8 @@ Put your code in a file such as `myscript.py`.  Import all the functions with::
 
 and then use functions at will, such as::
 
-	sp = SkewPartition([[4,3,3,1], [1]])
-	if is_symmetric(sp):
+	p = Partition([4, 3, 3, 1])
+	if is_symmetric(p):
 		print("it's symmetric, boogie woogie woogie!")
 
 Finally, you can run your file with sage::
