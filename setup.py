@@ -3,14 +3,15 @@
 from os import path
 import subprocess
 from distutils.core import setup
+import sys
 
-# get paths
-PATH_REPO = path.dirname(path.abspath(__file__))
-PATH_VERSION = path.join(PATH_REPO, 'VERSION')
+path_repo = path.dirname(path.abspath(__file__))
+sys.path.append(path_repo)
+from config import PATH
 
 # config
 name = 'k_combinat_for_sage'
-version = open(PATH_VERSION).read().strip()
+version = open(PATH['version']).read().strip()
 url = 'https://github.com/mareoraft/{name}'.format(name=name)
 download_url = '{url}/archive/{tag}.tar.gz'.format(url=url, tag=version)
 setup(

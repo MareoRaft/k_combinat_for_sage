@@ -2,15 +2,14 @@
 print('building docs...')
 from os import path
 import subprocess
+import sys
 
-# get paths
-PATH_REPO = path.dirname(path.dirname(path.abspath(__file__)))
-PATH_DOCS = path.join(PATH_REPO, 'docs')
-PATH_PACKAGE = path.join(PATH_REPO, 'k_combinat_for_sage')
+path_repo = path.dirname(path.dirname(path.abspath(__file__)))
+sys.path.append(path_repo)
+from config import PATH
 
 # get content to insert into code
-PATH_INSERTION_CONTENT = path.join(PATH_DOCS, 'namespace_deletions.py')
-with open(PATH_INSERTION_CONTENT, 'r') as file:
+with open(PATH['namespace_deletions'], 'r') as file:
 	insertion_content = file.read()
 
 FILE_NAMES = [
@@ -25,7 +24,7 @@ FILE_NAMES = [
 file_name_to_code = dict()
 print('modifying code files...')
 for file_name in FILE_NAMES:
-	PATH_CODE = path.join(PATH_PACKAGE, file_name)
+	PATH_CODE = path.join(PATH['package'], file_name)
 	if path.exists(PATH_CODE):
 		# get content of code
 		with open(PATH_CODE, 'r') as file:
@@ -48,7 +47,7 @@ subprocess.check_output(cmd)
 # restore code to original state
 print('reverting code files...')
 for file_name in FILE_NAMES:
-	PATH_CODE = path.join(PATH_PACKAGE, file_name)
+	PATH_CODE = path.join(PATH['package'], file_name)
 	if path.exists(PATH_CODE):
 		with open(PATH_CODE, 'w') as file:
 			file.write(file_name_to_code[file_name])
