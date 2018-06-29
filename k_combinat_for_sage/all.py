@@ -913,24 +913,10 @@ def k_coverees1(root, k):
     coverees = set(ptn for ptn in candidates if is_k_core(ptn, k+1) and k_size(ptn, k) == k_size(root, k) - 1)
     return coverees
 
-def k_coverees2(core, k):
-    core = Partition(core)
-    assert is_k_core(core, k+1)
-    size = k_size(core, k)
-    new_size = size - 1
-    new_k_bdd_ptns = Partitions(new_size, max_part=k)
-    candidates = [to_k_core(p, k+1) for p in new_k_bdd_ptns]
-    print([5, 4, 2, 2, 1] in candidates)
-    print([6, 2, 2, 2, 1] in candidates)
-    coverees = [c for c in candidates if core.contains(c)]
-    return set(coverees)
-
 def k_coverees(core, k, method=2):
     r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given. """
     if method == 1:
         return k_coverees1(core, k)
-    elif method == 2:
-        return k_coverees2(core, k)
     else:
         raise ValueError('Unknown method.')
 

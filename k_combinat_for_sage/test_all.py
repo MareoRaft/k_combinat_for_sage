@@ -1221,14 +1221,6 @@ a(k_coverees1([2, 1, 1], 2), set([Partition([2]), Partition([1, 1])]))
 a(k_coverees1([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
 
 
-# test k coverees 2
-a(k_coverees2([3, 3, 2, 2, 1, 1], 2), set([Partition([3, 2, 2, 1, 1])]))
-a(k_coverees2([2, 2, 1, 1], 2), set([Partition([2, 1, 1])]))
-a(k_coverees2([2, 1, 1], 2), set([Partition([2]), Partition([1, 1])]))
-
-a(k_coverees2([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
-
-
 # ALL DONE!
 print('Testing completed successfully!', end='')
 end_time = time.time()
