@@ -271,10 +271,9 @@ def to_k_core(ptn, k):
             core.insert(0, part)
         else:
             core_ptn = Partition(core)
-            minimum_length = max(part, core[0])
             last_hook_lengths = core_ptn.hook_lengths()[0]
             # this loop could be done away with to make the program more efficient.  You can actually calculate the correct shift amount by looking for k in new_hook_lengths and seeing how much you need to shift.
-            minimum_shift = minimum_length - core[0]
+            minimum_shift = part - previous_part
             for shift in range(minimum_shift, k):
                 # the 'shift' is the amount past core[0]
                 new_hook_lengths = [l+1+shift for l in last_hook_lengths]
@@ -286,6 +285,8 @@ def to_k_core(ptn, k):
                     break
             if len(core) == previous_core_len:
                 # if none of the shifts were good
+                # i think this situation actually can never happen, so if the error occurs, this is a big red flag
                 raise ValueError('Impossible to make this partition a k-core.')
+        previous_part = part
         previous_core_len = len(core)
     return Partition(core)

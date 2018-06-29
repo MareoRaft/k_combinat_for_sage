@@ -847,13 +847,18 @@ a(is_k_core(Partition([4, 2, 2]), 7), True)
 
 
 # test partition to k core (or k bounded partition to k+1 core)
+# main tests
 a(to_k_core([1], 3), [1])
 a(to_k_core([2], 3), [2])
 a(to_k_core([1, 1], 3), [1, 1])
 a(to_k_core([2, 1], 3), [3, 1])
 a(to_k_core([1, 1, 1], 3), [2, 1, 1])
 a(to_k_core([1, 1, 1, 1, 1, 1], 2), [6, 5, 4, 3, 2, 1])
+a(to_k_core([2, 1, 1, 1], 3), [4, 2, 1, 1])
+a(to_k_core([1, 1, 1, 1, 1], 3), [3, 2, 2, 1, 1])
+# extra
 a(to_k_core([6, 5, 5, 2], 4), [11, 8, 5, 2])
+a(to_k_core([2, 2, 1], 3), [5, 3, 1])
 
 
 # test_is_linked
@@ -1204,8 +1209,8 @@ a(u.i(2)(ks[2, 2, 1]), ks[2, 2, 1] + t**2*ks[3, 2] + t**3*ks[4, 1])
 
 
 # test double h
-h = double_homogeneous_building_block(1, 1)
-print(h)
+# h = double_homogeneous_building_block(1, 1)
+# print(h)
 
 
 # test k coverees 1

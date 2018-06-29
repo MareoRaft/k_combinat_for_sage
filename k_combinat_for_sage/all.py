@@ -916,12 +916,13 @@ def k_coverees1(root, k):
 def k_coverees2(core, k):
     core = Partition(core)
     assert is_k_core(core, k+1)
-    k_bdd_ptn = Partition(k_row_lengths(core, k))
-    coverees = []
-    for (i, j) in k_bdd_ptn.removable_cells():
-        sub_k_bdd_ptn = k_bdd_ptn.remove_cell(i, j)
-        sub_core = to_k_core(sub_k_bdd_ptn, k+1)
-        coverees.append(sub_core)
+    size = k_size(core, k)
+    new_size = size - 1
+    new_k_bdd_ptns = Partitions(new_size, max_part=k)
+    candidates = [to_k_core(p, k+1) for p in new_k_bdd_ptns]
+    print([5, 4, 2, 2, 1] in candidates)
+    print([6, 2, 2, 2, 1] in candidates)
+    coverees = [c for c in candidates if core.contains(c)]
     return set(coverees)
 
 def k_coverees(core, k, method=2):
