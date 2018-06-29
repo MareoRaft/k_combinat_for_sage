@@ -6,11 +6,20 @@ from sage.all import *
 # ^*^ sphinx insert ^*^
 
 # HELPERS
+def is_sequence(obj):
+    # Check if something is one of our allowed 'compositions'.
+    return isinstance(obj, (list, Composition, Partition))
+
 def k_rectangle_dimension_list(k):
     return [(k-i+1, i) for i in range(1, k+1)]
 
 
 # Partition stuff
+def k_size(ptn, k):
+    r""" Given a partition self, return the size of the k-boundary. """
+    ptn = Partition(ptn)
+    return ptn.k_boundary(k).size()
+
 def boundary(ptn):
     r""" The boundary of a partition is the set `\{ \text{NE}(d) \mid \forall d\:\text{diagonal} \}`.  That is, for every diagonal line `y = x + b` where `b \in \mathbb{Z}`, we find the northeasternmost (NE) point on that diagonal which is also in the Ferrer's diagram (here, the Ferrer's diagram is interpreted as 1 x 1 cells in the Euclidean plane).
 
@@ -233,6 +242,8 @@ def next(p, min=[], max=None, type=None):
     return Partition(next_p)
 
 def is_k_core(ptn, k):
+    # ALREADY IMPLEMENTED IN SAGE as partition.is_core()
+    # this is FASTER though, so should replace the other one
     r""" Returns a boolean saying whether or not the Partition `ptn` is a `k`-core.
 
     EXAMPLES::
@@ -244,9 +255,37 @@ def is_k_core(ptn, k):
         False
 
     """
-    hook_lengths = reduce(operator.add, ptn.hook_lengths())
-    return all(hook_length != k for hook_length in hook_lengths)
+    for row_hook_lengths in ptn.hook_lengths():
+        for hook_length in row_hook_lengths:
+            if hook_length == k:
+                return False
+    return True
 
-def is_sequence(obj):
-    # Check if something is one of our allowed 'compositions'.
-    return isinstance(obj, (list, Composition, Partition))
+def to_k_core(ptn, k):
+    r""" Shift the rows of ptn minimally in order to create a k-core.
+    If you plug a k-bounded partition into this function and use k+1 as the input constant, then this is the famous bijection.
+    """
+    core = []
+    for part in reversed(ptn):
+        if core == []:
+            core.insert(0, part)
+        else:
+            core_ptn = Partition(core)
+            minimum_length = max(part, core[0])
+            last_hook_lengths = core_ptn.hook_lengths()[0]
+            # this loop could be done away with to make the program more efficient.  You can actually calculate the correct shift amount by looking for k in new_hook_lengths and seeing how much you need to shift.
+            minimum_shift = minimum_length - core[0]
+            for shift in range(minimum_shift, k):
+                # the 'shift' is the amount past core[0]
+                new_hook_lengths = [l+1+shift for l in last_hook_lengths]
+                if k not in new_hook_lengths:
+                    # add the appropriate part to core
+                    new_part = core[0] + shift
+                    # we could improve performance by simply reversing core at the end instead of prepending to the list
+                    core.insert(0, new_part)
+                    break
+            if len(core) == previous_core_len:
+                # if none of the shifts were good
+                raise ValueError('Impossible to make this partition a k-core.')
+        previous_core_len = len(core)
+    return Partition(core)

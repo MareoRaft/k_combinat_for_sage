@@ -19,6 +19,13 @@ s = SymmetricFunctions(QQ).s()
 a(set(summands(s[1] + 2 + 3*s[34])), set([2*s[[]], s[1], 3*s[34]]))
 
 
+# test k size
+a(k_size([2, 1, 1], 1), 2)
+a(k_size([2, 1, 1], 2), 3)
+a(k_size([2, 1, 1], 3), 3)
+a(k_size([2, 1, 1], 4), 4)
+
+
 # test_SP_is_symmetric
 sp = SkewPartition([[], []])
 b = SP.is_symmetric(sp)
@@ -839,6 +846,16 @@ a(is_k_core(Partition([4, 2, 2]), 6), False)
 a(is_k_core(Partition([4, 2, 2]), 7), True)
 
 
+# test partition to k core (or k bounded partition to k+1 core)
+a(to_k_core([1], 3), [1])
+a(to_k_core([2], 3), [2])
+a(to_k_core([1, 1], 3), [1, 1])
+a(to_k_core([2, 1], 3), [3, 1])
+a(to_k_core([1, 1, 1], 3), [2, 1, 1])
+a(to_k_core([1, 1, 1, 1, 1, 1], 2), [6, 5, 4, 3, 2, 1])
+a(to_k_core([6, 5, 5, 2], 4), [11, 8, 5, 2])
+
+
 # test_is_linked
 # empty skew
 sp = SkewPartition([[], []])
@@ -1189,6 +1206,22 @@ a(u.i(2)(ks[2, 2, 1]), ks[2, 2, 1] + t**2*ks[3, 2] + t**3*ks[4, 1])
 # test double h
 h = double_homogeneous_building_block(1, 1)
 print(h)
+
+
+# test k coverees 1
+a(k_coverees1([3, 3, 2, 2, 1, 1], 2), set([Partition([3, 2, 2, 1, 1])]))
+a(k_coverees1([2, 2, 1, 1], 2), set([Partition([2, 1, 1])]))
+a(k_coverees1([2, 1, 1], 2), set([Partition([2]), Partition([1, 1])]))
+
+a(k_coverees1([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
+
+
+# test k coverees 2
+a(k_coverees2([3, 3, 2, 2, 1, 1], 2), set([Partition([3, 2, 2, 1, 1])]))
+a(k_coverees2([2, 2, 1, 1], 2), set([Partition([2, 1, 1])]))
+a(k_coverees2([2, 1, 1], 2), set([Partition([2]), Partition([1, 1])]))
+
+a(k_coverees2([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
 
 
 # ALL DONE!

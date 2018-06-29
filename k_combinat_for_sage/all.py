@@ -893,3 +893,51 @@ def double_catalan_function(roots, index, n):
     op = raising_roots_operator(roots_complement, t=1)
     cat_func = op(h_index)
     return cat_func
+
+def k_coverees1(root, k):
+    root = Partition(root)
+    assert is_k_core(root, k+1)
+    # set of coveree candidates (a superset of the coverees)
+    candidates = set()
+    def add_to_candidates(ptn, is_root=False):
+        # add to dictionary if not already there
+        if ptn not in candidates:
+            candidates.add(ptn)
+            # if it is not a leaf, recurse
+            if is_root or not is_k_core(ptn, k+1):
+                for (i, j) in ptn.removable_cells():
+                    sub_ptn = ptn.remove_cell(i, j)
+                    add_to_candidates(sub_ptn)
+    add_to_candidates(root, is_root=True)
+    # Now that all k+1-cores (and some other things) have been populated in candidates, filter to the ones that really are k+1-cores and have correct k-boundary size.
+    coverees = set(ptn for ptn in candidates if is_k_core(ptn, k+1) and k_size(ptn, k) == k_size(root, k) - 1)
+    return coverees
+
+def k_coverees2(core, k):
+    core = Partition(core)
+    assert is_k_core(core, k+1)
+    k_bdd_ptn = Partition(k_row_lengths(core, k))
+    coverees = []
+    for (i, j) in k_bdd_ptn.removable_cells():
+        sub_k_bdd_ptn = k_bdd_ptn.remove_cell(i, j)
+        sub_core = to_k_core(sub_k_bdd_ptn, k+1)
+        coverees.append(sub_core)
+    return set(coverees)
+
+def k_coverees(core, k, method=2):
+    r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given. """
+    if method == 1:
+        return k_coverees1(core, k)
+    elif method == 2:
+        return k_coverees2(core, k)
+    else:
+        raise ValueError('Unknown method.')
+
+def k_marked_coverees(core, k, marking):
+    r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given with the given marking. """
+    coverees = k_coverees(core, k)
+    marked_coverees = [c for c in coverees if is_markable(core, c, marking)]
+    return marked_coverees
+
+
+
