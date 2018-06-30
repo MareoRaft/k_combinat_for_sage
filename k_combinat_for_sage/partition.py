@@ -255,6 +255,7 @@ def is_k_core(ptn, k):
         False
 
     """
+    ptn = Partition(ptn)
     for row_hook_lengths in ptn.hook_lengths():
         for hook_length in row_hook_lengths:
             if hook_length == k:

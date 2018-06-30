@@ -8,6 +8,7 @@ from sage.all import *
 print('Sage loaded.  Now loading local modules...')
 from testing import *
 from all import *
+from all import __go_to_ribbon_head
 from shorthands import *
 start_time = time.time()
 print('Modules loaded.  Testing...')
@@ -1219,6 +1220,83 @@ a(k_coverees1([2, 2, 1, 1], 2), set([Partition([2, 1, 1])]))
 a(k_coverees1([2, 1, 1], 2), set([Partition([2]), Partition([1, 1])]))
 
 a(k_coverees1([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
+
+
+# test go to ribbon head
+a(__go_to_ribbon_head([(0,1)], (0,1)), (0,1))
+a(__go_to_ribbon_head([(1,0), (2,0)], (2,0)), (1,0))
+a(__go_to_ribbon_head([(1,0), (2,0), (3,0)], (3,0)), (1,0))
+a(__go_to_ribbon_head([(1,1), (1,2)], (1,1)), (1,2))
+a(__go_to_ribbon_head([(1,1), (1,2), (1,3)], (1,1)), (1,3))
+a(__go_to_ribbon_head([(1,1), (1,2), (2,1)], (2,1)), (1,2))
+a(__go_to_ribbon_head([(0,3), (1,1), (1,2), (2,0), (2,1), (3,0), (3,1)], (2,1)), (1,2))
+
+
+# test is markable
+a(is_markable([3, 2, 2], [2, 1], 0), True)
+a(is_markable([3, 2, 2], [2, 1], 1), True)
+a(is_markable([3, 2, 2], [2, 1], 2), False)
+a(is_markable([3, 2, 2], [2, 1], 3), False)
+
+a(is_markable([3, 2, 2], [1, 1], 0), True)
+a(is_markable([3, 2, 2], [1, 1], 1), False)
+a(is_markable([3, 2, 2], [1, 1], 2), False)
+a(is_markable([3, 2, 2], [1, 1], 3), False)
+
+a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 0), True)
+a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 1), False)
+a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 2), True)
+a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 3), False)
+
+
+# test k marked coverees
+# a(k_coverees([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
+a(k_marked_coverees([6, 4, 2, 2, 1], 5, 0), set([Partition([5, 4, 2, 2, 1])]))
+a(k_marked_coverees([6, 4, 2, 2, 1], 5, 1), set([Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2])]))
+a(k_marked_coverees([6, 4, 2, 2, 1], 5, 2), set())
+a(k_marked_coverees([6, 4, 2, 2, 1], 5, 3), set([Partition([6, 4, 2, 1, 1])]))
+a(k_marked_coverees([6, 4, 2, 2, 1], 5, 4), set([Partition([6, 3, 2, 2])]))
+
+
+# test end core to marked core sequences
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [0, 1, 2, 0, 1]),
+	set([partition_tuple([], [1], [1, 1], [2, 1, 1], [3, 1, 1], [5, 3, 1])]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [1, 2, 0, 1]),
+	set([partition_tuple([1], [1, 1], [2, 1, 1], [3, 1, 1], [5, 3, 1])]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [1]),
+	set([
+		partition_tuple([3, 1, 1], [5, 3, 1]),
+		partition_tuple([4, 2], [5, 3, 1]),
+	]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [0]),
+	set([
+		partition_tuple([3, 1, 1], [5, 3, 1]),
+		partition_tuple([4, 2], [5, 3, 1]),
+	]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [2]),
+	set([
+		partition_tuple([4, 2], [5, 3, 1]),
+	]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [0, 1]),
+	set([
+		partition_tuple([2, 1, 1], [3, 1, 1], [5, 3, 1]),
+		partition_tuple([3, 1], [4, 2], [5, 3, 1]),
+	]))
+a(end_core_to_marked_core_sequences([2, 1, 1], 2, [2]),
+	set([
+		partition_tuple([1, 1], [2, 1, 1]),
+	]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [0, 2, 0]),
+	set([
+		partition_tuple([1, 1], [3, 1], [3, 1, 1], [5, 3, 1]),
+		partition_tuple([2], [3, 1], [3, 1, 1], [5, 3, 1]),
+	]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [0, 1, 1, 2]),
+	set([
+		partition_tuple([1], [2], [3, 1], [4, 2], [5, 3, 1]),
+	]))
+a(end_core_to_marked_core_sequences([5, 3, 1], 2, [1, 2, 2]), set())
+
 
 
 # ALL DONE!

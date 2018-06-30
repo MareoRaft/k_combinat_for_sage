@@ -34,10 +34,11 @@ etc.  For a full list of functions, read the documentation.
 
 Install or upgrade
 --------------------
+::
 
 	$ sage -pip install --upgrade k_combinat_for_sage
 
-If you get an SSL error, you can download the latest version manually at [pypi](https://pypi.org/project/k-combinat-for-sage/#files) and then install/upgrade with `sage -pip install --upgrade /path/to/downloaded/file`.  If you want to fix the SSL issue permanently, look [here](https://ask.sagemath.org/question/38746/sage-pip-not-compatible-with-pypi/).
+If you get an SSL error, you can download the latest version manually at `PyPI <https://pypi.org/project/k-combinat-for-sage/#files>`_ and then install/upgrade with :code:`sage -pip install --upgrade /path/to/downloaded/file`.  If you want to fix the SSL issue permanently, look `here <https://ask.sagemath.org/question/38746/sage-pip-not-compatible-with-pypi/>`_.
 
 
 Usage

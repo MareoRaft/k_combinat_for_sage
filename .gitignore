@@ -4,6 +4,7 @@ questions.md
 MANIFEST
 pdfs
 *.orig
+ignore
 
 
 ### JupyterNotebook ###
