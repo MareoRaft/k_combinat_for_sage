@@ -19,7 +19,11 @@ from k_shape import *
 import k_shape as kS
 from root_ideal import *
 import root_ideal as RI
+from strong_marked_tableau import *
 # ^*^ sphinx insert ^*^
+
+
+# HELPERS
 
 
 # MAIN
@@ -889,93 +893,3 @@ def double_catalan_function(roots, index, n):
     op = raising_roots_operator(roots_complement, t=1)
     cat_func = op(h_index)
     return cat_func
-
-def k_coverees1(root, k):
-    root = Partition(root)
-    assert is_k_core(root, k+1)
-    # set of coveree candidates (a superset of the coverees)
-    candidates = set()
-    def add_to_candidates(ptn, is_root=False):
-        # add to dictionary if not already there
-        if ptn not in candidates:
-            candidates.add(ptn)
-            # if it is not a leaf, recurse
-            if is_root or not is_k_core(ptn, k+1):
-                for (i, j) in ptn.removable_cells():
-                    sub_ptn = ptn.remove_cell(i, j)
-                    add_to_candidates(sub_ptn)
-    add_to_candidates(root, is_root=True)
-    # Now that all k+1-cores (and some other things) have been populated in candidates, filter to the ones that really are k+1-cores and have correct k-boundary size.
-    coverees = set(ptn for ptn in candidates if is_k_core(ptn, k+1) and k_size(ptn, k) == k_size(root, k) - 1)
-    return coverees
-
-def k_coverees(core, k, method=1):
-    r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given. """
-    if method == 1:
-        return k_coverees1(core, k)
-    else:
-        raise ValueError('Unknown method.')
-
-def __go_to_ribbon_head(cells, start_cell):
-    # Given the cells of a ribbon or multiple disconnected ribbons, and a starting point, find the head of the ribbon
-    if start_cell not in cells:
-        raise ValueError('Starting position is not in list of cells.')
-    cell = start_cell
-    while True:
-        right_cell = (cell[0], cell[1] + 1)
-        if right_cell in cells:
-            cell = right_cell
-            continue
-        down_cell = (cell[0] - 1, cell[1])
-        if down_cell in cells:
-            cell = down_cell
-            continue
-        break
-    # nothing to right or down, so we must have reached head of ribbon
-    head = cell
-    return head
-
-def is_markable(outer_core, inner_core, marking):
-    r""" Given two cores (typically consecutive cores in a core sequence), see if `marking` is a possible marking of outer_core/inner_core """
-    sp = SkewPartition([outer_core, inner_core])
-    cells = sp.cells()
-    row_indices = set(cell[0] for cell in cells)
-    if marking not in row_indices:
-        return False
-    start_cell = (marking, right(sp, marking))
-    head = __go_to_ribbon_head(cells, start_cell)
-    return head[0] == marking
-
-def k_marked_coverees(core, k, marking):
-    r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given with the given marking. """
-    coverees = k_coverees(core, k)
-    marked_coverees = [c for c in coverees if is_markable(core, c, marking)]
-    return set(marked_coverees)
-
-def end_core_to_marked_core_sequences(end_core, k, markings):
-    r"""
-    end_core -- a k+1 core
-    k -- k
-    markings -- vector of markings for the SMT
-    """
-    # check inputs
-    end_core = Partition(end_core)
-    k = NonNegativeIntegerSemiring()(k)
-    assert is_k_core(end_core, k+1)
-    for marking in markings:
-        NonNegativeIntegerSemiring()(marking)
-    # find marked core sequences
-    sequences = []
-    if not markings:
-        # base case
-        sequences.append(tuple([end_core]))
-    else:
-        # inductive step
-        coverees = k_marked_coverees(end_core, k, markings[-1])
-        for coveree in coverees:
-            prefix_sequences = end_core_to_marked_core_sequences(coveree, k, markings[:-1])
-            for prefix_sequence in prefix_sequences:
-                sequence = prefix_sequence + tuple([end_core])
-                sequences.append(sequence)
-    return set(sequences)
-

@@ -18,6 +18,7 @@ FILE_NAMES = [
 	'k_shape.py',
 	'skew_partition.py',
 	'root_ideal.py',
+	'strong_marked_tableau.py',
 	'all.py',
 	'shorthands.py',
 ]

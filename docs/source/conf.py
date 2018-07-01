@@ -19,8 +19,7 @@ project = u'k-Schur combinatorics for SageMath'
 copyright = u'2018, Matthew Lancellotti, George Seelinger, Jennifer Morse'
 package_name = 'k_combinat_for_sage'
 package_folder = PATH['package']
-author = authors = u'Matthew Lancellotti with special thanks to George Seelinger and Jennifer Morse'
-
+author = authors = u'Matthew Lancellotti and George Seelinger, with special thanks to Jennifer Morse'
 
 
 

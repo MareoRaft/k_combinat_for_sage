@@ -8,7 +8,7 @@ from sage.all import *
 print('Sage loaded.  Now loading local modules...')
 from testing import *
 from all import *
-from all import __go_to_ribbon_head
+from strong_marked_tableau import __go_to_ribbon_head
 from shorthands import *
 start_time = time.time()
 print('Modules loaded.  Testing...')
@@ -1041,6 +1041,11 @@ a(R[(1, -1)].indices(), [(1, -1)])
 a((R[(1, -1)] + 2 * R[(1, 0, -1)]).indices(), [(1, -1), (1, 0, -1)])
 # retrieve index
 a(R[(1, -1)].index(), (1, -1))
+# R(R(h)) does NOT necessarily equal (R*R)(h)
+Sym = SymmetricFunctions(QQ)
+h = Sym.h()
+a((R.ij(0, 1) * R.ij(0, 1))(h[1, 1, 1, 1]), 0)
+a((R.ij(1, 2) * R.ij(1, 3) * R.ij(0, 1) * R.ij(0, 1))(h[1, 1, 1, 1]), h[3, 1])
 
 
 # test infinite dimensional free algebra ('x' variables indexed by NN)
@@ -1232,21 +1237,39 @@ a(__go_to_ribbon_head([(1,1), (1,2), (2,1)], (2,1)), (1,2))
 a(__go_to_ribbon_head([(0,3), (1,1), (1,2), (2,0), (2,1), (3,0), (3,1)], (2,1)), (1,2))
 
 
+# test row marking to marking
+a(row_marking_to_marking([3, 2, 2], [2, 1], 0), (0,2))
+a(row_marking_to_marking([3, 2, 2], [2, 1], 1), (1,1))
+
+a(row_marking_to_marking([3, 2, 2], [1, 1], 0), (0,2))
+
+a(row_marking_to_marking([3, 3, 2, 2], [2, 2, 1, 1], 0), (0,2))
+a(row_marking_to_marking([3, 3, 2, 2], [2, 2, 1, 1], 2), (2,1))
+
+
+# test row markings to markings
+a(row_markings_to_markings(([], [1]), [0]), [(0,0)])
+a(row_markings_to_markings(([], [1], [1, 1]), [0, 1]), [(0,0), (1,0)])
+a(row_markings_to_markings(([], [1], [1, 1], [2, 1, 1]), [0, 1, 2]), [(0,0), (1,0), (2,0)])
+a(row_markings_to_markings(([], [1], [1, 1], [2, 1, 1], [3, 1, 1]), [0, 1, 2, 0]), [(0,0), (1,0), (2,0), (0,2)])
+a(row_markings_to_markings(([], [1], [1, 1], [2, 1, 1], [3, 1, 1], [5, 3, 1]), [0, 1, 2, 0, 1]), [(0,0), (1,0), (2,0), (0,2), (1,2)])
+
+
 # test is markable
-a(is_markable([3, 2, 2], [2, 1], 0), True)
-a(is_markable([3, 2, 2], [2, 1], 1), True)
-a(is_markable([3, 2, 2], [2, 1], 2), False)
-a(is_markable([3, 2, 2], [2, 1], 3), False)
+a(is_row_markable([3, 2, 2], [2, 1], 0), True)
+a(is_row_markable([3, 2, 2], [2, 1], 1), True)
+a(is_row_markable([3, 2, 2], [2, 1], 2), False)
+a(is_row_markable([3, 2, 2], [2, 1], 3), False)
 
-a(is_markable([3, 2, 2], [1, 1], 0), True)
-a(is_markable([3, 2, 2], [1, 1], 1), False)
-a(is_markable([3, 2, 2], [1, 1], 2), False)
-a(is_markable([3, 2, 2], [1, 1], 3), False)
+a(is_row_markable([3, 2, 2], [1, 1], 0), True)
+a(is_row_markable([3, 2, 2], [1, 1], 1), False)
+a(is_row_markable([3, 2, 2], [1, 1], 2), False)
+a(is_row_markable([3, 2, 2], [1, 1], 3), False)
 
-a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 0), True)
-a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 1), False)
-a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 2), True)
-a(is_markable([3, 3, 2, 2], [2, 2, 1, 1], 3), False)
+a(is_row_markable([3, 3, 2, 2], [2, 2, 1, 1], 0), True)
+a(is_row_markable([3, 3, 2, 2], [2, 2, 1, 1], 1), False)
+a(is_row_markable([3, 3, 2, 2], [2, 2, 1, 1], 2), True)
+a(is_row_markable([3, 3, 2, 2], [2, 2, 1, 1], 3), False)
 
 
 # test k marked coverees
@@ -1296,6 +1319,37 @@ a(end_core_to_marked_core_sequences([5, 3, 1], 2, [0, 1, 1, 2]),
 		partition_tuple([1], [2], [3, 1], [4, 2], [5, 3, 1]),
 	]))
 a(end_core_to_marked_core_sequences([5, 3, 1], 2, [1, 2, 2]), set())
+
+
+# test std_strong_tab_from_core_sequence(core_sequence, k, marks):
+cs = [[], [1]]
+k = 1
+marks = [(0,0)]
+st = std_strong_tab_from_core_sequence(cs, k, marks)
+a(st, StrongTableau([[-1]], k))
+
+cs = [[], [1], [2]]
+k = 4
+marks = [(0,0), (0,1)]
+st = std_strong_tab_from_core_sequence(cs, k, marks)
+a(st, StrongTableau([[-1, -2]], k))
+
+cs = [[], [1], [2], [2, 1], [3, 1]]
+k = 4
+marks = [(0,0), (0,1), (1,0), (0,2)]
+st = std_strong_tab_from_core_sequence(cs, k, marks)
+a(st, StrongTableau([[-1, -2, -4], [-3]], k))
+
+
+# test end core to strong marked tableaux
+a(end_core_to_strong_marked_tableaux([5, 3, 1], 2, [0, 1, 2, 0, 1]),
+	set([StrongTableau([[-1, 3, -4, 5, 5], [-2, 5, -5], [-3]], 2)]))
+a(end_core_to_strong_marked_tableaux([5, 3, 1], 2, [1]),
+	set([
+		StrongTableau([[None, None, None, 1, 1], [None, 1, -1], [None]], 2),
+		StrongTableau([[None, None, None, None, 1], [None, None, -1], [1]], 2),
+	]))
+
 
 
 

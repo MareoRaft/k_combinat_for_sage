@@ -51,7 +51,11 @@ things that definitely exist in sage
   * k_conjugate (whatever that is)
   * k_atom
   * k_split
-  * hl_creation_operator(nu, t=None) -- supposedly more general than Jing's Hall Littlewood operators!  However, I believe they may *not* be Garsia's variant!  Reading https://core.ac.uk/download/pdf/82361294.pdf. "If k=1, this is Garsia's version of JHLVO".
+  * hl_creation_operator(nu, t=None) -- supposedly more general than Jing's Hall Littlewood operators!  Reading https://core.ac.uk/down"If k=1, this is Garsia's version of JHLVO".  These use the Q' basis of hall littlewood.
+  * strong tableau: https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/k_tableau.html
+  * I think an SMT is just a StandardTableau with the standard weight 1111111
+  * a Core object is a k-core and located at sage.combinat.core.Core
+
 
 
 things mentioned in sage (and might exist)

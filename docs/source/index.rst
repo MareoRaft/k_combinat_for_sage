@@ -10,11 +10,12 @@ MorseCode for Sage Documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   core
    partition
    skew_partition
    k_shape
    root_ideal
-   core
+   strong_marked_tableau
    all
 
 Indices and tables
