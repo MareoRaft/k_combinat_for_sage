@@ -11,26 +11,26 @@ import skew_partition as SP
 # ^*^ sphinx insert ^*^
 
 def shape_cell_indices(shape):
-    r"""
-    Takes a shape (partition or list of lists) and returns the
-    indices of the cells in the shape.
-    """
+    # r"""
+    # Takes a shape (partition or list of lists) and returns the
+    # indices of the cells in the shape.
+    # """
     shape = Partition(shape)
     return shape.cells()
 
 def tableau_cell_indices(tab):
-    r"""
-    Takes a tableau (or list of lists) and returns the indices
-    of the cells in the tableau.
-    """
+    # r"""
+    # Takes a tableau (or list of lists) and returns the indices
+    # of the cells in the tableau.
+    # """
     tab = Tableau(tab)
     return shape_cell_indices(tab.shape())
 
 def tableau_contains(outer, inner):
-    r"""
-    Checks to see if `inner` tableau is contained in the `outer`
-    tableau exactly. Somewhat dangerous function.
-    """
+    # r"""
+    # Checks to see if `inner` tableau is contained in the `outer`
+    # tableau exactly. Somewhat dangerous function.
+    # """
     ol = outer.to_list()
     il = inner.to_list()
     result = True
@@ -42,11 +42,11 @@ def tableau_contains(outer, inner):
     return result
 
 def strong_tableau_quotient2(outer_tab, inner_shape):
-    r"""
-    Takes a strong tableau and skews it; that is, it sets all the
-    cells in `outer_tab` that are contained in `inner_shape` to `None`
-    and returns a `Tableau` object.
-    """
+    # r"""
+    # Takes a strong tableau and skews it; that is, it sets all the
+    # cells in `outer_tab` that are contained in `inner_shape` to `None`
+    # and returns a `Tableau` object.
+    # """
     ol = outer_tab.to_list()
     indices = shape_cell_indices(inner_shape)
     for (row_index, col_index) in indices:
@@ -54,11 +54,11 @@ def strong_tableau_quotient2(outer_tab, inner_shape):
     return Tableau(ol)
 
 def strong_tableau_quotient(outer, inner):
-    r"""
-    Takes a strong tableau and skews it; that is, it sets all the
-    cells in `outer_tab` that are contained in `inner_shape` to `None`
-    and returns a `StrongTableau` object.
-    """
+    # r"""
+    # Takes a strong tableau and skews it; that is, it sets all the
+    # cells in `outer_tab` that are contained in `inner_shape` to `None`
+    # and returns a `StrongTableau` object.
+    # """
     assert tableau_contains(outer, inner)
     ol = outer.to_list()
     indices = tableau_cell_indices(inner)
@@ -66,16 +66,16 @@ def strong_tableau_quotient(outer, inner):
         ol[row_index][col_index] = None
     return StrongTableau(ol, outer.k)
 
-def strong_tableau_has_row_marking(tab, row_num):
+def strong_tableau_has_row_marking(tab, row_index):
     r"""
-    Checks if a strong tableau `tab` has a row_marking in row
-    `row_num` (row numbering starts at 0) and returns `True`
-    if row_marking is present; `False` otherwise.
+    Checks if a strong tableau ``tab`` has a row marking in row
+    ``row_index`` (row indexing starts at 0) and returns ``True``
+    if row_marking is present; ``False`` otherwise.
     """
     # WARNING: Indices start at 0
-    if len(tab) <= row_num:
+    if len(tab) <= row_index:
         return False
-    row = tab[row_num]
+    row = tab[row_index]
     result = (True in [i is not None and i < 0 for i in row])
     return result
 
@@ -89,10 +89,10 @@ def add_skew_tabs(tab1, tab2):
     return Tableau(tab_list)
 
 def add_skew_tab_to_tab(tab, skew_tab):
-    r"""
-    Given a tableau `tab` as a base, this function layers a skew tableau
-    `skew_tab` on top of it.
-    """
+    # r"""
+    # Given a tableau `tab` as a base, this function layers a skew tableau
+    # `skew_tab` on top of it.
+    # """
     skew_list = skew_tab.to_list()
     # Necessary because skew strong tableaux does not get item correctly?
     tab_list = tab.to_list()
@@ -136,6 +136,7 @@ def strong_marked_tableau(lis, k):
     return st
 
 def k_coverees1(root, k):
+    # one way to get the k coverees
     root = Partition(root)
     assert is_k_core(root, k+1)
     # set of coveree candidates (a superset of the coverees)
@@ -207,7 +208,7 @@ def row_markings_to_markings(core_sequence, row_markings):
     return markings
 
 def is_row_markable(outer_core, inner_core, row_marking):
-    r""" Given two cores (typically consecutive cores in a core sequence), see if `row_marking` is a possible row_marking of outer_core/inner_core """
+    r""" Given two cores (typically consecutive cores in a core sequence), see if ``row_marking`` is a possible row_marking of outer_core/inner_core """
     try:
         row_marking_to_marking(outer_core, inner_core, row_marking)
         return True
@@ -222,10 +223,26 @@ def k_marked_coverees(core, k, row_marking):
 
 def end_core_to_marked_core_sequences(end_core, k, row_markings):
     r"""
-    end_core -- a k+1 core
-    k -- k
-    row_markings -- vector of row_markings for the SMT
-    Note that "markings" are row-col-coordinates, while "row_markings" are merely row-coordinates.
+    INPUTS:
+
+    - ``end_core`` -- a `k+1`-core
+
+    - ``k`` -- All of the cores in the core sequences are `k+1`-cores.
+
+    - ``row_markings`` -- vector of row-indices indicating the rows of the markings for each core sequence.  (Note that "markings" are row-col-coordinates, while "row_markings" are merely row-coordinates.)
+
+    OUTPUTS:
+
+    - A set of all possible core sequences that end in ``end_core`` and can be marked by the row marking vector ``row_markings``.
+
+    EXAMPLES::
+
+        sage: end_core_to_marked_core_sequences([5, 3, 1], 2, [0, 1, 2, 0, 1])
+        {([], [1], [1, 1], [2, 1, 1], [3, 1, 1], [5, 3, 1])}
+
+        sage: end_core_to_marked_core_sequences([5, 3, 1], 2, [1])
+        {([3, 1, 1], [5, 3, 1]), ([4, 2], [5, 3, 1])}
+
     """
     # check inputs
     end_core = Partition(end_core)
@@ -249,6 +266,29 @@ def end_core_to_marked_core_sequences(end_core, k, row_markings):
     return set(sequences)
 
 def end_core_to_strong_marked_tableaux(end_core, k, row_markings):
+    r"""
+    INPUTS:
+
+    - ``end_core`` -- a `k+1`-core
+
+    - ``k`` -- All of the cores in the core sequences are `k+1`-cores.
+
+    - ``row_markings`` -- vector of row-indices indicating the rows of the markings for each core sequence.  (Note that "markings" are row-col-coordinates, while "row_markings" are merely row-coordinates.)
+
+    OUTPUTS:
+
+    - A set of all possible strong marked tableau that end in ``end_core`` and can be marked by the row marking vector ``row_markings``.
+
+    EXAMPLES::
+
+        sage: end_core_to_strong_marked_tableaux([5, 3, 1], 2, [0, 1, 2, 0, 1])
+        {[[-1, 3, -4, 5, 5], [-2, 5, -5], [-3]]}
+
+        sage: end_core_to_strong_marked_tableaux([5, 3, 1], 2, [1])
+        {[[None, None, None, 1, 1], [None, 1, -1], [None]],
+         [[None, None, None, None, 1], [None, None, -1], [1]]}
+
+    """
     core_sequences = end_core_to_marked_core_sequences(end_core, k, row_markings)
     smts = set()
     for core_sequence in core_sequences:
