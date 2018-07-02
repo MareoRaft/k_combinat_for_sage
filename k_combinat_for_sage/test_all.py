@@ -833,18 +833,18 @@ ptns = k_to_irreducible_k_shapes(3)
 a(ptns, [[], [1], [2, 1]])
 
 
-# test_is_k_core
-a(is_k_core(Partition([2, 1]), 1), False)
-a(is_k_core(Partition([2, 1]), 2), True)
-a(is_k_core(Partition([2, 1]), 3), False)
-a(is_k_core(Partition([2, 1]), 4), True)
-a(is_k_core(Partition([4, 2, 2]), 1), False)
-a(is_k_core(Partition([4, 2, 2]), 2), False)
-a(is_k_core(Partition([4, 2, 2]), 3), False)
-a(is_k_core(Partition([4, 2, 2]), 4), True)
-a(is_k_core(Partition([4, 2, 2]), 5), False)
-a(is_k_core(Partition([4, 2, 2]), 6), False)
-a(is_k_core(Partition([4, 2, 2]), 7), True)
+# test is k core, now using builtin is core
+a(Partition([2, 1]).is_core(1), False)
+a(Partition([2, 1]).is_core(2), True)
+a(Partition([2, 1]).is_core(3), False)
+a(Partition([2, 1]).is_core(4), True)
+a(Partition([4, 2, 2]).is_core(1), False)
+a(Partition([4, 2, 2]).is_core(2), False)
+a(Partition([4, 2, 2]).is_core(3), False)
+a(Partition([4, 2, 2]).is_core(4), True)
+a(Partition([4, 2, 2]).is_core(5), False)
+a(Partition([4, 2, 2]).is_core(6), False)
+a(Partition([4, 2, 2]).is_core(7), True)
 
 
 # test partition to k core (or k bounded partition to k+1 core)
@@ -1225,6 +1225,14 @@ a(k_coverees1([2, 2, 1, 1], 2), set([Partition([2, 1, 1])]))
 a(k_coverees1([2, 1, 1], 2), set([Partition([2]), Partition([1, 1])]))
 
 a(k_coverees1([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
+
+
+# test k coverees
+a(k_coverees([3, 3, 2, 2, 1, 1], 2), set([Partition([3, 2, 2, 1, 1])]))
+a(k_coverees([2, 2, 1, 1], 2), set([Partition([2, 1, 1])]))
+a(k_coverees([2, 1, 1], 2), set([Partition([2]), Partition([1, 1])]))
+
+a(k_coverees([6, 4, 2, 2, 1], 5), set([Partition([5, 4, 2, 2, 1]), Partition([6, 2, 2, 2, 1]), Partition([6, 3, 2, 2]), Partition([6, 4, 2, 1, 1])]))
 
 
 # test go to ribbon head

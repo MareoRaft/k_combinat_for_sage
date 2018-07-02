@@ -11,6 +11,9 @@ question:
 https://trac.sagemath.org/ticket/25298
 hall inner product:
 https://trac.sagemath.org/ticket/25538
+h/s/hl_creation_operator input behavior:
+https://trac.sagemath.org/ticket/25734
+
 
 ask sage stuff:
 codomain could not be determined error:
@@ -201,9 +204,12 @@ todo:
 change example from is_symmetric to SOMETHING ELSE
 
 
-SageDays things to cover
------------------------------
+SageDays things to cover, sage days, questions
+---------------------------------------------------
   1. `sage -pip install` is *not* working by default due to a common SSL issue.  This should somehow be patched with a more robust sage installation.
   2. The 'codomain' error issue above.
   3. The classcall thing for super rsk (attempt this on your own first)
   4. Roadmap for migrating k_combinat_for_sage into sage
+  5. Documentation searching needs to be more effective
+  6. subclass issues.  Why not Core < Partition < Composition ?
+

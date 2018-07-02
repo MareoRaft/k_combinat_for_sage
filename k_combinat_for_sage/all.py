@@ -354,7 +354,27 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
 
 class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
-    r""" The Pieri operator `u_i` """
+    r""" The Pieri operator `u_i`.
+
+    EXAMPLES::
+
+        sage: u = PieriOperatorAlgebra()
+
+        # act on catalan function
+        sage: cf = CatalanFunction([(0,2), (1,2)], [6, 6, 6])
+        sage: u.i(2)(cf)
+        CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+
+        # act on k schur function
+        sage: base_ring = QQ['t']
+        sage: Sym = SymmetricFunctions(base_ring)
+        sage: t = base_ring.gen()
+        sage: ks = Sym.kBoundedSubspace(4, t).kschur()
+        sage: u.i(2)(ks[2, 2, 1])
+        ks4[2, 2, 1] + t^2*ks4[3, 2] + t^3*ks4[4, 1]
+        # TODO: verify by hand that above is really correct, or maybe a simpler example
+
+    """
     def __init__(self, base_ring=QQ['t'], prefix='u'):
         ShiftingOperatorAlgebra.__init__(self,
             base_ring=base_ring,
@@ -608,13 +628,8 @@ class CatalanFunction:
 ##############
 def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
     # TODO: compare the performance of this function to existing k-schur function.
-    assert is_k_core(p, k + 1)
+    p = Core(p, k+1)
     return k_shape_to_catalan_function(p, k, base_ring)
-
-# def k_bdd_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
-#     # TODO: compare the performance of this function to existing k-schur function.
-#     assert is_k_core(p, k + 1)
-#     return k_shape_to_catalan_function(p, k, base_ring)
 
 
 class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):

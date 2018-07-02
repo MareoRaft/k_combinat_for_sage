@@ -136,9 +136,10 @@ def strong_marked_tableau(lis, k):
     return st
 
 def k_coverees1(root, k):
+    # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See method 2 of k_coverees.
     # one way to get the k coverees
-    root = Partition(root)
-    assert is_k_core(root, k+1)
+    root = Core(root, k+1)
+    root = root.to_partition()
     # set of coveree candidates (a superset of the coverees)
     candidates = set()
     def add_to_candidates(ptn, is_root=False):
@@ -146,19 +147,25 @@ def k_coverees1(root, k):
         if ptn not in candidates:
             candidates.add(ptn)
             # if it is not a leaf, recurse
-            if is_root or not is_k_core(ptn, k+1):
+            if is_root or not ptn.is_core(k+1):
                 for (i, j) in ptn.removable_cells():
                     sub_ptn = ptn.remove_cell(i, j)
                     add_to_candidates(sub_ptn)
     add_to_candidates(root, is_root=True)
     # Now that all k+1-cores (and some other things) have been populated in candidates, filter to the ones that really are k+1-cores and have correct k-boundary size.
-    coverees = set(ptn for ptn in candidates if is_k_core(ptn, k+1) and k_size(ptn, k) == k_size(root, k) - 1)
+    coverees = set(ptn for ptn in candidates if ptn.is_core(k+1) and k_size(ptn, k) == k_size(root, k) - 1)
     return coverees
 
 def k_coverees(core, k, method=1):
-    r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given. """
+    # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See method 2 below.
+    r""" Given a `k+1`-core, find all sub-`k+1`-cores that have `k`-boundary 1 less than the given. """
     if method == 1:
         return k_coverees1(core, k)
+    elif method == 2:
+        core = Core(core, k+1)
+        coveree_core_list = core.strong_down_list()
+        coverees = set(c.to_partition() for c in coveree_core_list)
+        return coverees
     else:
         raise ValueError('Unknown method.')
 
@@ -245,9 +252,9 @@ def end_core_to_marked_core_sequences(end_core, k, row_markings):
 
     """
     # check inputs
-    end_core = Partition(end_core)
     k = NonNegativeIntegerSemiring()(k)
-    assert is_k_core(end_core, k+1)
+    end_core = Core(end_core, k+1)
+    end_core = end_core.to_partition()
     for row_marking in row_markings:
         NonNegativeIntegerSemiring()(row_marking)
     # find marked core sequences
