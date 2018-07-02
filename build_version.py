@@ -4,6 +4,7 @@ import os
 from os import path
 import subprocess
 import sys
+import re
 
 path_repo = path.dirname(path.abspath(__file__))
 sys.path.append(path_repo)
@@ -29,12 +30,25 @@ version_old = open(PATH['version']).read().strip()
 version_new = input('The current version number is {}.  What should the new version number be?\n'.format(version_old)).strip()
 if version_new == version_old:
 	raise SystemExit('That is the same as the previous version number.  You must increment the version number.')
+
+# update VERSION with new version number
+print('updating VERSION file...')
 with open(PATH['version'], 'w') as file:
 	file.write(version_new)
+
+# update setup.py with new version number
+print('updating setup.py...')
+with open(PATH['setup'], 'r') as file:
+	code = file.read()
+line_new = "version = '{}'".format(version_new)
+code_new = re.sub(r"""version = ['"].*['"]""", line_new, code)
+with open(PATH['setup'], 'w') as file:
+	file.write(code_new)
 
 # Commit all changes and push to master.
 print('git committing and pushing to GitHub...')
 run(['git', 'add', PATH['version']])
+run(['git', 'add', PATH['setup']])
 run(['git', 'commit', '-m', version_new])
 run(['git', 'pull'])
 run(['git', 'push'])

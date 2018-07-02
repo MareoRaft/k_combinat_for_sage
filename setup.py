@@ -1,17 +1,12 @@
 # PyPI distribution configuration.
 # To actually BUILD/PACKAGE/SHIP TO PYPI a new version, run `build_version.py`.
-from os import path
-import subprocess
 from distutils.core import setup
 import sys
 
-path_repo = path.dirname(path.abspath(__file__))
-sys.path.append(path_repo)
-from config import PATH
-
 # config
 name = 'k_combinat_for_sage'
-version = open(PATH['version']).read().strip()
+# version = WILL BE AUTOMATICALLY POPULATED IN LINE BELOW.  DO NOT EDIT LINE BELOW.
+version = '0.0.15'
 url = 'https://github.com/mareoraft/{name}'.format(name=name)
 download_url = '{url}/archive/{tag}.tar.gz'.format(url=url, tag=version)
 setup(
