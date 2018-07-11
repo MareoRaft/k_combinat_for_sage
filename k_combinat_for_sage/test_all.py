@@ -1114,6 +1114,12 @@ op = qt_raising_roots_operator(3)
 a(op(s[4, 2]), s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6])
 
 
+# test catalan function init methods
+cf = CatalanFunctions().init_from_indexed_root_ideal([(0,2), (1,2)], [6, 6, 5])
+a(cf.roots, [(0,2), (1,2)])
+a(cf.index, [6, 6, 5])
+
+
 # test catalan function
 Sym = SymmetricFunctions(QQ['t'])
 hl = Sym.hall_littlewood().Qp()
@@ -1127,6 +1133,8 @@ ri = partition_to_root_ideal([1, 1], n=3)
 g = [3, 1, 1]
 cat_func = CatalanFunction(ri, g)
 a(cat_func.eval(), hl[3, 1, 1])
+
+
 
 
 # TODO: test all catalan function methods with some example.  Ask Jennifer morse.

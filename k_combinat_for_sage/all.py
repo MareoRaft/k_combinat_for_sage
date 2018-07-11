@@ -404,7 +404,9 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
                 # convert to catalans
                 kschur = operand.parent()
                 base_ring = kschur.base_ring()
-                cat_coeff_pairs = [(CatalanFunction(kschur(index), base_ring=base_ring), coeff) for index, coeff in operand]
+                cat_coeff_pairs = [
+                    (CatalanFunctions().init_from_k_schur(kschur(index), base_ring=base_ring), coeff)
+                    for index, coeff in operand]
                 # act
                 new_cat_coeff_pairs = [(self.__call__(cat), coeff) for cat, coeff in cat_coeff_pairs]
                 # convert back to kschur
@@ -504,9 +506,28 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
 
 
 class CatalanFunction:
-    r""" cat func yo """
+    r""" A catalan function `H(\Psi; \gamma)` as discussed in [cat]_ section 4.
+
+    The parameters for initializing a catalan function are exactly the same as in :meth:`CatalanFunctions.init_from_indexed_root_ideal`.
+
+    EXAMPLES::
+
+        sage: CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+        H([(0, 2), (1, 2)], [6, 6, 5])
+
+    There are in fact many ways to initialize a catalan function, and the methods for doing so are found in :class:`CatalanFunctions`.
+
+    """
     BASE_RING_DEFAULT = QQ['t']
     PREFIX_DEFAULT = 'H'
+
+    def __init__(self, roots, index, base_ring=None, prefix=None):
+        assert is_roots(roots)
+        self.roots = roots
+        assert is_sequence(index)
+        self.index = index
+        self.base_ring = base_ring if base_ring is not None else self.BASE_RING_DEFAULT
+        self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
 
     def __eq__(self, other):
         # TODO: account for the fact that DIFFERENT root/index pairs could actually give the SAME catalan function!!
@@ -522,20 +543,24 @@ class CatalanFunction:
         new_obj = self.__class__(self.roots, new_index, base_ring=self.base_ring)
         return new_obj
 
-    def __init__(self, obj1, obj2=None, base_ring=None, prefix=None):
-        # triage.  figure out what obj1 and obj2 are
-        if is_roots(obj1) and is_sequence(obj2):
-            self.init_from_indexed_root_ideal(obj1, obj2, base_ring, prefix)
-        elif isinstance(obj1, SkewPartition) and obj2 is None:
-            self.init_from_skew_partition(obj1, base_ring, prefix)
-        elif is_sequence(obj1) and is_sequence(obj2):
-            self.init_from_row_and_column_lengths(obj1, obj2, base_ring, prefix)
-        elif isinstance(obj1, Partition) and obj2 in NonNegativeIntegerSemiring():
-            self.init_from_k_shape(obj1, obj2, base_ring, prefix)
-        elif is_k_schur(obj1) and obj2 is None:
-            self.init_from_k_schur(obj1, base_ring, prefix)
-        else:
-            raise ValueError('Invalid inputs to create a Cataland function.  See the four "init_from_" methods in the documentation, and put the correct inputs for any one of them.')
+    def eval(self):
+        # setup
+        hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
+        t = self.base_ring.gen()
+        # formula
+        n = len(self.index)
+        roots_complement = RI.complement(self.roots, n)
+        op = raising_roots_operator(roots_complement, t=t, base_ring=self.base_ring)
+        hl_poly = hl(self.index)
+        cat_func = op(hl_poly)
+        return cat_func
+
+
+class CatalanFunctions:
+    r""" The family of Catalan Functions.
+
+    Use this class as a factory to initialize a :class:`CatalanFunction` object with any valid identifying data.  See the ``init_from...`` methods below for all possible ways to create a catalan function.
+    """
 
     def init_from_indexed_root_ideal(self, roots, index, base_ring=None, prefix=None):
         r"""
@@ -557,15 +582,16 @@ class CatalanFunction:
 
             \prod_{ij \in \Phi} (1 - R_{ij}) H_\gamma
 
+        EXAMPLES::
+
+            sage: CatalanFunctions().init_from_indexed_root_ideal([(0,2), (1,2)], [6, 6, 5])
+            H([(0, 2), (1, 2)], [6, 6, 5])
+
         """
-        self.roots = roots
-        self.index = index
-        self.base_ring = base_ring if base_ring is not None else self.BASE_RING_DEFAULT
-        self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
-        return self
+        return CatalanFunction(roots, index, base_ring, prefix)
 
     def init_from_skew_partition(self, sp, base_ring=None, prefix=None):
-        r""" Given a SkewPartition `sp = (\lambda, \mu)`, return the catalan function `H(\Phi^+(sp); \lambda)`.
+        r""" Given a SkewPartition ``sp``, return the catalan function `H(\Phi^+(sp); rs(sp))`.
         """
         ri = skew_partition_to_root_ideal(sp, type='max')
         rs = sp.row_lengths()
@@ -578,15 +604,14 @@ class CatalanFunction:
         return self.init_from_skew_partition(sp, base_ring, prefix)
 
     def init_from_k_shape(self, p, k, base_ring=None, prefix=None):
-        r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Psi^+((rs(p),cs(p))), rs(p))`.
+        r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Phi^+(p); rs(p))`.
         """
         assert is_k_shape(p, k)
-        rs = p.row_lengths()
-        cs = p.column_lengths()
-        return self.init_from_row_and_column_lengths(rs, cs, base_ring, prefix)
+        sp = SkewPartition([p, []])
+        return self.init_from_skew_partition(self, sp, base_ring, prefix)
 
     def init_from_k_schur(self, func, base_ring=None, prefix=None):
-        r""" Given a k-schur function `func = s^k_\lambda(x;t)`, initialize the catalan function `H(\Delta^k(\lambda), \lambda)`.
+        r""" Given a k-schur function ``func`` `= s^k_\lambda(x;t)`, initialize the catalan function `H(\Delta^k(\lambda); \lambda)`.
 
         Mathematically, these two functions are equal.  The usefulness of this method is that you input a ``sage.combinat.sf.new_kschur.kSchur_with_category`` object and you obtain a ``CatalanFunction`` object.
 
@@ -611,18 +636,6 @@ class CatalanFunction:
         roots = partition_to_k_schur_root_ideal(index, k)
         # return
         return self.init_from_indexed_root_ideal(roots, index, base_ring, prefix)
-
-    def eval(self):
-        # setup
-        hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
-        t = self.base_ring.gen()
-        # formula
-        n = len(self.index)
-        roots_complement = RI.complement(self.roots, n)
-        op = raising_roots_operator(roots_complement, t=t, base_ring=self.base_ring)
-        hl_poly = hl(self.index)
-        cat_func = op(hl_poly)
-        return cat_func
 
 
 ##############
@@ -829,25 +842,25 @@ def double_homogeneous_building_block_shifted(r, s, n):
         raise NotImplemented
 
 class DoubleHomogeneous:
+    r"""
+    mu1 -- composition
+    mu2 -- composition
+    n -- number of `x` variables
+
+    EXAMPLE::
+        # create the double homogeneous `h^{(4)}_{\mu, \beta}`
+        sage: DoubleHomogeneous(mu, beta, 4)
+
+        # create the double homogeneous shifted building block `h_{r, s}` in 4 variables
+        sage: r = 5
+        sage: s = 2
+        sage: DoubleHomogeneous([r], [s], 4)
+
+        # create the double homogeneous symmetric building block `h_p(x \,||\, a)` in 4 variables
+        sage: p = 3
+        sage: DoubleHomogeneous([p], [0], 4)
+    """
     def __init__(self, index1, index2, prefix='h'):
-        r"""
-        mu1 -- composition
-        mu2 -- composition
-        n -- number of `x` variables
-
-        EXAMPLE::
-            # create the double homogeneous `h^{(4)}_{\mu, \beta}`
-            sage: DoubleHomogeneous(mu, beta, 4)
-
-            # create the double homogeneous shifted building block `h_{r, s}` in 4 variables
-            sage: r = 5
-            sage: s = 2
-            sage: DoubleHomogeneous([r], [s], 4)
-
-            # create the double homogeneous symmetric building block `h_p(x \,||\, a)` in 4 variables
-            sage: p = 3
-            sage: DoubleHomogeneous([p], [0], 4)
-        """
         self.index1 = index1
         self.index2 = index2
         self.prefix = prefix
