@@ -30,10 +30,20 @@ def right(sp, row_index):
 
     EXAMPLES::
 
-        sage: right(SkewPartition([[6, 1], [2]]), 0)
-        5
-        sage: right(SkewPartition([[6, 1], [2]]), 1)
+        sage: right(SkewPartition([[4, 1], [2]]), 0)
+        3
+
+        sage: right(SkewPartition([[4, 1], [2]]), 1)
         0
+
+        # an input index that is out of the bounds of the skew partition will throw an error
+        sage: right(SkewPartition([[4, 1], [2]]), 2)
+        IndexError: list index out of range
+
+        # an in-bounds index where no cells exist will return None.
+        sage: right(SkewPartition([[2, 1, 1, 1], [1, 1]]), 1) == None
+        True
+
     """
     # first check to make sure the cell exists
     if sp.row_lengths()[row_index] == 0:
@@ -48,10 +58,20 @@ def left(sp, row_index):
 
     EXAMPLES::
 
-        sage: left(SkewPartition([[6, 1], [2]]), 0)
+        sage: left(SkewPartition([[4, 1], [2]]), 0)
         2
-        sage: left(SkewPartition([[6, 1], [2]]), 1)
+
+        sage: left(SkewPartition([[4, 1], [2]]), 1)
         0
+
+        # an input index that is out of the bounds of the skew partition will throw an error
+        sage: left(SkewPartition([[4, 1], [2]]), 2)
+        IndexError: list index out of range
+
+        # an in-bounds index where no cells exist will return None.
+        sage: left(SkewPartition([[2, 1, 1, 1], [1, 1]]), 1) == None
+        True
+
     """
     # first check to make sure the cell exists
     if sp.row_lengths()[row_index] == 0:
@@ -70,12 +90,23 @@ def top(sp, col_index):
 
     EXAMPLES::
 
-        sage: top(SkewPartition([[7, 1, 1], [2]]), 0)
+        sage: top(SkewPartition([[4, 1, 1], [2]]), 0)
         2
-        sage: top(SkewPartition([[7, 1, 1], [2]]), 1)
-        None
-        sage: top(SkewPartition([[7, 1, 1], [2]]), 2)
+
+        # an in-bounds col_index where no cells exist will return None.
+        sage: top(SkewPartition([[4, 1, 1], [2]]), 1) == None
+        True
+
+        sage: top(SkewPartition([[4, 1, 1], [2]]), 2)
         0
+
+        sage: top(SkewPartition([[4, 1, 1], [2]]), 3)
+        0
+
+        # a col_index that is out-of-bounds of the skew partition will throw an error
+        sage: top(SkewPartition([[4, 1, 1], [2]]), 4)
+        IndexError: list index out of range
+
     """
     return right(sp.conjugate(), col_index)
 
@@ -84,12 +115,23 @@ def bottom(sp, col_index):
 
     EXAMPLES::
 
-        sage: top(SkewPartition([[7, 1, 1], [2]]), 0)
+        sage: bottom(SkewPartition([[4, 1, 1], [2]]), 0)
         1
-        sage: top(SkewPartition([[7, 1, 1], [2]]), 1)
-        None
-        sage: top(SkewPartition([[7, 1, 1], [2]]), 2)
+
+        # an in-bounds col_index where no cells exist will return None.
+        sage: bottom(SkewPartition([[4, 1, 1], [2]]), 1) == None
+        True
+
+        sage: bottom(SkewPartition([[4, 1, 1], [2]]), 2)
         0
+
+        sage: bottom(SkewPartition([[4, 1, 1], [2]]), 3)
+        0
+
+        # a col_index that is out-of-bounds of the skew partition will throw an error
+        sage: bottom(SkewPartition([[4, 1, 1], [2]]), 4)
+        IndexError: list index out of range
+
     """
     return left(sp.conjugate(), col_index)
 
