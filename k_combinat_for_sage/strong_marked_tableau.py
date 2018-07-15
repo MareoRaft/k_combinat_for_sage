@@ -7,7 +7,7 @@ REFERENCES:
 from sage.all import *
 
 from partition import *
-import skew_partition as SP
+import skew_partition
 # ^*^ sphinx insert ^*^
 
 def shape_cell_indices(shape):
@@ -125,7 +125,7 @@ def std_strong_tab_from_core_sequence(core_sequence, k, markings):
         base = add_skew_tab_to_tab(base, skew)
     return StrongTableaux.add_marking(base, markings, k, wt)
 
-def strong_marked_tableau(lis, k):
+def _strong_marked_tableau(lis, k):
     # helper to create a strong marked tableau
     st = StrongTableau(lis, k)
     for w in st.weight():
@@ -194,7 +194,7 @@ def row_marking_to_marking(outer_core, inner_core, row_marking):
     row_indices = set(cell[0] for cell in cells)
     if row_marking not in row_indices:
         raise ValueError('no such row marking')
-    start_cell = (row_marking, SP.right(sp, row_marking))
+    start_cell = (row_marking, skew_partition.right(sp, row_marking))
     head = __go_to_ribbon_head(cells, start_cell)
     if head[0] == row_marking:
         return head

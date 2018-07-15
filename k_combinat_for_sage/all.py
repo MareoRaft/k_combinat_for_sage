@@ -11,15 +11,17 @@ REFERENCES:
 from sage.all import *
 
 from core import *
+import core
 from partition import *
-import partition as P
+import partition
 from skew_partition import *
-import skew_partition as SP
+import skew_partition
 from k_shape import *
-import k_shape as kS
+import k_shape
 from root_ideal import *
-import root_ideal as RI
+import root_ideal
 from strong_marked_tableau import *
+import strong_marked_tableau
 # ^*^ sphinx insert ^*^
 
 
@@ -110,18 +112,18 @@ def straighten(s, gamma):
                 if lis[i] < lis[j]:
                     num += 1
         return num
+    gamma = Composition(gamma)
     if s.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
         raise NotImplemented('Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
     elif s.__class__.__name__ == 'HallLittlewood_qp_with_category':
-        # there is no straightening that i know of, except that for raising operators, invalid partitions evaluate to 0
-        if has_nonnegative_parts(gamma) and is_weakly_decreasing(gamma):
-            return s(gamma)
+        if has_nonnegative_parts(gamma):
+            return compositional_hall_littlewood_Qp(gamma, base_ring=s.base_ring())
         else:
             return 0
     elif s.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
         new_gamma = list(reversed(sorted(gamma)))
         if has_nonnegative_parts(new_gamma):
-            return s(new_gamma)
+            return s(Partition(new_gamma))
         else:
             return 0
     elif s.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
@@ -131,7 +133,7 @@ def straighten(s, gamma):
             sign = (-1)**number_of_noninversions(combined)
             sort_combined = reversed(sorted(combined))
             new_gamma = [sc - r for sc, r in zip(sort_combined, rho)]
-            return sign * s(new_gamma)
+            return sign * s(Partition(new_gamma))
         else:
             return 0
     else:
@@ -259,12 +261,19 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                             'SymmetricFunctionAlgebra_witt_with_category',
                             'SymmetricFunctionAlgebra_schur_with_category',
                             'HallLittlewood_qp_with_category'):
+                        # print('coeff: {}'.format(coeff))
+                        # print('composition BEFORE straighten: {}'.format(out_composition))
+                        # print(straighten(parent_basis, out_composition))
                         return coeff * straighten(parent_basis, out_composition)
                     else:
                         return coeff * parent_basis(out_composition)
             def call_monomial(seq, coeff, operand, power=1):
+                # print('BEFORE')
+                # print('(operand, coeff) = ({}, {})'.format(operand, coeff))
                 for _ in range(power):
                     operand = raise_func(seq, operand)
+                # print('AFTER')
+                # print('(operand, coeff) = ({}, {})'.format(operand, coeff))
                 return (operand, coeff)
             # start here
             if hasattr(operand, '_get_indices_for_index_operator'):
@@ -436,7 +445,7 @@ class HallLittlewoodVertexOperator:
         if composition in NonNegativeIntegerSemiring():
             self.composition = [composition]
         elif is_sequence(composition):
-            self.composition = composition
+            self.composition = Composition(composition)
         else:
             raise ValueError('Bad composition.')
         self.base_ring = base_ring
@@ -446,9 +455,11 @@ class HallLittlewoodVertexOperator:
 
     def __call__(self, input_):
         gamma = self.composition
+        # print('called on input: {} with gamma: {}'.format(input_, gamma))
         # iterate
         for part in reversed(gamma):
-            input_ = input_.hl_creation_operator([part])
+            input_ = input_.hl_creation_operator(Partition([part]))
+            # print('now: {}'.format(input_))
         return input_
 
 
@@ -465,6 +476,7 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
         True
 
     """
+    gamma = Composition(gamma)
     sym = SymmetricFunctions(base_ring)
     hl = sym.hall_littlewood().Qp()
     H = HallLittlewoodVertexOperator
@@ -506,14 +518,20 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
 
 
 class CatalanFunction:
-    r""" A catalan function `H(\Psi; \gamma)` as discussed in [cat]_ section 4.
+    r""" A catalan function `H(\Psi; \gamma)` as discussed in [cat]_ section 4.  By definition,
+
+    ..  MATH::
+
+        H(\Psi; \gamma) := \prod_{ij \in \Psi} (1 - R_{ij})^{-1} s_\gamma = \prod_{ij \in \Delta^+ \smallsetminus \Psi} (1 - R_{ij}) H_\gamma
+
+    where `s_\gamma` is a schur function and `H_\gamma` is a Hall-Littlewood Q' function.
 
     The parameters for initializing a catalan function are exactly the same as in :meth:`CatalanFunctions.init_from_indexed_root_ideal`.
 
     EXAMPLES::
 
         sage: CatalanFunction([(0,2), (1,2)], [6, 6, 5])
-        H([(0, 2), (1, 2)], [6, 6, 5])
+        H([(0, 2), (1, 2)]; [6, 6, 5])
 
     There are in fact many ways to initialize a catalan function, and the methods for doing so are found in :class:`CatalanFunctions`.
 
@@ -534,7 +552,7 @@ class CatalanFunction:
         return set(self.roots) == set(other.roots) and self.index == other.index and self.base_ring == other.base_ring
 
     def __repr__(self):
-        return '{}({}, {})'.format(self.prefix, self.roots, self.index)
+        return '{}({}; {})'.format(self.prefix, self.roots, self.index)
 
     def _get_indices_for_index_operator(self):
         return self.index
@@ -544,20 +562,25 @@ class CatalanFunction:
         return new_obj
 
     def eval(self):
+        r""" Return the catalan function in terms of the Hall-Littlewood Q' basis. """
         # setup
         hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
         t = self.base_ring.gen()
         # formula
         n = len(self.index)
-        roots_complement = RI.complement(self.roots, n)
+        roots_complement = root_ideal.complement(self.roots, n)
+        # print(roots_complement)
         op = raising_roots_operator(roots_complement, t=t, base_ring=self.base_ring)
+        # print(op)
         hl_poly = hl(self.index)
+        # print(hl_poly)
         cat_func = op(hl_poly)
+        # print(cat_func)
         return cat_func
 
 
 class CatalanFunctions:
-    r""" The family of Catalan Functions.
+    r""" The family of catalan functions, as discussed in [cat]_ section 4.
 
     Use this class as a factory to initialize a :class:`CatalanFunction` object with any valid identifying data.  See the ``init_from...`` methods below for all possible ways to create a catalan function.
     """
@@ -568,7 +591,7 @@ class CatalanFunctions:
 
         - ``roots`` -- iterable of roots `\Phi` (typically a root ideal)
 
-        - ``index`` -- composition `\gamma` that indexes the root ideal and appears in the Hall-Littlewood Q' function `H_\gamma`
+        - ``index`` -- composition `\gamma` that indexes the root ideal and appears in `s_\gamma` and `H_\gamma` below
 
         OPTIONAL INPUTS:
 
@@ -580,12 +603,14 @@ class CatalanFunctions:
 
         ..  MATH::
 
-            \prod_{ij \in \Phi} (1 - R_{ij}) H_\gamma
+            H(\Phi; \gamma) := \prod_{ij \in \Phi} (1 - R_{ij})^{-1} s_\gamma = \prod_{ij \in \Delta^+ \smallsetminus \Phi} (1 - R_{ij}) H_\gamma
+
+        where `s_\gamma` is a schur function and `H_\gamma` is a Hall-Littlewood Q' function.
 
         EXAMPLES::
 
             sage: CatalanFunctions().init_from_indexed_root_ideal([(0,2), (1,2)], [6, 6, 5])
-            H([(0, 2), (1, 2)], [6, 6, 5])
+            H([(0, 2), (1, 2)]; [6, 6, 5])
 
         """
         return CatalanFunction(roots, index, base_ring, prefix)
@@ -623,7 +648,7 @@ class CatalanFunctions:
             sage: ks = Sym.kBoundedSubspace(4, t).kschur()
             sage: func = ks[2, 1, 1]
             sage: CatalanFunction(func, base_ring=base_ring)
-            H([], [2, 1, 1])
+            H([]; [2, 1, 1])
 
             # TODO: make sure [] above is correct.  go by hand.
         """
@@ -763,7 +788,7 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     Kh = dual_k_theoretic_homogeneous(index, index2, base_ring=base_ring)
     # formula
     n = len(index)
-    roots_complement = RI.complement(roots, n)
+    roots_complement = root_ideal.complement(roots, n)
     op = raising_roots_operator(roots_complement, t=1, base_ring=base_ring)
     cat_func = op(Kh)
     return cat_func
@@ -891,7 +916,7 @@ class DoubleHomogeneous:
         return hp
 
 def double_schur(index, n):
-    r""" Given a composition `index = \lambda` and the number of variables `n`, return the double Schur function defined by
+    r""" Given a composition ``index`` `= \lambda` and the number of variables `n`, return the double Schur function defined by
 
     ..  MATH::
         s_\lambda(x_1, \ldots, x_n \,||\, a) = \text{det}\left(h^{(n)}_{\lambda_i + i - j, j - 1}\right)
@@ -916,7 +941,7 @@ def double_catalan_function(roots, index, n):
     rho = list(reversed(staircase_shape(l)))
     h_index = DoubleHomogeneous(index, rho, n)
     # formula
-    roots_complement = RI.complement(roots, l)
+    roots_complement = root_ideal.complement(roots, l)
     # TODO: see what to pass in for base_ring in below line.
     op = raising_roots_operator(roots_complement, t=1)
     cat_func = op(h_index)

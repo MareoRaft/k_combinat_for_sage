@@ -244,27 +244,24 @@ def next(p, min=[], max=None, type=None):
                 continue
     return Partition(next_p)
 
-# def is_k_core(ptn, k):
-#     # ALREADY IMPLEMENTED IN SAGE as partition.is_core()
-#     # this is FASTER though, so should replace the other one
-#     # still, I leave this not in use
-#     r""" Returns a boolean saying whether or not the Partition `ptn` is a `k`-core.
+def is_k_core(ptn, k):
+    r""" Returns a boolean saying whether or not the Partition ``ptn`` is a `k`-core.
 
-#     EXAMPLES::
+    EXAMPLES::
 
-#         # a hook length of 2 does not occur, but a hook length of 3 does
-#         sage: is_k_core(Partition([2, 1]), 2)
-#         True
-#         sage: is_k_core(Partition([2, 1]), 3)
-#         False
+        # a hook length of 2 does not occur, but a hook length of 3 does
+        sage: is_k_core(Partition([2, 1]), 2)
+        True
+        sage: is_k_core(Partition([2, 1]), 3)
+        False
 
-#     """
-#     ptn = Partition(ptn)
-#     for row_hook_lengths in ptn.hook_lengths():
-#         for hook_length in row_hook_lengths:
-#             if hook_length == k:
-#                 return False
-#     return True
+    """
+    ptn = Partition(ptn)
+    for row_hook_lengths in ptn.hook_lengths():
+        for hook_length in row_hook_lengths:
+            if hook_length == k:
+                return False
+    return True
 
 def to_k_core(ptn, k):
     r""" Shift the rows of ptn minimally in order to create a k-core.

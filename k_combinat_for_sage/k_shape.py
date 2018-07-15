@@ -9,7 +9,7 @@ REFERENCES:
 """
 from sage.all import *
 from partition import *
-import skew_partition as SP
+import skew_partition
 # ^*^ sphinx insert ^*^
 
 # HELPERS
@@ -39,7 +39,7 @@ def is_k_shape(ptn, k):
         return any(lis)
     else:
         k_bdy = ptn.k_boundary(k)
-        return SP.is_linked(k_bdy)
+        return skew_partition.is_linked(k_bdy)
 
 #kShape stuff
 def h_bounds(p, k, width):

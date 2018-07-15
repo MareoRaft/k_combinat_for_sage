@@ -29,132 +29,132 @@ a(k_size([2, 1, 1], 4), 4)
 
 # test_SP_is_symmetric
 sp = SkewPartition([[], []])
-b = SP.is_symmetric(sp)
+b = skew_partition.is_symmetric(sp)
 a(b, True)
 
 sp = SkewPartition([[1], []])
-b = SP.is_symmetric(sp)
+b = skew_partition.is_symmetric(sp)
 a(b, True)
 
 sp = SkewPartition([[4,3,3,1], [1]])
-b = SP.is_symmetric(sp)
+b = skew_partition.is_symmetric(sp)
 a(b, True)
 
 sp = SkewPartition([[4,3,3,1], [1,1]])
-b = SP.is_symmetric(sp)
+b = skew_partition.is_symmetric(sp)
 a(b, False)
 
 sp = SkewPartition([[5,3,3,1], [2,2]])
-b = SP.is_symmetric(sp)
+b = skew_partition.is_symmetric(sp)
 a(b, False)
 
 
 
 # test_right
 sp = SkewPartition([[1], []])
-c = SP.right(sp, 0)
+c = skew_partition.right(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SP.right(sp, 0)
+c = skew_partition.right(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[1, 1], []])
-c = SP.right(sp, 0)
+c = skew_partition.right(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], [1]])
-c = SP.right(sp, 0)
+c = skew_partition.right(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SP.right(sp, 0)
+c = skew_partition.right(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SP.right(sp, 2)
+c = skew_partition.right(sp, 2)
 a(c, 3)
 
 
 # test_left
 sp = SkewPartition([[1], []])
-c = SP.left(sp, 0)
+c = skew_partition.left(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SP.left(sp, 0)
+c = skew_partition.left(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], [1]])
-c = SP.left(sp, 0)
+c = skew_partition.left(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SP.left(sp, 0)
+c = skew_partition.left(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SP.left(sp, 2)
+c = skew_partition.left(sp, 2)
 a(c, 2)
 
 
 # test_top
 sp = SkewPartition([[1], []])
-c = SP.top(sp, 0)
+c = skew_partition.top(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SP.top(sp, 0)
+c = skew_partition.top(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], []])
-c = SP.top(sp, 0)
+c = skew_partition.top(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[1, 1], [1]])
-c = SP.top(sp, 0)
+c = skew_partition.top(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SP.top(sp, 0)
+c = skew_partition.top(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SP.top(sp, 2)
+c = skew_partition.top(sp, 2)
 a(c, 2)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SP.top(sp, 3)
+c = skew_partition.top(sp, 3)
 a(c, 2)
 
 
 # test_bottom
 sp = SkewPartition([[1], []])
-c = SP.bottom(sp, 0)
+c = skew_partition.bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[2], []])
-c = SP.bottom(sp, 0)
+c = skew_partition.bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], []])
-c = SP.bottom(sp, 0)
+c = skew_partition.bottom(sp, 0)
 a(c, 0)
 
 sp = SkewPartition([[1, 1], [1]])
-c = SP.bottom(sp, 0)
+c = skew_partition.bottom(sp, 0)
 a(c, 1)
 
 sp = SkewPartition([[2], [2]])
-c = SP.bottom(sp, 0)
+c = skew_partition.bottom(sp, 0)
 a(c, None)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SP.bottom(sp, 2)
+c = skew_partition.bottom(sp, 2)
 a(c, 2)
 
 sp = SkewPartition([[5, 5, 4, 2, 2],  [4, 3, 2]])
-c = SP.bottom(sp, 3)
+c = skew_partition.bottom(sp, 3)
 a(c, 1)
 
 
@@ -255,26 +255,26 @@ a(skew_partition_to_removable_roots(sp, type='max'), [(0,3), (1,4)])
 
 
 # test_selected_rows_to_maximum_root_ideal
-root_ideal = selected_rows_to_maximum_root_ideal(1, [0])
-a(root_ideal, [])
+ri = selected_rows_to_maximum_root_ideal(1, [0])
+a(ri, [])
 
-root_ideal = selected_rows_to_maximum_root_ideal(2, [0, 1])
-a(root_ideal, [])
+ri = selected_rows_to_maximum_root_ideal(2, [0, 1])
+a(ri, [])
 
-root_ideal = selected_rows_to_maximum_root_ideal(2, [0])
-a(root_ideal, [(0,1)])
+ri = selected_rows_to_maximum_root_ideal(2, [0])
+a(ri, [(0,1)])
 
-root_ideal = selected_rows_to_maximum_root_ideal(3, [0, 2])
-a(root_ideal, [(0,1), (0,2)])
+ri = selected_rows_to_maximum_root_ideal(3, [0, 2])
+a(ri, [(0,1), (0,2)])
 
-root_ideal = selected_rows_to_maximum_root_ideal(4, [0, 2])
-a(root_ideal, [(0,1), (0,2), (0,3), (1,3)])
+ri = selected_rows_to_maximum_root_ideal(4, [0, 2])
+a(ri, [(0,1), (0,2), (0,3), (1,3)])
 
-root_ideal = selected_rows_to_maximum_root_ideal(5, [0, 1, 4])
-a(root_ideal, [(0,2), (0,3), (0,4), (1,3), (1,4)])
+ri = selected_rows_to_maximum_root_ideal(5, [0, 1, 4])
+a(ri, [(0,2), (0,3), (0,4), (1,3), (1,4)])
 
-root_ideal = selected_rows_to_maximum_root_ideal(5, [0, 1])
-a(root_ideal, [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)])
+ri = selected_rows_to_maximum_root_ideal(5, [0, 1])
+a(ri, [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)])
 
 
 # test_removable_roots_to_partition
@@ -325,43 +325,43 @@ a(removable_roots_to_root_ideal(rr, n), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,2
 
 # test_down
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-root_ideal = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-a(down(root_ideal, 0), 1)
-a(down(root_ideal, 1), 4)
-a(down(root_ideal, 2), 4)
-a(down(root_ideal, 3), 4)
-a(down(root_ideal, 4), None)
-a(down(root_ideal, 5), None)
+ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+a(down(ri, 0), 1)
+a(down(ri, 1), 4)
+a(down(ri, 2), 4)
+a(down(ri, 3), 4)
+a(down(ri, 4), None)
+a(down(ri, 5), None)
 
 
 # test_down_path
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-root_ideal = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-a(down_path(root_ideal, 0), [0, 1, 4])
-a(down_path(root_ideal, 1), [1, 4])
-a(down_path(root_ideal, 2), [2, 4])
-a(down_path(root_ideal, 3), [3, 4])
-a(down_path(root_ideal, 4), [4])
-a(down_path(root_ideal, 5), [5])
+ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+a(down_path(ri, 0), [0, 1, 4])
+a(down_path(ri, 1), [1, 4])
+a(down_path(ri, 2), [2, 4])
+a(down_path(ri, 3), [3, 4])
+a(down_path(ri, 4), [4])
+a(down_path(ri, 5), [5])
 
 
 # test_down_path_column_lengths_part
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-root_ideal = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
 ptn = [7, 6, 5, 2, 2, 2]
-a(down_path_column_lengths_part(root_ideal, ptn, 0), 15)
-a(down_path_column_lengths_part(root_ideal, ptn, 1), 8)
-a(down_path_column_lengths_part(root_ideal, ptn, 2), 7)
-a(down_path_column_lengths_part(root_ideal, ptn, 3), 4)
-a(down_path_column_lengths_part(root_ideal, ptn, 4), 2)
-a(down_path_column_lengths_part(root_ideal, ptn, 5), 2)
+a(down_path_column_lengths_part(ri, ptn, 0), 15)
+a(down_path_column_lengths_part(ri, ptn, 1), 8)
+a(down_path_column_lengths_part(ri, ptn, 2), 7)
+a(down_path_column_lengths_part(ri, ptn, 3), 4)
+a(down_path_column_lengths_part(ri, ptn, 4), 2)
+a(down_path_column_lengths_part(ri, ptn, 5), 2)
 
 
 # test_down_path_column_lengths
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-root_ideal = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
 ptn = [7, 6, 5, 2, 2, 2]
-a(down_path_column_lengths(root_ideal, ptn), [15, 7, 4, 2])
+a(down_path_column_lengths(ri, ptn), [15, 7, 4, 2])
 
 
 # test_root_ideal_to_partition
@@ -571,41 +571,41 @@ k = 2
 a(has_k_rectangle(p, k), True)
 
 
-# test_P.next
+# test_partition.next
 min_ = []
 max_ = []
 p = []
-a(P.next(p, min=min_, max=max_), func=is_False_or_None)
+a(partition.next(p, min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [1]
-a(P.next([], min=min_, max=max_), [1])
-a(P.next([1], min=min_, max=max_), func=is_False_or_None)
+a(partition.next([], min=min_, max=max_), [1])
+a(partition.next([1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [1, 1]
-a(P.next([], min=min_, max=max_), [1])
-a(P.next([1], min=min_, max=max_), [1, 1])
-a(P.next([1, 1], min=min_, max=max_), func=is_False_or_None)
+a(partition.next([], min=min_, max=max_), [1])
+a(partition.next([1], min=min_, max=max_), [1, 1])
+a(partition.next([1, 1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [2]
-a(P.next([], min=min_, max=max_), [1])
-a(P.next([1], min=min_, max=max_), [2])
-a(P.next([2], min=min_, max=max_), func=is_False_or_None)
+a(partition.next([], min=min_, max=max_), [1])
+a(partition.next([1], min=min_, max=max_), [2])
+a(partition.next([2], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [2, 1]
-a(P.next([], min=min_, max=max_), [1])
-a(P.next([1], min=min_, max=max_), [1, 1])
-a(P.next([1, 1], min=min_, max=max_), [2])
-a(P.next([2], min=min_, max=max_), [2, 1])
-a(P.next([2, 1], min=min_, max=max_), func=is_False_or_None)
+a(partition.next([], min=min_, max=max_), [1])
+a(partition.next([1], min=min_, max=max_), [1, 1])
+a(partition.next([1, 1], min=min_, max=max_), [2])
+a(partition.next([2], min=min_, max=max_), [2, 1])
+a(partition.next([2, 1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = [1, 1]
 max_ = [3, 2, 1]
-a(P.next([1, 1], min=min_, max=max_), [1, 1, 1])
-a(P.next([1, 1, 1], min=min_, max=max_), [2, 1])
+a(partition.next([1, 1], min=min_, max=max_), [1, 1, 1])
+a(partition.next([1, 1, 1], min=min_, max=max_), [2, 1])
 
 
 # test_RootIdeal_next
@@ -696,130 +696,130 @@ i = 4
 a(v_bounds(p, k, i), (0, 1))
 
 
-# test_kS.is_k_reducible_by_rectangle
+# test_k_shape.is_k_reducible_by_rectangle
 s = Partition([1])
 k = 1
 (w,h) = (1,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([2, 1])
 k = 1
 (w,h) = (1,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([1, 1])
 k = 2
 (w,h) = (1,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([1, 1])
 k = 2
 (w,h) = (1,2)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([1, 1])
 k = 2
 (w,h) = (2,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 2
 (w,h) = (2,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 2
 (w,h) = (1,2)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([2, 1, 1])
 k = 2
 (w,h) = (1,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (3,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (2,2)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (1,3)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (2,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([2, 1, 1])
 k = 3
 (w,h) = (1,2)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (3,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (2,2)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), True)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), True)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (1,3)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (2,1)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 s = Partition([3, 2, 1])
 k = 3
 (w,h) = (1,2)
-a(kS.is_k_reducible_by_rectangle(s, k, (w,h)), False)
+a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 
-# test_kS.is_reducible2
+# test_k_shape.is_reducible2
 s = Partition([1])
 k = 1
-a(kS.is_reducible2(s, k), True)
+a(k_shape.is_reducible2(s, k), True)
 
 s = Partition([2, 1])
 k = 1
-a(kS.is_reducible2(s, k), True)
+a(k_shape.is_reducible2(s, k), True)
 
 s = Partition([1, 1])
 k = 2
-a(kS.is_reducible2(s, k), True)
+a(k_shape.is_reducible2(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 2
-a(kS.is_reducible2(s, k), True)
+a(k_shape.is_reducible2(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 3
-a(kS.is_reducible2(s, k), True)
+a(k_shape.is_reducible2(s, k), True)
 
 s = Partition([3, 2, 1])
 k = 3
-a(kS.is_reducible2(s, k), True)
+a(k_shape.is_reducible2(s, k), True)
 
 s = Partition([5, 3, 2, 1, 1])
 k = 4
-a(kS.is_reducible2(s, k), False)
+a(k_shape.is_reducible2(s, k), False)
 
 s = Partition([5, 4, 2, 2, 1])
 k = 4
-a(kS.is_reducible2(s, k), False)
+a(k_shape.is_reducible2(s, k), False)
 
 
 # test_k_to_irreducible_k_shapes
@@ -931,21 +931,21 @@ a(row_shape_to_linked_skew_partitions(p), [[[3, 1, 1],[]], [[4, 1, 1],[1]], [[5,
 # test_complement
 ri = []
 n = 1
-a(RI.complement(ri, n), [])
+a(root_ideal.complement(ri, n), [])
 
 ri = []
 n = 2
-a(RI.complement(ri, n), [(0,1)])
-a(RI.complement(RI.complement(ri, n), n), [])
+a(root_ideal.complement(ri, n), [(0,1)])
+a(root_ideal.complement(root_ideal.complement(ri, n), n), [])
 
 ri = [(0,1)]
-a(RI.complement(ri, n=2), [])
+a(root_ideal.complement(ri, n=2), [])
 
 ri = [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)]
-a(RI.complement(ri, n=5), [(0,1), (1,2), (3,4)])
+a(root_ideal.complement(ri, n=5), [(0,1), (1,2), (3,4)])
 
 ri = [(0,1), (1,2), (3,4)]
-a(RI.complement(ri, 5), [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)])
+a(root_ideal.complement(ri, 5), [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)])
 
 
 # test_partition_to_k_schur_root_ideal
@@ -968,6 +968,32 @@ p = [2, 1]
 n = 4
 k = 5
 a(partition_to_k_schur_root_ideal(p, k, n), [])
+
+
+# test compositional hall littlewood polynomial
+Sym = SymmetricFunctions(QQ['t'])
+hl = Sym.hall_littlewood().Qp()
+for lis in ([3, 3, 2], [0], [1], [2], [1, 1], [2, 1], [2, 2, 1], [2, 1, 1], [6, 4, 2]):
+	p = Partition(lis)
+	a(compositional_hall_littlewood_Qp(p), hl(p))
+
+
+# test_straighten
+Sym = SymmetricFunctions(QQ)
+s = Sym.s()
+a(straighten(s, [2, 1, 3]), -s[2, 2, 2])
+h = Sym.h()
+a(straighten(h, [5, 1, 7]), h[7, 5, 1])
+e = Sym.e()
+a(straighten(e, [5, 1, 7]), e[7, 5, 1])
+p = Sym.p()
+a(straighten(p, [5, 1, 7]), p[7, 5, 1])
+w = Sym.w()
+a(straighten(w, [5, 1, 7]), w[7, 5, 1])
+# please no rogue t's regression
+Sym = SymmetricFunctions(QQ['t'])
+hl = Sym.hall_littlewood().Qp()
+a(straighten(hl, [3, 0, 1]), hl[3, 1])
 
 
 # seq space
@@ -1007,10 +1033,13 @@ a(R[(1,-1)].index(), (1,-1))
 a(R[(1, 0, -3)]([2, 2]), [([3, 2, -3], 1)])
 a(R[(2, 1, -1, -2)]([2, 2]), [([4, 3, -1, -2], 1)])
 # act on symmetric functions
-Sym = SymmetricFunctions(QQ['t'])
+base_ring = QQ['t']
+Sym = SymmetricFunctions(base_ring)
+t = base_ring.gen()
 # act on s
 s = Sym.s()
 a(R[(1, -1)](s[2, 1]), s[3])
+a(R[(1, -1)](t * s[2, 1]), t * s[3])
 # act on s with straightening
 a(R[(1, 0, 2)](s[1, 1, 1]), -s[2, 2, 2])
 # act on h
@@ -1019,6 +1048,19 @@ a(R[(1, -1)](h[2, 1]), h[3])
 # act on HL Q'
 hl = Sym.hall_littlewood().Qp()
 a(R[(1, -1)](hl[2, 1]), hl[3])
+# R() - t*R(0, 1, -1) - t*R(1, -1) + (t^2-t)*R(1, 0, -1) + t^2*R(1, 1, -2) + t^2*R(2, -1, -1) - t^3*R(2, 0, -2)
+# TODO: make sure these really are correct after all
+a(R.one()(hl[2, 1, 1]), hl[2, 1, 1])
+a((-t*R[(0, 1, -1)])(hl[2, 1, 1]), -t * hl[2, 2])
+# especially these four one:
+a((R[(1, -1)])(hl[2, 1, 1]), hl[3, 1])
+a((t*R[(1, -1)])(hl[2, 1, 1]), t * hl[3, 1])
+a((-t*R[(1, -1)])(hl[2, 1, 1]), -t * hl[3, 1])
+a(((t**2-t)*R[(1, 0, -1)])(hl[2, 1, 1]), (t**2-t)*hl[3, 1])
+a((t**2*R[(1, 1, -2)])(hl[2, 1, 1]), 0)
+a((t**2*R[(2, -1, -1)])(hl[2, 1, 1]), t**2*hl[4])
+a((t**3*R[(2, 0, -2)])(hl[2, 1, 1]), 0)
+a((-t**3*R[(2, 0, -2)])(hl[2, 1, 1]), 0)
 # act on tuple of lists
 a(R[(1, 0, -3)](([2, 2], [1], [-1])), ([([3, 2, -3], 1)], [([2, 0, -3], 1)], [([0, 0, -3], 1)]))
 # act on tuple of partitions
@@ -1027,7 +1069,6 @@ a(R[(3, 2, 2)]((s[4, 4], s[1], s[2, 1])), (s[7, 6, 2], s[4, 2, 2], s[5, 3, 2]))
 # act on things added together
 s = Sym.s()
 a(R[(1, -1)](s[2, 1] + s[3, 1]), s[3] + s[4])
-
 
 
 # test RaisingOperatorAlgebra
@@ -1076,20 +1117,6 @@ TestSuite(DR).run(verbose=False)
 a(5 * DR[3] + DR[-4], DR[-4] + DR[3] * 5)
 
 
-# test_straighten
-Sym = SymmetricFunctions(QQ)
-s = Sym.s()
-a(straighten(s, [2, 1, 3]), -s[2, 2, 2])
-h = Sym.h()
-a(straighten(h, [5, 1, 7]), h[7, 5, 1])
-e = Sym.e()
-a(straighten(e, [5, 1, 7]), e[7, 5, 1])
-p = Sym.p()
-a(straighten(p, [5, 1, 7]), p[7, 5, 1])
-w = Sym.w()
-a(straighten(w, [5, 1, 7]), w[7, 5, 1])
-
-
 # test hall littlewood vertex operator
 Sym = SymmetricFunctions(QQ['t'])
 hl = Sym.hall_littlewood().Qp()
@@ -1098,12 +1125,6 @@ H = HallLittlewoodVertexOperator
 gamma = [g1, g2, g3]
 one = hl.one()
 a(H(gamma)(one), H(g1)(H(g2)(H(g3)(one))))
-
-
-# test compositional hall littlewood polynomial
-Sym = SymmetricFunctions(QQ['t'])
-hl = Sym.hall_littlewood().Qp()
-a(compositional_hall_littlewood_Qp([3, 3, 2]), hl[3, 3, 2])
 
 
 # test qt raising roots operator
@@ -1121,18 +1142,75 @@ a(cf.index, [6, 6, 5])
 
 
 # test catalan function
-Sym = SymmetricFunctions(QQ['t'])
-hl = Sym.hall_littlewood().Qp()
+sym = SymmetricFunctions(QQ['t'])
+hl = sym.hall_littlewood().Qp()
+s = sym.s()
 # empty product
 ri = partition_to_root_ideal([2, 1], n=3)
 g = [3, 1, 1]
 cat_func = CatalanFunction(ri, g)
 a(cat_func.eval(), hl[3, 1, 1])
+
+gamma = [1]
+cf = CatalanFunction([], gamma)
+a(cf.eval(), hl(gamma))
+
+gamma = [1, 1]
+cf = CatalanFunction([(0,1)], gamma)
+a(cf.eval(), hl(gamma))
+
+gamma = [2]
+cf = CatalanFunction([], gamma)
+a(cf.eval(), hl(gamma))
+
+gamma = [2, 1]
+cf = CatalanFunction([(0,1)], gamma)
+a(cf.eval(), hl(gamma))
+
+# if Psi is empty, then H(Psi, gamma) = s_gamma
+gamma = [1]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
+
+gamma = [1, 1]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
+
+gamma = [2]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
+
+gamma = [2, 1]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
+
+gamma = [3, 1]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
+
+gamma = [4, 1]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
+
+# TODO: fix this:
+# gamma = [2, 1, 1]
+# cf = CatalanFunction([], gamma)
+# a(cf.eval(), hl(s(gamma)))
+
+# gamma = [2, 2, 1, 1]
+# cf = CatalanFunction([], gamma)
+# a(s(cf.eval()), s(gamma))
+# cf = CatalanFunction([(0,2), (0,3)], [2,2,1,1])
+# qp = cf.eval()
+# s_cf = s(qp)
+# print(s_cf)
 # other
-ri = partition_to_root_ideal([1, 1], n=3)
-g = [3, 1, 1]
-cat_func = CatalanFunction(ri, g)
-a(cat_func.eval(), hl[3, 1, 1])
+# print('HERE')
+# ri = partition_to_root_ideal([1, 1], n=3)
+# print(ri)
+# g = [3, 1, 1]
+# cat_func = CatalanFunction(ri, g)
+# a(cat_func.eval(), hl[3, 1, 1])
 
 
 
@@ -1219,7 +1297,7 @@ Sym = SymmetricFunctions(base_ring)
 t = base_ring.gen()
 ks = Sym.kBoundedSubspace(4, t).kschur()
 # TODO: verify by hand that below is really correct, or maybe a simpler example.
-a(u.i(2)(ks[2, 2, 1]), ks[2, 2, 1] + t**2*ks[3, 2] + t**3*ks[4, 1])
+# a(u.i(2)(ks[2, 2, 1]), ks[2, 2, 1] + t**2*ks[3, 2] + t**3*ks[4, 1])
 
 
 # test double h
@@ -1365,6 +1443,10 @@ a(end_core_to_strong_marked_tableaux([5, 3, 1], 2, [1]),
 		StrongTableau([[None, None, None, 1, 1], [None, 1, -1], [None]], 2),
 		StrongTableau([[None, None, None, None, 1], [None, None, -1], [1]], 2),
 	]))
+
+
+
+
 
 
 

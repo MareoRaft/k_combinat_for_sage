@@ -86,7 +86,7 @@ assert seq == [1, 1, 3]
 
 # 10. Given a root ideal, find it's compliment.
 ri = [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)]
-assert RI.complement(ri, 5) == [(0,1), (1,2), (3,4)]
+assert root_ideal.complement(ri, 5) == [(0,1), (1,2), (3,4)]
 
 
 # 11. Create a raising operator which acts on schur functions.

@@ -8,8 +8,8 @@ REFERENCES:
 .. [scat] Skew-linked Catalan functions and k-schur positivity.  Jonah Blasiak, Jennifer Morse, Anna Pun, and Daniel Summers.  Not to be confused with 'Catalan functions and k-schur positivity.'
 """
 from sage.all import *
-import partition as P
-import skew_partition as SP
+import partition
+import skew_partition
 # ^*^ sphinx insert ^*^
 
 # HELPERS
@@ -49,8 +49,8 @@ def bump_path_piece(sp, start_row_index, blocked_rows=set()):
     # Helper
     # this algo find the correct "L" piece of the path, where the bottom right cell is cell1, the bottom left is cell2, and the top left is cell3
     # Returns (top_row_index, is_end) which are the row index of cell3 and whether or not we 'broke free' out of the top left cell of the skew-partition, respectively.
-    col_index2 = SP.left(sp, start_row_index)
-    row_index3 = SP.top(sp, col_index2) + 1
+    col_index2 = skew_partition.left(sp, start_row_index)
+    row_index3 = skew_partition.top(sp, col_index2) + 1
     while row_index3 in blocked_rows:
         row_index3 += 1
     # CATTY-CORNER ONLY line:
@@ -110,7 +110,7 @@ def skew_partition_to_removable_roots(sp, type='max'):
             return x - 1
         else:
             raise ValueError('Bad type.')
-    assert SP.is_linked(sp)
+    assert skew_partition.is_linked(sp)
     mu = Partition(sp.column_lengths())
     eta = sp.inner()
     rmvble_roots = []
@@ -169,7 +169,7 @@ def RootIdeal_next(ri, min=[], max=None, n=None, type='strict'):
     max_ptn = root_ideal_to_partition(max)
     if type in ('strict', 'rational'):
         type = 'strictly decreasing'
-    next_ptn = P.next(ptn, min=min_ptn, max=max_ptn, type=type)
+    next_ptn = partition.next(ptn, min=min_ptn, max=max_ptn, type=type)
     next_ri = partition_to_root_ideal(next_ptn, n)
     return next_ri
 
@@ -317,7 +317,7 @@ def partition_to_k_schur_root_ideal(ptn, k, n=None):
     ptn = Partition(ptn)
     if n is None:
         n = len(ptn)
-    assert P.is_k_bounded(ptn, k)
+    assert partition.is_k_bounded(ptn, k)
     assert len(ptn) <= n
     ri = []
     for i, part in enumerate(ptn):
