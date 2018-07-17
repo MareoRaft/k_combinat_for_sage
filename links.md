@@ -14,8 +14,9 @@ https://trac.sagemath.org/ticket/25538
 h/s/hl_creation_operator input behavior:
 https://trac.sagemath.org/ticket/25734
 
-
 ask sage stuff:
+where is sage and sage's python installed:
+http://ask.sagemath.org/question/34337/where-is-sage-installed/
 codomain could not be determined error:
 https://ask.sagemath.org/question/42732/codomain-could-not-be-determined/
 importing sage into python:
@@ -23,6 +24,17 @@ https://ask.sagemath.org/question/9302/import-sage-packages-in-python/
 explanation of import_statements and preparse:
 https://ask.sagemath.org/question/33954/can-i-create-a-sage-file-and-import-it-as-a-python-module/
 
+how to build sage:
+possibly need to cd into sage repo
+sage -b
+OR
+MAKE='make -jNUM' make
+OR
+make build
+where NUM is number of threads you wan't to devote to installation
+see
+https://doc.sagemath.org/html/en/installation/source.html#step-by-step-installation-procedure
+for more
 
 ICERM:
 https://app.icerm.brown.edu/Cube/#!status
@@ -96,12 +108,9 @@ I think a lot of these objects will be SkewPartitions or ferrers diagrams, but t
 
 build
 ---------------
+To build, make sure you have committed things, saved files, and then run
 
-To build the documentation, comment out all sage-specific imports (such as `from sage.all import *`), cd into `doc` folder, and run::
-
-	make html
-
-our config file `doc/source/conf.py` may try to be similar to the official sage config file `src/doc/common/conf.py`.  Documentation can contain mathjax using backticks, for example, `\\sum \\frac{h}{l}`.
+  ./docs/build_docs.py
 
 To automatically generate for gh pages, try "https://gist.github.com/brantfaircloth/791759" or "https://github.com/sphinx-doc/sphinx/issues/3382" or "https://daler.github.io/sphinxdoc-test/includeme.html"
 
@@ -146,9 +155,9 @@ This would fool sphinx since sage_imports is in the project. NEVERMIND.  IT STIL
 new idea, have a fake imports file that defines each of the variables:
 "
 class UniqueRepresentation:
-	pass
+  pass
 class ZZ:
-	pass
+  pass
 "
 and see if it fools sphinx.
 
