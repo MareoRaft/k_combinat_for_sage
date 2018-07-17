@@ -33,6 +33,17 @@ def get_dim(n, ri_list):
 
 
 # RootIdeal stuff
+def is_roots(obj):
+    # Dirty indicator of whether object is roots (is it an iterable of pairs of natural numbers).
+    try:
+        iter(obj)
+    except:
+        return False
+    if not all(isinstance(el, tuple) and len(el) == 2 and el[0] in NonNegativeIntegerSemiring() and el[1] in NonNegativeIntegerSemiring() for el in obj):
+        return False
+    return True
+
+
 class RootIdeal(list):
     r""" An upper root ideal.
 
@@ -41,9 +52,19 @@ class RootIdeal(list):
     For example, the partition `[3, 1]` in the 7 x 7 grid is the root ideal `[(0,4), (0,5), (0,6), (1,6)]`.
 
     See Definition 2.1 of [cat]_ for more.
+
+    EXAMPLES::
+
+        sage: ri = RootIdeal([(0,4), (0,5), (0,6), (1,6)])
+
     """
+    def __init__(self, lis):
+        assert is_roots(lis)
+        list.__init__(self, lis)
+
     def __hash__(self):
         return hash(tuple(sorted(self)))
+
 
 def bump_path_piece(sp, start_row_index, blocked_rows=set()):
     # Helper
@@ -186,6 +207,28 @@ def skew_partition_to_root_ideals(sp, type='strict'):
 
 def down(ri, row_index):
     r""" Given a root ideal `ri` and a starting position 'row_index', move right on that row until you hit the root ideal (you are now standing ontop of a cell of the root ideal), then move straight down until you hit the diagonal, and return the new index.
+
+    The picture below represents the root ideal used in the example.
+
+    .. image:: _static/root-ideal.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([3, 2, 1], 5)
+        sage: down(ri, 0)
+        2
+        sage: down(ri, 1)
+        3
+        sage: down(ri, 2)
+        4
+        sage: down(ri, 3) == None
+        True
+        sage: down(ri, 4) == None
+        True
+
     """
     # Note: I am assuming the cells in the root ideal are IN ORDER with y coordinates weakly increasing, and for fixed y, x strictly increasing
     for (r,c) in ri:
@@ -195,6 +238,28 @@ def down(ri, row_index):
 
 def up(root_ideal, col_index):
     r""" Same as :meth:`down`, but this time you start in the *column* indicated by 'column_index', and move *up* until you hit the root ideal, then move *left* until you hit the diagonal.
+
+    The picture below represents the root ideal used in the example.
+
+    .. image:: _static/root-ideal.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([3, 2, 1], 5)
+        sage: up(ri, 0) == None
+        True
+        sage: up(ri, 1) == None
+        True
+        sage: up(ri, 2)
+        0
+        sage: up(ri, 3)
+        1
+        sage: up(ri, 4)
+        2
+
     """
     for (r,c) in reversed(root_ideal):
         if c == index:
@@ -213,31 +278,139 @@ def generate_path(next_func, start):
 
 def down_path(root_ideal, start_index):
     r""" Given a starting row index 'start_index', perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indices as a list.
+
+    The picture below represents the root ideal used in the example, and the path drawn on the picture depicts the down path for ``start_index`` 0 specifically.
+
+    .. image:: _static/bottom.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([3, 2, 1], 5)
+        sage: down_path(ri, 0)
+        [0, 2, 4]
+        sage: down_path(ri, 1)
+        [1, 3]
+        sage: down_path(ri, 2)
+        [2, 4]
+        sage: down_path(ri, 3)
+        [3]
+        sage: down_path(ri, 4)
+        [4]
+
     """
     next_func = lambda index: down(root_ideal, index)
     return generate_path(next_func, start_index)
 
 def up_path(root_ideal, start_index):
     r""" Same as :meth:`down_path`, but uses a *column* index to start with, and applies *up* operations repeatedly.
+
+    The picture below represents the root ideal used in the example.
+
+    .. image:: _static/root-ideal.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([3, 2, 1], 5)
+        sage: up_path(ri, 0)
+        [0]
+        sage: up_path(ri, 1)
+        [1]
+        sage: up_path(ri, 2)
+        [2, 0]
+        sage: up_path(ri, 3)
+        [3, 1]
+        sage: up_path(ri, 4)
+        [4, 2, 0]
+
     """
     next_func = lambda index: up(root_ideal, index)
     return generate_path(next_func, start_index)
 
 def top(root_ideal, start_index):
     r""" Given a column index 'start_index', look at it's :meth:`up_path` and return the final index.
+
+    The picture below represents the root ideal used in the example.
+
+    .. image:: _static/root-ideal.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([3, 2, 1], 5)
+        sage: root_ideal.top(ri, 0)
+        0
+        sage: root_ideal.top(ri, 1)
+        1
+        sage: root_ideal.top(ri, 2)
+        0
+        sage: root_ideal.top(ri, 3)
+        1
+        sage: root_ideal.top(ri, 4)
+        0
+
     """
     return up_path(root_ideal, start_index)[-1]
 
 def bottom(root_ideal, start_index):
     r""" Given a row index 'start_index', look at it's :meth:`down_path` and return the final index.
+
+    The picture below represents the root ideal used in the examples, and the path drawn on the picture depicts the down path for index 0 specifically, demonstrating that bottom(root_ideal, 0) should be 4.
+
+    .. image:: _static/bottom.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([3, 2, 1], 5)
+        sage: root_ideal.bottom(ri, 0)
+        4
+        sage: root_ideal.bottom(ri, 1)
+        3
+        sage: root_ideal.bottom(ri, 2)
+        4
+        sage: root_ideal.bottom(ri, 3)
+        3
+        sage: root_ideal.bottom(ri, 4)
+        4
+
     """
     return down_path(root_ideal, start_index)[-1]
 
 def down_path_column_lengths_part(root_ideal, ptn, start_index):
-    r""" This is `\mu_i` in Definition 2.3 of [scat]_. """
+    r""" This is `\mu_i` in Definition 2.3 of [scat]_.
+
+    This exists mainly as a helper function for :meth:`down_path_column_lengths`.
+    """
     return sum(ptn[j] for j in down_path(root_ideal, start_index))
 def down_path_column_lengths(root_ideal, ptn):
-    r""" This is the column shape `\mu'` as defined by Definition 2.3 of [scat]_.  It is also introduced in the second paragraph of the overview as `\mathfrak{cs}(\Psi, \lambda)`. """
+    r""" This is the column shape `\mu'` as defined by Definition 2.3 of [scat]_.  It is also introduced in the second paragraph of the overview as `\mathfrak{cs}(\Psi, \lambda)`.
+
+    In Example 2.4 of [scat]_, the following
+
+    ..  image:: _static/example2.4.png
+        :align: center
+        :alt: The root ideal [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)] and the partition 7 6 5 2 2 2
+
+    depicts the root ideal in red and the partition on the diagonal.
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([5, 2, 2, 2], 6)
+        sage: ptn = [7, 6, 5, 2, 2, 2]
+        sage: down_path_column_lengths(ri, ptn)
+        [15, 7, 4, 2]
+
+"""
     if not root_ideal:
         mu = ptn
     else:
@@ -273,13 +446,14 @@ def partition_to_root_ideal(ptn, n):
     """
     if ptn is None or ptn == False:
         return ptn
+    ptn = Partition(ptn)
     root_ideal = []
     for r, part in enumerate(ptn):
         root_ideal += [(r, c) for c in range(n-part, n)]
     return RootIdeal(root_ideal)
 
 def staircase_shape(n):
-    r""" Given `n`, return the composition `Composition([n-1, n-2, \\ldots, 0])` commonly denoted ``\\rho``.
+    r""" Given `n`, return the composition `[n-1, n-2, \ldots, 0]` commonly denoted `\rho`.
     """
     return Composition(range(n - 1, -1, -1))
 
@@ -297,13 +471,66 @@ def staircase_root_ideal(n):
     return partition_to_root_ideal(staircase_shape(n), n)
 
 def is_strict(ri):
-    r""" Given a root ideal `ri`, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!
+    r""" Given a root ideal ``ri``, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!
+
+    In the following images, ignore the index on the diagonal and look only at the root ideal in red.
+
+    .. image:: _static/Phi.png
+        :align: center
+        :alt: The root ideal corresponding to the partition  8 6 5 3 2
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([8, 6, 5, 3, 2], 9)
+        sage: root_ideal.is_strict(ri)
+        True
+
+    .. image:: _static/Ksi.png
+        :align: center
+        :alt: The root ideal corresponding to the partition  5 2 2 2
+
+    EXAMPLES::
+
+        sage: ri = partition_to_root_ideal([5, 2, 2, 2], 6)
+        sage: root_ideal.is_strict(ri)
+        False
+
     """
     ptn = root_ideal_to_partition(ri)
     return is_strictly_decreasing(ptn)
 
 def complement(ri, n=None):
     r""" Given a root ideal (or just an iterable of roots), return it's complement in the upper-staircase-shape, the result being a root ideal (or just an iterable of roots).
+
+    INPUTS:
+
+    - ``ri`` -- a root ideal
+
+    OPTIONAL INPUTS:
+
+    - ``n`` -- (default ``None``) the side length of the n x n box you want the complement to be taken over.
+
+    For example, the two root ideals depicted below are complements of each other:
+
+    .. image:: _static/root-ideal.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
+
+    .. image:: _static/root-ideal-complement.JPG
+        :width: 180px
+        :align: center
+        :alt: The root ideal [(0,1), (1,2), (2,3), (3,4)]
+
+    EXAMPLES::
+
+        sage: ri1 = RootIdeal([(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)])
+        sage: ri2 = RootIdeal([(0,1), (1,2), (2,3), (3,4)])
+        sage: complement(ri1) == ri2
+        True
+        sage: complement(ri2) == ri1
+        True
+
     """
     n = get_dim(n, [ri])
     ri_staircase = staircase_root_ideal(n)
@@ -312,7 +539,25 @@ def complement(ri, n=None):
     return ri_complement
 
 def partition_to_k_schur_root_ideal(ptn, k, n=None):
-    r""" Given a `k`-bounded partition `ptn = \lambda` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal `\Delta^k(\lambda)`.
+    r""" Given a `k`-bounded partition `ptn = \mu` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal `\Delta^k(\mu)`, as defined in [cat]_ Definition 2.2 as
+
+    .. math::
+
+        \Delta^k(\mu) = \{(i,j) \in \Delta^+_n \mid k - \mu_i + i < j \}
+
+    The following diagram depicts the `k`-bounded partition on the diagonal and the resulting `k`-schur root ideal.
+
+    .. image:: _static/k-schur-root-ideal.JPG
+        :height: 200px
+        :align: center
+        :alt: The partition 3 3 2 2 2 and the root ideal [(0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (2, 5), (2, 6), (2, 7), (3, 6), (3, 7), (4, 7)]
+
+    EXAMPLES::
+
+        sage: k_ri = partition_to_k_schur_root_ideal([3, 3, 2, 2, 2], 4, n=8)
+        sage: root_ideal_to_partition(k_ri)
+        [6, 5, 3, 2, 1]
+
     """
     ptn = Partition(ptn)
     if n is None:
@@ -323,13 +568,3 @@ def partition_to_k_schur_root_ideal(ptn, k, n=None):
     for i, part in enumerate(ptn):
         ri += [(i,j) for j in range(k - part + i + 1, n)]
     return ri
-
-def is_roots(obj):
-    # Dirty indicator of whether object is roots (is it an iterable of pairs of natural numbers).
-    try:
-        iter(obj)
-    except:
-        return False
-    if not all(isinstance(el, tuple) and len(el) == 2 and el[0] in NonNegativeIntegerSemiring() and el[1] in NonNegativeIntegerSemiring() for el in obj):
-        return False
-    return True
