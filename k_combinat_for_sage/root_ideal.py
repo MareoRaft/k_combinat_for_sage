@@ -119,10 +119,20 @@ def selected_rows_to_maximum_root_ideal(n, selected_indices):
 
 def skew_partition_to_removable_roots(sp, type='max'):
     r"""
-    Given a SkewPartition `sp`, return the removable roots of the corresponding 'min' or 'max' root ideal.
+    Given a SkewPartition ``sp``, return the removable roots of the corresponding 'min' or 'max' root ideal.
 
-    type: 'min' or 'max'
-    returns: A list of removable roots in order.
+    INPUTS:
+
+    - ``sp`` -- a SkewPartition
+
+    OPTIONAL INPUTS:
+
+    - ``type`` -- (default ``'max'``) the type of root ideal you want to use.  ``'min'`` is the minimum root ideal (as far as containment goes) and ``'max'`` is the maximum root ideal.
+
+    OUTPUT:
+
+    A list of removable roots in order.
+
     """
     def type_shift(x, type):
         if type == 'max':
@@ -161,13 +171,30 @@ def removable_roots_to_partition(corners, n):
     return Partition(ptn)
 
 def removable_roots_to_root_ideal(corners, n):
-    r""" Given the removable roots `corners` of a root ideal and the size length `n` of the n x n grid, return the root ideal itself. """
+    r""" Given the removable roots ``corners`` of a root ideal and the size length `n` of the `n` x `n` grid, return the root ideal itself.
+
+    For example, the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] in the `6` x `6` grid shown below in red (please ignore the diagonal) has removable roots `(0, 1)` and `(3, 4)`.
+
+    .. image:: _static/Ksi.png
+        :align: center
+        :alt: The root ideal corresponding to the partition  5 2 2 2
+
+    EXAMPLES::
+
+        sage: removable_roots_to_root_ideal({(0, 1), (3, 4)}, 6)
+        [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]
+
+    """
     ptn = removable_roots_to_partition(corners, n)
     ri = partition_to_root_ideal(ptn, n)
     return ri
 
 def skew_partition_to_root_ideal(sp, type='max', method='removable roots'):
-    r""" Given a SkewPartition `sp` and a type of root ideal ('max' or 'min'), return the corresponding root ideal. """
+    r""" Given a SkewPartition `sp` and a type of root ideal ('max' or 'min'), return the corresponding root ideal.
+
+    A type of ``'min'`` returns `\Phi(\lambda, \mu)` while a type of ``'max'`` returns `\Phi^+(\lambda, \mu)` as notated in [scat]_ at the bottom of page 1.
+
+    """
     if method == 'removable roots':
         corners = skew_partition_to_removable_roots(sp, type)
         n = len(sp.outer())
@@ -196,6 +223,9 @@ def RootIdeal_next(ri, min=[], max=None, n=None, type='strict'):
 
 def skew_partition_to_root_ideals(sp, type='strict'):
     r""" Given a skew partition `sp`, find the corresponding set (but given as a list here) of root ideals.
+
+    (This is the set `\{\Psi \in \Delta^+(\mathfrak{R}) \mid \Phi(\lambda, \mu) \subset \Psi \subset \Phi^+(\lambda, \mu)\} = [(\lambda, \mu)]` found in [scat]_ at the bottom of page 1.)
+
     """
     # We could change this to an iterator if users may not want all the root ideals.
     min_ri = skew_partition_to_root_ideal(sp, type='min')
@@ -277,7 +307,7 @@ def generate_path(next_func, start):
     return path
 
 def down_path(root_ideal, start_index):
-    r""" Given a starting row index 'start_index', perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indices as a list.
+    r""" Given a starting row index 'start_index', perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indices as a list.  (See [cat]_ Definition 5.2 for more)
 
     The picture below represents the root ideal used in the example, and the path drawn on the picture depicts the down path for ``start_index`` 0 specifically.
 
@@ -410,6 +440,8 @@ def down_path_column_lengths(root_ideal, ptn):
         sage: down_path_column_lengths(ri, ptn)
         [15, 7, 4, 2]
 
+    This is also the lengths of the bounce paths in [cat]_ Definition 5.2.
+
 """
     if not root_ideal:
         mu = ptn
@@ -429,6 +461,20 @@ def down_path_column_lengths(root_ideal, ptn):
 
 def root_ideal_to_partition(root_ideal):
     r""" Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal).
+
+    The red part of the following picture (please ignore the diagonal) represents the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)].
+
+    .. image:: _static/Ksi.png
+        :align: center
+        :alt: The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] inside a 6 by 6 grid.
+
+    But it can also be interpreted as the partition 5 2 2 2 (in the Hebrew convention).  Therefore, ``root_ideal_to_partition`` acting on the root ideal will output 5 2 2 2.
+
+    EXAMPLES::
+
+        sage: root_ideal_to_partition([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)])
+        [5, 2, 2, 2]
+
     """
     if root_ideal is None or root_ideal == False:
         return root_ideal
@@ -443,6 +489,20 @@ def root_ideal_to_partition(root_ideal):
 
 def partition_to_root_ideal(ptn, n):
     r""" Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to :meth:`root_ideal_to_partition` in the context of an `n` x `n` grid.)
+
+    The red part of the following picture (please ignore the diagonal) can be interpreted as the partition 5 2 2 2 (in the Hebrew convention):
+
+    .. image:: _static/Ksi.png
+        :align: center
+        :alt: The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] inside a 6 by 6 grid.
+
+    Therefore the partition 5 2 2 2 with `n=6` corresponds to the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)].
+
+    EXAMPLES::
+
+        sage: partition_to_root_ideal([5, 2, 2, 2], 6)
+        [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]
+
     """
     if ptn is None or ptn == False:
         return ptn
@@ -454,11 +514,13 @@ def partition_to_root_ideal(ptn, n):
 
 def staircase_shape(n):
     r""" Given `n`, return the composition `[n-1, n-2, \ldots, 0]` commonly denoted `\rho`.
+
+    Yes, this INCLUDES a 0 at the end!
     """
     return Composition(range(n - 1, -1, -1))
 
 def staircase_root_ideal(n):
-    r""" Given `n`, return the root ideal commonly denoted `\\Delta^+`, which is the maximum possible root ideal in an `n` x `n` grid.
+    r""" Given `n`, return the root ideal commonly denoted `\Delta^+`, which is the maximum possible root ideal in an `n` x `n` grid.
 
     EXAMPLES::
 

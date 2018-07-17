@@ -1,12 +1,16 @@
 #!/usr/bin/env python2.7
-print('building docs...')
+from __future__ import print_function
 from os import path
 import subprocess
 import sys
+import time
 
 path_repo = path.dirname(path.dirname(path.abspath(__file__)))
 sys.path.append(path_repo)
 from config import PATH
+
+start_time = time.time()
+print('started building docs...')
 
 # get content to insert into code
 with open(PATH['namespace_deletions'], 'r') as file:
@@ -54,4 +58,7 @@ for file_name in FILE_NAMES:
 			file.write(file_name_to_code[file_name])
 
 # all done!
-print('building docs completed.')
+print('finished building docs.', end='')
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(' Elapsed time = {}'.format(elapsed_time))
