@@ -5,6 +5,7 @@ MANIFEST
 pdfs
 *.orig
 ignore
+test_georges_cat_func.py
 
 
 ### JupyterNotebook ###

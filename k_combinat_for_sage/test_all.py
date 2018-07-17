@@ -990,10 +990,12 @@ p = Sym.p()
 a(straighten(p, [5, 1, 7]), p[7, 5, 1])
 w = Sym.w()
 a(straighten(w, [5, 1, 7]), w[7, 5, 1])
-# please no rogue t's regression
-Sym = SymmetricFunctions(QQ['t'])
+# please verify that HOP(hl[3,0,1]) = t * hl[3,1]
+base_ring = QQ['t']
+Sym = SymmetricFunctions(base_ring)
+t = base_ring.gen()
 hl = Sym.hall_littlewood().Qp()
-a(straighten(hl, [3, 0, 1]), hl[3, 1])
+a(straighten(hl, [3, 0, 1]), t*hl[3, 1])
 
 
 # seq space
@@ -1049,13 +1051,11 @@ a(R[(1, -1)](h[2, 1]), h[3])
 hl = Sym.hall_littlewood().Qp()
 a(R[(1, -1)](hl[2, 1]), hl[3])
 # R() - t*R(0, 1, -1) - t*R(1, -1) + (t^2-t)*R(1, 0, -1) + t^2*R(1, 1, -2) + t^2*R(2, -1, -1) - t^3*R(2, 0, -2)
-# TODO: make sure these really are correct after all
 a(R.one()(hl[2, 1, 1]), hl[2, 1, 1])
 a((-t*R[(0, 1, -1)])(hl[2, 1, 1]), -t * hl[2, 2])
-# especially these four one:
-a((R[(1, -1)])(hl[2, 1, 1]), hl[3, 1])
-a((t*R[(1, -1)])(hl[2, 1, 1]), t * hl[3, 1])
-a((-t*R[(1, -1)])(hl[2, 1, 1]), -t * hl[3, 1])
+a((R[(1, -1)])(hl[2, 1, 1]), t * hl[3, 1])
+a((t*R[(1, -1)])(hl[2, 1, 1]), t**2 * hl[3, 1])
+a((-t*R[(1, -1)])(hl[2, 1, 1]), -t**2 * hl[3, 1])
 a(((t**2-t)*R[(1, 0, -1)])(hl[2, 1, 1]), (t**2-t)*hl[3, 1])
 a((t**2*R[(1, 1, -2)])(hl[2, 1, 1]), 0)
 a((t**2*R[(2, -1, -1)])(hl[2, 1, 1]), t**2*hl[4])
@@ -1168,54 +1168,23 @@ cf = CatalanFunction([(0,1)], gamma)
 a(cf.eval(), hl(gamma))
 
 # if Psi is empty, then H(Psi, gamma) = s_gamma
-gamma = [1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
+gammas = ([1], [1, 1], [2], [2, 1], [3, 1], [4, 1], [2, 2], [3, 3], [5, 5], [5, 4], [6, 4], [10, 2], [3, 3, 1], [3, 1, 1], [5, 4, 3], [4, 2, 1], [5, 3, 1], [3, 3, 2], [3, 2, 2], [4, 4, 2], [4, 2, 2], [2, 2, 1], [2, 1, 1], [2, 2, 1, 1])
+for gamma in gammas:
+	cf = CatalanFunction([], gamma)
+	a(s(cf.eval()), s(gamma))
 
-gamma = [1, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-gamma = [2]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-gamma = [2, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-gamma = [3, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-gamma = [4, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-# TODO: fix this:
-# gamma = [2, 1, 1]
-# cf = CatalanFunction([], gamma)
-# a(cf.eval(), hl(s(gamma)))
-
-# gamma = [2, 2, 1, 1]
-# cf = CatalanFunction([], gamma)
-# a(s(cf.eval()), s(gamma))
-# cf = CatalanFunction([(0,2), (0,3)], [2,2,1,1])
-# qp = cf.eval()
-# s_cf = s(qp)
-# print(s_cf)
-# other
-# print('HERE')
-# ri = partition_to_root_ideal([1, 1], n=3)
-# print(ri)
-# g = [3, 1, 1]
-# cat_func = CatalanFunction(ri, g)
-# a(cat_func.eval(), hl[3, 1, 1])
+ri = partition_to_root_ideal([1, 1], n=3)
+g = [3, 1, 1]
+cat_func = CatalanFunction(ri, g)
+a(cat_func.eval(), hl[3, 1, 1])
 
 
-
-
-# TODO: test all catalan function methods with some example.  Ask Jennifer morse.
+# test catalan function expand
+cf = CatalanFunction([], [4, 1])
+a(cf.expand(1), 0)
+R = PolynomialRing(QQ, 2, 'x')
+x = R.gens()
+a(cf.expand(2), x[0]**4*x[1] + x[0]**3*x[1]**2 + x[0]**2*x[1]**3 + x[0]*x[1]**4)
 
 
 # test staircase shape
@@ -1225,6 +1194,20 @@ a(staircase_shape(3), [2, 1, 0])
 # test staircase root ideal
 a(staircase_root_ideal(3), [(0,1), (0,2), (1,2)])
 a(staircase_root_ideal(4), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
+
+
+# test bottom for root ideal
+ri = partition_to_root_ideal([3, 2, 1], 5)
+a(root_ideal.bottom(ri, 0), 4)
+a(root_ideal.bottom(ri, 1), 3)
+a(root_ideal.bottom(ri, 2), 4)
+a(root_ideal.bottom(ri, 3), 3)
+a(root_ideal.bottom(ri, 4), 4)
+
+
+# test down path
+ri = partition_to_root_ideal([3, 2, 1], 5)
+a(down_path(ri, 0), [0, 2, 4])
 
 
 # test dual k theoretic h
