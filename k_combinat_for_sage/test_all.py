@@ -304,102 +304,103 @@ a(removable_roots_to_partition(rr, n), [3, 2])
 
 
 # test_skew_partition_to_root_ideal
+RIS = RootIdeals()
 sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-ri = skew_partition_to_root_ideal(sp, type='max')
+ri = RIS.init_from_skew_partition(sp, type='max')
 a(ri, [(0,3), (0,4), (0,5), (1,4), (1,5)])
 
 sp = SkewPartition([[4, 3, 2, 2, 1, 1], [3, 2, 1, 1]])
-ri = skew_partition_to_root_ideal(sp, type='max')
+ri = RIS.init_from_skew_partition(sp, type='max')
 a(ri, [(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)])
 
 sp = SkewPartition([[4, 3, 2, 2, 1, 1], [3, 2, 1, 1]])
-ri = skew_partition_to_root_ideal(sp, type='min')
+ri = RIS.init_from_skew_partition(sp, type='min')
 a(ri, [(0,1), (0,2), (0,3), (0,4), (0,5), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)])
 
 
 # test_removable_roots_to_root_ideal
 rr = [(0,1), (2,2)]
 n = 4
-a(removable_roots_to_root_ideal(rr, n), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,2), (2,3)])
+a(RIS.init_from_removable_roots(rr, n), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,2), (2,3)])
 
 
 # test_down
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-a(down(ri, 0), 1)
-a(down(ri, 1), 4)
-a(down(ri, 2), 4)
-a(down(ri, 3), 4)
-a(down(ri, 4), None)
-a(down(ri, 5), None)
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
+a(ri.down(0), 1)
+a(ri.down(1), 4)
+a(ri.down(2), 4)
+a(ri.down(3), 4)
+a(ri.down(4), None)
+a(ri.down(5), None)
 
 
 # test_down_path
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-a(down_path(ri, 0), [0, 1, 4])
-a(down_path(ri, 1), [1, 4])
-a(down_path(ri, 2), [2, 4])
-a(down_path(ri, 3), [3, 4])
-a(down_path(ri, 4), [4])
-a(down_path(ri, 5), [5])
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
+a(ri.down_path(0), [0, 1, 4])
+a(ri.down_path(1), [1, 4])
+a(ri.down_path(2), [2, 4])
+a(ri.down_path(3), [3, 4])
+a(ri.down_path(4), [4])
+a(ri.down_path(5), [5])
 
 
 # test_down_path_column_lengths_part
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
 ptn = [7, 6, 5, 2, 2, 2]
-a(down_path_column_lengths_part(ri, ptn, 0), 15)
-a(down_path_column_lengths_part(ri, ptn, 1), 8)
-a(down_path_column_lengths_part(ri, ptn, 2), 7)
-a(down_path_column_lengths_part(ri, ptn, 3), 4)
-a(down_path_column_lengths_part(ri, ptn, 4), 2)
-a(down_path_column_lengths_part(ri, ptn, 5), 2)
+a(ri.down_path_column_lengths_part(ptn, 0), 15)
+a(ri.down_path_column_lengths_part(ptn, 1), 8)
+a(ri.down_path_column_lengths_part(ptn, 2), 7)
+a(ri.down_path_column_lengths_part(ptn, 3), 4)
+a(ri.down_path_column_lengths_part(ptn, 4), 2)
+a(ri.down_path_column_lengths_part(ptn, 5), 2)
 
 
 # test_down_path_column_lengths
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
 ptn = [7, 6, 5, 2, 2, 2]
-a(down_path_column_lengths(ri, ptn), [15, 7, 4, 2])
+a(ri.down_path_column_lengths(ptn), [15, 7, 4, 2])
 
 
 # test_root_ideal_to_partition
-ri = []
-a(root_ideal_to_partition(ri), [])
+ri = RootIdeal([])
+a(ri.to_partition(), [])
 
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-a(root_ideal_to_partition(ri), [5, 2, 2, 2])
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
+a(ri.to_partition(), [5, 2, 2, 2])
 
 
 # test_partition_to_root_ideal
 p = Partition([])
 n = 5
-a(partition_to_root_ideal(p, n), [])
+a(RIS.init_from_partition(p, n), [])
 
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
 p = Partition([5, 2, 2, 2])
 n = 6
-a(partition_to_root_ideal(p, n), [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
+a(RIS.init_from_partition(p, n), [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
 
 
 # test_is_strict
-ri = []
-a(is_strict(ri), True)
+ri = RootIdeal([])
+a(ri.is_strict(), True)
 
 # Rightmost example 2.4 of SKEW-LINKED CATALAN FUNCTIONS AND k-SCHUR POSITIVITY
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-a(is_strict(ri), False)
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
+a(ri.is_strict(), False)
 
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5)]
-a(is_strict(ri), True)
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5)])
+a(ri.is_strict(), True)
 
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), (3,4), (3,5)]
-a(is_strict(ri), True)
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), (3,4), (3,5)])
+a(ri.is_strict(), True)
 
-ri = [(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), (3,4), (3,5), (4,5)]
-a(is_strict(ri), True)
+ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), (3,4), (3,5), (4,5)])
+a(ri.is_strict(), True)
 
 
 # test_boundary
@@ -609,35 +610,34 @@ a(partition.next([1, 1, 1], min=min_, max=max_), [2, 1])
 
 
 # test_RootIdeal_next
-ri = []
-n = 4
-a(RootIdeal_next(ri, n=n), [(0,3)])
+ri = RootIdeal([], n=4)
+a(ri.next(), [(0,3)])
 
-max_ri = [(0,0), (0,1), (1,0), (1,1)]
-min_ri = []
-ri = [(0,1), (1,1)]
-a(RootIdeal_next(ri, n=2, min=min_ri, max=max_ri), [(0,0), (0,1)])
+max_ri = RootIdeal([(0,0), (0,1), (1,0), (1,1)])
+min_ri = RootIdeal([])
+ri = RootIdeal([(0,1), (1,1)])
+a(ri.next(min=min_ri, max=max_ri), [(0,0), (0,1)])
 
-max_ri = [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
-min_ri = [(0,2), (0,3)]
-ri = [(0,1), (0,2), (0,3)]
-a(RootIdeal_next(ri, n=4, min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
+max_ri = RootIdeal([(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
+min_ri = RootIdeal([(0,2), (0,3)])
+ri = RootIdeal([(0,1), (0,2), (0,3)])
+a(ri.next(min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
 
 
-# test_skew_partition_to_root_ideals
+# test_RIS.init_all_from_skew_partition
 sp = SkewPartition([[4, 2, 1, 1], [2, 1]])
 correct_ris = [
 	RootIdeal([(0,1), (0,2), (0,3), (1,2), (1,3)]),
 	RootIdeal([(0,1), (0,2), (0,3), (1,3)]),
 ]
-a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
+a(set(RIS.init_all_from_skew_partition(sp)), set(correct_ris))
 
 sp = SkewPartition([[4, 3, 2, 2, 1, 1], [3, 2, 1, 1]])
 correct_ris = [
 	RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,2), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
 	RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,3), (1,4), (1,5), (2,4), (2,5), (3,5)]),
 ]
-a(set(skew_partition_to_root_ideals(sp)), set(correct_ris))
+a(set(RIS.init_all_from_skew_partition(sp)), set(correct_ris))
 
 
 # test_get_k_rectangles
@@ -929,45 +929,43 @@ a(row_shape_to_linked_skew_partitions(p), [[[3, 1, 1],[]], [[4, 1, 1],[1]], [[5,
 
 
 # test_complement
-ri = []
-n = 1
-a(root_ideal.complement(ri, n), [])
+ri = RootIdeal([], n=1)
+a(ri.complement(), [])
 
-ri = []
-n = 2
-a(root_ideal.complement(ri, n), [(0,1)])
-a(root_ideal.complement(root_ideal.complement(ri, n), n), [])
+ri = RootIdeal([], n=2)
+a(ri.complement(), [(0,1)])
+a(ri.complement().complement(), [])
 
-ri = [(0,1)]
-a(root_ideal.complement(ri, n=2), [])
+ri = RootIdeal([(0,1)], n=2)
+a(ri.complement(), [])
 
-ri = [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)]
-a(root_ideal.complement(ri, n=5), [(0,1), (1,2), (3,4)])
+ri = RootIdeal([(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)], n=5)
+a(ri.complement(), [(0,1), (1,2), (3,4)])
 
-ri = [(0,1), (1,2), (3,4)]
-a(root_ideal.complement(ri, 5), [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)])
+ri = RootIdeal([(0,1), (1,2), (3,4)], n=5)
+a(ri.complement(), [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)])
 
 
 # test_partition_to_k_schur_root_ideal
 p = [2, 1]
 n = 4
 k = 2
-a(partition_to_k_schur_root_ideal(p, k, n), [(0,1), (0,2), (0,3), (1,3)])
+a(RIS.init_k_schur_from_partition(p, k, n), [(0,1), (0,2), (0,3), (1,3)])
 
 p = [2, 1]
 n = 4
 k = 3
-a(partition_to_k_schur_root_ideal(p, k, n), [(0,2), (0,3)])
+a(RIS.init_k_schur_from_partition(p, k, n), [(0,2), (0,3)])
 
 p = [2, 1]
 n = 4
 k = 4
-a(partition_to_k_schur_root_ideal(p, k, n), [(0,3)])
+a(RIS.init_k_schur_from_partition(p, k, n), [(0,3)])
 
 p = [2, 1]
 n = 4
 k = 5
-a(partition_to_k_schur_root_ideal(p, k, n), [])
+a(RIS.init_k_schur_from_partition(p, k, n), [])
 
 
 # test compositional hall littlewood polynomial
@@ -1146,7 +1144,7 @@ sym = SymmetricFunctions(QQ['t'])
 hl = sym.hall_littlewood().Qp()
 s = sym.s()
 # empty product
-ri = partition_to_root_ideal([2, 1], n=3)
+ri = RIS.init_from_partition([2, 1], n=3)
 g = [3, 1, 1]
 cat_func = CatalanFunction(ri, g)
 a(cat_func.eval(), hl[3, 1, 1])
@@ -1206,7 +1204,7 @@ a(s(cf.eval()), s(gamma))
 # print(s_cf)
 # other
 # print('HERE')
-# ri = partition_to_root_ideal([1, 1], n=3)
+# ri = RIS.init_from_partition([1, 1], n=3)
 # print(ri)
 # g = [3, 1, 1]
 # cat_func = CatalanFunction(ri, g)
@@ -1223,8 +1221,8 @@ a(staircase_shape(3), [2, 1, 0])
 
 
 # test staircase root ideal
-a(staircase_root_ideal(3), [(0,1), (0,2), (1,2)])
-a(staircase_root_ideal(4), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
+a(RIS.init_staircase(3), [(0,1), (0,2), (1,2)])
+a(RIS.init_staircase(4), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
 
 
 # test dual k theoretic h

@@ -19,18 +19,6 @@ def is_weakly_decreasing(li):
 def is_strictly_decreasing(li):
     return all(li[i] > li[i+1] for i in range(len(li)-1))
 
-def get_n_from_root_ideal(root_ideal):
-    return max(c for (r,c) in root_ideal) + 1
-
-def get_dim(n, ri_list):
-    if n is not None:
-        return n
-    for ri in ri_list:
-        # To safeguard against user error, perhaps we should ALWAYS require user to input n.
-        if ri and isinstance(ri, RootIdeal):
-            return get_n_from_root_ideal(ri)
-    raise Exception('There is no way to figure out the size of the staircase that the root ideals fall in.  Please supply n.')
-
 def generate_path(next_func, start):
     path = [start]
     while True:
@@ -98,7 +86,7 @@ def selected_rows_to_maximum_root_ideal(n, selected_indices):
                 root_ideal_cells += [(i, j) for j in range(smallest_unblocked_index, n)]
                 permitted_col_indices.remove(smallest_unblocked_index)
                 selected_indices.add(smallest_unblocked_index)
-    return root_ideal_cells
+    return RootIdeal(root_ideal_cells)
 
 def skew_partition_to_removable_roots(sp, type='max'):
     r"""
@@ -179,23 +167,33 @@ class RootIdeal(list):
         sage: ri = RootIdeal([(0,4), (0,5), (0,6), (1,6)])
 
     """
-    def __init__(self, lis):
+    def __init__(self, lis, n=None):
+        # validate the roots
         assert is_roots(lis)
+        # figure out n
+        if n is not None:
+            self.n = n
+        elif lis:
+            self.n = max(c for (r,c) in lis) + 1
+        else:
+            self.n = 1
+        # normalize the roots
+        lis = sorted(lis)
         list.__init__(self, lis)
 
     def __hash__(self):
-        return hash(tuple(sorted(self)))
+        return hash(tuple(self))
 
-    def _next(ri, min=[], max=None, n=None, type='strict'):
+    def next(self, min=[], max=None, type='strict'):
         # figure out dimension of square
-        n = get_dim(n, [ri, min, max])
-        ptn = root_ideal_to_partition(ri)
-        min_ptn = root_ideal_to_partition(min)
-        max_ptn = root_ideal_to_partition(max)
+        n = self.n
+        ptn = self.to_partition()
+        min_ptn = RootIdeal(min, n=n).to_partition()
+        max_ptn = RootIdeal(max, n=n).to_partition() if max is not None else None
         if type in ('strict', 'rational'):
             type = 'strictly decreasing'
         next_ptn = partition.next(ptn, min=min_ptn, max=max_ptn, type=type)
-        next_ri = partition_to_root_ideal(next_ptn, n)
+        next_ri = RootIdeals().init_from_partition(next_ptn, n)
         return next_ri
 
     def down(ri, row_index):
@@ -284,7 +282,7 @@ class RootIdeal(list):
             [4]
 
         """
-        next_func = lambda index: down(root_ideal, index)
+        next_func = lambda index: root_ideal.down(index)
         return generate_path(next_func, start_index)
 
     def up_path(root_ideal, start_index):
@@ -312,7 +310,7 @@ class RootIdeal(list):
             [4, 2, 0]
 
         """
-        next_func = lambda index: up(root_ideal, index)
+        next_func = lambda index: root_ideal.up(index)
         return generate_path(next_func, start_index)
 
     def top(root_ideal, start_index):
@@ -340,7 +338,7 @@ class RootIdeal(list):
             0
 
         """
-        return up_path(root_ideal, start_index)[-1]
+        return root_ideal.up_path(start_index)[-1]
 
     def bottom(root_ideal, start_index):
         r""" Given a row index 'start_index', look at it's :meth:`down_path` and return the final index.
@@ -367,15 +365,15 @@ class RootIdeal(list):
             4
 
         """
-        return down_path(root_ideal, start_index)[-1]
+        return root_ideal.down_path(start_index)[-1]
 
     def down_path_column_lengths_part(root_ideal, ptn, start_index):
         r""" This is `\mu_i` in Definition 2.3 of [scat]_.
 
         This exists mainly as a helper function for :meth:`down_path_column_lengths`.
         """
-        return sum(ptn[j] for j in down_path(root_ideal, start_index))
-    def down_path_column_lengths(root_ideal, ptn):
+        return sum(ptn[j] for j in root_ideal.down_path(start_index))
+    def down_path_column_lengths(self, ptn):
         r""" This is the column shape `\mu'` as defined by Definition 2.3 of [scat]_.  It is also introduced in the second paragraph of the overview as `\mathfrak{cs}(\Psi, \lambda)`.
 
         In Example 2.4 of [scat]_, the following
@@ -396,19 +394,19 @@ class RootIdeal(list):
         This is also the lengths of the bounce paths in [cat]_ Definition 5.2.
 
     """
-        if not root_ideal:
+        if not self:
             mu = ptn
         else:
             mu = []
             # n is the side length of the square
-            n = get_n_from_root_ideal(root_ideal)
+            n = self.n
             indices_available = set(range(0, n))
             for index in range(0, n):
                 if index in indices_available:
                     # add the kthing to mu
-                    mu.append(down_path_column_lengths_part(root_ideal, ptn, index))
+                    mu.append(self.down_path_column_lengths_part(ptn, index))
                     # remove indices from future draws
-                    dpath = down_path(root_ideal, index)
+                    dpath = self.down_path(index)
                     indices_available -= set(dpath)
         return Partition(mu)
 
@@ -466,10 +464,10 @@ class RootIdeal(list):
             False
 
         """
-        ptn = root_ideal_to_partition(ri)
+        ptn = ri.to_partition()
         return is_strictly_decreasing(ptn)
 
-    def complement(ri, n=None):
+    def complement(self):
         r""" Given a root ideal (or just an iterable of roots), return it's complement in the upper-staircase-shape, the result being a root ideal (or just an iterable of roots).
 
         INPUTS:
@@ -502,15 +500,15 @@ class RootIdeal(list):
             True
 
         """
-        n = get_dim(n, [ri])
-        ri_staircase = staircase_root_ideal(n)
-        ri_complement_set = set(ri_staircase) - set(ri)
-        ri_complement = sorted(ri_complement_set)
+        n = self.n
+        ri_staircase = RootIdeals().init_staircase(n)
+        ri_complement_set = set(ri_staircase) - set(self)
+        ri_complement = RootIdeal(ri_complement_set)
         return ri_complement
 
 
 class RootIdeals:
-    def init_from_removable_roots(corners, n):
+    def init_from_removable_roots(self, corners, n):
         r""" Given the removable roots ``corners`` of a root ideal and the size length `n` of the `n` x `n` grid, return the root ideal itself.
 
         For example, the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] in the `6` x `6` grid shown below in red (please ignore the diagonal) has removable roots `(0, 1)` and `(3, 4)`.
@@ -526,10 +524,10 @@ class RootIdeals:
 
         """
         ptn = removable_roots_to_partition(corners, n)
-        ri = partition_to_root_ideal(ptn, n)
+        ri = self.init_from_partition(ptn, n)
         return ri
 
-    def init_from_skew_partition(sp, type='max', method='removable roots'):
+    def init_from_skew_partition(self, sp, type='max', method='removable roots'):
         r""" Given a SkewPartition `sp` and a type of root ideal ('max' or 'min'), return the corresponding root ideal.
 
         A type of ``'min'`` returns `\Phi(\lambda, \mu)` while a type of ``'max'`` returns `\Phi^+(\lambda, \mu)` as notated in [scat]_ at the bottom of page 1.
@@ -538,7 +536,7 @@ class RootIdeals:
         if method == 'removable roots':
             corners = skew_partition_to_removable_roots(sp, type)
             n = len(sp.outer())
-            root_ideal = removable_roots_to_root_ideal(corners, n)
+            root_ideal = self.init_from_removable_roots(corners, n)
         elif method == 'bounce':
             if type != 'max':
                 raise Exception('The bounce method can only yield the maximum root ideal (type=max).')
@@ -549,21 +547,21 @@ class RootIdeals:
             raise ValueError('Unknown method.')
         return RootIdeal(root_ideal)
 
-    def init_all_from_skew_partition(sp, type='strict'):
+    def init_all_from_skew_partition(self, sp, type='strict'):
         r""" Given a skew partition `sp`, find the corresponding set (but given as a list here) of root ideals.
 
         (This is the set `\{\Psi \in \Delta^+(\mathfrak{R}) \mid \Phi(\lambda, \mu) \subset \Psi \subset \Phi^+(\lambda, \mu)\} = [(\lambda, \mu)]` found in [scat]_ at the bottom of page 1.)
 
         """
         # We could change this to an iterator if users may not want all the root ideals.
-        min_ri = skew_partition_to_root_ideal(sp, type='min')
-        max_ri = skew_partition_to_root_ideal(sp, type='max')
+        min_ri = self.init_from_skew_partition(sp, type='min')
+        max_ri = self.init_from_skew_partition(sp, type='max')
         n = len(sp.outer())
-        next_func = lambda ri: RootIdeal_next(ri, min=min_ri, max=max_ri, n=n, type=type)
+        next_func = lambda ri: ri.next(min=min_ri, max=max_ri, type=type)
         ris = generate_path(next_func, min_ri)
         return ris
 
-    def init_k_schur_from_partition(ptn, k, n=None):
+    def init_k_schur_from_partition(self, ptn, k, n=None):
         r""" Given a `k`-bounded partition `ptn = \mu` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal `\Delta^k(\mu)`, as defined in [cat]_ Definition 2.2 as
 
         .. math::
@@ -592,9 +590,9 @@ class RootIdeals:
         ri = []
         for i, part in enumerate(ptn):
             ri += [(i,j) for j in range(k - part + i + 1, n)]
-        return ri
+        return RootIdeal(ri)
 
-    def init_from_partition(ptn, n):
+    def init_from_partition(self, ptn, n):
         r""" Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to :meth:`root_ideal_to_partition` in the context of an `n` x `n` grid.)
 
         The red part of the following picture (please ignore the diagonal) can be interpreted as the partition 5 2 2 2 (in the Hebrew convention):
@@ -619,7 +617,7 @@ class RootIdeals:
             root_ideal += [(r, c) for c in range(n-part, n)]
         return RootIdeal(root_ideal)
 
-    def init_staircase(n):
+    def init_staircase(self, n):
         r""" Given `n`, return the root ideal commonly denoted `\Delta^+`, which is the maximum possible root ideal in an `n` x `n` grid.
 
         EXAMPLES::
@@ -630,4 +628,4 @@ class RootIdeals:
             [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
 
         """
-        return partition_to_root_ideal(staircase_shape(n), n)
+        return self.init_from_partition(staircase_shape(n), n)

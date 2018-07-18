@@ -495,7 +495,7 @@ def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     def prod(iterable):
         return reduce(operator.mul, iterable, R.one())
     if roots in NonNegativeIntegerSemiring():
-        roots = staircase_root_ideal(roots)
+        roots = RootIdeals().init_staircase(roots)
     op = prod([1 - t*R.ij(i, j) for (i, j) in roots])
     return op
 
@@ -507,7 +507,7 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
 
     """
     if roots in NonNegativeIntegerSemiring():
-        roots = staircase_root_ideal(roots)
+        roots = RootIdeals().init_staircase(roots)
     if t is None:
         t = base_ring.gens()[0]
     if q is None:
@@ -540,16 +540,16 @@ class CatalanFunction:
     PREFIX_DEFAULT = 'H'
 
     def __init__(self, roots, index, base_ring=None, prefix=None):
-        assert is_roots(roots)
-        self.roots = roots
         assert is_sequence(index)
         self.index = index
+        assert is_roots(roots)
+        self.roots = RootIdeal(roots, len(self.index))
         self.base_ring = base_ring if base_ring is not None else self.BASE_RING_DEFAULT
         self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
 
     def __eq__(self, other):
         # TODO: account for the fact that DIFFERENT root/index pairs could actually give the SAME catalan function!!
-        return set(self.roots) == set(other.roots) and self.index == other.index and self.base_ring == other.base_ring
+        return self.roots == other.roots and self.index == other.index and self.base_ring == other.base_ring
 
     def __repr__(self):
         return '{}({}; {})'.format(self.prefix, self.roots, self.index)
@@ -567,8 +567,7 @@ class CatalanFunction:
         hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
         t = self.base_ring.gen()
         # formula
-        n = len(self.index)
-        roots_complement = root_ideal.complement(self.roots, n)
+        roots_complement = self.roots.complement()
         # print(roots_complement)
         op = raising_roots_operator(roots_complement, t=t, base_ring=self.base_ring)
         # print(op)
@@ -787,8 +786,8 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     # setup
     Kh = dual_k_theoretic_homogeneous(index, index2, base_ring=base_ring)
     # formula
-    n = len(index)
-    roots_complement = root_ideal.complement(roots, n)
+    roots = RootIdeal(roots, n=len(index))
+    roots_complement = roots.complement()
     op = raising_roots_operator(roots_complement, t=1, base_ring=base_ring)
     cat_func = op(Kh)
     return cat_func

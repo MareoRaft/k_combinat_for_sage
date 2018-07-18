@@ -26,6 +26,7 @@ https://ask.sagemath.org/question/33954/can-i-create-a-sage-file-and-import-it-a
 
 how to build sage:
 possibly need to cd into sage repo
+possibly need to sudo chown -R Matthew sagespythondirectory
 sage -b
 OR
 MAKE='make -jNUM' make
