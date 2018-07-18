@@ -509,6 +509,11 @@ class RootIdeal(list):
 
 
 class RootIdeals:
+    r""" The family of root ideals.
+
+    Use this class as a factory to initialize a :class:`RootIdeal` object with any valid identifying data.  See the ``init_from...`` methods below for ways to create a root ideal.  Remember that you can also create a root ideal directly from an iterable of roots using :class:`RootIdeal`.
+    """
+
     def init_from_removable_roots(self, corners, n):
         r""" Given the removable roots ``corners`` of a root ideal and the size length `n` of the `n` x `n` grid, return the root ideal itself.
 
@@ -529,7 +534,7 @@ class RootIdeals:
         return ri
 
     def init_from_skew_partition(self, sp, type='max', method='removable roots'):
-        r""" Given a SkewPartition `sp` and a type of root ideal ('max' or 'min'), return the corresponding root ideal.
+        r""" Given a SkewPartition ``sp`` and a type of root ideal ('max' or 'min'), return the corresponding root ideal.
 
         A type of ``'min'`` returns `\Phi(\lambda, \mu)` while a type of ``'max'`` returns `\Phi^+(\lambda, \mu)` as notated in [scat]_ at the bottom of page 1.
 
@@ -549,7 +554,7 @@ class RootIdeals:
         return RootIdeal(root_ideal)
 
     def init_all_from_skew_partition(self, sp, type='strict'):
-        r""" Given a skew partition `sp`, find the corresponding set (but given as a list here) of root ideals.
+        r""" Given a skew partition ``sp``, find the corresponding set (but given as a list here) of root ideals.
 
         (This is the set `\{\Psi \in \Delta^+(\mathfrak{R}) \mid \Phi(\lambda, \mu) \subset \Psi \subset \Phi^+(\lambda, \mu)\} = [(\lambda, \mu)]` found in [scat]_ at the bottom of page 1.)
 
