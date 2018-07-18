@@ -208,16 +208,16 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([3, 2, 1], 5)
-            sage: down(ri, 0)
+            sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
+            sage: ri.down(0)
             2
-            sage: down(ri, 1)
+            sage: ri.down(1)
             3
-            sage: down(ri, 2)
+            sage: ri.down(2)
             4
-            sage: down(ri, 3) == None
+            sage: ri.down(3) == None
             True
-            sage: down(ri, 4) == None
+            sage: ri.down(4) == None
             True
 
         """
@@ -239,16 +239,16 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([3, 2, 1], 5)
-            sage: up(ri, 0) == None
+            sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
+            sage: ri.up(0) == None
             True
-            sage: up(ri, 1) == None
+            sage: ri.up(1) == None
             True
-            sage: up(ri, 2)
+            sage: ri.up(2)
             0
-            sage: up(ri, 3)
+            sage: ri.up(3)
             1
-            sage: up(ri, 4)
+            sage: ri.up(4)
             2
 
         """
@@ -269,16 +269,16 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([3, 2, 1], 5)
-            sage: down_path(ri, 0)
+            sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
+            sage: ri.down_path(0)
             [0, 2, 4]
-            sage: down_path(ri, 1)
+            sage: ri.down_path(1)
             [1, 3]
-            sage: down_path(ri, 2)
+            sage: ri.down_path(2)
             [2, 4]
-            sage: down_path(ri, 3)
+            sage: ri.down_path(3)
             [3]
-            sage: down_path(ri, 4)
+            sage: ri.down_path(4)
             [4]
 
         """
@@ -297,16 +297,16 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([3, 2, 1], 5)
-            sage: up_path(ri, 0)
+            sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
+            sage: ri.up_path(0)
             [0]
-            sage: up_path(ri, 1)
+            sage: ri.up_path(1)
             [1]
-            sage: up_path(ri, 2)
+            sage: ri.up_path(2)
             [2, 0]
-            sage: up_path(ri, 3)
+            sage: ri.up_path(3)
             [3, 1]
-            sage: up_path(ri, 4)
+            sage: ri.up_path(4)
             [4, 2, 0]
 
         """
@@ -325,16 +325,16 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([3, 2, 1], 5)
-            sage: root_ideal.top(ri, 0)
+            sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
+            sage: ri.top(0)
             0
-            sage: root_ideal.top(ri, 1)
+            sage: ri.top(1)
             1
-            sage: root_ideal.top(ri, 2)
+            sage: ri.top(2)
             0
-            sage: root_ideal.top(ri, 3)
+            sage: ri.top(3)
             1
-            sage: root_ideal.top(ri, 4)
+            sage: ri.top(4)
             0
 
         """
@@ -343,7 +343,7 @@ class RootIdeal(list):
     def bottom(root_ideal, start_index):
         r""" Given a row index 'start_index', look at it's :meth:`down_path` and return the final index.
 
-        The picture below represents the root ideal used in the examples, and the path drawn on the picture depicts the down path for index 0 specifically, demonstrating that bottom(root_ideal, 0) should be 4.
+        The picture below represents the root ideal used in the examples, and the path drawn on the picture depicts the down path for index 0 specifically, demonstrating that ``bottom(0)`` should be 4.
 
         .. image:: _static/bottom.JPG
             :width: 180px
@@ -352,16 +352,16 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([3, 2, 1], 5)
-            sage: root_ideal.bottom(ri, 0)
+            sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
+            sage: ri.bottom(0)
             4
-            sage: root_ideal.bottom(ri, 1)
+            sage: ri.bottom(1)
             3
-            sage: root_ideal.bottom(ri, 2)
+            sage: ri.bottom(2)
             4
-            sage: root_ideal.bottom(ri, 3)
+            sage: ri.bottom(3)
             3
-            sage: root_ideal.bottom(ri, 4)
+            sage: ri.bottom(4)
             4
 
         """
@@ -386,9 +386,9 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([5, 2, 2, 2], 6)
+            sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             sage: ptn = [7, 6, 5, 2, 2, 2]
-            sage: down_path_column_lengths(ri, ptn)
+            sage: ri.down_path_column_lengths(ptn)
             [15, 7, 4, 2]
 
         This is also the lengths of the bounce paths in [cat]_ Definition 5.2.
@@ -419,11 +419,12 @@ class RootIdeal(list):
             :align: center
             :alt: The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] inside a 6 by 6 grid.
 
-        But it can also be interpreted as the partition 5 2 2 2 (in the Hebrew convention).  Therefore, ``root_ideal_to_partition`` acting on the root ideal will output 5 2 2 2.
+        But it can also be interpreted as the partition 5 2 2 2 (in the Hebrew convention).  Therefore, ``to_partition()`` acting on the root ideal will output 5 2 2 2.
 
         EXAMPLES::
 
-            sage: root_ideal_to_partition([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)])
+            sage: ri = RootIdeal([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)])
+            sage: ri.to_partition()
             [5, 2, 2, 2]
 
         """
@@ -449,8 +450,8 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([8, 6, 5, 3, 2], 9)
-            sage: root_ideal.is_strict(ri)
+            sage: ri = RootIdeals().init_from_partition([8, 6, 5, 3, 2], 9)
+            sage: ri.is_strict()
             True
 
         .. image:: _static/Ksi.png
@@ -459,8 +460,8 @@ class RootIdeal(list):
 
         EXAMPLES::
 
-            sage: ri = partition_to_root_ideal([5, 2, 2, 2], 6)
-            sage: root_ideal.is_strict(ri)
+            sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
+            sage: ri.is_strict()
             False
 
         """
@@ -494,9 +495,9 @@ class RootIdeal(list):
 
             sage: ri1 = RootIdeal([(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)])
             sage: ri2 = RootIdeal([(0,1), (1,2), (2,3), (3,4)])
-            sage: complement(ri1) == ri2
+            sage: ri1.complement() == ri2
             True
-            sage: complement(ri2) == ri1
+            sage: ri2.complement() == ri1
             True
 
         """
@@ -577,8 +578,8 @@ class RootIdeals:
 
         EXAMPLES::
 
-            sage: k_ri = partition_to_k_schur_root_ideal([3, 3, 2, 2, 2], 4, n=8)
-            sage: root_ideal_to_partition(k_ri)
+            sage: k_ri = RootIdeals().init_k_schur_from_partition([3, 3, 2, 2, 2], 4, n=8)
+            sage: k_ri.to_partition()
             [6, 5, 3, 2, 1]
 
         """
@@ -593,7 +594,7 @@ class RootIdeals:
         return RootIdeal(ri)
 
     def init_from_partition(self, ptn, n):
-        r""" Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to :meth:`root_ideal_to_partition` in the context of an `n` x `n` grid.)
+        r""" Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to :meth:`RootIdeal.to_partition` in the context of an `n` x `n` grid.)
 
         The red part of the following picture (please ignore the diagonal) can be interpreted as the partition 5 2 2 2 (in the Hebrew convention):
 
@@ -605,7 +606,7 @@ class RootIdeals:
 
         EXAMPLES::
 
-            sage: partition_to_root_ideal([5, 2, 2, 2], 6)
+            sage: RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]
 
         """
@@ -622,9 +623,9 @@ class RootIdeals:
 
         EXAMPLES::
 
-            sage: staircase_root_ideal(3)
+            sage: RootIdeals().init_staircase(3)
             [(0,1), (0,2), (1,2)]
-            sage: staircase_root_ideal(4)
+            sage: RootIdeals().init_staircase(4)
             [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
 
         """
