@@ -455,12 +455,8 @@ class HallLittlewoodVertexOperator:
         # print('called on input: {} with gamma: {}'.format(input_, gamma))
         # iterate
         for part in reversed(gamma):
-            if part < 0:
-                return 0
-            # elif part == 0:
-            #     input_ = input_.hl_creation_operator([part])
-            else:
-                input_ = input_.hl_creation_operator(Partition([part]))
+            # Morse says NEGATIVE SHOULD work
+            input_ = input_.hl_creation_operator([part])
             # print('now: {}'.format(input_))
         return input_
 
