@@ -1190,14 +1190,14 @@ gamma = [4, 1]
 cf = CatalanFunction([], gamma)
 a(s(cf.eval()), s(gamma))
 
-# TODO: fix this:
-# gamma = [2, 1, 1]
-# cf = CatalanFunction([], gamma)
-# a(cf.eval(), hl(s(gamma)))
+gamma = [2, 1, 1]
+cf = CatalanFunction([], gamma)
+a(cf.eval(), hl(s(gamma)))
 
-# gamma = [2, 2, 1, 1]
-# cf = CatalanFunction([], gamma)
-# a(s(cf.eval()), s(gamma))
+gamma = [2, 2, 1, 1]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
+
 # cf = CatalanFunction([(0,2), (0,3)], [2,2,1,1])
 # qp = cf.eval()
 # s_cf = s(qp)
@@ -1442,6 +1442,34 @@ a(end_core_to_strong_marked_tableaux([5, 3, 1], 2, [1]),
 		StrongTableau([[None, None, None, None, 1], [None, None, -1], [1]], 2),
 	]))
 
+
+# test ungraded
+# setup
+base_ring = ZZ['t']
+t = base_ring.gen()
+sym = SymmetricFunctions(base_ring)
+s = sym.s()
+h = sym.h()
+hl = sym.hall_littlewood().Qp()
+
+# test
+f = t * s[2, 1]
+a(ungraded(f), s[2, 1])
+
+f = 1 + t**2 * s[1, 1] - 4 * t * s[2, 2, 1, 1]
+a(ungraded(f), 1 + s[1, 1] - 4 * s[2, 2, 1, 1])
+
+f = t * hl[2, 1]
+a(ungraded(f), hl[2, 1])
+
+f = 1 + t**2 * hl[1, 1] - 4 * t * hl[2, 2, 1, 1]
+a(ungraded(f), 1 + hl[1, 1] - 4 * hl[2, 2, 1, 1])
+
+f = t * h[2, 1]
+a(ungraded(f), h[2, 1])
+
+f = 1 + t**2 * h[1, 1] - 4 * t * h[2, 2, 1, 1]
+a(ungraded(f), 1 + h[1, 1] - 4 * h[2, 2, 1, 1])
 
 
 

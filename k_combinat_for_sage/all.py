@@ -945,3 +945,21 @@ def double_catalan_function(roots, index, n):
     op = raising_roots_operator(roots_complement, t=1)
     cat_func = op(h_index)
     return cat_func
+
+def substitute(f, t=None, q=None):
+    # take in a symmetric function ``f`` and plug the inputted ``t`` and ``q`` values.
+    # a t value of 'None' will leave t as-is.
+    basis = f.parent()
+    base_ring = f.base_ring()
+    s = SymmetricFunctions(base_ring)
+    f_s = s(f)
+    coeffs = f_s.coefficients()
+    monomials = sorted(f_s.monomials()) # Necessary because otherwise coeffs and monomials don't line up
+    specialized_coeffs = [coeff.substitute(t=t, q=q) for coeff in coeffs]
+    combine = zip(specialized_coeffs, monomials)
+    ungraded_f_s = sum(coeff * monom for (coeff, monom) in combine)
+    ungraded_f = basis(ungraded_f_s)
+    return ungraded_f
+
+def ungraded(f):
+    return substitute(f, t=1)
