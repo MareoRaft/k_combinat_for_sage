@@ -992,3 +992,16 @@ def double_catalan_function(roots, index, n):
     op = raising_roots_operator(roots_complement, t=1)
     cat_func = op(h_index)
     return cat_func
+
+def HLQp_pair(m, n):
+    base_ring = QQ['t']
+    t = base_ring.gen()
+    HLQp = SymmetricFunctions(base_ring).hall_littlewood().Qp()
+    if m >= n:
+        return HLQp[m, n]
+    elif m = n - 1:
+        return t * HLQp[n, m]
+    elif m < n:
+        return t * straight(m+1, n-1) + t * HLQp[n, m] - HLQp[n-1, m+1]
+    else:
+        raise ValueError
