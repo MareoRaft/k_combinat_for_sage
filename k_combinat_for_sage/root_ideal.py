@@ -19,6 +19,13 @@ def is_weakly_decreasing(li):
 def is_strictly_decreasing(li):
     return all(li[i] > li[i+1] for i in range(len(li)-1))
 
+def is_pseudo_partition(seq):
+    # TODO: test
+    for index in range(len(seq) - 1):
+        if seq[index] + 1 < seq[index + 1]:
+            return False
+    return True
+
 def generate_path(next_func, start):
     path = [start]
     while True:
@@ -567,8 +574,8 @@ class RootIdeals:
         ris = generate_path(next_func, min_ri)
         return ris
 
-    def init_k_schur_from_partition(self, ptn, k, n=None):
-        r""" Given a `k`-bounded partition `ptn = \mu` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal `\Delta^k(\mu)`, as defined in [cat]_ Definition 2.2 as
+    def init_k_schur_from_pseudo_partition(self, seq, k, n=None):
+        r""" Given a `k`-bounded "pseudo-partition" `seq = \mu` and the dimension `n` of the `n` x `n` grid, return the corresponding `k`-Schur root ideal `\Delta^k(\mu)`, as defined in [cat]_ Definition 2.2 as
 
         .. math::
 
@@ -588,13 +595,13 @@ class RootIdeals:
             [6, 5, 3, 2, 1]
 
         """
-        ptn = Partition(ptn)
+        assert is_pseudo_partition(seq)
         if n is None:
-            n = len(ptn)
-        assert partition.is_k_bounded(ptn, k)
-        assert len(ptn) <= n
+            n = len(seq)
+        assert partition.is_k_bounded(seq, k)
+        assert len(seq) <= n
         ri = []
-        for i, part in enumerate(ptn):
+        for i, part in enumerate(seq):
             ri += [(i,j) for j in range(k - part + i + 1, n)]
         return RootIdeal(ri)
 
