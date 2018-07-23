@@ -9,7 +9,6 @@ print('Sage loaded.  Now loading local modules...')
 from testing import *
 from all import *
 from strong_marked_tableau import __go_to_ribbon_head
-from shorthands import *
 start_time = time.time()
 print('Modules loaded.  Testing...')
 
@@ -25,6 +24,10 @@ a(k_size([2, 1, 1], 1), 2)
 a(k_size([2, 1, 1], 2), 3)
 a(k_size([2, 1, 1], 3), 3)
 a(k_size([2, 1, 1], 4), 4)
+
+
+# test is sequence
+a(is_sequence([1, 3, 2]), True)
 
 
 # test_SP_is_symmetric
@@ -936,6 +939,9 @@ ri = RootIdeal([], n=2)
 a(ri.complement(), [(0,1)])
 a(ri.complement().complement(), [])
 
+ri = RootIdeal([(0, 1)])
+a(ri.complement().n, 2)
+
 ri = RootIdeal([(0,1)], n=2)
 a(ri.complement(), [])
 
@@ -950,22 +956,22 @@ a(ri.complement(), [(0,2), (0,3), (0,4), (1,3), (1,4), (2,3), (2,4)])
 p = [2, 1]
 n = 4
 k = 2
-a(RIS.init_k_schur_from_partition(p, k, n), [(0,1), (0,2), (0,3), (1,3)])
+a(RIS.init_k_schur_from_pseudo_partition(p, k, n), [(0,1), (0,2), (0,3), (1,3)])
 
 p = [2, 1]
 n = 4
 k = 3
-a(RIS.init_k_schur_from_partition(p, k, n), [(0,2), (0,3)])
+a(RIS.init_k_schur_from_pseudo_partition(p, k, n), [(0,2), (0,3)])
 
 p = [2, 1]
 n = 4
 k = 4
-a(RIS.init_k_schur_from_partition(p, k, n), [(0,3)])
+a(RIS.init_k_schur_from_pseudo_partition(p, k, n), [(0,3)])
 
 p = [2, 1]
 n = 4
 k = 5
-a(RIS.init_k_schur_from_partition(p, k, n), [])
+a(RIS.init_k_schur_from_pseudo_partition(p, k, n), [])
 
 
 # test compositional hall littlewood polynomial
@@ -1190,13 +1196,13 @@ gamma = [4, 1]
 cf = CatalanFunction([], gamma)
 a(s(cf.eval()), s(gamma))
 
-gamma = [2, 1, 1]
-cf = CatalanFunction([], gamma)
-a(cf.eval(), hl(s(gamma)))
+# gamma = [2, 1, 1]
+# cf = CatalanFunction([], gamma)
+# a(cf.eval(), hl(s(gamma)))
 
-gamma = [2, 2, 1, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
+# gamma = [2, 2, 1, 1]
+# cf = CatalanFunction([], gamma)
+# a(s(cf.eval()), s(gamma))
 
 # cf = CatalanFunction([(0,2), (0,3)], [2,2,1,1])
 # qp = cf.eval()
@@ -1223,6 +1229,18 @@ a(staircase_shape(3), [2, 1, 0])
 # test staircase root ideal
 a(RIS.init_staircase(3), [(0,1), (0,2), (1,2)])
 a(RIS.init_staircase(4), [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
+
+
+# test parabolic root ideal
+a(RIS.init_parabolic_from_composition([1]), [])
+a(RIS.init_parabolic_from_composition([1]).n, 1)
+a(RIS.init_parabolic_from_composition([2]), [])
+a(RIS.init_parabolic_from_composition([2]).n, 2)
+a(RIS.init_parabolic_from_composition([1, 1]), [(0, 1)])
+a(RIS.init_parabolic_from_composition([1, 2]), [(0, 1), (0, 2)])
+a(RIS.init_parabolic_from_composition([2, 1]), [(0, 2), (1, 2)])
+a(RIS.init_parabolic_from_composition([2, 2]), [(0, 2), (0, 3), (1, 2), (1, 3)])
+a(RIS.init_parabolic_from_composition([1, 3, 2]), [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
 
 
 # test dual k theoretic h
@@ -1470,6 +1488,7 @@ a(ungraded(f), h[2, 1])
 
 f = 1 + t**2 * h[1, 1] - 4 * t * h[2, 2, 1, 1]
 a(ungraded(f), 1 + h[1, 1] - 4 * h[2, 2, 1, 1])
+
 
 
 

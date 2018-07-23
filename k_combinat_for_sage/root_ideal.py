@@ -21,6 +21,8 @@ def is_strictly_decreasing(li):
 
 def is_pseudo_partition(seq):
     # TODO: test
+    if not all(term in IntegerRing() for term in seq):
+        return False
     for index in range(len(seq) - 1):
         if seq[index] + 1 < seq[index + 1]:
             return False
@@ -511,7 +513,7 @@ class RootIdeal(list):
         n = self.n
         ri_staircase = RootIdeals().init_staircase(n)
         ri_complement_set = set(ri_staircase) - set(self)
-        ri_complement = RootIdeal(ri_complement_set)
+        ri_complement = RootIdeal(ri_complement_set, n)
         return ri_complement
 
 
@@ -596,10 +598,11 @@ class RootIdeals:
 
         """
         assert is_pseudo_partition(seq)
+        assert all(term <= k for term in seq)
         if n is None:
             n = len(seq)
-        assert partition.is_k_bounded(seq, k)
-        assert len(seq) <= n
+        else:
+            assert len(seq) <= n
         ri = []
         for i, part in enumerate(seq):
             ri += [(i,j) for j in range(k - part + i + 1, n)]
@@ -642,3 +645,39 @@ class RootIdeals:
 
         """
         return self.init_from_partition(staircase_shape(n), n)
+
+    def init_parabolic_from_composition(self, composition):
+        r""" Given a composition `\eta` of positive integers, return the parabolic root ideal `\Delta(\eta)` defined by
+
+        ..  math::
+
+            \Delta(\eta) := \{ \alpha \in \Delta^+_{|\eta|} \:\text{above the block diagonal with block sizes}\: \eta_1, \ldots, \eta_r\}
+
+        in [cat]_ just below Conjecture 3.3.  For example,
+
+        .. image:: _static/parabolic-root-ideal.png
+            :width: 200px
+            :align: center
+            :alt: The root ideal [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+
+        EXAMPLES::
+
+            sage: RootIdeals().init_parabolic_from_composition([1, 3, 2])
+            [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
+
+        """
+        assert partition.is_sequence(composition)
+        assert all(term >= 1 for term in composition)
+        cells_complement = []
+        index_previous = -1
+        for term in composition:
+            indices = range(index_previous + 1, index_previous + 1 + term)
+            for index in indices:
+                cells = [(index, j) for j in range(index + 1, indices[-1] + 1)]
+                cells_complement += cells
+            index_previous = indices[-1]
+        n = sum(composition)
+        complement_ri = RootIdeal(cells_complement, n)
+        ri = complement_ri.complement()
+        return ri
+

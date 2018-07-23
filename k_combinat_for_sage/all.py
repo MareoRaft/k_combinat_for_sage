@@ -661,6 +661,24 @@ class CatalanFunctions:
         # return
         return self.init_from_indexed_root_ideal(roots, index, base_ring, prefix)
 
+    def init_parabolic_from_composition_and_index(self, composition, index, base_ring=None, prefix=None):
+        r""" Given a composition `\eta` of positive integers and an index `\gamma`, return the parabolic catalan function `H(\Delta(\eta), \gamma)`, where
+
+        ..  math::
+
+            \Delta(\eta) := \{ \alpha \in \Delta^+_{|\eta|} \:\text{above the block diagonal with block sizes}\: \eta_1, \ldots, \eta_r\}
+
+        as in [cat]_ just below Conjecture 3.3.
+
+        EXAMPLES::
+
+            sage: CatalanFunctions().init_parabolic_from_composition_and_index([1, 3, 2], [1, 2, 3, 4, 5, 6])
+            H([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]; [1, 2, 3, 4, 5, 6])
+
+        """
+        ri = RootIdeals().init_parabolic_from_composition(composition)
+        return self.init_from_indexed_root_ideal(ri, index, base_ring, prefix)
+
 
 ##############
 def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
@@ -867,11 +885,16 @@ def double_homogeneous_building_block_shifted(r, s, n):
 
 class DoubleHomogeneous:
     r"""
-    mu1 -- composition
-    mu2 -- composition
-    n -- number of `x` variables
+    INPUTS:
+
+    ``mu1`` -- composition
+
+    ``mu2`` -- composition
+
+    ``n`` -- number of `x` variables
 
     EXAMPLE::
+
         # create the double homogeneous `h^{(4)}_{\mu, \beta}`
         sage: DoubleHomogeneous(mu, beta, 4)
 
