@@ -306,7 +306,7 @@ n = 6
 a(removable_roots_to_partition(rr, n), [3, 2])
 
 
-# test_skew_partition_to_root_ideal
+# test_skew_RIS.init_from_partition
 RIS = RootIdeals()
 sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
 ri = RIS.init_from_skew_partition(sp, type='max')
@@ -377,7 +377,7 @@ ri = RootIdeal([(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (
 a(ri.to_partition(), [5, 2, 2, 2])
 
 
-# test_partition_to_root_ideal
+# test_RIS.init_from_partition
 p = Partition([])
 n = 5
 a(RIS.init_from_partition(p, n), [])
@@ -977,9 +977,24 @@ a(RIS.init_k_schur_from_pseudo_partition(p, k, n), [])
 # test compositional hall littlewood polynomial
 Sym = SymmetricFunctions(QQ['t'])
 hl = Sym.hall_littlewood().Qp()
-for lis in ([3, 3, 2], [0], [1], [2], [1, 1], [2, 1], [2, 2, 1], [2, 1, 1], [6, 4, 2]):
+for lis in ([3, 3, 2], [0], [1], [2], [1, 1], [2, 1], [2, 2, 1], [2, 1, 1], [6, 4, 2], [2, 2, 1, 1], [5, 3, 1], [5, 5, 3, 3, 1, 1], [4, 3, 2], [4, 4, 2], [4, 4, 1], [3, 1, 1], [4, 2, 2], [5, 5, 2, 2], [3, 3, 1, 1], [0], [1, 0], [2, 0], [3, 0]):
 	p = Partition(lis)
 	a(compositional_hall_littlewood_Qp(p), hl(p))
+
+t = Sym.base_ring().gen()
+HLQp = Sym.hall_littlewood().Qp()
+# m + 1 = n
+a(compositional_hall_littlewood_Qp([0, 1]), t * HLQp[1])
+a(compositional_hall_littlewood_Qp([1, 2]), t * HLQp[2, 1])
+a(compositional_hall_littlewood_Qp([2, 3]), t * HLQp[3, 2])
+# m + 2 = n
+a(compositional_hall_littlewood_Qp([0, 2]), t * HLQp[1, 1] + t * HLQp[2] - HLQp[1, 1])
+a(compositional_hall_littlewood_Qp([0, 3]), t**2 * HLQp[2, 1] + t * HLQp[3] - HLQp[2, 1])
+a(compositional_hall_littlewood_Qp([1, 3]), t * HLQp[2, 2] + t * HLQp[3, 1] - HLQp[2, 2])
+# m + 4 = n
+a(compositional_hall_littlewood_Qp([0, 4]), t**2 * HLQp[2, 2] + t**2 * HLQp[3, 1] - t * HLQp[2, 2] + t * HLQp[4] - HLQp[3, 1])
+# length 3 composition
+a(compositional_hall_littlewood_Qp([1, 3, 2]), t * HLQp[2, 2, 2] + t**2 * HLQp[3, 2, 1] - HLQp[2, 2, 2])
 
 
 # test_straighten
@@ -994,10 +1009,12 @@ p = Sym.p()
 a(straighten(p, [5, 1, 7]), p[7, 5, 1])
 w = Sym.w()
 a(straighten(w, [5, 1, 7]), w[7, 5, 1])
-# please no rogue t's regression
-Sym = SymmetricFunctions(QQ['t'])
+# please verify that HOP(hl[3,0,1]) = t * hl[3,1]
+base_ring = QQ['t']
+Sym = SymmetricFunctions(base_ring)
+t = base_ring.gen()
 hl = Sym.hall_littlewood().Qp()
-a(straighten(hl, [3, 0, 1]), hl[3, 1])
+a(straighten(hl, [3, 0, 1]), t*hl[3, 1])
 
 
 # seq space
@@ -1053,13 +1070,11 @@ a(R[(1, -1)](h[2, 1]), h[3])
 hl = Sym.hall_littlewood().Qp()
 a(R[(1, -1)](hl[2, 1]), hl[3])
 # R() - t*R(0, 1, -1) - t*R(1, -1) + (t^2-t)*R(1, 0, -1) + t^2*R(1, 1, -2) + t^2*R(2, -1, -1) - t^3*R(2, 0, -2)
-# TODO: make sure these really are correct after all
 a(R.one()(hl[2, 1, 1]), hl[2, 1, 1])
 a((-t*R[(0, 1, -1)])(hl[2, 1, 1]), -t * hl[2, 2])
-# especially these four one:
-a((R[(1, -1)])(hl[2, 1, 1]), hl[3, 1])
-a((t*R[(1, -1)])(hl[2, 1, 1]), t * hl[3, 1])
-a((-t*R[(1, -1)])(hl[2, 1, 1]), -t * hl[3, 1])
+a((R[(1, -1)])(hl[2, 1, 1]), t * hl[3, 1])
+a((t*R[(1, -1)])(hl[2, 1, 1]), t**2 * hl[3, 1])
+a((-t*R[(1, -1)])(hl[2, 1, 1]), -t**2 * hl[3, 1])
 a(((t**2-t)*R[(1, 0, -1)])(hl[2, 1, 1]), (t**2-t)*hl[3, 1])
 a((t**2*R[(1, 1, -2)])(hl[2, 1, 1]), 0)
 a((t**2*R[(2, -1, -1)])(hl[2, 1, 1]), t**2*hl[4])
@@ -1146,7 +1161,9 @@ a(cf.index, [6, 6, 5])
 
 
 # test catalan function
-sym = SymmetricFunctions(QQ['t'])
+base_ring = QQ['t']
+t = base_ring.gen()
+sym = SymmetricFunctions(base_ring)
 hl = sym.hall_littlewood().Qp()
 s = sym.s()
 # empty product
@@ -1172,17 +1189,16 @@ cf = CatalanFunction([(0,1)], gamma)
 a(cf.eval(), hl(gamma))
 
 # if Psi is empty, then H(Psi, gamma) = s_gamma
-gamma = [1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
+gammas = ([1], [1, 1], [2], [2, 1], [3, 1], [4, 1], [2, 2], [3, 3], [5, 5], [5, 4], [6, 4], [10, 2], [3, 3, 1], [3, 1, 1], [5, 4, 3], [4, 2, 1], [5, 3, 1], [3, 3, 2], [3, 2, 2], [4, 4, 2], [4, 2, 2], [2, 2, 1], [2, 1, 1], [2, 2, 1, 1])
+for gamma in gammas:
+	cf = CatalanFunction([], gamma)
+	a(s(cf.eval()), s(gamma))
 
-gamma = [1, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
+ri = RIS.init_from_partition([1, 1], n=3)
+g = [3, 1, 1]
+cat_func = CatalanFunction(ri, g)
+a(cat_func.eval(), hl[3, 1, 1] - t**2*hl[4, 1])
 
-gamma = [2]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
 
 gamma = [2, 1]
 cf = CatalanFunction([], gamma)
@@ -1196,30 +1212,22 @@ gamma = [4, 1]
 cf = CatalanFunction([], gamma)
 a(s(cf.eval()), s(gamma))
 
-# gamma = [2, 1, 1]
-# cf = CatalanFunction([], gamma)
-# a(cf.eval(), hl(s(gamma)))
+gamma = [2, 1, 1]
+cf = CatalanFunction([], gamma)
+a(cf.eval(), hl(s(gamma)))
 
-# gamma = [2, 2, 1, 1]
-# cf = CatalanFunction([], gamma)
-# a(s(cf.eval()), s(gamma))
+gamma = [2, 2, 1, 1]
+cf = CatalanFunction([], gamma)
+a(s(cf.eval()), s(gamma))
 
-# cf = CatalanFunction([(0,2), (0,3)], [2,2,1,1])
-# qp = cf.eval()
-# s_cf = s(qp)
-# print(s_cf)
-# other
-# print('HERE')
-# ri = RIS.init_from_partition([1, 1], n=3)
-# print(ri)
-# g = [3, 1, 1]
-# cat_func = CatalanFunction(ri, g)
-# a(cat_func.eval(), hl[3, 1, 1])
+g = [3, 1, 1]
+cf = CatalanFunction(ri, g)
+a(cf.eval(), hl[3, 1, 1] - t**2 * hl[4, 1])
 
 
+# test catalan function expand
+# TODO: put that here
 
-
-# TODO: test all catalan function methods with some example.  Ask Jennifer morse.
 
 
 # test staircase shape
@@ -1241,6 +1249,20 @@ a(RIS.init_parabolic_from_composition([1, 2]), [(0, 1), (0, 2)])
 a(RIS.init_parabolic_from_composition([2, 1]), [(0, 2), (1, 2)])
 a(RIS.init_parabolic_from_composition([2, 2]), [(0, 2), (0, 3), (1, 2), (1, 3)])
 a(RIS.init_parabolic_from_composition([1, 3, 2]), [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
+
+
+# test bottom for root ideal
+ri = RIS.init_from_partition([3, 2, 1], 5)
+a(ri.bottom(0), 4)
+a(ri.bottom(1), 3)
+a(ri.bottom(2), 4)
+a(ri.bottom(3), 3)
+a(ri.bottom(4), 4)
+
+
+# test down path
+ri = RIS.init_from_partition([3, 2, 1], 5)
+a(ri.down_path(0), [0, 2, 4])
 
 
 # test dual k theoretic h

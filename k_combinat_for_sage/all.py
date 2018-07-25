@@ -116,10 +116,7 @@ def straighten(s, gamma):
     if s.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
         raise NotImplemented('Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
     elif s.__class__.__name__ == 'HallLittlewood_qp_with_category':
-        if has_nonnegative_parts(gamma):
-            return compositional_hall_littlewood_Qp(gamma, base_ring=s.base_ring())
-        else:
-            return 0
+        return compositional_hall_littlewood_Qp(gamma, base_ring=s.base_ring())
     elif s.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
         new_gamma = list(reversed(sorted(gamma)))
         if has_nonnegative_parts(new_gamma):
@@ -443,24 +440,65 @@ class HallLittlewoodVertexOperator:
     """
     def __init__(self, composition, base_ring=QQ['t']):
         if composition in NonNegativeIntegerSemiring():
-            self.composition = [composition]
+            self.composition = Composition([composition])
         elif is_sequence(composition):
             self.composition = Composition(composition)
         else:
             raise ValueError('Bad composition.')
         self.base_ring = base_ring
+        self.sym = SymmetricFunctions(self.base_ring)
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.composition)
 
+    def _hh(self, k):
+        # homogeneous indexed by an integer k (positive or negative)
+        # if k is less than 0, result is 0
+        # if k ==0 result is s([])
+        # if k>0 then the result is s([k])
+        sym = self.sym
+        s = sym.s()
+        if k == 0:
+            return s.one()
+        elif k < 0:
+            # 0, but as a sym func
+            return 0 * s.one()
+        elif k > 0:
+            return s([k])
+        else:
+            raise ValueError
+
+    def _skewbyeeq(self, k, f):
+        # skew by e[k](1-t)
+        sym = self.sym
+        e = sym.e()
+        t = self.base_ring.gen()
+        if k == 0:
+            return f
+        elif k < 0:
+            # 0, but as a sym func
+            return 0 * f
+        elif k > 0:
+            return f.skew_by(e([k]).theta_qt(t, 0))
+        else:
+            raise ValueError
+
+    def _op(self, m, f):
+        # Jing's Hall-Littlewood creation operator
+        # EXAMPLES::
+        #     sage: op(2,op(3,s(1)))
+        #     t*s[3, 2] + t^2*s[4, 1] + t^3*s[5]
+        return sum((-1)**k * self._hh(m+k) * self._skewbyeeq( k, f ) for k in range(f.degree() + 1))
+
     def __call__(self, input_):
         gamma = self.composition
+        sym = self.sym
+        HLQp = sym.hall_littlewood().Qp()
         # print('called on input: {} with gamma: {}'.format(input_, gamma))
         # iterate
         for part in reversed(gamma):
-            input_ = input_.hl_creation_operator(Partition([part]))
-            # print('now: {}'.format(input_))
-        return input_
+            input_ = self._op(part, input_)
+        return HLQp(input_)
 
 
 def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
@@ -476,11 +514,15 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
         True
 
     """
-    gamma = Composition(gamma)
     sym = SymmetricFunctions(base_ring)
-    hl = sym.hall_littlewood().Qp()
-    H = HallLittlewoodVertexOperator
-    return H(gamma)(hl.one())
+    HLQp = sym.hall_littlewood().Qp()
+    if is_weakly_decreasing(gamma) and all(term > 0 for term in gamma):
+        # this is MUCH faster than the HallLittlewoodVertexOperator for partitions of length 5ish
+        gamma = Partition(gamma)
+        return HLQp(gamma)
+    else:
+        H = HallLittlewoodVertexOperator
+        return H(gamma)(HLQp.one())
 
 def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     r""" Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator
@@ -562,7 +604,23 @@ class CatalanFunction:
         return new_obj
 
     def eval(self):
-        r""" Return the catalan function in terms of the Hall-Littlewood Q' basis. """
+        r""" Return the catalan function in terms of the Hall-Littlewood Q' basis.
+
+        EXAMPLES::
+
+            sage: delta_plus = partition_to_root_ideal([2, 1], n=3)
+            sage: cf = CatalanFunction(delta_plus, [3, 1, 1])
+            sage: cf.eval()
+            HLQp[3, 1, 1]
+
+            sage: s = SymmetricFunctions(QQ['t']).schur()
+            sage: cf = CatalanFunction([], [4, 1])
+            sage: cf.eval()
+            HLQp[4, 1] - t*HLQp[5]
+            sage: s(cf.eval())
+            s[4, 1]
+
+        """
         # setup
         hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
         t = self.base_ring.gen()
@@ -576,6 +634,35 @@ class CatalanFunction:
         cat_func = op(hl_poly)
         # print(cat_func)
         return cat_func
+
+    def expand(self, *args, **kwargs):
+        r"""
+        Expand the catalan function as a symmetric polynomial in ``n`` variables.
+
+        INPUT:
+
+        - ``n`` -- a nonnegative integer
+
+        - ``alphabet`` -- (default: ``'x'``) a variable for the expansion
+
+        OUTPUT:
+
+        A monomial expansion of ``self`` in the `n` variables
+        labelled ``x0``, ``x1``, ..., ``x{n-1}`` (or just ``x``
+        if `n = 1`), where ``x`` is ``alphabet``.
+
+        EXAMPLES::
+
+            sage: cf = CatalanFunction([], [4, 1])
+            sage: cf.expand(1)
+            0
+            sage: cf.expand(2)
+            x0^4*x1 + x0^3*x1^2 + x0^2*x1^3 + x0*x1^4
+            sage: cf.expand(2, alphabet='y')
+            y0^4*y1 + y0^3*y1^2 + y0^2*y1^3 + y0*y1^4
+
+        """
+        return self.eval().expand(*args, **kwargs)
 
 
 class CatalanFunctions:
@@ -936,6 +1023,10 @@ class DoubleHomogeneous:
         h_list = [double_homogeneous_shifted(mu1[i], mu2[i], n) for i in range(max_len)]
         hp = prod(h_list)
         return hp
+
+    def expand(self):
+        raise NotImplemented
+
 
 def double_schur(index, n):
     r""" Given a composition ``index`` `= \lambda` and the number of variables `n`, return the double Schur function defined by
