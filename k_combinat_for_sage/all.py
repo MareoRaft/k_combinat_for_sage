@@ -446,19 +446,59 @@ class HallLittlewoodVertexOperator:
         else:
             raise ValueError('Bad composition.')
         self.base_ring = base_ring
+        self.sym = SymmetricFunctions(self.base_ring)
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.composition)
 
+    def _hh(self, k):
+        # homogeneous indexed by an integer k (positive or negative)
+        # if k is less than 0, result is 0
+        # if k ==0 result is s([])
+        # if k>0 then the result is s([k])
+        sym = self.sym
+        s = sym.s()
+        if k == 0:
+            return s.one()
+        elif k < 0:
+            # 0, but as a sym func
+            return 0 * s.one()
+        elif k > 0:
+            return s([k])
+        else:
+            raise ValueError
+
+    def _skewbyeeq(self, k, f):
+        # skew by e[k](1-t)
+        sym = self.sym
+        e = sym.e()
+        t = self.base_ring.gen()
+        if k == 0:
+            return f
+        elif k < 0:
+            # 0, but as a sym func
+            return 0 * f
+        elif k > 0:
+            return f.skew_by(e([k]).theta_qt(t, 0))
+        else:
+            raise ValueError
+
+    def _op(self, m, f):
+        # Jing's Hall-Littlewood creation operator
+        # EXAMPLES::
+        #     sage: op(2,op(3,s(1)))
+        #     t*s[3, 2] + t^2*s[4, 1] + t^3*s[5]
+        return sum((-1)**k * self._hh(m+k) * self._skewbyeeq( k, f ) for k in range(f.degree() + 1))
+
     def __call__(self, input_):
         gamma = self.composition
+        sym = self.sym
+        HLQp = sym.hall_littlewood().Qp()
         # print('called on input: {} with gamma: {}'.format(input_, gamma))
         # iterate
         for part in reversed(gamma):
-            # Morse says NEGATIVE SHOULD work
-            input_ = input_.hl_creation_operator([part])
-            # print('now: {}'.format(input_))
-        return input_
+            input_ = self._op(part, input_)
+        return HLQp(input_)
 
 
 def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
@@ -475,9 +515,14 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
 
     """
     sym = SymmetricFunctions(base_ring)
-    hl = sym.hall_littlewood().Qp()
-    H = HallLittlewoodVertexOperator
-    return H(gamma)(hl.one())
+    HLQp = sym.hall_littlewood().Qp()
+    if is_weakly_decreasing(gamma) and all(term > 0 for term in gamma):
+        # this is MUCH faster than the HallLittlewoodVertexOperator for partitions of length 5ish
+        gamma = Partition(gamma)
+        return HLQp(gamma)
+    else:
+        H = HallLittlewoodVertexOperator
+        return H(gamma)(HLQp.one())
 
 def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     r""" Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator
@@ -999,7 +1044,7 @@ def HLQp_pair(m, n):
     HLQp = SymmetricFunctions(base_ring).hall_littlewood().Qp()
     if m >= n:
         return HLQp[m, n]
-    elif m = n - 1:
+    elif m == n - 1:
         return t * HLQp[n, m]
     elif m < n:
         return t * straight(m+1, n-1) + t * HLQp[n, m] - HLQp[n-1, m+1]

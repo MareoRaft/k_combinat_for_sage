@@ -973,9 +973,24 @@ a(partition_to_k_schur_root_ideal(p, k, n), [])
 # test compositional hall littlewood polynomial
 Sym = SymmetricFunctions(QQ['t'])
 hl = Sym.hall_littlewood().Qp()
-for lis in ([3, 3, 2], [0], [1], [2], [1, 1], [2, 1], [2, 2, 1], [2, 1, 1], [6, 4, 2]):
+for lis in ([3, 3, 2], [0], [1], [2], [1, 1], [2, 1], [2, 2, 1], [2, 1, 1], [6, 4, 2], [2, 2, 1, 1], [5, 3, 1], [5, 5, 3, 3, 1, 1], [4, 3, 2], [4, 4, 2], [4, 4, 1], [3, 1, 1], [4, 2, 2], [5, 5, 2, 2], [3, 3, 1, 1], [0], [1, 0], [2, 0], [3, 0]):
 	p = Partition(lis)
 	a(compositional_hall_littlewood_Qp(p), hl(p))
+
+t = Sym.base_ring().gen()
+HLQp = Sym.hall_littlewood().Qp()
+# m + 1 = n
+a(compositional_hall_littlewood_Qp([0, 1]), t * HLQp[1])
+a(compositional_hall_littlewood_Qp([1, 2]), t * HLQp[2, 1])
+a(compositional_hall_littlewood_Qp([2, 3]), t * HLQp[3, 2])
+# m + 2 = n
+a(compositional_hall_littlewood_Qp([0, 2]), t * HLQp[1, 1] + t * HLQp[2] - HLQp[1, 1])
+a(compositional_hall_littlewood_Qp([0, 3]), t**2 * HLQp[2, 1] + t * HLQp[3] - HLQp[2, 1])
+a(compositional_hall_littlewood_Qp([1, 3]), t * HLQp[2, 2] + t * HLQp[3, 1] - HLQp[2, 2])
+# m + 4 = n
+a(compositional_hall_littlewood_Qp([0, 4]), t**2 * HLQp[2, 2] + t**2 * HLQp[3, 1] - t * HLQp[2, 2] + t * HLQp[4] - HLQp[3, 1])
+# length 3 composition
+a(compositional_hall_littlewood_Qp([1, 3, 2]), t * HLQp[2, 2, 2] + t**2 * HLQp[3, 2, 1] - HLQp[2, 2, 2])
 
 
 # test_straighten
@@ -1142,7 +1157,9 @@ a(cf.index, [6, 6, 5])
 
 
 # test catalan function
-sym = SymmetricFunctions(QQ['t'])
+base_ring = QQ['t']
+t = base_ring.gen()
+sym = SymmetricFunctions(base_ring)
 hl = sym.hall_littlewood().Qp()
 s = sym.s()
 # empty product
@@ -1176,7 +1193,7 @@ for gamma in gammas:
 ri = partition_to_root_ideal([1, 1], n=3)
 g = [3, 1, 1]
 cat_func = CatalanFunction(ri, g)
-a(cat_func.eval(), hl[3, 1, 1])
+a(cat_func.eval(), hl[3, 1, 1] - t**2*hl[4, 1])
 
 
 # test catalan function expand
