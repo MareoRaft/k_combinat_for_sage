@@ -1200,34 +1200,12 @@ cat_func = CatalanFunction(ri, g)
 a(cat_func.eval(), hl[3, 1, 1] - t**2*hl[4, 1])
 
 
-gamma = [2, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-gamma = [3, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-gamma = [4, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-gamma = [2, 1, 1]
-cf = CatalanFunction([], gamma)
-a(cf.eval(), hl(s(gamma)))
-
-gamma = [2, 2, 1, 1]
-cf = CatalanFunction([], gamma)
-a(s(cf.eval()), s(gamma))
-
-g = [3, 1, 1]
-cf = CatalanFunction(ri, g)
-a(cf.eval(), hl[3, 1, 1] - t**2 * hl[4, 1])
-
-
 # test catalan function expand
-# TODO: put that here
-
+cf = CatalanFunction([], [4, 1])
+a(cf.expand(1), 0)
+R = PolynomialRing(QQ, 2, 'x')
+x = R.gens()
+a(cf.expand(2), x[0]**4*x[1] + x[0]**3*x[1]**2 + x[0]**2*x[1]**3 + x[0]*x[1]**4)
 
 
 # test staircase shape
