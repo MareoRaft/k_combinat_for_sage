@@ -19,6 +19,18 @@ def k_size(ptn, k):
     r""" Given a partition ``ptn`` and a ``k``, return the size of the `k`-boundary.
 
     This is the same as the `length <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/core.html#sage.combinat.core.Core.length>`_ method of the `Core <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/core.html#sage.combinat.core.Core>`_ object, with the exception that here we don't require ``ptn`` to be a `k+1`-core.
+
+    EXAMPLES::
+
+        sage: Partition([2, 1, 1]).k_size(1)
+        2
+        sage: Partition([2, 1, 1]).k_size(2)
+        3
+        sage: Partition([2, 1, 1]).k_size(3)
+        3
+        sage: Partition([2, 1, 1]).k_size(4)
+        4
+
     """
     ptn = Partition(ptn)
     return ptn.k_boundary(k).size()
@@ -56,13 +68,12 @@ def boundary(ptn):
     # add final "top-left" horizontal piece
     (top_left_x, top_left_y) = (0, len(ptn))
     bdy += horizontal_piece((top_left_x, top_left_y), bdy)
-    # claim victory
     return bdy
 
 def k_rim(ptn, k):
     r""" The `k`-rim of a partition is the "line between" (or "intersection of") the `k`-boundary and the `k`-interior.  (Section 2.3 of [genocchi]_)
 
-    It will be outputted as an ordered list of integer coordinates, where the origin is `(0,0)`.  It will start at the top-left of the `k`-rim (using French convention) and end at the bottom-right.
+    It will be output as an ordered list of integer coordinates, where the origin is `(0, 0)`.  It will start at the top-left of the `k`-rim (using French convention) and end at the bottom-right.
 
     EXAMPLES::
 
@@ -112,7 +123,8 @@ def k_column_lengths(ptn, k):
     return ptn.k_boundary(k).column_lengths()
 
 def has_rectangle(ptn, h, w):
-    # A partition has an `h` x `w` rectangle if it's Ferrer's diagram has `h` (*or more*) rows of length `w` (*exactly*).
+    r""" A partition ``ptn`` has an `h` x `w` rectangle if it's Ferrer's diagram has `h` (*or more*) rows of length `w` (*exactly*).
+    """
     assert h >= 1
     assert w >= 1
     num_rows_of_len_w = 0
@@ -122,7 +134,8 @@ def has_rectangle(ptn, h, w):
     return num_rows_of_len_w >= h
 
 def has_k_rectangle(ptn, k):
-    # A partition has a `k`-rectangle if it's Ferrer's diagram contains `k-i+1` rows (or more) of length `i` (exactly) for any `i` in `[1, k]`.
+    r""" A partition ``ptn`` has a `k`-rectangle if it's Ferrer's diagram contains `k-i+1` rows (*or more*) of length `i` (*exactly*) for any `i` in `[1, k]`.
+    """
     return any(has_rectangle(ptn, a, b) for (a, b) in k_rectangle_dimension_list(k))
 
 def is_k_bounded(ptn, k):
@@ -198,7 +211,7 @@ def is_symmetric(ptn):
     return True
 
 def next(p, min=[], max=None, type=None):
-    # Get the next partition lexigraphically that contains min and is contained in max.
+    # Get the next partition lexicographically that contains min and is contained in max.
     # ptn: The Partition.
     # min: The 'minimum partition' that next_advanced(ptn) must contain.
     # max: The 'maximum partition' that next_advanced(ptn) must be contained in.
@@ -264,9 +277,11 @@ def is_k_core(ptn, k):
     return True
 
 def to_k_core(ptn, k):
-    r""" Shift the rows of ptn minimally in order to create a k-core.
-    If you plug a k-bounded partition into this function and use k+1 as the input constant, then this is the famous bijection.
+    r""" Shift the rows of ``ptn`` minimally in order to create a `k`-core.
+
+    If you plug a `k`-bounded partition into this function and use `k+1` as the input constant, then this is the well-known bijection between `k`-bounded partitions and `k+1`-cores.
     """
+    error = ValueError('The minimal-row-shifting algorithm applied to the partition {} does not produce a {}-core.'.format(ptn, k))
     core = []
     for part in reversed(ptn):
         if core == []:
@@ -288,7 +303,10 @@ def to_k_core(ptn, k):
             if len(core) == previous_core_len:
                 # if none of the shifts were good
                 # i think this situation actually can never happen, so if the error occurs, this is a big red flag
-                raise ValueError('Impossible to make this partition a k-core.')
+                raise error
         previous_part = part
         previous_core_len = len(core)
-    return Partition(core)
+    core = Partition(core)
+    if not core.is_k_core(k):
+        raise error
+    return core

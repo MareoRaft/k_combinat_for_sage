@@ -14,9 +14,9 @@ print('Modules loaded.  Testing...')
 
 
 
-# test summands
+# test summands / terms
 s = SymmetricFunctions(QQ).s()
-a(set(summands(s[1] + 2 + 3*s[34])), set([2*s[[]], s[1], 3*s[34]]))
+a(set((s[1] + 2 + 3*s[34]).terms()), set([2*s[[]], s[1], 3*s[34]]))
 
 
 # test k size

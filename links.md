@@ -7,6 +7,8 @@ https://doc.sagemath.org/html/en/reference/structure/sage/structure/unique_repre
 sage trac ticket:
 k_stuff:
 https://trac.sagemath.org/ticket/25295
+partition:
+https://trac.sagemath.org/ticket/25931
 question:
 https://trac.sagemath.org/ticket/25298
 hall inner product:
@@ -24,15 +26,14 @@ https://ask.sagemath.org/question/9302/import-sage-packages-in-python/
 explanation of import_statements and preparse:
 https://ask.sagemath.org/question/33954/can-i-create-a-sage-file-and-import-it-as-a-python-module/
 
+how to make sage:
+MAKE='make -jNUM' make
+where NUM is number of threads you wan't to devote to installation
 how to build sage:
-possibly need to cd into sage repo
 possibly need to sudo chown -R Matthew sagespythondirectory
 sage -b
 OR
-MAKE='make -jNUM' make
-OR
 make build
-where NUM is number of threads you wan't to devote to installation
 see
 https://doc.sagemath.org/html/en/installation/source.html#step-by-step-installation-procedure
 for more

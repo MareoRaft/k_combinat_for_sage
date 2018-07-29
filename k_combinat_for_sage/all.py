@@ -289,7 +289,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                 # the operand is a symmetric function
                 if len(operand) > 1:
                     # the operand looks like s[2, 1] + s[3], for example
-                    return sum(self.__call__(summand) for summand in summands(operand))
+                    return sum(self.__call__(summand) for summand in operand.terms())
                 else:
                     out_list = [call_monomial(index, coeff, operand) for index, coeff in self]
                     return sum(coeff * mon for mon, coeff in out_list)
@@ -534,11 +534,9 @@ def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     If you input an integer for roots (e.g. ``roots = 3``), it will use the biggest possible root ideal in the `n` x `n` grid (the '`n`-th staircase root ideal').
     """
     R = RaisingOperatorAlgebra(base_ring=base_ring)
-    def prod(iterable):
-        return reduce(operator.mul, iterable, R.one())
     if roots in NonNegativeIntegerSemiring():
         roots = RootIdeals().init_staircase(roots)
-    op = prod([1 - t*R.ij(i, j) for (i, j) in roots])
+    op = prod([1 - t*R.ij(i, j) for (i, j) in roots], R.one())
     return op
 
 def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
@@ -922,8 +920,6 @@ def double_homogeneous_building_block(p, n):
 
     in [Fun]_ section 3 between equation (6) and (7).  Note that our indices are 0-based.
     """
-    def prod(iterable):
-        return reduce(operator.mul, iterable, a.one())
     a = DoubleRing
     sym = SymmetricFunctions(DoubleRing)
     s = sym.s()
@@ -933,7 +929,7 @@ def double_homogeneous_building_block(p, n):
     ptns = Partitions(max_part=n, length=p)
     total_sum = 0
     for ptn in ptns:
-        summand = prod([(x[ptn[b]] - a[ptn[b] - b]) for b in range(p)])
+        summand = prod([(x[ptn[b]] - a[ptn[b] - b]) for b in range(p)], a.one())
         total_sum += summand
     return total_sum
 
