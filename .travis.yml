@@ -1,6 +1,6 @@
 # For deployment to github pages, check resource https://docs.travis-ci.com/user/deployment/pages/
 # In GitHub settings, go to GitHub Pages section, Source subsection, and select "gh-pages branch" from dropdown.  That option WON'T APPEAR if you don't have a branch called 'gh-pages'.
-dist: precise # use Ubuntu Precise Pangolin
+dist: precise # use Ubuntu Precise Pangolin (12.04)
 sudo: required
 language: python # python will be pre-installed on server thanks to this
 python:

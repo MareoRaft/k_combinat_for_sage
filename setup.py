@@ -18,6 +18,6 @@ setup(
 	author_email='mvlancellotti@gmail.com',
 	url=url, # URL to github repo
 	download_url=download_url,
-	keywords=['morse', 'k-boundary', 'k-rim', 'k-shape', 'skew-linked diagram', 'k-irreducible', 'root ideals', 'k-schur', 'combinatorics', 'sage', 'sagemath'],
+	keywords=['morse', 'k-boundary', 'k-rim', 'k-shape', 'skew-linked diagram', 'k-irreducible', 'root ideals', 'k-schur', 'combinatorics', 'sage', 'sagemath', 'raising root operators', 'catalan functions'],
 	classifiers=[],
 )
