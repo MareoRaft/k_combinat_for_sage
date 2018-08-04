@@ -20,9 +20,9 @@ def k_rectangle_dimension_list(k):
 def is_k_shape(ptn, k):
     r""" A partition is a `k`-*shape* if its `k`-boundary has row-shape and col-shape that are partitions themselves. (Definition 2.1 of [genocchi]_)
 
-    Given a partition `ptn` and a natural number `k`, returns True iff `ptn` is a `k`-shape.
+    Given a partition `ptn` and a natural number `k`, returns True if and only if `ptn` is a `k`-shape.
 
-    Given a partition `ptn` *only*, returns True iff there exists some `k \in [1, n-1]` such that `ptn` is a `k`-shape.
+    Given a partition `ptn` *only*, returns True if and only if there exists some `k \in [1, n-1]` such that `ptn` is a `k`-shape.
 
     EXAMPLES::
 
@@ -45,9 +45,18 @@ def is_k_shape(ptn, k):
 def h_bounds(p, k, width):
     r""" Recall the `H_i` as defined in Definition 3.3 of [genocchi]_.
 
-    Given a natural number `k` (used for the `k`-shape or `k`-boundary) and a width `width`, returns `(y_\text{min}, y_\text{max})`, the two vertical coordinates which define the horizontal strip.
+    Given a natural number ``k`` (used for the `k`-shape or `k`-boundary) and a width ``width``, returns `(y_\text{min}, y_\text{max})`, the two vertical coordinates which define the horizontal strip.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    The 4-boundary of partition (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) is shown below on a cartesian plane with the vertical lines corresponding to the vertical bounds shown in blue.
+
+    .. image:: _static/h-v-bounds.png
+        :height: 240px
+        :align: center
+        :alt: The skew-shape (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) / (7, 4, 2, 1, 1, 1) is shown on a cartesian plane with the vertical lines y = 0, y = 1, y = 2, and y = 10 labelled.
+
+    ::
 
         sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=3)
         (0, 2)
@@ -55,6 +64,19 @@ def h_bounds(p, k, width):
         (2, 3)
         sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=1)
         (3, 10)
+
+    ::
+
+        sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=99)
+        (0, 0)
+        sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=0)
+        Traceback (most recent call last):
+        ...
+        ValueError: min() arg is an empty sequence
+
+    ..  SEEALSO::
+
+        :meth:`v_bounds`
 
     """
     assert is_k_shape(p, k)
@@ -68,16 +90,38 @@ def h_bounds(p, k, width):
 def v_bounds(p, k, height):
     r""" This is `V_i`, the vertical analog of :meth:`h_bounds`.
 
-    EXAMPLES::
+    EXAMPLES:
 
-        sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=4)
+    The 4-boundary of partition (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) is shown below on a cartesian plane with the vertical lines corresponding to the vertical bounds shown in blue.
+
+    .. image:: _static/h-v-bounds.png
+        :height: 240px
+        :align: center
+        :alt: The skew-shape (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) / (7, 4, 2, 1, 1, 1) is shown on a cartesian plane with the vertical lines y = 0, y = 1, y = 2, and y = 10 labelled.
+
+    ::
+
+        sage: v_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=4)
         (0, 1)
-        sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=3)
+        sage: v_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=3)
         (1, 2)
-        sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=2)
+        sage: v_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=2)
         (2, 2)
-        sage: h_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=1)
+        sage: v_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=1)
         (2, 10)
+
+    ::
+
+        sage: v_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=99)
+        (0, 0)
+        sage: v_bounds(Partition([10, 7, 4, 2, 2, 2, 1, 1, 1, 1]), k=4, width=0)
+        Traceback (most recent call last):
+        ...
+        ValueError: min() arg is an empty sequence
+
+    ..  SEEALSO::
+
+        :meth:`h_bounds`
 
     """
     return h_bounds(p.conjugate(), k, height)
@@ -102,60 +146,59 @@ def is_k_reducible_by_rectangle(p, k, ab):
         max_y = intersection_rim[-1][1]
         return max_y - min_y >= b
 
-def is_reducible2(p, k):
-    # A method for determining k-reducibility of a k-shape
+def is_reducible(ptn, k):
+    r""" A `k`-shape `ptn` is called *reducible* if there exists a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
+
+    Note that this is different than the definition of a reducible partition!
+
+    Given a `k`-shape `ptn` and a natural number `k`, returns True if and only if `ptn` is reducible.
+
+    (Also, a `k`-shape is reducible if and only if it is not irreducible.)
+
+    EXAMPLES:
+
+    The partition [3, 2, 1] has 3-row-shape [2, 2, 1] and 3-column-shape [2, 2, 1].  It is 3-reducible because there exists a 2x2-rectangle R in the 3-row-shape and the cells that make up R when viewed in the 3-column-shape form a 2x2-rectangle (you can't see it, but the 2's are switched here)::
+
+        sage: is_reducible(Partition([3, 2, 1]), k=3)
+        True
+
+    In this example, no good rectangle can be found::
+
+        sage: is_reducible(Partition([5, 3, 2, 1, 1]), k=4)
+        False
+
+    """
     rect_dim_list = k_rectangle_dimension_list(k) + k_rectangle_dimension_list(k-1)
     for (a, b) in rect_dim_list:
         if is_k_reducible_by_rectangle(p, k, (a,b)):
             return True
     return False
 
-def is_reducible(ptn, k, method=2):
-    r""" A `k`-shape `ptn` is called *reducible* if there exists a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
-
-    Note that this is different than the definition of a reducible partition!
-
-    Given a `k`-shape `ptn` and a natural number `k`, returns True iff `ptn` is reducible.
-
-    (Also, a `k`-shape is reducible iff it is not irreducible.)
-
-    EXAMPLES::
-
-        # The partition [3, 2, 1] has 3-row-shape [2, 2, 1] and 3-column-shape [2, 2, 1].  It is 3-reducible because there exists a 2x2-rectangle R in the 3-row-shape and the cells that make up R when viewed in the 3-column-shape form a 2x2-rectangle (you can't see it, but the 2's are switched here).
-        sage: is_reducible(Partition([3, 2, 1]), k=3)
-        True
-
-        # In this example, no good rectangle can be found
-        sage: is_reducible(Partition([5, 3, 2, 1, 1]), k=4)
-        False
-    """
-    if method == 2:
-        return is_reducible2(ptn, k)
-    else:
-        raise ValueError('Unknown reducibility method.')
-
-def is_irreducible(s, k, method=2):
+def is_irreducible(s, k):
     r""" A `k`-shape `ptn` is called *irreducible* if there does *not* exist a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
 
-    Given a `k`-shape `ptn` and a natural number `k`, returns True iff `ptn` is irreducible.
+    Given a `k`-shape `ptn` and a natural number `k`, returns True if and only if `ptn` is irreducible.
 
-    (Also, a `k`-shape is irreducible iff it is not reducible.)
+    (Also, a `k`-shape is irreducible if and only if it is not reducible.)
 
-    EXAMPLES::
+    EXAMPLES:
 
-        # The partition [3, 2, 1] has 3-row-shape [2, 2, 1] and 3-column-shape [2, 2, 1].  It is not 3-irreducible because there exists a 2x2-rectangle R in the 3-row-shape and the cells that make up R when viewed in the 3-column-shape form a 2x2-rectangle (you can't see it, but the 2's are switched here).
+    The partition [3, 2, 1] has 3-row-shape [2, 2, 1] and 3-column-shape [2, 2, 1].  It is not 3-irreducible because there exists a 2x2-rectangle R in the 3-row-shape and the cells that make up R when viewed in the 3-column-shape form a 2x2-rectangle (you can't see it, but the 2's are switched here)::
+
         sage: is_irreducible(Partition([3, 2, 1]), k=3)
         False
 
-        # In this example, no good rectangle can be found, making it irreducible.
+    In this example, no good rectangle can be found, making it irreducible::
+
         sage: is_irreducible(Partition([5, 3, 2, 1, 1]), k=4)
         True
+
     """
-    return not is_reducible(s, k, method)
+    return not is_reducible(s, k)
 
 
 ############# GETTER FUNCS ############
-def k_to_irreducible_k_shapes(k, method=2):
+def k_to_irreducible_k_shapes(k):
     r""" Given a natural number `k`, return a list of all irreducible `k`-shapes.
 
     Note that the algorithm runs very slowly after `k=4` :(.
@@ -171,5 +214,5 @@ def k_to_irreducible_k_shapes(k, method=2):
     ptns = []
     for n in range(0, n_bound+1):
         ptns += Partitions(n, max_length=bound, max_part=bound)
-        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and is_irreducible(p, k, method)]
+        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and is_irreducible(p, k)]
     return k_irr_k_shapes

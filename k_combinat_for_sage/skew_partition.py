@@ -21,7 +21,7 @@ def is_strictly_decreasing(li):
 def is_symmetric(sp):
     r""" A SkewPartition is *symmetric* if its inner and outer shapes are symmetric.
 
-    Returns True iff the SkewPartition `sp` is equal to its own conjugate.
+    Returns True if and only if the SkewPartition `sp` is equal to its own conjugate.
     """
     return sp == sp.conjugate()
 
@@ -36,11 +36,13 @@ def right(sp, row_index):
         sage: right(SkewPartition([[4, 1], [2]]), 1)
         0
 
-        # an input index that is out of the bounds of the skew partition will throw an error
+    An input index that is out of the bounds of the skew partition will throw an error::
+
         sage: right(SkewPartition([[4, 1], [2]]), 2)
         IndexError: list index out of range
 
-        # an in-bounds index where no cells exist will return None.
+    An in-bounds index where no cells exist will return ``None``::
+
         sage: right(SkewPartition([[2, 1, 1, 1], [1, 1]]), 1) == None
         True
 
@@ -64,11 +66,13 @@ def left(sp, row_index):
         sage: left(SkewPartition([[4, 1], [2]]), 1)
         0
 
-        # an input index that is out of the bounds of the skew partition will throw an error
+    An input index that is out of the bounds of the skew partition will throw an error::
+
         sage: left(SkewPartition([[4, 1], [2]]), 2)
         IndexError: list index out of range
 
-        # an in-bounds index where no cells exist will return None.
+    An in-bounds index where no cells exist will return ``None``::
+
         sage: left(SkewPartition([[2, 1, 1, 1], [1, 1]]), 1) == None
         True
 
@@ -93,7 +97,8 @@ def top(sp, col_index):
         sage: top(SkewPartition([[4, 1, 1], [2]]), 0)
         2
 
-        # an in-bounds col_index where no cells exist will return None.
+    An in-bounds col_index where no cells exist will return ``None``::
+
         sage: top(SkewPartition([[4, 1, 1], [2]]), 1) == None
         True
 
@@ -103,7 +108,8 @@ def top(sp, col_index):
         sage: top(SkewPartition([[4, 1, 1], [2]]), 3)
         0
 
-        # a col_index that is out-of-bounds of the skew partition will throw an error
+    A col_index that is out-of-bounds of the skew partition will throw an error::
+
         sage: top(SkewPartition([[4, 1, 1], [2]]), 4)
         IndexError: list index out of range
 
@@ -118,7 +124,8 @@ def bottom(sp, col_index):
         sage: bottom(SkewPartition([[4, 1, 1], [2]]), 0)
         1
 
-        # an in-bounds col_index where no cells exist will return None.
+    An in-bounds col_index where no cells exist will return ``None``::
+
         sage: bottom(SkewPartition([[4, 1, 1], [2]]), 1) == None
         True
 
@@ -128,7 +135,8 @@ def bottom(sp, col_index):
         sage: bottom(SkewPartition([[4, 1, 1], [2]]), 3)
         0
 
-        # a col_index that is out-of-bounds of the skew partition will throw an error
+    A col_index that is out-of-bounds of the skew partition will throw an error::
+
         sage: bottom(SkewPartition([[4, 1, 1], [2]]), 4)
         IndexError: list index out of range
 
@@ -139,12 +147,15 @@ def is_linked(sp):
     r"""
     A skew-shape `sp` is a *skew-linked diagram* if both the row-shape and column-shape of `sp` are partitions.
 
-    EXAMPLES::
+    EXAMPLES:
 
-        # both row shape and column shape are valid
+    Both row shape and column shape are valid::
+
         sage: is_linked(SkewPartition([[2, 1], [1]]))
         True
-        # valid row shape but invalid column shape
+
+    Valid row shape but invalid column shape::
+
         sage: is_linked(SkewPartition([[3, 2], [1]]))
         False
     """
@@ -201,9 +212,9 @@ def k_boundary_to_partition(sp, k=None, strict=True):
 
 def is_k_boundary(sp, k=None):
     r"""
-    Given a skew-shape `sp` and natural number `k`, return True iff `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
+    Given a skew-shape `sp` and natural number `k`, return True if and only if `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
 
-    Given a skew-shape `sp` *only*, return True iff there exists some `k` such that `sp` is a `k`-boundary.
+    Given a skew-shape `sp` *only*, return True if and only if there exists some `k` such that `sp` is a `k`-boundary.
 
     TODO: test
 
@@ -278,11 +289,12 @@ def ptn_to_linked_things(p):
 def row_shape_to_linked_skew_partitions(rs):
     r""" Given a partition `rs`, find all linked SkewPartitions whose row-shape is `rs`.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    Note that [4, 2, 1] / [1, 1] is *not* linked and hence doesn't appear in the list below::
 
         sage: row_shape_to_linked_skew_partitions(Partition([3, 1, 1]))
         [[3, 1, 1] / [], [4, 1, 1] / [1], [5, 2, 1] / [2, 1]]
-        # note that [4, 2, 1] / [1, 1] is *not* linked and hence doesn't appear in the above list
 
     """
     rs_zero = list(Partition(rs)) + [0]

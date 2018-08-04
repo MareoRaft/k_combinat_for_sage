@@ -40,10 +40,28 @@ def boundary(ptn):
 
     The boundary will go from bottom-right to top-left in the French convention.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    The partition (1)
+
+    .. image:: _static/boundary-1.JPG
+        :height: 140px
+        :align: center
+        :alt: The shape of partition 1 on a cartesian plane with the points (1, 0), (1, 1), and (0, 1) labelled.
+
+    has boundary [(1, 0), (1, 1), (0, 1)]::
 
         sage: boundary(Partition([1]))
         [(1,0), (1,1), (0,1)]
+
+    The partition (3, 1)
+
+    .. image:: _static/boundary-2.JPG
+        :height: 170px
+        :align: center
+        :alt: The shape of partition (3, 1) on a cartesian plane with the points (3, 0), (3, 1), (2, 1), (1, 1), (1, 2), and (0, 2) labelled.
+
+    has boundary [(3, 0), (3, 1), (2, 1), (1, 1), (1, 2), (0, 2)]::
 
         sage: boundary(Partition([3, 1]))
         [(3,0), (3,1), (2,1), (1,1), (1,2), (0,2)]
@@ -71,11 +89,19 @@ def boundary(ptn):
     return bdy
 
 def k_rim(ptn, k):
-    r""" The `k`-rim of a partition is the "line between" (or "intersection of") the `k`-boundary and the `k`-interior.  (Section 2.3 of [genocchi]_)
+    r""" The ``k``-rim of a partition ``ptn`` is the "line between" (or "intersection of") the `k`-boundary and the `k`-interior.  (Section 2.3 of [genocchi]_)
 
     It will be output as an ordered list of integer coordinates, where the origin is `(0, 0)`.  It will start at the top-left of the `k`-rim (using French convention) and end at the bottom-right.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    Consider the partition (3, 1) split up into its 1-interior and 1-boundary:
+
+    .. image:: _static/k-rim.JPG
+        :height: 180px
+        :align: center
+
+    The line shown in bold is the 1-rim, and that information is equivalent to the integer coordinates of the points that occur along that line::
 
         sage: k_rim(Partition([3, 1]), 1)
         [(3,0), (2,0), (2,1), (1,1), (0,1), (0,2)])
@@ -135,11 +161,18 @@ def has_rectangle(ptn, h, w):
 
 def has_k_rectangle(ptn, k):
     r""" A partition ``ptn`` has a `k`-rectangle if it's Ferrer's diagram contains `k-i+1` rows (*or more*) of length `i` (*exactly*) for any `i` in `[1, k]`.
+
+    This is mainly a helper function for :meth:`is_k_reducible` and :meth:`is_k_irreducible`, the only difference between this function and :meth:`is_k_reducible` being that this function allows any partition as input while :meth:`is_k_reducible` requires the input to be `k`-bounded.
+
+    .. SEEALSO::
+
+        :meth:`is_k_irreducible`, :meth:`has_k_rectangle`
+
     """
     return any(has_rectangle(ptn, a, b) for (a, b) in k_rectangle_dimension_list(k))
 
 def is_k_bounded(ptn, k):
-    r""" Returns True iff the partition is bounded by `k`.
+    r""" Returns True if and only if the partition is bounded by `k`.
 
     EXAMPLES::
 
@@ -160,7 +193,7 @@ def is_k_bounded(ptn, k):
 def is_k_reducible(ptn, k):
     r""" A `k`-bounded partition is `k`-*reducible* if it's Ferrer's diagram contains `k-i+1` rows (or more) of length `i` (exactly) for some `i \in [1, k]`.
 
-    (Also, a `k`-bounded partition is `k`-reducible iff it is not `k`-irreducible.)
+    (Also, a `k`-bounded partition is `k`-reducible if and only if it is not `k`-irreducible.)
 
     EXAMPLES::
 
@@ -171,6 +204,10 @@ def is_k_reducible(ptn, k):
         sage: is_k_reducible(Partition([1, 1, 1]), 4)
         False
 
+    .. SEEALSO::
+
+        :meth:`is_k_irreducible`, :meth:`has_k_rectangle`
+
     """
     # We only talk about k-reducible / k-irreducible for k-bounded partitions.
     assert is_k_bounded(ptn, k)
@@ -179,21 +216,29 @@ def is_k_reducible(ptn, k):
 def is_k_irreducible(ptn, k):
     r""" A `k`-bounded partition is `k`-*irreducible* if it's Ferrer's diagram does *not* contain `k-i+1` rows (or more) of length `i` (exactly) for every `i \in [1, k]`.
 
-    (Also, a `k`-bounded partition is `k`-irreducible iff it is not `k`-reducible.)
+    (Also, a `k`-bounded partition is `k`-irreducible if and only if it is not `k`-reducible.)
 
-    EXAMPLES::
+    EXAMPLES:
 
-        # The partition [1, 1, 1] has at least 2 rows of length 1.
+    The partition [1, 1, 1] has at least 2 rows of length 1::
+
         sage: is_k_irreducible(Partition([1, 1, 1]), 2)
         False
-        # The partition [1, 1, 1] does *not* have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4.
+
+    The partition [1, 1, 1] does *not* have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4::
+
         sage: is_k_irreducible(Partition([1, 1, 1]), 2)
         True
+
+    .. SEEALSO::
+
+        :meth:`is_k_reducible`, :meth:`has_k_rectangle`
+
     """
     return not is_k_reducible(ptn, k)
 
 def is_symmetric(ptn):
-    r"""Given a partition λ, detect if λ equals its own transpose.
+    r"""Given a partition ``ptn``, detect if ``ptn`` equals its own transpose.
 
     EXAMPLES::
 
@@ -202,20 +247,24 @@ def is_symmetric(ptn):
 
         sage: is_symmetric(Partition([3, 1]))
         False
+
     """
-    # This function runs in LINEAR time of order length(λ).
-    for j in range(0, len(ptn)):
-        for k in range(ptn[-j], ptn[-j-1]):
-            if ptn[k] != len(ptn) - j:
-                return False
-    return True
+    return ptn == ptn.conjugate()
 
 def next(p, min=[], max=None, type=None):
-    # Get the next partition lexicographically that contains min and is contained in max.
-    # ptn: The Partition.
-    # min: The 'minimum partition' that next_advanced(ptn) must contain.
-    # max: The 'maximum partition' that next_advanced(ptn) must be contained in.
-    # type: The type of partitions allowed.  For example, 'strict' for strictly decreasing.
+    r"""Get the next partition lexicographically that contains min and is contained in max.
+
+    INPUTS:
+
+    - ``p`` -- The Partition.
+
+    - ``min`` -- (default ``[]``, the empty partition) The 'minimum partition' that ``next_within_bounds(p)`` must contain.
+
+    - ``max`` -- (default ``None``) The 'maximum partition' that ``next_within_bounds(p)`` must be contained in.  If set to ``None``, then there is no restriction.
+
+    - ``type`` -- The type of partitions allowed.  For example, 'strict' for strictly decreasing partitions.
+
+    """
     # make sure min <= p <= max
     if max is not None:
         assert Partition(max).contains(Partition(p))
@@ -258,11 +307,12 @@ def next(p, min=[], max=None, type=None):
     return Partition(next_p)
 
 def is_k_core(ptn, k):
-    r""" Returns a boolean saying whether or not the Partition ``ptn`` is a `k`-core.
+    r""" Returns a boolean saying whether or not the Partition ``ptn`` is a ``k``-core.
 
-    EXAMPLES::
+    EXAMPLES:
 
-        # a hook length of 2 does not occur, but a hook length of 3 does
+    In the partition (2, 1), a hook length of 2 does not occur, but a hook length of 3 does::
+
         sage: is_k_core(Partition([2, 1]), 2)
         True
         sage: is_k_core(Partition([2, 1]), 3)

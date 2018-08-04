@@ -26,6 +26,13 @@ import strong_marked_tableau
 
 
 # HELPERS
+def _is_k_schur(obj):
+    # checks if obj is a k-schur function (coming from the 'kSchur_with_category' class)
+    try:
+        classname = obj.parent().__class__.__name__
+        return classname == 'kSchur_with_category'
+    except:
+        return False
 
 
 # MAIN
@@ -92,12 +99,13 @@ def straighten(s, gamma):
 
     where `\rho=(\ell-1,\ell-2,\dots,0)`, `\text{sort}(\beta)` denotes the weakly decreasing sequence obtained by sorting `\beta`, and `\text{sgn}(\beta)` denotes the sign of the (shortest possible) sorting permutation.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    We know s[2, 1, 3] := -s[2, 2, 2]::
 
         sage: s = SymmetricFunctions(QQ).s()
         sage: straighten(s, [2, 1, 3])
         -s[2, 2, 2]
-        # because s[2, 1, 3] := -s[2, 2, 2]
 
     """
     def has_nonnegative_parts(lis):
@@ -339,9 +347,10 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
     def ij(self, i, j):
         r""" Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indices here are 0-based, not 1-based.
 
-        EXAMPLES::
+        EXAMPLES:
 
-            # create the raising operator which raises part 0 and lowers part 2 (indices are 0-based)
+        Create the raising operator which raises part 0 and lowers part 2 (indices are 0-based)::
+
             sage: R.ij(0, 2)
             R((1, 0, -1))
 
@@ -366,12 +375,14 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
 
         sage: u = PieriOperatorAlgebra()
 
-        # act on catalan function
+    Act on catalan function::
+
         sage: cf = CatalanFunction([(0,2), (1,2)], [6, 6, 6])
         sage: u.i(2)(cf)
         CatalanFunction([(0,2), (1,2)], [6, 6, 5])
 
-        # act on k schur function
+    Act on k-schur function::
+
         sage: base_ring = QQ['t']
         sage: Sym = SymmetricFunctions(base_ring)
         sage: t = base_ring.gen()
@@ -390,9 +401,10 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
     def i(self, i):
         r""" Shorthand element constructor that allows you to create Pieri operators using the familiar `u_i` notation, with the exception that indices here are 0-based, not 1-based.
 
-        EXAMPLES::
+        EXAMPLES:
 
-            # create the Pieri operator which lowers part 2 (indices are 0-based)
+        Create the Pieri operator which lowers part 2 (indices are 0-based)::
+
             sage: u.i(2)
             u((0, 0, -1))
 
@@ -406,7 +418,7 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
 
     class Element(ShiftingOperatorAlgebra.Element):
         def __call__(self, operand):
-            if is_k_schur(operand):
+            if _is_k_schur(operand):
                 # convert to catalans
                 kschur = operand.parent()
                 base_ring = kschur.base_ring()
@@ -737,7 +749,7 @@ class CatalanFunctions:
             # TODO: make sure [] above is correct.  go by hand.
         """
         # check inputs
-        assert is_k_schur(func)
+        assert _is_k_schur(func)
         assert len(func.support()) == 1
         # gather roots
         index = func.support()[0]
@@ -976,17 +988,20 @@ class DoubleHomogeneous:
 
     ``n`` -- number of `x` variables
 
-    EXAMPLE::
+    EXAMPLES:
 
-        # create the double homogeneous `h^{(4)}_{\mu, \beta}`
+    Create the double homogeneous `h^{(4)}_{\mu, \beta}`::
+
         sage: DoubleHomogeneous(mu, beta, 4)
 
-        # create the double homogeneous shifted building block `h_{r, s}` in 4 variables
+    Create the double homogeneous shifted building block `h_{r, s}` in 4 variables::
+
         sage: r = 5
         sage: s = 2
         sage: DoubleHomogeneous([r], [s], 4)
 
-        # create the double homogeneous symmetric building block `h_p(x \,||\, a)` in 4 variables
+    Create the double homogeneous symmetric building block `h_p(x \,||\, a)` in 4 variables::
+
         sage: p = 3
         sage: DoubleHomogeneous([p], [0], 4)
     """

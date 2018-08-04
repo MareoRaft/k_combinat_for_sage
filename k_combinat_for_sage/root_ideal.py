@@ -167,11 +167,11 @@ class RootIdeal(list):
 
     Consider the k-1 staircase partition `[k-1, k-2, \ldots, 1]` positioned in the upper-right corner of a `k` x `k` grid.  The cells in the grid are labeled with (row_index, col_index) 0-based coordinates.  Now consider any right-justified subpartition of the staircase partition.  This is a RootIdeal.  However, it is expressed not as a partition but as a list of the cells it contains.
 
-    For example, the partition `[3, 1]` in the 7 x 7 grid is the root ideal `[(0,4), (0,5), (0,6), (1,6)]`.
-
     See Definition 2.1 of [cat]_ for more.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    The partition `[3, 1]` in the 7 x 7 grid is the root ideal `[(0,4), (0,5), (0,6), (1,6)]`::
 
         sage: ri = RootIdeal([(0,4), (0,5), (0,6), (1,6)])
 
@@ -208,14 +208,16 @@ class RootIdeal(list):
     def down(ri, row_index):
         r""" Given a root ideal `ri` and a starting position 'row_index', move right on that row until you hit the root ideal (you are now standing ontop of a cell of the root ideal), then move straight down until you hit the diagonal, and return the new index.
 
-        The picture below represents the root ideal used in the example.
+        EXAMPLES:
+
+        The picture below represents the root ideal ``ri``:
 
         .. image:: _static/root-ideal.JPG
             :width: 180px
             :align: center
             :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
             sage: ri.down(0)
@@ -239,14 +241,16 @@ class RootIdeal(list):
     def up(root_ideal, col_index):
         r""" Same as :meth:`down`, but this time you start in the *column* indicated by 'column_index', and move *up* until you hit the root ideal, then move *left* until you hit the diagonal.
 
-        The picture below represents the root ideal used in the example.
+        EXAMPLES:
+
+        The picture below represents the root ideal ``ri``:
 
         .. image:: _static/root-ideal.JPG
             :width: 180px
             :align: center
             :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
             sage: ri.up(0) == None
@@ -269,14 +273,16 @@ class RootIdeal(list):
     def down_path(root_ideal, start_index):
         r""" Given a starting row index 'start_index', perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indices as a list.  (See [cat]_ Definition 5.2 for more)
 
-        The picture below represents the root ideal used in the example, and the path drawn on the picture depicts the down path for ``start_index`` 0 specifically.
+        EXAMPLES:
+
+        The picture below represents the root ideal used in the example, and the path drawn on the picture depicts the down path for ``start_index`` 0 specifically:
 
         .. image:: _static/bottom.JPG
             :width: 180px
             :align: center
             :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
             sage: ri.down_path(0)
@@ -297,14 +303,16 @@ class RootIdeal(list):
     def up_path(root_ideal, start_index):
         r""" Same as :meth:`down_path`, but uses a *column* index to start with, and applies *up* operations repeatedly.
 
-        The picture below represents the root ideal used in the example.
+        EXAMPLES:
+
+        The picture below represents the root ideal ``ri``:
 
         .. image:: _static/root-ideal.JPG
             :width: 180px
             :align: center
             :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
             sage: ri.up_path(0)
@@ -325,14 +333,16 @@ class RootIdeal(list):
     def top(root_ideal, start_index):
         r""" Given a column index 'start_index', look at it's :meth:`up_path` and return the final index.
 
-        The picture below represents the root ideal used in the example.
+        EXAMPLES:
+
+        The picture below represents the root ideal ``ri``:
 
         .. image:: _static/root-ideal.JPG
             :width: 180px
             :align: center
             :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
             sage: ri.top(0)
@@ -352,14 +362,16 @@ class RootIdeal(list):
     def bottom(root_ideal, start_index):
         r""" Given a row index 'start_index', look at it's :meth:`down_path` and return the final index.
 
-        The picture below represents the root ideal used in the examples, and the path drawn on the picture depicts the down path for index 0 specifically, demonstrating that ``bottom(0)`` should be 4.
+        EXAMPLES:
+
+        The picture below represents the root ideal used in the examples, and the path drawn on the picture depicts the down path for index 0 specifically, demonstrating that ``bottom(0)`` should be 4:
 
         .. image:: _static/bottom.JPG
             :width: 180px
             :align: center
             :alt: The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([3, 2, 1], 5)
             sage: ri.bottom(0)
@@ -385,15 +397,15 @@ class RootIdeal(list):
     def down_path_column_lengths(self, ptn):
         r""" This is the column shape `\mu'` as defined by Definition 2.3 of [scat]_.  It is also introduced in the second paragraph of the overview as `\mathfrak{cs}(\Psi, \lambda)`.
 
+        EXAMPLES:
+
         In Example 2.4 of [scat]_, the following
 
         ..  image:: _static/example2.4.png
             :align: center
             :alt: The root ideal [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)] and the partition 7 6 5 2 2 2
 
-        depicts the root ideal in red and the partition on the diagonal.
-
-        EXAMPLES::
+        depicts the root ideal in red and the partition on the diagonal::
 
             sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             sage: ptn = [7, 6, 5, 2, 2, 2]
@@ -422,15 +434,15 @@ class RootIdeal(list):
     def to_partition(root_ideal):
         r""" Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal).
 
+        EXAMPLES:
+
         The red part of the following picture (please ignore the diagonal) represents the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)].
 
         .. image:: _static/Ksi.png
             :align: center
             :alt: The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] inside a 6 by 6 grid.
 
-        But it can also be interpreted as the partition 5 2 2 2 (in the Hebrew convention).  Therefore, ``to_partition()`` acting on the root ideal will output 5 2 2 2.
-
-        EXAMPLES::
+        But it can also be interpreted as the partition 5 2 2 2 (in the Hebrew convention).  Therefore, ``to_partition()`` acting on the root ideal will output 5 2 2 2::
 
             sage: ri = RootIdeal([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)])
             sage: ri.to_partition()
@@ -451,13 +463,15 @@ class RootIdeal(list):
     def is_strict(ri):
         r""" Given a root ideal ``ri``, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!
 
+        EXAMPLES:
+
         In the following images, ignore the index on the diagonal and look only at the root ideal in red.
 
         .. image:: _static/Phi.png
             :align: center
             :alt: The root ideal corresponding to the partition  8 6 5 3 2
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([8, 6, 5, 3, 2], 9)
             sage: ri.is_strict()
@@ -467,7 +481,7 @@ class RootIdeal(list):
             :align: center
             :alt: The root ideal corresponding to the partition  5 2 2 2
 
-        EXAMPLES::
+        ::
 
             sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             sage: ri.is_strict()
@@ -488,7 +502,9 @@ class RootIdeal(list):
 
         - ``n`` -- (default ``None``) the side length of the n x n box you want the complement to be taken over.
 
-        For example, the two root ideals depicted below are complements of each other:
+        EXAMPLES:
+
+        The two root ideals depicted below are complements of each other:
 
         .. image:: _static/root-ideal.JPG
             :width: 180px
@@ -500,7 +516,7 @@ class RootIdeal(list):
             :align: center
             :alt: The root ideal [(0,1), (1,2), (2,3), (3,4)]
 
-        EXAMPLES::
+        ::
 
             sage: ri1 = RootIdeal([(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)])
             sage: ri2 = RootIdeal([(0,1), (1,2), (2,3), (3,4)])
@@ -526,13 +542,15 @@ class RootIdeals:
     def init_from_removable_roots(self, corners, n):
         r""" Given the removable roots ``corners`` of a root ideal and the size length `n` of the `n` x `n` grid, return the root ideal itself.
 
-        For example, the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] in the `6` x `6` grid shown below in red (please ignore the diagonal) has removable roots `(0, 1)` and `(3, 4)`.
+        EXAMPLES:
+
+        The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] in the `6` x `6` grid shown below in red (please ignore the diagonal) has removable roots `(0, 1)` and `(3, 4)`:
 
         .. image:: _static/Ksi.png
             :align: center
             :alt: The root ideal corresponding to the partition  5 2 2 2
 
-        EXAMPLES::
+        ::
 
             sage: removable_roots_to_root_ideal({(0, 1), (3, 4)}, 6)
             [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]
@@ -583,14 +601,16 @@ class RootIdeals:
 
             \Delta^k(\mu) = \{(i,j) \in \Delta^+_n \mid k - \mu_i + i < j \}
 
-        The following diagram depicts the `k`-bounded partition on the diagonal and the resulting `k`-schur root ideal.
+        EXAMPLES:
+
+        The following diagram depicts the `k`-bounded partition on the diagonal and the resulting `k`-schur root ideal:
 
         .. image:: _static/k-schur-root-ideal.JPG
             :height: 200px
             :align: center
             :alt: The partition 3 3 2 2 2 and the root ideal [(0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (2, 5), (2, 6), (2, 7), (3, 6), (3, 7), (4, 7)]
 
-        EXAMPLES::
+        ::
 
             sage: k_ri = RootIdeals().init_k_schur_from_partition([3, 3, 2, 2, 2], 4, n=8)
             sage: k_ri.to_partition()
@@ -611,15 +631,15 @@ class RootIdeals:
     def init_from_partition(self, ptn, n):
         r""" Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to :meth:`RootIdeal.to_partition` in the context of an `n` x `n` grid.)
 
+        EXAMPLES:
+
         The red part of the following picture (please ignore the diagonal) can be interpreted as the partition 5 2 2 2 (in the Hebrew convention):
 
         .. image:: _static/Ksi.png
             :align: center
             :alt: The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] inside a 6 by 6 grid.
 
-        Therefore the partition 5 2 2 2 with `n=6` corresponds to the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)].
-
-        EXAMPLES::
+        Therefore the partition 5 2 2 2 with `n=6` corresponds to the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]::
 
             sage: RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]
@@ -653,14 +673,16 @@ class RootIdeals:
 
             \Delta(\eta) := \{ \alpha \in \Delta^+_{|\eta|} \:\text{above the block diagonal with block sizes}\: \eta_1, \ldots, \eta_r\}
 
-        in [cat]_ just below Conjecture 3.3.  For example,
+        in [cat]_ just below Conjecture 3.3.
+
+        EXAMPLES:
 
         .. image:: _static/parabolic-root-ideal.png
             :width: 200px
             :align: center
             :alt: The root ideal [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
 
-        EXAMPLES::
+        ::
 
             sage: RootIdeals().init_parabolic_from_composition([1, 3, 2])
             [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
