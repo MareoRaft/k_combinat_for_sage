@@ -13,11 +13,15 @@ import skew_partition
 # ^*^ sphinx insert ^*^
 
 # HELPERS
+
+
 def is_weakly_decreasing(li):
     return all(li[i] >= li[i+1] for i in range(len(li)-1))
 
+
 def is_strictly_decreasing(li):
     return all(li[i] > li[i+1] for i in range(len(li)-1))
+
 
 def is_pseudo_partition(seq):
     # TODO: test
@@ -27,6 +31,7 @@ def is_pseudo_partition(seq):
         if seq[index] + 1 < seq[index + 1]:
             return False
     return True
+
 
 def generate_path(next_func, start):
     path = [start]
@@ -38,12 +43,14 @@ def generate_path(next_func, start):
             break
     return path
 
+
 def staircase_shape(n):
-    r""" Given `n`, return the composition `[n-1, n-2, \ldots, 0]` commonly denoted `\rho`.
+    r""" Given ``n``, return the composition `[n-1, n-2, \ldots, 0]` commonly denoted `\rho`.
 
     Yes, this INCLUDES a 0 at the end!
     """
     return Composition(range(n - 1, -1, -1))
+
 
 def bump_path_piece(sp, start_row_index, blocked_rows=set()):
     # Helper
@@ -59,6 +66,8 @@ def bump_path_piece(sp, start_row_index, blocked_rows=set()):
         return None, True
     else:
         return row_index3, False
+
+
 def bump_path(sp, row_index, blocked_rows=set()):
     # helper
     new_blocked_rows = {row_index}
@@ -70,6 +79,8 @@ def bump_path(sp, row_index, blocked_rows=set()):
         else:
             new_blocked_rows.add(row_index)
     return new_blocked_rows
+
+
 def skew_partition_to_selected_rows(sp):
     # actually this may ONLY WORK for catty-connected skew-partitions, because i'm not sure how we deal with 'missing' rows
     # arguably we should call it a linked_skew_partition
@@ -83,6 +94,7 @@ def skew_partition_to_selected_rows(sp):
             blocked_rows.update(new_blocked_rows)
     return sorted(selected_rows)
 
+
 def selected_rows_to_maximum_root_ideal(n, selected_indices):
     # Given the dimension of the square n and the selected rows, output the root ideal
     root_ideal_cells = []
@@ -92,10 +104,12 @@ def selected_rows_to_maximum_root_ideal(n, selected_indices):
         if i in selected_indices:
             if permitted_col_indices:
                 smallest_unblocked_index = min(permitted_col_indices)
-                root_ideal_cells += [(i, j) for j in range(smallest_unblocked_index, n)]
+                root_ideal_cells += [(i, j)
+                                     for j in range(smallest_unblocked_index, n)]
                 permitted_col_indices.remove(smallest_unblocked_index)
                 selected_indices.add(smallest_unblocked_index)
     return RootIdeal(root_ideal_cells)
+
 
 def skew_partition_to_removable_roots(sp, type='max'):
     r"""
@@ -112,7 +126,6 @@ def skew_partition_to_removable_roots(sp, type='max'):
     OUTPUT:
 
     A list of removable roots in order.
-
     """
     def type_shift(x, type):
         if type == 'max':
@@ -130,6 +143,7 @@ def skew_partition_to_removable_roots(sp, type='max'):
         rmvble_root = (i, mu[mu_index] + i)
         rmvble_roots.append(rmvble_root)
     return rmvble_roots
+
 
 def removable_roots_to_partition(corners, n):
     corners = sorted(corners)
@@ -151,6 +165,8 @@ def removable_roots_to_partition(corners, n):
     return Partition(ptn)
 
 # RootIdeal stuff
+
+
 def is_roots(obj):
     # Dirty indicator of whether object is roots (is it an iterable of pairs of natural numbers).
     try:
@@ -163,7 +179,7 @@ def is_roots(obj):
 
 
 class RootIdeal(list):
-    r""" An upper root ideal.
+    r""" A root ideal.
 
     Consider the k-1 staircase partition `[k-1, k-2, \ldots, 1]` positioned in the upper-right corner of a `k` x `k` grid.  The cells in the grid are labeled with (row_index, col_index) 0-based coordinates.  Now consider any right-justified subpartition of the staircase partition.  This is a RootIdeal.  However, it is expressed not as a partition but as a list of the cells it contains.
 
@@ -174,8 +190,8 @@ class RootIdeal(list):
     The partition `[3, 1]` in the 7 x 7 grid is the root ideal `[(0,4), (0,5), (0,6), (1,6)]`::
 
         sage: ri = RootIdeal([(0,4), (0,5), (0,6), (1,6)])
-
     """
+
     def __init__(self, lis, n=None):
         # validate the roots
         assert is_roots(lis)
@@ -183,7 +199,7 @@ class RootIdeal(list):
         if n is not None:
             self.n = n
         elif lis:
-            self.n = max(c for (r,c) in lis) + 1
+            self.n = max(c for (r, c) in lis) + 1
         else:
             self.n = 1
         # normalize the roots
@@ -198,7 +214,8 @@ class RootIdeal(list):
         n = self.n
         ptn = self.to_partition()
         min_ptn = RootIdeal(min, n=n).to_partition()
-        max_ptn = RootIdeal(max, n=n).to_partition() if max is not None else None
+        max_ptn = RootIdeal(max, n=n).to_partition(
+        ) if max is not None else None
         if type in ('strict', 'rational'):
             type = 'strictly decreasing'
         next_ptn = partition.next(ptn, min=min_ptn, max=max_ptn, type=type)
@@ -206,7 +223,9 @@ class RootIdeal(list):
         return next_ri
 
     def down(ri, row_index):
-        r""" Given a root ideal `ri` and a starting position 'row_index', move right on that row until you hit the root ideal (you are now standing ontop of a cell of the root ideal), then move straight down until you hit the diagonal, and return the new index.
+        r""" Starting at the row corresponding to ``row_index``, return the down.
+
+        Given a root ideal `ri` and a starting position 'row_index', move right on that row until you hit the root ideal (you are now standing ontop of a cell of the root ideal), then move straight down until you hit the diagonal, and return the new index.
 
         EXAMPLES:
 
@@ -230,16 +249,17 @@ class RootIdeal(list):
             True
             sage: ri.down(4) == None
             True
-
         """
         # Note: I am assuming the cells in the root ideal are IN ORDER with y coordinates weakly increasing, and for fixed y, x strictly increasing
-        for (r,c) in ri:
+        for (r, c) in ri:
             if r == row_index:
                 return c
         return None
 
     def up(root_ideal, col_index):
-        r""" Same as :meth:`down`, but this time you start in the *column* indicated by 'column_index', and move *up* until you hit the root ideal, then move *left* until you hit the diagonal.
+        r""" Starting at the column corresponding to ``col_index``, return the up.
+
+        Same as :meth:`down`, but this time you start in the *column* indicated by 'column_index', and move *up* until you hit the root ideal, then move *left* until you hit the diagonal.
 
         EXAMPLES:
 
@@ -263,15 +283,16 @@ class RootIdeal(list):
             1
             sage: ri.up(4)
             2
-
         """
-        for (r,c) in reversed(root_ideal):
+        for (r, c) in reversed(root_ideal):
             if c == index:
                 return r
         return None
 
     def down_path(root_ideal, start_index):
-        r""" Given a starting row index 'start_index', perform :meth:`down` operations repeatedly until you can't anymore.  Returns the resulting sequence of indices as a list.  (See [cat]_ Definition 5.2 for more)
+        r""" Given a starting row index 'start_index', perform :meth:`down` operations repeatedly until you can't anymore.
+
+        Returns the resulting sequence of indices as a list.  (See [cat]_ Definition 5.2 for more)
 
         EXAMPLES:
 
@@ -295,9 +316,8 @@ class RootIdeal(list):
             [3]
             sage: ri.down_path(4)
             [4]
-
         """
-        next_func = lambda index: root_ideal.down(index)
+        def next_func(index): return root_ideal.down(index)
         return generate_path(next_func, start_index)
 
     def up_path(root_ideal, start_index):
@@ -325,9 +345,8 @@ class RootIdeal(list):
             [3, 1]
             sage: ri.up_path(4)
             [4, 2, 0]
-
         """
-        next_func = lambda index: root_ideal.up(index)
+        def next_func(index): return root_ideal.up(index)
         return generate_path(next_func, start_index)
 
     def top(root_ideal, start_index):
@@ -355,7 +374,6 @@ class RootIdeal(list):
             1
             sage: ri.top(4)
             0
-
         """
         return root_ideal.up_path(start_index)[-1]
 
@@ -384,7 +402,6 @@ class RootIdeal(list):
             3
             sage: ri.bottom(4)
             4
-
         """
         return root_ideal.down_path(start_index)[-1]
 
@@ -394,8 +411,11 @@ class RootIdeal(list):
         This exists mainly as a helper function for :meth:`down_path_column_lengths`.
         """
         return sum(ptn[j] for j in root_ideal.down_path(start_index))
+
     def down_path_column_lengths(self, ptn):
-        r""" This is the column shape `\mu'` as defined by Definition 2.3 of [scat]_.  It is also introduced in the second paragraph of the overview as `\mathfrak{cs}(\Psi, \lambda)`.
+        r""" This is the column shape `\mu'` as defined by Definition 2.3 of [scat]_.
+
+        It is also introduced in the second paragraph of the overview as `\mathfrak{cs}(\Psi, \lambda)`.
 
         EXAMPLES:
 
@@ -413,7 +433,6 @@ class RootIdeal(list):
             [15, 7, 4, 2]
 
         This is also the lengths of the bounce paths in [cat]_ Definition 5.2.
-
     """
         if not self:
             mu = ptn
@@ -447,7 +466,6 @@ class RootIdeal(list):
             sage: ri = RootIdeal([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)])
             sage: ri.to_partition()
             [5, 2, 2, 2]
-
         """
         if root_ideal is None or root_ideal == False:
             return root_ideal
@@ -456,12 +474,14 @@ class RootIdeal(list):
         else:
             max_r = root_ideal[-1][0]
             ptn = [0] * (max_r + 1)
-            for (r,c) in root_ideal:
+            for (r, c) in root_ideal:
                 ptn[r] += 1
         return Partition(ptn)
 
     def is_strict(ri):
-        r""" Given a root ideal ``ri``, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!
+        r""" Return if this root ideal's corresponding partition is strictly decreasing.
+
+        Given a root ideal ``ri``, check to see if it is a *strict root ideal*, as defined in Example 2.4 of [scat]_.  This merely means that it's corresponding partition is strictly decreasing!
 
         EXAMPLES:
 
@@ -486,13 +506,14 @@ class RootIdeal(list):
             sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             sage: ri.is_strict()
             False
-
         """
         ptn = ri.to_partition()
         return is_strictly_decreasing(ptn)
 
     def complement(self):
-        r""" Given a root ideal (or just an iterable of roots), return it's complement in the upper-staircase-shape, the result being a root ideal (or just an iterable of roots).
+        r""" Return this root ideal's complement in the upper-staircase-shape.
+
+        Given a root ideal (or just an iterable of roots), return it's complement in the upper-staircase-shape, the result being a root ideal (or just an iterable of roots).
 
         INPUTS:
 
@@ -524,7 +545,6 @@ class RootIdeal(list):
             True
             sage: ri2.complement() == ri1
             True
-
         """
         n = self.n
         ri_staircase = RootIdeals().init_staircase(n)
@@ -554,7 +574,6 @@ class RootIdeals:
 
             sage: removable_roots_to_root_ideal({(0, 1), (3, 4)}, 6)
             [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]
-
         """
         ptn = removable_roots_to_partition(corners, n)
         ri = self.init_from_partition(ptn, n)
@@ -564,7 +583,6 @@ class RootIdeals:
         r""" Given a SkewPartition ``sp`` and a type of root ideal ('max' or 'min'), return the corresponding root ideal.
 
         A type of ``'min'`` returns `\Phi(\lambda, \mu)` while a type of ``'max'`` returns `\Phi^+(\lambda, \mu)` as notated in [scat]_ at the bottom of page 1.
-
         """
         if method == 'removable roots':
             corners = skew_partition_to_removable_roots(sp, type)
@@ -572,10 +590,12 @@ class RootIdeals:
             root_ideal = self.init_from_removable_roots(corners, n)
         elif method == 'bounce':
             if type != 'max':
-                raise Exception('The bounce method can only yield the maximum root ideal (type=max).')
+                raise Exception(
+                    'The bounce method can only yield the maximum root ideal (type=max).')
             selected_indices = skew_partition_to_selected_rows(sp)
             n = len(sp.outer())
-            root_ideal = selected_rows_to_maximum_root_ideal(n, selected_indices)
+            root_ideal = selected_rows_to_maximum_root_ideal(
+                n, selected_indices)
         else:
             raise ValueError('Unknown method.')
         return RootIdeal(root_ideal)
@@ -584,13 +604,13 @@ class RootIdeals:
         r""" Given a skew partition ``sp``, find the corresponding set (but given as a list here) of root ideals.
 
         (This is the set `\{\Psi \in \Delta^+(\mathfrak{R}) \mid \Phi(\lambda, \mu) \subset \Psi \subset \Phi^+(\lambda, \mu)\} = [(\lambda, \mu)]` found in [scat]_ at the bottom of page 1.)
-
         """
         # We could change this to an iterator if users may not want all the root ideals.
         min_ri = self.init_from_skew_partition(sp, type='min')
         max_ri = self.init_from_skew_partition(sp, type='max')
         n = len(sp.outer())
-        next_func = lambda ri: ri.next(min=min_ri, max=max_ri, type=type)
+
+        def next_func(ri): return ri.next(min=min_ri, max=max_ri, type=type)
         ris = generate_path(next_func, min_ri)
         return ris
 
@@ -615,7 +635,6 @@ class RootIdeals:
             sage: k_ri = RootIdeals().init_k_schur_from_partition([3, 3, 2, 2, 2], 4, n=8)
             sage: k_ri.to_partition()
             [6, 5, 3, 2, 1]
-
         """
         assert is_pseudo_partition(seq)
         assert all(term <= k for term in seq)
@@ -625,7 +644,7 @@ class RootIdeals:
             assert len(seq) <= n
         ri = []
         for i, part in enumerate(seq):
-            ri += [(i,j) for j in range(k - part + i + 1, n)]
+            ri += [(i, j) for j in range(k - part + i + 1, n)]
         return RootIdeal(ri)
 
     def init_from_partition(self, ptn, n):
@@ -643,7 +662,6 @@ class RootIdeals:
 
             sage: RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]
-
         """
         if ptn is None or ptn == False:
             return ptn
@@ -662,12 +680,13 @@ class RootIdeals:
             [(0,1), (0,2), (1,2)]
             sage: RootIdeals().init_staircase(4)
             [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
-
         """
         return self.init_from_partition(staircase_shape(n), n)
 
     def init_parabolic_from_composition(self, composition):
-        r""" Given a composition `\eta` of positive integers, return the parabolic root ideal `\Delta(\eta)` defined by
+        r""" Given a composition of positive integers, return the parabolic root ideal.
+
+        Given a composition `\eta` of positive integers, return the parabolic root ideal `\Delta(\eta)` defined by
 
         ..  math::
 
@@ -686,7 +705,6 @@ class RootIdeals:
 
             sage: RootIdeals().init_parabolic_from_composition([1, 3, 2])
             [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]
-
         """
         assert partition.is_sequence(composition)
         assert all(term >= 1 for term in composition)
@@ -702,4 +720,3 @@ class RootIdeals:
         complement_ri = RootIdeal(cells_complement, n)
         ri = complement_ri.complement()
         return ri
-

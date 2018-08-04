@@ -10,6 +10,7 @@ from partition import *
 import skew_partition
 # ^*^ sphinx insert ^*^
 
+
 def shape_cell_indices(shape):
     # r"""
     # Takes a shape (partition or list of lists) and returns the
@@ -18,6 +19,7 @@ def shape_cell_indices(shape):
     shape = Partition(shape)
     return shape.cells()
 
+
 def tableau_cell_indices(tab):
     # r"""
     # Takes a tableau (or list of lists) and returns the indices
@@ -25,6 +27,7 @@ def tableau_cell_indices(tab):
     # """
     tab = Tableau(tab)
     return shape_cell_indices(tab.shape())
+
 
 def tableau_contains(outer, inner):
     # r"""
@@ -41,6 +44,7 @@ def tableau_contains(outer, inner):
             break
     return result
 
+
 def strong_tableau_quotient2(outer_tab, inner_shape):
     # r"""
     # Takes a strong tableau and skews it; that is, it sets all the
@@ -52,6 +56,7 @@ def strong_tableau_quotient2(outer_tab, inner_shape):
     for (row_index, col_index) in indices:
         ol[row_index][col_index] = None
     return Tableau(ol)
+
 
 def strong_tableau_quotient(outer, inner):
     # r"""
@@ -66,8 +71,10 @@ def strong_tableau_quotient(outer, inner):
         ol[row_index][col_index] = None
     return StrongTableau(ol, outer.k)
 
+
 def strong_tableau_has_row_marking(tab, row_index):
-    r"""
+    r""" Returns whether ``tab`` has a row marking in row ``row_index``.
+
     Checks if a strong tableau ``tab`` has a row marking in row
     ``row_index`` (row indexing starts at 0) and returns ``True``
     if row_marking is present; ``False`` otherwise.
@@ -79,6 +86,7 @@ def strong_tableau_has_row_marking(tab, row_index):
     result = (True in [i is not None and i < 0 for i in row])
     return result
 
+
 def add_skew_tabs(tab1, tab2):
     # Delete this
     # Dangerous if overlapping entries / has 0's
@@ -87,6 +95,7 @@ def add_skew_tabs(tab1, tab2):
     added = m1+m2
     tab_list = [map(lambda i: None if i == 0 else i, row) for row in added]
     return Tableau(tab_list)
+
 
 def add_skew_tab_to_tab(tab, skew_tab):
     # r"""
@@ -100,6 +109,7 @@ def add_skew_tab_to_tab(tab, skew_tab):
         skew_list[i][j] = tab_list[i][j]
     return Tableau(skew_list)
 
+
 def shape_to_homogeneous_tab(outer_shape, entry, inner_shape=[]):
     li = []
     for i in range(len(outer_shape)):
@@ -111,6 +121,7 @@ def shape_to_homogeneous_tab(outer_shape, entry, inner_shape=[]):
             row = row + [entry]*outer_shape[i]
         li.append(row)
     return Tableau(li)
+
 
 def std_strong_tab_from_core_sequence(core_sequence, k, markings):
     # 'markings' are (row,col) coordinates
@@ -125,6 +136,7 @@ def std_strong_tab_from_core_sequence(core_sequence, k, markings):
         base = add_skew_tab_to_tab(base, skew)
     return StrongTableaux.add_marking(base, markings, k, wt)
 
+
 def _strong_marked_tableau(lis, k):
     # helper to create a strong marked tableau
     st = StrongTableau(lis, k)
@@ -135,6 +147,7 @@ def _strong_marked_tableau(lis, k):
         raise ValueError('Not a standard SMT.')
     return st
 
+
 def k_coverees1(root, k):
     # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See method 2 of k_coverees.
     # one way to get the k coverees
@@ -142,6 +155,7 @@ def k_coverees1(root, k):
     root = root.to_partition()
     # set of coveree candidates (a superset of the coverees)
     candidates = set()
+
     def add_to_candidates(ptn, is_root=False):
         # add to dictionary if not already there
         if ptn not in candidates:
@@ -153,8 +167,10 @@ def k_coverees1(root, k):
                     add_to_candidates(sub_ptn)
     add_to_candidates(root, is_root=True)
     # Now that all k+1-cores (and some other things) have been populated in candidates, filter to the ones that really are k+1-cores and have correct k-boundary size.
-    coverees = set(ptn for ptn in candidates if ptn.is_core(k+1) and k_size(ptn, k) == k_size(root, k) - 1)
+    coverees = set(ptn for ptn in candidates if ptn.is_core(k+1)
+                   and k_size(ptn, k) == k_size(root, k) - 1)
     return coverees
+
 
 def k_coverees(core, k, method=1):
     # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See method 2 below.
@@ -168,6 +184,7 @@ def k_coverees(core, k, method=1):
         return coverees
     else:
         raise ValueError('Unknown method.')
+
 
 def __go_to_ribbon_head(cells, start_cell):
     # Given the cells of a ribbon or multiple disconnected ribbons, and a starting point, find the head of the ribbon
@@ -188,6 +205,7 @@ def __go_to_ribbon_head(cells, start_cell):
     head = cell
     return head
 
+
 def row_marking_to_marking(outer_core, inner_core, row_marking):
     sp = SkewPartition([outer_core, inner_core])
     cells = sp.cells()
@@ -200,6 +218,7 @@ def row_marking_to_marking(outer_core, inner_core, row_marking):
         return head
     else:
         raise ValueError('no such row marking')
+
 
 def row_markings_to_markings(core_sequence, row_markings):
     assert len(core_sequence) == len(row_markings) + 1
@@ -214,6 +233,7 @@ def row_markings_to_markings(core_sequence, row_markings):
         markings.append(marking)
     return markings
 
+
 def is_row_markable(outer_core, inner_core, row_marking):
     r""" Given two cores (typically consecutive cores in a core sequence), see if ``row_marking`` is a possible row_marking of outer_core/inner_core """
     try:
@@ -222,14 +242,19 @@ def is_row_markable(outer_core, inner_core, row_marking):
     except ValueError:
         return False
 
+
 def k_marked_coverees(core, k, row_marking):
     r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given with the given row_marking. """
     coverees = k_coverees(core, k)
-    marked_coverees = [c for c in coverees if is_row_markable(core, c, row_marking)]
+    marked_coverees = [c for c in coverees
+                       if is_row_markable(core, c, row_marking)]
     return set(marked_coverees)
+
 
 def end_core_to_marked_core_sequences(end_core, k, row_markings):
     r"""
+    Return the set of core sequences marked by ``row_markings`` ending in ``end_core``.
+
     INPUTS:
 
     - ``end_core`` -- a `k+1`-core
@@ -249,7 +274,6 @@ def end_core_to_marked_core_sequences(end_core, k, row_markings):
 
         sage: end_core_to_marked_core_sequences([5, 3, 1], 2, [1])
         {([3, 1, 1], [5, 3, 1]), ([4, 2], [5, 3, 1])}
-
     """
     # check inputs
     k = NonNegativeIntegerSemiring()(k)
@@ -266,14 +290,18 @@ def end_core_to_marked_core_sequences(end_core, k, row_markings):
         # inductive step
         coverees = k_marked_coverees(end_core, k, row_markings[-1])
         for coveree in coverees:
-            prefix_sequences = end_core_to_marked_core_sequences(coveree, k, row_markings[:-1])
+            prefix_sequences = end_core_to_marked_core_sequences(
+                coveree, k, row_markings[:-1])
             for prefix_sequence in prefix_sequences:
                 sequence = prefix_sequence + tuple([end_core])
                 sequences.append(sequence)
     return set(sequences)
 
+
 def end_core_to_strong_marked_tableaux(end_core, k, row_markings):
     r"""
+    Return the set of strong marked tableaux marked by ``row_markings`` ending in ``end_core``.
+
     INPUTS:
 
     - ``end_core`` -- a `k+1`-core
@@ -294,9 +322,9 @@ def end_core_to_strong_marked_tableaux(end_core, k, row_markings):
         sage: end_core_to_strong_marked_tableaux([5, 3, 1], 2, [1])
         {[[None, None, None, 1, 1], [None, 1, -1], [None]],
          [[None, None, None, None, 1], [None, None, -1], [1]]}
-
     """
-    core_sequences = end_core_to_marked_core_sequences(end_core, k, row_markings)
+    core_sequences = end_core_to_marked_core_sequences(
+        end_core, k, row_markings)
     smts = set()
     for core_sequence in core_sequences:
         markings = row_markings_to_markings(core_sequence, row_markings)

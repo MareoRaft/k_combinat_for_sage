@@ -6,7 +6,6 @@ REFERENCES:
 
 .. [Fun] `Raising operators and the Littlewood-Richardson polynomials <https://arxiv.org/pdf/1203.4729.pdf>`_.  Fun, Alex.
 .. [LN] `Finite sum Cauchy identity for dual Grothendieck polynomials <https://projecteuclid.org/download/pdf_1/euclid.pja/1407415930>`_.
-
 """
 from sage.all import *
 
@@ -40,6 +39,7 @@ def get_k_rectangles(k):
     # A __k-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is k.
     return [Partition([a] * b) for (a, b) in k_rectangle_dimension_list(k)]
 
+
 def get_k_irreducible_partition_lists(k):
     # Returns: list of lists (instead of list of Partition objects)
 
@@ -58,9 +58,11 @@ def get_k_irreducible_partition_lists(k):
         k_irr_ptns = new_k_irr_ptns
     return k_irr_ptns
 
+
 def get_k_irreducible_partitions(k):
-    r""" Given k, return the n! k-irreducible-partitions. """
+    r""" Given ``k``, return the `n!` `k`-irreducible-partitions. """
     return [Partition(e) for e in get_k_irreducible_partition_lists(k)]
+
 
 def size_to_num_linked_partition_self_pairs(n):
     # Given a natural number n, count how many partitions l of size n have the property that (l, l) has a corresponding linked-skew-diagram.
@@ -75,20 +77,26 @@ def size_to_num_linked_partition_self_pairs(n):
             count += 1
     return count
 
+
 def print_sequence(func, num_terms=float('inf')):
     n = 0
     while n < num_terms:
         print('n={}\t{}=f(n)'.format(n, func(n)))
 
+
 def size_to_k_shapes(n, k):
-    r""" Find all partitions of size n that are k-shapes. """
+    r""" Return all partitions of size ``n`` that are ``k``-shapes. """
     return [ptn for ptn in Partitions(n) if is_k_shape(ptn, k)]
+
 
 def size_to_num_k_shapes(n, k):
     return len(size_to_k_shapes(n, k))
 
+
 def straighten(s, gamma):
-    r""" Perform Schur function straightening by the Schur straightening rule ([cat]_, Prop. 4.1).  Also known as the slinky rule.
+    r""" Perform Schur function straightening by the Schur straightening rule.
+
+    See [cat]_, Prop. 4.1.  Also known as the slinky rule.
 
     .. MATH::
 
@@ -106,12 +114,13 @@ def straighten(s, gamma):
         sage: s = SymmetricFunctions(QQ).s()
         sage: straighten(s, [2, 1, 3])
         -s[2, 2, 2]
-
     """
     def has_nonnegative_parts(lis):
         return all(e >= 0 for e in lis)
+
     def has_distinct_parts(lis):
         return len(set(lis)) == len(lis)
+
     def number_of_noninversions(lis):
         num = 0
         for i in range(len(lis)):
@@ -122,7 +131,8 @@ def straighten(s, gamma):
         return num
     gamma = Composition(gamma)
     if s.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
-        raise NotImplemented('Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
+        raise NotImplemented(
+            'Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
     elif s.__class__.__name__ == 'HallLittlewood_qp_with_category':
         return compositional_hall_littlewood_Qp(gamma, base_ring=s.base_ring())
     elif s.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
@@ -142,7 +152,8 @@ def straighten(s, gamma):
         else:
             return 0
     else:
-        raise ValueError("The input parameter 's' should be a symmetric function basis.  For example, 's = SymmetricFunctions(QQ).s(); straighten(s, [2, 1, 3])', or one could use 'h' instead of 's'.")
+        raise ValueError(
+            "The input parameter 's' should be a symmetric function basis.  For example, 's = SymmetricFunctions(QQ).s(); straighten(s, [2, 1, 3])', or one could use 'h' instead of 's'.")
 
 
 class ShiftingSequenceSpace():
@@ -158,14 +169,17 @@ class ShiftingSequenceSpace():
         return not any(i not in self.base for i in seq)
 
     VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base}), but instead received {seq}.'
+
     def validate(self, seq):
         if not self.__contains__(seq):
-            raise ValueError(self.VALIDATION_ERROR_MESSAGE.format(base=self.base, seq=seq))
+            raise ValueError(self.VALIDATION_ERROR_MESSAGE.format(
+                base=self.base, seq=seq))
 
 
 class RaisingSequenceSpace(ShiftingSequenceSpace):
     # helper for RaisingOperatorAlgebra
     VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base} elements, where every partial sum is nonnegative and every total sum is 0), but instead received {seq}.'
+
     def __contains__(self, seq):
         # check that it is a shifting sequence
         if not ShiftingSequenceSpace.__contains__(self, seq):
@@ -227,13 +241,15 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         return self.__getitem__(index_product)
 
     class Element(CombinatorialFreeModule.Element):
-        r""" element of a ShiftingOperatorAlgebra"""
+        r""" An element of a ShiftingOperatorAlgebra. """
+
         def indices(self):
             return self.support()
 
         def index(self):
             if len(self) != 1:
-                raise ValueError("This is only defined for basis elements.  For other elements, use indices() instead.")
+                raise ValueError(
+                    "This is only defined for basis elements.  For other elements, use indices() instead.")
             return self.indices()[0]
 
         def _call_basis_on_index(self, seq, index):
@@ -257,7 +273,8 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                     # process the vectors
                     dic = operand.monomial_coefficients()
                     assert len(dic) == 1
-                    (composition, coeff) = dic.items()[0] # occasionally a coefficient can show up (not cool, so consider the inclusion of coeff here a patch)
+                    # occasionally a coefficient can show up (not cool, so consider the inclusion of coeff here a patch)
+                    (composition, coeff) = dic.items()[0]
                     out_composition = raise_func(seq, composition)
                     if parent_basis.__class__.__name__ in (
                             'SymmetricFunctionAlgebra_homogeneous_with_category',
@@ -272,6 +289,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                         return coeff * straighten(parent_basis, out_composition)
                     else:
                         return coeff * parent_basis(out_composition)
+
             def call_monomial(seq, coeff, operand, power=1):
                 # print('BEFORE')
                 # print('(operand, coeff) = ({}, {})'.format(operand, coeff))
@@ -299,19 +317,23 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                     # the operand looks like s[2, 1] + s[3], for example
                     return sum(self.__call__(summand) for summand in operand.terms())
                 else:
-                    out_list = [call_monomial(index, coeff, operand) for index, coeff in self]
+                    out_list = [call_monomial(index, coeff, operand)
+                                for index, coeff in self]
                     return sum(coeff * mon for mon, coeff in out_list)
 
 
 class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
-    r"""
+    r""" An algebra of raising operators.
+
+    This class subclasses :class:`ShiftingOperatorAlgebra` and inherits the large majority of its functionality from there.
+
     We follow the following convention!:
 
     R[(1, 0, -1)] is the raising operator that raises the first part by 1 and lowers the third part by 1.
 
     For a definition of raising operators, see [cat]_ Definition 2.1, but be wary that the notation is different there.  See :meth:`ij` for a way to create operators using the notation in the paper.
 
-    If you do NOT want any restrictions on the allowed sequences, simply use 'ShiftingOperatorAlgebra' instead of 'RaisingOperatorAlgebra'.
+    If you do NOT want any restrictions on the allowed sequences, use :class:`ShiftingOperatorAlgebra` instead of 'RaisingOperatorAlgebra'.
 
     OPTIONAL ARGUMENTS:
 
@@ -336,16 +358,18 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         R() - R(0, 1, -1) - R(1, -1) + R(1, 0, -1)
         sage: ((1 - R[(1,-1)]) * (1 - R[(0,1,-1)]))(s[2, 2, 1])
         (-3*t-2)*s[] + s[2, 2, 1] - s[3, 1, 1] + s[3, 2]
-
     """
+
     def __init__(self, base_ring=QQ['t'], prefix='R'):
         ShiftingOperatorAlgebra.__init__(self,
-            base_ring=base_ring,
-            prefix=prefix,
-            basis_indices=RaisingSequenceSpace())
+                                         base_ring=base_ring,
+                                         prefix=prefix,
+                                         basis_indices=RaisingSequenceSpace())
 
     def ij(self, i, j):
-        r""" Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indices here are 0-based, not 1-based.
+        r""" Return the raising operator `R_{ij}` as notated in [cat]_ Definition 2.1.
+
+        Shorthand element constructor that allows you to create raising operators using the familiar `R_{ij}` notation found in [cat]_ Definition 2.1, with the exception that indices here are 0-based, not 1-based.
 
         EXAMPLES:
 
@@ -353,14 +377,16 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
             sage: R.ij(0, 2)
             R((1, 0, -1))
-
         """
         if not i in NonNegativeIntegerSemiring():
-            raise ValueError('i must be a natural number.  You input i = {i}.'.format(i=i))
+            raise ValueError(
+                'i must be a natural number.  You input i = {i}.'.format(i=i))
         if not j in NonNegativeIntegerSemiring():
-            raise ValueError('j must be a natural number.  You input j = {j}.'.format(j=j))
+            raise ValueError(
+                'j must be a natural number.  You input j = {j}.'.format(j=j))
         if not i < j:
-            raise ValueError('Index j must be greater than index i.  You input (i, j) = ({i}, {j}).'.format(i=i, j=j))
+            raise ValueError(
+                'Index j must be greater than index i.  You input (i, j) = ({i}, {j}).'.format(i=i, j=j))
         seq = [0] * (max(i, j) + 1)
         seq[i] = 1
         seq[j] = -1
@@ -390,16 +416,18 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
         sage: u.i(2)(ks[2, 2, 1])
         ks4[2, 2, 1] + t^2*ks4[3, 2] + t^3*ks4[4, 1]
         # TODO: verify by hand that above is really correct, or maybe a simpler example
-
     """
+
     def __init__(self, base_ring=QQ['t'], prefix='u'):
         ShiftingOperatorAlgebra.__init__(self,
-            base_ring=base_ring,
-            prefix=prefix,
-            basis_indices=ShiftingSequenceSpace())
+                                         base_ring=base_ring,
+                                         prefix=prefix,
+                                         basis_indices=ShiftingSequenceSpace())
 
     def i(self, i):
-        r""" Shorthand element constructor that allows you to create Pieri operators using the familiar `u_i` notation, with the exception that indices here are 0-based, not 1-based.
+        r""" Return the Pieri operator `u_i`.
+
+        Shorthand element constructor that allows you to create Pieri operators using the familiar `u_i` notation, with the exception that indices here are 0-based, not 1-based.
 
         EXAMPLES:
 
@@ -407,10 +435,10 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
 
             sage: u.i(2)
             u((0, 0, -1))
-
         """
         if not i in NonNegativeIntegerSemiring():
-            raise ValueError('i must be a natural number.  You input i = {i}.'.format(i=i))
+            raise ValueError(
+                'i must be a natural number.  You input i = {i}.'.format(i=i))
         seq = [0] * (i + 1)
         seq[i] = -1
         seq = tuple(seq)
@@ -423,19 +451,23 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
                 kschur = operand.parent()
                 base_ring = kschur.base_ring()
                 cat_coeff_pairs = [
-                    (CatalanFunctions().init_from_k_schur(kschur(index), base_ring=base_ring), coeff)
+                    (CatalanFunctions().init_from_k_schur(
+                        kschur(index), base_ring=base_ring), coeff)
                     for index, coeff in operand]
                 # act
-                new_cat_coeff_pairs = [(self.__call__(cat), coeff) for cat, coeff in cat_coeff_pairs]
+                new_cat_coeff_pairs = [(self.__call__(cat), coeff)
+                                       for cat, coeff in cat_coeff_pairs]
                 # convert back to kschur
-                out_coeff_pairs = [(kschur(cat.eval()), coeff) for cat, coeff in cat_coeff_pairs]
+                out_coeff_pairs = [(kschur(cat.eval()), coeff)
+                                   for cat, coeff in cat_coeff_pairs]
                 return sum(coeff * func for func, coeff in out_coeff_pairs)
             else:
                 return ShiftingOperatorAlgebra.Element.__call__(self, operand)
 
 
 class HallLittlewoodVertexOperator:
-    r"""
+    r""" The Hall-Littlewood vertex operator.
+
     Garsia's version of Jing's Hall-Littlewood vertex operators.  These are defined in equations 4.2 and 4.3 of [cat]_ and appear visually as a bold capital H.
 
     INPUTS:
@@ -448,8 +480,8 @@ class HallLittlewoodVertexOperator:
         sage: one = SymmetricFunctions(QQ['t']).hall_littlewood().Qp().one()
         sage: H([4, 1, 3])(one) == H(4)(H(1)(H(3)(one)))
         True
-
     """
+
     def __init__(self, composition, base_ring=QQ['t']):
         if composition in NonNegativeIntegerSemiring():
             self.composition = Composition([composition])
@@ -500,7 +532,7 @@ class HallLittlewoodVertexOperator:
         # EXAMPLES::
         #     sage: op(2,op(3,s(1)))
         #     t*s[3, 2] + t^2*s[4, 1] + t^3*s[5]
-        return sum((-1)**k * self._hh(m+k) * self._skewbyeeq( k, f ) for k in range(f.degree() + 1))
+        return sum((-1)**k * self._hh(m+k) * self._skewbyeeq(k, f) for k in range(f.degree() + 1))
 
     def __call__(self, input_):
         gamma = self.composition
@@ -514,8 +546,7 @@ class HallLittlewoodVertexOperator:
 
 
 def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
-    r"""
-    Given gamma, returns the compositional Hall-Littlewood polynomial `H_{\gamma}(\mathbf{x}; t)` in the Q' basis, as defined in [cat]_ section 4.4.
+    r""" Given gamma, returns the compositional Hall-Littlewood polynomial `H_{\gamma}(\mathbf{x}; t)` in the Q' basis, as defined in [cat]_ section 4.4.
 
     If the composition gamma is a partition, this is just the Hall-Littlewood Q' polynomial.
 
@@ -524,7 +555,6 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
         sage: hl = SymmetricFunctions(QQ['t']).hall_littlewood().Qp()
         sage: compositional_hall_littlewood_Qp([3, 3, 2]) == hl[3, 3, 2]
         True
-
     """
     sym = SymmetricFunctions(base_ring)
     HLQp = sym.hall_littlewood().Qp()
@@ -536,8 +566,11 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
         H = HallLittlewoodVertexOperator
         return H(gamma)(HLQp.one())
 
+
 def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
-    r""" Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator
+    r""" Return the operator `\prod_{(i,j) \in roots} (1 - tR_{ij})`.
+
+    Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator
 
     ..  MATH::
 
@@ -551,12 +584,14 @@ def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     op = prod([1 - t*R.ij(i, j) for (i, j) in roots], R.one())
     return op
 
+
 def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
-    r""" The q-t analogue of :meth:`raising_roots_operator`, defined by
+    r""" Return the operator `\prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in roots} (1 - qR_{ij})`.
+
+    The q-t analogue of :meth:`raising_roots_operator`, defined by
 
     ..  MATH::
         \prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in \Phi} (1 - qR_{ij}).
-
     """
     if roots in NonNegativeIntegerSemiring():
         roots = RootIdeals().init_staircase(roots)
@@ -570,7 +605,9 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
 
 
 class CatalanFunction:
-    r""" A catalan function `H(\Psi; \gamma)` as discussed in [cat]_ section 4.  By definition,
+    r""" A catalan function `H(\Psi; \gamma)` as discussed in [cat]_ section 4.
+
+    By definition,
 
     ..  MATH::
 
@@ -586,7 +623,6 @@ class CatalanFunction:
         H([(0, 2), (1, 2)]; [6, 6, 5])
 
     There are in fact many ways to initialize a catalan function, and the methods for doing so are found in :class:`CatalanFunctions`.
-
     """
     BASE_RING_DEFAULT = QQ['t']
     PREFIX_DEFAULT = 'H'
@@ -610,7 +646,8 @@ class CatalanFunction:
         return self.index
 
     def _new_object_for_index_operator(self, new_index):
-        new_obj = self.__class__(self.roots, new_index, base_ring=self.base_ring)
+        new_obj = self.__class__(self.roots, new_index,
+                                 base_ring=self.base_ring)
         return new_obj
 
     def eval(self):
@@ -629,7 +666,6 @@ class CatalanFunction:
             HLQp[4, 1] - t*HLQp[5]
             sage: s(cf.eval())
             s[4, 1]
-
         """
         # setup
         hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
@@ -637,7 +673,8 @@ class CatalanFunction:
         # formula
         roots_complement = self.roots.complement()
         # print(roots_complement)
-        op = raising_roots_operator(roots_complement, t=t, base_ring=self.base_ring)
+        op = raising_roots_operator(
+            roots_complement, t=t, base_ring=self.base_ring)
         # print(op)
         hl_poly = hl(self.index)
         # print(hl_poly)
@@ -670,7 +707,6 @@ class CatalanFunction:
             x0^4*x1 + x0^3*x1^2 + x0^2*x1^3 + x0*x1^4
             sage: cf.expand(2, alphabet='y')
             y0^4*y1 + y0^3*y1^2 + y0^2*y1^3 + y0*y1^4
-
         """
         return self.eval().expand(*args, **kwargs)
 
@@ -707,13 +743,11 @@ class CatalanFunctions:
 
             sage: CatalanFunctions().init_from_indexed_root_ideal([(0,2), (1,2)], [6, 6, 5])
             H([(0, 2), (1, 2)]; [6, 6, 5])
-
         """
         return CatalanFunction(roots, index, base_ring, prefix)
 
     def init_from_skew_partition(self, sp, base_ring=None, prefix=None):
-        r""" Given a SkewPartition ``sp``, return the catalan function `H(\Phi^+(sp); rs(sp))`.
-        """
+        r""" Given a SkewPartition ``sp``, return the catalan function `H(\Phi^+(sp); rs(sp))`. """
         ri = skew_partition_to_root_ideal(sp, type='max')
         rs = sp.row_lengths()
         return self.init_from_indexed_root_ideal(ri, rs, base_ring, prefix)
@@ -725,8 +759,7 @@ class CatalanFunctions:
         return self.init_from_skew_partition(sp, base_ring, prefix)
 
     def init_from_k_shape(self, p, k, base_ring=None, prefix=None):
-        r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Phi^+(p); rs(p))`.
-        """
+        r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Phi^+(p); rs(p))`. """
         assert is_k_shape(p, k)
         sp = SkewPartition([p, []])
         return self.init_from_skew_partition(self, sp, base_ring, prefix)
@@ -771,7 +804,6 @@ class CatalanFunctions:
 
             sage: CatalanFunctions().init_parabolic_from_composition_and_index([1, 3, 2], [1, 2, 3, 4, 5, 6])
             H([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]; [1, 2, 3, 4, 5, 6])
-
         """
         ri = RootIdeals().init_parabolic_from_composition(composition)
         return self.init_from_indexed_root_ideal(ri, index, base_ring, prefix)
@@ -794,15 +826,18 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
 
     To change the prefix of the generators, use ``prefix=`` (default ``'x'``).
     """
+
     def __init__(self,
-            base_ring=IntegerRing(),
-            prefix='x',
-            basis_indices=None,
-            index_set=NonNegativeIntegerSemiring()):
+                 base_ring=IntegerRing(),
+                 prefix='x',
+                 basis_indices=None,
+                 index_set=NonNegativeIntegerSemiring()):
         self._base_ring = base_ring
-        self._basis_monoid = FreeMonoid(index_set=index_set, commutative=True, prefix=prefix) if basis_indices is None else basis_indices
+        self._basis_monoid = FreeMonoid(
+            index_set=index_set, commutative=True, prefix=prefix) if basis_indices is None else basis_indices
         # category
-        category = Algebras(self._base_ring.category()).WithBasis().Commutative()
+        category = Algebras(self._base_ring.category()
+                            ).WithBasis().Commutative()
         category = category.or_subcategory(category)
         # init
         CombinatorialFreeModule.__init__(
@@ -842,7 +877,7 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
 
 
 DoubleRing = InfiniteDimensionalFreeAlgebra(prefix='a', index_set=IntegerRing())
-r"""   ``DoubleRing`` is the ring `\Lambda(a)` found in [Fun]_ section 3. """
+r""" ``DoubleRing`` is the ring `\Lambda(a)` found in [Fun]_ section 3. """
 
 
 def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
@@ -860,7 +895,6 @@ def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
 
         sage: dual_k_theoretic_homogeneous([2, 1], [1, 1])
         h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1
-
     """
     if is_sequence(k):
         # pad with 0's
@@ -868,12 +902,14 @@ def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
         k = list(k) + [0] * (max_len - len(k))
         r = list(r) + [0] * (max_len - len(r))
         # multiply
-        h_list = [dual_k_theoretic_homogeneous(k_el, r_el, base_ring) for k_el, r_el in zip(k, r)]
+        h_list = [dual_k_theoretic_homogeneous(
+            k_el, r_el, base_ring) for k_el, r_el in zip(k, r)]
         return reduce(operator.mul, h_list)
     else:
         assert k >= 0
         h = SymmetricFunctions(base_ring).h()
         return sum(binomial(r + i - 1, i) * h[k - i] for i in range(k + 1))
+
 
 def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     r"""
@@ -896,7 +932,6 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     ..  MATH::
 
         \prod_{ij \in \Delta^+ \smallsetminus \Phi} (1 - R_{ij}) h_\gamma(x; \alpha).
-
     """
     # setup
     Kh = dual_k_theoretic_homogeneous(index, index2, base_ring=base_ring)
@@ -906,6 +941,7 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     op = raising_roots_operator(roots_complement, t=1, base_ring=base_ring)
     cat_func = op(Kh)
     return cat_func
+
 
 def dual_grothendieck_function(composition, base_ring=QQ):
     r""" Given a composition `composition = \lambda`, return the dual Grothendieck function defined by `g_\lambda(x) = \text{det}(h_{\lambda_i + j - i}(x, i - 1))` in [LN]_ p.88 equation (4).
@@ -917,15 +953,17 @@ def dual_grothendieck_function(composition, base_ring=QQ):
         sage: h = SymmetricFunctions(QQ).h()
         sage: dual_grothendieck_function([2, 1])
         h[1]*h[2] + h[2] - h[3]
-
     """
-    roots = [] # because dual_k_catalan_function will take the complement
+    roots = []  # because dual_k_catalan_function will take the complement
     n = len(composition)
     reversed_staircase_ptn = list(reversed(staircase_shape(n)))
     return dual_k_catalan_function(roots, composition, reversed_staircase_ptn, base_ring=base_ring)
 
+
 def double_homogeneous_building_block(p, n):
-    r""" The double complete homogeneous symmetric polynomial building block `h_p(x \,||\, a)` defined as
+    r""" The double complete homogeneous symmetric polynomial "building block" `h_p(x || a)`.
+
+    Defined as
 
     ..  MATH::
         h_p(x_1, \ldots, x_n \,||\, a) \,= \sum_{n \geq i_1 \geq \ldots \geq i_p \geq 1} (x_{i_1} - a_{i_1})(x_{i_2} - a_{i_2 - 1}) \cdots (x_{i_p} - a_{i_p - p + 1})
@@ -944,6 +982,7 @@ def double_homogeneous_building_block(p, n):
         summand = prod([(x[ptn[b]] - a[ptn[b] - b]) for b in range(p)], a.one())
         total_sum += summand
     return total_sum
+
 
 def shift(element):
     r""" The function `\tau` which acts on any element of `\Lambda(a)` (``DoubleRing``) by sending each element `a_i` to `a_{i+1}` for all `i`.  It can be found in [Fun]_ p.8 between equations (6) and (7).
@@ -967,9 +1006,9 @@ def shift(element):
     new_element = a.sum(new_monomials)
     return new_element
 
+
 def double_homogeneous_building_block_shifted(r, s, n):
-    r""" Given `r` and `s`, returns `h_{r, s} = \tau^s h_r(x \,||\, a)`, as defined in [Fun]_ before eq (8).
-    """
+    r""" Given `r` and `s`, returns `h_{r, s} = \tau^s h_r(x \,||\, a)`, as defined in [Fun]_ before eq (8). """
     if n > 0:
         out = double_homogeneous_building_block(r, n)
         for _ in range(s):
@@ -977,6 +1016,7 @@ def double_homogeneous_building_block_shifted(r, s, n):
         return out
     else:
         raise NotImplemented
+
 
 class DoubleHomogeneous:
     r"""
@@ -1005,6 +1045,7 @@ class DoubleHomogeneous:
         sage: p = 3
         sage: DoubleHomogeneous([p], [0], 4)
     """
+
     def __init__(self, index1, index2, prefix='h'):
         self.index1 = index1
         self.index2 = index2
@@ -1024,14 +1065,15 @@ class DoubleHomogeneous:
         return new_obj
 
     def eval(self, n):
-        r""" Given the number of variables `n`, output self expanded in terms of the shifted double homogeneous building blocks `h_{r, s}`. """
+        r""" Given the number of variables ``n``, return ``self`` expanded in terms of the shifted double homogeneous building blocks `h_{r, s}`. """
         (mu1, mu2) = (self.index1, self.index2)
         # pad with 0's
         max_len = max(len(mu1), len(mu2))
         mu1 = list(mu1) + [0] * (max_len - len(mu1))
         mu2 = list(mu2) + [0] * (max_len - len(mu2))
         # compute
-        h_list = [double_homogeneous_shifted(mu1[i], mu2[i], n) for i in range(max_len)]
+        h_list = [double_homogeneous_shifted(
+            mu1[i], mu2[i], n) for i in range(max_len)]
         hp = prod(h_list)
         return hp
 
@@ -1051,13 +1093,13 @@ def double_schur(index, n):
         s_\lambda(x_1, \ldots, x_n \,||\, a) = \prod_{ij \in \Delta^+(l)} (1 - R_{ij}) h^{(n)}_{\lambda, (0, \ldots, l-1)}
 
     where `l` is the length of `\lambda`, in [Fun]_ p.9 equation (9).
-
     """
     l = len(index)
     op = raising_roots_operator(l, t=1, base_ring=ZZ)
     rho = list(reversed(staircase_shape(l)))
     h_index = DoubleHomogeneous(index, rho, n)
     return op(h_index)
+
 
 def double_catalan_function(roots, index, n):
     # setup
@@ -1071,6 +1113,7 @@ def double_catalan_function(roots, index, n):
     cat_func = op(h_index)
     return cat_func
 
+
 def substitute(f, t=None, q=None):
     # take in a symmetric function ``f`` and plug the inputted ``t`` and ``q`` values.
     # a t value of 'None' will leave t as-is.
@@ -1079,12 +1122,14 @@ def substitute(f, t=None, q=None):
     s = SymmetricFunctions(base_ring)
     f_s = s(f)
     coeffs = f_s.coefficients()
-    monomials = sorted(f_s.monomials()) # Necessary because otherwise coeffs and monomials don't line up
+    # Necessary because otherwise coeffs and monomials don't line up
+    monomials = sorted(f_s.monomials())
     specialized_coeffs = [coeff.substitute(t=t, q=q) for coeff in coeffs]
     combine = zip(specialized_coeffs, monomials)
     ungraded_f_s = sum(coeff * monom for (coeff, monom) in combine)
     ungraded_f = basis(ungraded_f_s)
     return ungraded_f
+
 
 def ungraded(f):
     return substitute(f, t=1)

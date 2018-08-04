@@ -6,9 +6,12 @@ from sage.all import *
 # ^*^ sphinx insert ^*^
 
 # HELPERS
+
+
 def is_sequence(obj):
     # Check if something is one of our allowed 'compositions'.
     return isinstance(obj, (list, Composition, Partition))
+
 
 def k_rectangle_dimension_list(k):
     return [(k-i+1, i) for i in range(1, k+1)]
@@ -30,13 +33,15 @@ def k_size(ptn, k):
         3
         sage: Partition([2, 1, 1]).k_size(4)
         4
-
     """
     ptn = Partition(ptn)
     return ptn.k_boundary(k).size()
 
+
 def boundary(ptn):
-    r""" The boundary of a partition is the set `\{ \text{NE}(d) \mid \forall d\:\text{diagonal} \}`.  That is, for every diagonal line `y = x + b` where `b \in \mathbb{Z}`, we find the northeasternmost (NE) point on that diagonal which is also in the Ferrer's diagram (here, the Ferrer's diagram is interpreted as 1 x 1 cells in the Euclidean plane).
+    r""" Return the integer coordinates of points on the boundary of ``ptn``.
+
+    The boundary of a partition is the set `\{ \text{NE}(d) \mid \forall d\:\text{diagonal} \}`.  That is, for every diagonal line `y = x + b` where `b \in \mathbb{Z}`, we find the northeasternmost (NE) point on that diagonal which is also in the Ferrer's diagram (here, the Ferrer's diagram is interpreted as 1 x 1 cells in the Euclidean plane).
 
     The boundary will go from bottom-right to top-left in the French convention.
 
@@ -65,7 +70,6 @@ def boundary(ptn):
 
         sage: boundary(Partition([3, 1]))
         [(3,0), (3,1), (2,1), (1,1), (1,2), (0,2)]
-
     """
     def horizontal_piece(xy, bdy):
         (start_x, start_y) = xy
@@ -73,7 +77,7 @@ def boundary(ptn):
             h_piece = [(start_x, start_y)]
         else:
             stop_x = bdy[-1][0]
-            y = start_y # y never changes
+            y = start_y  # y never changes
             h_piece = [(x, y) for x in range(start_x, stop_x)]
         h_piece = list(reversed(h_piece))
         return h_piece
@@ -88,8 +92,11 @@ def boundary(ptn):
     bdy += horizontal_piece((top_left_x, top_left_y), bdy)
     return bdy
 
+
 def k_rim(ptn, k):
-    r""" The ``k``-rim of a partition ``ptn`` is the "line between" (or "intersection of") the `k`-boundary and the `k`-interior.  (Section 2.3 of [genocchi]_)
+    r""" Return the ``k``-rim of ``ptn`` as a list of integer coordinates.
+
+    The `k`-rim of a partition is the "line between" (or "intersection of") the `k`-boundary and the `k`-interior.  (Section 2.3 of [genocchi]_)
 
     It will be output as an ordered list of integer coordinates, where the origin is `(0, 0)`.  It will start at the top-left of the `k`-rim (using French convention) and end at the bottom-right.
 
@@ -105,7 +112,6 @@ def k_rim(ptn, k):
 
         sage: k_rim(Partition([3, 1]), 1)
         [(3,0), (2,0), (2,1), (1,1), (0,1), (0,2)])
-
     """
     interior_rim = boundary(ptn.k_interior(k))
     # get leftmost vertical line
@@ -117,13 +123,17 @@ def k_rim(ptn, k):
         ptn_bottom_right_x = ptn[0]
     else:
         ptn_bottom_right_x = 0
-    h_piece = [(x, 0) for x in range(ptn_bottom_right_x, interior_bottom_right_x, -1)]
+    h_piece = [(x, 0)
+               for x in range(ptn_bottom_right_x, interior_bottom_right_x, -1)]
     # glue together with boundary
     rim = h_piece + interior_rim + v_piece
     return rim
 
+
 def k_row_lengths(ptn, k):
-    r""" Given a partition, return it's `k`-row-shape.  This is equivalent to taking the `k`-boundary of the partition and then returning the row-shape of that.  We do *not* discard rows of length 0.  (Section 2.2 of [mem]_)
+    r""" Given a partition, return it's `k`-row-shape.
+
+    This is equivalent to taking the `k`-boundary of the partition and then returning the row-shape of that.  We do *not* discard rows of length 0.  (Section 2.2 of [mem]_)
 
     EXAMPLES::
 
@@ -135,8 +145,11 @@ def k_row_lengths(ptn, k):
     """
     return ptn.k_boundary(k).row_lengths()
 
+
 def k_column_lengths(ptn, k):
-    r""" Given a partition, return it's `k`-column-shape.  This is the 'column' analog of :meth:`k_row_lengths`.
+    r""" Given a partition, return it's `k`-column-shape.
+
+    This is the 'column' analog of :meth:`k_row_lengths`.
 
     EXAMPLES::
 
@@ -147,6 +160,7 @@ def k_column_lengths(ptn, k):
         [1, 1, 1, 2]
     """
     return ptn.k_boundary(k).column_lengths()
+
 
 def has_rectangle(ptn, h, w):
     r""" A partition ``ptn`` has an `h` x `w` rectangle if it's Ferrer's diagram has `h` (*or more*) rows of length `w` (*exactly*).
@@ -159,6 +173,7 @@ def has_rectangle(ptn, h, w):
             num_rows_of_len_w += 1
     return num_rows_of_len_w >= h
 
+
 def has_k_rectangle(ptn, k):
     r""" A partition ``ptn`` has a `k`-rectangle if it's Ferrer's diagram contains `k-i+1` rows (*or more*) of length `i` (*exactly*) for any `i` in `[1, k]`.
 
@@ -167,9 +182,9 @@ def has_k_rectangle(ptn, k):
     .. SEEALSO::
 
         :meth:`is_k_irreducible`, :meth:`has_k_rectangle`
-
     """
     return any(has_rectangle(ptn, a, b) for (a, b) in k_rectangle_dimension_list(k))
+
 
 def is_k_bounded(ptn, k):
     r""" Returns True if and only if the partition is bounded by `k`.
@@ -182,13 +197,13 @@ def is_k_bounded(ptn, k):
         True
         sage: is_k_bounded(Partition([4, 3, 1]), 3)
         False
-
     """
     if ptn.is_empty():
         least_upper_bound = 0
     else:
         least_upper_bound = max(ptn)
     return least_upper_bound <= k
+
 
 def is_k_reducible(ptn, k):
     r""" A `k`-bounded partition is `k`-*reducible* if it's Ferrer's diagram contains `k-i+1` rows (or more) of length `i` (exactly) for some `i \in [1, k]`.
@@ -207,11 +222,11 @@ def is_k_reducible(ptn, k):
     .. SEEALSO::
 
         :meth:`is_k_irreducible`, :meth:`has_k_rectangle`
-
     """
     # We only talk about k-reducible / k-irreducible for k-bounded partitions.
     assert is_k_bounded(ptn, k)
     return has_k_rectangle(ptn, k)
+
 
 def is_k_irreducible(ptn, k):
     r""" A `k`-bounded partition is `k`-*irreducible* if it's Ferrer's diagram does *not* contain `k-i+1` rows (or more) of length `i` (exactly) for every `i \in [1, k]`.
@@ -233,9 +248,9 @@ def is_k_irreducible(ptn, k):
     .. SEEALSO::
 
         :meth:`is_k_reducible`, :meth:`has_k_rectangle`
-
     """
     return not is_k_reducible(ptn, k)
+
 
 def is_symmetric(ptn):
     r"""Given a partition ``ptn``, detect if ``ptn`` equals its own transpose.
@@ -247,9 +262,9 @@ def is_symmetric(ptn):
 
         sage: is_symmetric(Partition([3, 1]))
         False
-
     """
     return ptn == ptn.conjugate()
+
 
 def next(p, min=[], max=None, type=None):
     r"""Get the next partition lexicographically that contains min and is contained in max.
@@ -263,7 +278,6 @@ def next(p, min=[], max=None, type=None):
     - ``max`` -- (default ``None``) The 'maximum partition' that ``next_within_bounds(p)`` must be contained in.  If set to ``None``, then there is no restriction.
 
     - ``type`` -- The type of partitions allowed.  For example, 'strict' for strictly decreasing partitions.
-
     """
     # make sure min <= p <= max
     if max is not None:
@@ -283,6 +297,7 @@ def next(p, min=[], max=None, type=None):
     min = min + [0] * (len(max) - len(min))
     # finally, run the algo to find next_p
     next_p = copy(p)
+
     def condition(a, b):
         if type in ('strict', 'strictly decreasing'):
             return a < b - 1
@@ -306,6 +321,7 @@ def next(p, min=[], max=None, type=None):
                 continue
     return Partition(next_p)
 
+
 def is_k_core(ptn, k):
     r""" Returns a boolean saying whether or not the Partition ``ptn`` is a ``k``-core.
 
@@ -317,7 +333,6 @@ def is_k_core(ptn, k):
         True
         sage: is_k_core(Partition([2, 1]), 3)
         False
-
     """
     ptn = Partition(ptn)
     for row_hook_lengths in ptn.hook_lengths():
@@ -326,12 +341,14 @@ def is_k_core(ptn, k):
                 return False
     return True
 
+
 def to_k_core(ptn, k):
     r""" Shift the rows of ``ptn`` minimally in order to create a `k`-core.
 
     If you plug a `k`-bounded partition into this function and use `k+1` as the input constant, then this is the well-known bijection between `k`-bounded partitions and `k+1`-cores.
     """
-    error = ValueError('The minimal-row-shifting algorithm applied to the partition {} does not produce a {}-core.'.format(ptn, k))
+    error = ValueError(
+        'The minimal-row-shifting algorithm applied to the partition {} does not produce a {}-core.'.format(ptn, k))
     core = []
     for part in reversed(ptn):
         if core == []:

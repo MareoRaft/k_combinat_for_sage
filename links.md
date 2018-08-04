@@ -15,6 +15,8 @@ hall inner product:
 https://trac.sagemath.org/ticket/25538
 h/s/hl_creation_operator input behavior:
 https://trac.sagemath.org/ticket/25734
+docstring convention:
+https://trac.sagemath.org/ticket/25998
 
 ask sage stuff:
 where is sage and sage's python installed:

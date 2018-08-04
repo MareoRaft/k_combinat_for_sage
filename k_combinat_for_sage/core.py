@@ -5,8 +5,6 @@ from sage.all import *
 # ^*^ sphinx insert ^*^
 
 
-
-
 # class InfiniteDimensionalFreeRing (CommutativeRing, InfiniteDimensionalFreeAlgebra):
 # 	pass
 

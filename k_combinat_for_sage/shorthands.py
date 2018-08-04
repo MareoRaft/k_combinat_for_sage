@@ -8,7 +8,7 @@ from all import *
 
 # pre-initialized useful variables
 Sym = SymmetricFunctions(QQ['t'])
-Sym.inject_shorthands() # creates s, h, etc
+Sym.inject_shorthands()  # creates s, h, etc
 
 # shorter names for certain functions
 dual_k_theoretic_h = dual_k_theoretic_homogeneous

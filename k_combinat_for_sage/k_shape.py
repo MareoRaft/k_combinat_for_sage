@@ -5,7 +5,6 @@ Sage does *not* have a builtin 'kShape' object.  *This* module contains useful f
 REFERENCES:
 
 .. [genocchi] `Combinatorics of k-shapes and Genocchi numbers <https://www.lri.fr/~hivert/PAPER/kshapes.pdf>`_, in FPSAC 2011, Reykjav´k, Iceland DMTCS proc. AO, 2011, 493-504.
-
 """
 from sage.all import *
 from partition import *
@@ -13,10 +12,14 @@ import skew_partition
 # ^*^ sphinx insert ^*^
 
 # HELPERS
+
+
 def k_rectangle_dimension_list(k):
     return [(k-i+1, i) for i in range(1, k+1)]
 
 # kShape verifier
+
+
 def is_k_shape(ptn, k):
     r""" A partition is a `k`-*shape* if its `k`-boundary has row-shape and col-shape that are partitions themselves. (Definition 2.1 of [genocchi]_)
 
@@ -41,7 +44,9 @@ def is_k_shape(ptn, k):
         k_bdy = ptn.k_boundary(k)
         return skew_partition.is_linked(k_bdy)
 
-#kShape stuff
+# kShape stuff
+
+
 def h_bounds(p, k, width):
     r""" Recall the `H_i` as defined in Definition 3.3 of [genocchi]_.
 
@@ -77,7 +82,6 @@ def h_bounds(p, k, width):
     ..  SEEALSO::
 
         :meth:`v_bounds`
-
     """
     assert is_k_shape(p, k)
     r = k_row_lengths(p, k)
@@ -86,6 +90,7 @@ def h_bounds(p, k, width):
     y_min = max([j for j in range(0, len(r)) if r[j] > width])
     y_max = min([j for j in range(0, len(r)) if r[j] < width]) - 1
     return (y_min, y_max)
+
 
 def v_bounds(p, k, height):
     r""" This is `V_i`, the vertical analog of :meth:`h_bounds`.
@@ -122,9 +127,9 @@ def v_bounds(p, k, height):
     ..  SEEALSO::
 
         :meth:`h_bounds`
-
     """
     return h_bounds(p.conjugate(), k, height)
+
 
 def is_k_reducible_by_rectangle(p, k, ab):
     # Checks if the k-shape is k-reducible for a k-rectangle of specific dimensions a x b.
@@ -136,7 +141,8 @@ def is_k_reducible_by_rectangle(p, k, ab):
     rim = k_rim(p, k)
     (y_min, y_max) = h_bounds(p, k, a)
     (x_min, x_max) = v_bounds(p, k, b)
-    intersection_rim = [(x,y) for (x,y) in rim if x_min <= x <= x_max and y_min <= y <= y_max]
+    intersection_rim = [(x, y) for (x, y) in rim
+                        if x_min <= x <= x_max and y_min <= y <= y_max]
     # check condition (iii) of Proposition 3.8
     if not intersection_rim:
         return False
@@ -146,8 +152,11 @@ def is_k_reducible_by_rectangle(p, k, ab):
         max_y = intersection_rim[-1][1]
         return max_y - min_y >= b
 
+
 def is_reducible(ptn, k):
-    r""" A `k`-shape `ptn` is called *reducible* if there exists a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
+    r""" A ``k``-shape ``ptn`` is called *reducible* if there exists a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.
+
+    For a more rigorous definition, see Definition 3.7 of [genocchi]_.
 
     Note that this is different than the definition of a reducible partition!
 
@@ -166,16 +175,19 @@ def is_reducible(ptn, k):
 
         sage: is_reducible(Partition([5, 3, 2, 1, 1]), k=4)
         False
-
     """
-    rect_dim_list = k_rectangle_dimension_list(k) + k_rectangle_dimension_list(k-1)
+    rect_dim_list = k_rectangle_dimension_list(
+        k) + k_rectangle_dimension_list(k-1)
     for (a, b) in rect_dim_list:
-        if is_k_reducible_by_rectangle(p, k, (a,b)):
+        if is_k_reducible_by_rectangle(ptn, k, (a, b)):
             return True
     return False
 
+
 def is_irreducible(s, k):
-    r""" A `k`-shape `ptn` is called *irreducible* if there does *not* exist a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.  For a more rigorous definition, see Definition 3.7 of [genocchi]_.
+    r""" A `k`-shape `ptn` is called *irreducible* if there does *not* exist a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.
+
+    For a more rigorous definition, see Definition 3.7 of [genocchi]_.
 
     Given a `k`-shape `ptn` and a natural number `k`, returns True if and only if `ptn` is irreducible.
 
@@ -192,7 +204,6 @@ def is_irreducible(s, k):
 
         sage: is_irreducible(Partition([5, 3, 2, 1, 1]), k=4)
         True
-
     """
     return not is_reducible(s, k)
 
@@ -207,12 +218,12 @@ def k_to_irreducible_k_shapes(k):
 
         sage: k_to_irreducible_k_shapes(3)
         [[], [1], [2, 1]]
-
     """
     bound = (k-1)*k/2
     n_bound = bound**2
     ptns = []
     for n in range(0, n_bound+1):
         ptns += Partitions(n, max_length=bound, max_part=bound)
-        k_irr_k_shapes = [p for p in ptns if is_k_shape(p, k) and is_irreducible(p, k)]
+        k_irr_k_shapes = [p for p in ptns
+                          if is_k_shape(p, k) and is_irreducible(p, k)]
     return k_irr_k_shapes

@@ -791,38 +791,38 @@ k = 3
 a(k_shape.is_k_reducible_by_rectangle(s, k, (w,h)), False)
 
 
-# test_k_shape.is_reducible2
+# test_k_shape.is_reducible
 s = Partition([1])
 k = 1
-a(k_shape.is_reducible2(s, k), True)
+a(k_shape.is_reducible(s, k), True)
 
 s = Partition([2, 1])
 k = 1
-a(k_shape.is_reducible2(s, k), True)
+a(k_shape.is_reducible(s, k), True)
 
 s = Partition([1, 1])
 k = 2
-a(k_shape.is_reducible2(s, k), True)
+a(k_shape.is_reducible(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 2
-a(k_shape.is_reducible2(s, k), True)
+a(k_shape.is_reducible(s, k), True)
 
 s = Partition([2, 1, 1])
 k = 3
-a(k_shape.is_reducible2(s, k), True)
+a(k_shape.is_reducible(s, k), True)
 
 s = Partition([3, 2, 1])
 k = 3
-a(k_shape.is_reducible2(s, k), True)
+a(k_shape.is_reducible(s, k), True)
 
 s = Partition([5, 3, 2, 1, 1])
 k = 4
-a(k_shape.is_reducible2(s, k), False)
+a(k_shape.is_reducible(s, k), False)
 
 s = Partition([5, 4, 2, 2, 1])
 k = 4
-a(k_shape.is_reducible2(s, k), False)
+a(k_shape.is_reducible(s, k), False)
 
 
 # test_k_to_irreducible_k_shapes
