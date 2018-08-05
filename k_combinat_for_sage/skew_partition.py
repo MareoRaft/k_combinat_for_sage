@@ -195,8 +195,7 @@ def row_col_to_skew_partition(rs, cs):
 
 
 def k_boundary_to_partition(sp, k=None, strict=True):
-    r"""
-    Given a ``k``-boundary ``sp`` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.
+    r""" Given a ``k``-boundary ``sp`` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.
 
     (For the definition of `k`-boundary, see Section 2.2 of [mem]_)
 
@@ -220,8 +219,7 @@ def k_boundary_to_partition(sp, k=None, strict=True):
 
 
 def is_k_boundary(sp, k=None):
-    r"""
-    Given a skew-shape ``sp`` and natural number ``k``, return True if and only if `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
+    r""" Given a skew-shape ``sp`` and natural number ``k``, return True if and only if `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
 
     Given a skew-shape `sp` *only*, return True if and only if there exists some `k` such that `sp` is a `k`-boundary.
 
@@ -253,55 +251,6 @@ def is_k_boundary(sp, k=None):
         return sp == correct_k_boundary
 
 
-def add_row(sp, row_len, offset):
-    # HELPER func
-    outer = sp.outer().to_list()
-    inner = sp.inner().to_list()
-    inner += [0] * (len(outer) - len(inner))
-    outer = [e + offset for e in outer]
-    inner = [e + offset for e in inner]
-    outer.append(row_len)
-    return SkewPartition([outer, inner])
-
-
-def thing_to_added_row_things(sp, row_len):
-    # HELPER func
-    previous_checked_col_index = sp.outer()[-1]
-    # find the maximum leftmost offset for the new row
-    col_lens = sp.column_lengths()
-    max_offset = row_len
-    prev_col_len = 0
-    for col_index in range(previous_checked_col_index, -1, -1):
-        # get length of column
-        col_len = col_lens[col_index] if col_index < len(col_lens) else 0
-        # check col-shape partition condition
-        if col_len >= prev_col_len:
-            # col_index is good, continue
-            prev_col_len = col_len
-        else:
-            # col_index is bad, stop
-            good_col_index = col_index + 1
-            max_offset = row_len - good_col_index
-            break
-    # now add all possible positions for the row onto the list
-    return [add_row(sp, row_len, offset) for offset in range(0, max_offset+1)]
-
-
-def ptn_to_linked_things(p):
-    # HELPER func
-    assert isinstance(p, list) and not isinstance(p, Partition)
-    if len(p) <= 1:
-        return [SkewPartition([p, []])]
-    else:
-        # these incomplete guys are not necessarily skew partitions
-        incomplete_things = ptn_to_linked_things(p[:-1])
-        almost_complete_things = []
-        for incomplete_thing in incomplete_things:
-            almost_complete_things += thing_to_added_row_things(
-                incomplete_thing, p[-1])
-        return almost_complete_things
-
-
 def row_shape_to_linked_skew_partitions(rs):
     r""" Given a partition ``rs``, find all linked SkewPartitions whose row-shape is ``rs``.
 
@@ -312,6 +261,50 @@ def row_shape_to_linked_skew_partitions(rs):
         sage: row_shape_to_linked_skew_partitions(Partition([3, 1, 1]))
         [[3, 1, 1] / [], [4, 1, 1] / [1], [5, 2, 1] / [2, 1]]
     """
+    def ptn_to_linked_things(p):
+        def thing_to_added_row_things(sp, row_len):
+            def add_row(sp, row_len, offset):
+                # add the next row onto the skew shape
+                outer = sp.outer().to_list()
+                inner = sp.inner().to_list()
+                inner += [0] * (len(outer) - len(inner))
+                outer = [e + offset for e in outer]
+                inner = [e + offset for e in inner]
+                outer.append(row_len)
+                return SkewPartition([outer, inner])
+            # START thing_to_added_row_things
+            previous_checked_col_index = sp.outer()[-1]
+            # find the maximum leftmost offset for the new row
+            col_lens = sp.column_lengths()
+            max_offset = row_len
+            prev_col_len = 0
+            for col_index in range(previous_checked_col_index, -1, -1):
+                # get length of column
+                col_len = col_lens[col_index] if col_index < len(col_lens) else 0
+                # check col-shape partition condition
+                if col_len >= prev_col_len:
+                    # col_index is good, continue
+                    prev_col_len = col_len
+                else:
+                    # col_index is bad, stop
+                    good_col_index = col_index + 1
+                    max_offset = row_len - good_col_index
+                    break
+            # now add all possible positions for the row onto the list
+            return [add_row(sp, row_len, offset) for offset in range(0, max_offset+1)]
+        # START ptn_to_linked_things
+        assert isinstance(p, list) and not isinstance(p, Partition)
+        if len(p) <= 1:
+            return [SkewPartition([p, []])]
+        else:
+            # these incomplete guys are not necessarily skew partitions
+            incomplete_things = ptn_to_linked_things(p[:-1])
+            almost_complete_things = []
+            for incomplete_thing in incomplete_things:
+                almost_complete_things += thing_to_added_row_things(
+                    incomplete_thing, p[-1])
+            return almost_complete_things
+    # START row_shape_to_linked_skew_partitions
     rs_zero = list(Partition(rs)) + [0]
     return ptn_to_linked_things(rs_zero)
 

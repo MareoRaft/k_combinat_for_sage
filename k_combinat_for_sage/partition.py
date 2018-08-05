@@ -8,12 +8,19 @@ from sage.all import *
 # HELPERS
 
 
-def is_sequence(obj):
-    # Check if something is one of our allowed 'compositions'.
+def _is_sequence(obj):
+    r""" Helper function for internal use.
+
+    Return whether ``obj`` is one of our allowed 'compositions'.
+    """
     return isinstance(obj, (list, Composition, Partition))
 
 
 def k_rectangle_dimension_list(k):
+    r""" Return the list of dimension pairs `(h, w)` such that `h + w = k + 1`.
+
+    This exists mainly as a helper function for :meth:`partition.has_rectangle` and :meth:`k_shape.is_reducible`.
+    """
     return [(k-i+1, i) for i in range(1, k+1)]
 
 

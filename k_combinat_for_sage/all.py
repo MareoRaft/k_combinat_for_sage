@@ -13,6 +13,7 @@ from core import *
 import core
 from partition import *
 import partition
+from partition import _is_sequence
 from skew_partition import *
 import skew_partition
 from k_shape import *
@@ -255,7 +256,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         def _call_basis_on_index(self, seq, index):
             # a 'seq' is the sequence of the BASIS element to act WITH.
             # an 'index' is a sequence (typically a composition or a partition) that we act UPON.
-            assert is_sequence(index)
+            assert _is_sequence(index)
             # pad sequence and index with 0's
             index = index + [0] * (len(seq) - len(index))
             seq = seq + (0,) * (len(index) - len(seq))
@@ -265,7 +266,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         def __call__(self, operand):
             def raise_func(seq, operand):
                 # seq is the index
-                if is_sequence(operand):
+                if _is_sequence(operand):
                     return self._call_basis_on_index(seq, operand)
                 else:
                     # it's some symmetric function basis element
@@ -308,7 +309,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             elif isinstance(operand, tuple):
                 # the operand is actually a tuple of operands, so perform __call__ on each piece
                 return tuple(self.__call__(op) for op in operand)
-            elif is_sequence(operand):
+            elif _is_sequence(operand):
                 # the operand is some kind of composition
                 return [call_monomial(index, coeff, operand) for index, coeff in self]
             else:
@@ -485,7 +486,7 @@ class HallLittlewoodVertexOperator:
     def __init__(self, composition, base_ring=QQ['t']):
         if composition in NonNegativeIntegerSemiring():
             self.composition = Composition([composition])
-        elif is_sequence(composition):
+        elif _is_sequence(composition):
             self.composition = Composition(composition)
         else:
             raise ValueError('Bad composition.')
@@ -628,7 +629,7 @@ class CatalanFunction:
     PREFIX_DEFAULT = 'H'
 
     def __init__(self, roots, index, base_ring=None, prefix=None):
-        assert is_sequence(index)
+        assert _is_sequence(index)
         self.index = index
         assert is_roots(roots)
         self.roots = RootIdeal(roots, len(self.index))
@@ -896,7 +897,7 @@ def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
         sage: dual_k_theoretic_homogeneous([2, 1], [1, 1])
         h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1
     """
-    if is_sequence(k):
+    if _is_sequence(k):
         # pad with 0's
         max_len = max(len(k), len(r))
         k = list(k) + [0] * (max_len - len(k))

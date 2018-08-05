@@ -11,11 +11,6 @@ from partition import *
 import skew_partition
 # ^*^ sphinx insert ^*^
 
-# HELPERS
-
-
-def k_rectangle_dimension_list(k):
-    return [(k-i+1, i) for i in range(1, k+1)]
 
 # kShape verifier
 
@@ -131,16 +126,26 @@ def v_bounds(p, k, height):
     return h_bounds(p.conjugate(), k, height)
 
 
-def is_k_reducible_by_rectangle(p, k, ab):
-    # Checks if the k-shape is k-reducible for a k-rectangle of specific dimensions a x b.
-    # See Proposition 3.8 in Combinatorics of k-shapes and Genocchi numbers
+def is_k_reducible_by_rectangle(p, k, hw):
+    r""" Checks if the ``k``-shape is `k`-reducible for a `k`-rectangle of specific dimensions `h` x `w`.
+
+    See Proposition 3.8 in Combinatorics of k-shapes and Genocchi numbers.
+
+    INPUTS:
+
+    - ``p`` -- a Partition (and a `k`-shape)
+
+    - ``k`` -- the `k` of the `k`-shape
+
+    - ``hw`` -- an ordered pair ``hw`` = `(h, w)`, where `h` is the height of the rectangle and `w` is the width.
+    """
     assert is_k_shape(p, k)
-    (a, b) = ab
-    assert a + b - 1 == k or a + b - 1 == k - 1
+    (h, w) = hw
+    assert h + w - 1 == k or h + w - 1 == k - 1
     # get intersection H_a \cap V_b \cap k_rim
     rim = k_rim(p, k)
-    (y_min, y_max) = h_bounds(p, k, a)
-    (x_min, x_max) = v_bounds(p, k, b)
+    (y_min, y_max) = h_bounds(p, k, h)
+    (x_min, x_max) = v_bounds(p, k, w)
     intersection_rim = [(x, y) for (x, y) in rim
                         if x_min <= x <= x_max and y_min <= y <= y_max]
     # check condition (iii) of Proposition 3.8
@@ -150,7 +155,7 @@ def is_k_reducible_by_rectangle(p, k, ab):
         # min_y is DIFFERENT than y_min
         min_y = intersection_rim[0][1]
         max_y = intersection_rim[-1][1]
-        return max_y - min_y >= b
+        return max_y - min_y >= w
 
 
 def is_reducible(ptn, k):
@@ -210,7 +215,7 @@ def is_irreducible(s, k):
 
 ############# GETTER FUNCS ############
 def k_to_irreducible_k_shapes(k):
-    r""" Given a natural number `k`, return a list of all irreducible `k`-shapes.
+    r""" Given a natural number ``k``, return a list of all irreducible `k`-shapes.
 
     Note that the algorithm runs very slowly after `k=4` :(.
 

@@ -8,6 +8,7 @@ from sage.all import *
 print('Sage loaded.  Now loading local modules...')
 from testing import *
 from all import *
+from all import _is_sequence
 from strong_marked_tableau import __go_to_ribbon_head
 start_time = time.time()
 print('Modules loaded.  Testing...')
@@ -27,7 +28,7 @@ a(k_size([2, 1, 1], 4), 4)
 
 
 # test is sequence
-a(is_sequence([1, 3, 2]), True)
+a(_is_sequence([1, 3, 2]), True)
 
 
 # test_SP_is_symmetric
@@ -161,70 +162,70 @@ c = skew_partition.bottom(sp, 3)
 a(c, 1)
 
 
-# test_bump_path_piece
-sp = SkewPartition([[1], []])
-top_row_index, is_end = bump_path_piece(sp, 0)
-a(is_end, True)
+# test_bounce_path_piece
+# sp = SkewPartition([[1], []])
+# top_row_index, is_end = bounce_path_piece(sp, 0)
+# a(is_end, True)
 
-sp = SkewPartition([[1, 1], []])
-top_row_index, is_end = bump_path_piece(sp, 0)
-a(is_end, True)
+# sp = SkewPartition([[1, 1], []])
+# top_row_index, is_end = bounce_path_piece(sp, 0)
+# a(is_end, True)
 
-sp = SkewPartition([[2], []])
-top_row_index, is_end = bump_path_piece(sp, 0)
-a(is_end, True)
+# sp = SkewPartition([[2], []])
+# top_row_index, is_end = bounce_path_piece(sp, 0)
+# a(is_end, True)
 
-sp = SkewPartition([[3, 2, 1], [1]])
-top_row_index, is_end = bump_path_piece(sp, 0)
-a(is_end, False)
-a(top_row_index, 2)
+# sp = SkewPartition([[3, 2, 1], [1]])
+# top_row_index, is_end = bounce_path_piece(sp, 0)
+# a(is_end, False)
+# a(top_row_index, 2)
 
-sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-top_row_index, is_end = bump_path_piece(sp, 0)
-a(is_end, False)
-a(top_row_index, 3)
+# sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+# top_row_index, is_end = bounce_path_piece(sp, 0)
+# a(is_end, False)
+# a(top_row_index, 3)
 
-sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-top_row_index, is_end = bump_path_piece(sp, 1, {0, 3})
-a(top_row_index, 4)
+# sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+# top_row_index, is_end = bounce_path_piece(sp, 1, {0, 3})
+# a(top_row_index, 4)
 
-sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-top_row_index, is_end = bump_path_piece(sp, 2, {0, 1, 3, 4})
-a(is_end, True)
+# sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+# top_row_index, is_end = bounce_path_piece(sp, 2, {0, 1, 3, 4})
+# a(is_end, True)
 
-sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-top_row_index, is_end = bump_path_piece(sp, 5, {0, 1, 2, 3, 4})
-a(is_end, True)
+# sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+# top_row_index, is_end = bounce_path_piece(sp, 5, {0, 1, 2, 3, 4})
+# a(is_end, True)
 
 
-# test_bump_path
-sp = SkewPartition([[1], []])
-newly_blocked_rows = bump_path(sp, 0)
-a(newly_blocked_rows, {0})
+# test_bounce_path
+# sp = SkewPartition([[1], []])
+# newly_blocked_rows = bounce_path(sp, 0)
+# a(newly_blocked_rows, {0})
 
-sp = SkewPartition([[1, 1], []])
-newly_blocked_rows = bump_path(sp, 0)
-a(newly_blocked_rows, {0})
+# sp = SkewPartition([[1, 1], []])
+# newly_blocked_rows = bounce_path(sp, 0)
+# a(newly_blocked_rows, {0})
 
-sp = SkewPartition([[3, 2, 1], [1]])
-newly_blocked_rows = bump_path(sp, 0)
-a(newly_blocked_rows, {0, 2})
+# sp = SkewPartition([[3, 2, 1], [1]])
+# newly_blocked_rows = bounce_path(sp, 0)
+# a(newly_blocked_rows, {0, 2})
 
-sp = SkewPartition([[3, 2, 1], [1]])
-newly_blocked_rows = bump_path(sp, 1, {0, 2})
-a(newly_blocked_rows, {1})
+# sp = SkewPartition([[3, 2, 1], [1]])
+# newly_blocked_rows = bounce_path(sp, 1, {0, 2})
+# a(newly_blocked_rows, {1})
 
-sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-newly_blocked_rows = bump_path(sp, 0)
-a(newly_blocked_rows, {0, 3})
+# sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+# newly_blocked_rows = bounce_path(sp, 0)
+# a(newly_blocked_rows, {0, 3})
 
-sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-newly_blocked_rows = bump_path(sp, 1, {0, 3})
-a(newly_blocked_rows, {1, 4})
+# sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+# newly_blocked_rows = bounce_path(sp, 1, {0, 3})
+# a(newly_blocked_rows, {1, 4})
 
-sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
-newly_blocked_rows = bump_path(sp, 2, {0, 3, 1, 4})
-a(newly_blocked_rows, {2})
+# sp = SkewPartition([[6, 5, 3, 2, 2, 1], [2, 2]])
+# newly_blocked_rows = bounce_path(sp, 2, {0, 3, 1, 4})
+# a(newly_blocked_rows, {2})
 
 
 # test_skew_partition_to_selected_rows():
@@ -876,39 +877,39 @@ a(is_linked(sp), False)
 
 ###########################################################################
 # test_add_row
-sp = SkewPartition([[4, 3, 1], [1, 1]])
-a(add_row(sp, 1, 2), [[6, 5, 3, 1], [3, 3, 2]])
+# sp = SkewPartition([[4, 3, 1], [1, 1]])
+# a(add_row(sp, 1, 2), [[6, 5, 3, 1], [3, 3, 2]])
 
 
 # test_thing_to_added_row_things
-sp = SkewPartition([[1], []])
-a(thing_to_added_row_things(sp, 0), [[[1],[]]])
+# sp = SkewPartition([[1], []])
+# a(thing_to_added_row_things(sp, 0), [[[1],[]]])
 
-sp = SkewPartition([[5, 2, 1], [2]])
-a(thing_to_added_row_things(sp, 0), [[[5, 2, 1], [2]]])
+# sp = SkewPartition([[5, 2, 1], [2]])
+# a(thing_to_added_row_things(sp, 0), [[[5, 2, 1], [2]]])
 
-sp = SkewPartition([[4, 3, 1], [1, 1]])
-a(thing_to_added_row_things(sp, 0), [])
+# sp = SkewPartition([[4, 3, 1], [1, 1]])
+# a(thing_to_added_row_things(sp, 0), [])
 
-sp = SkewPartition([[1], []])
-a(thing_to_added_row_things(sp, 1), [[[1, 1],[]], [[2, 1],[1]]])
+# sp = SkewPartition([[1], []])
+# a(thing_to_added_row_things(sp, 1), [[[1, 1],[]], [[2, 1],[1]]])
 
-sp = SkewPartition([[2], []])
-a(thing_to_added_row_things(sp, 2), [[[2, 2],[]], [[3, 2],[1]], [[4, 2],[2]]])
+# sp = SkewPartition([[2], []])
+# a(thing_to_added_row_things(sp, 2), [[[2, 2],[]], [[3, 2],[1]], [[4, 2],[2]]])
 
 
 # test_ptn_to_linked_things
-p = []
-a(ptn_to_linked_things(p), [[[],[]]])
+# p = []
+# a(ptn_to_linked_things(p), [[[],[]]])
 
-p = [7]
-a(ptn_to_linked_things(p), [[[7],[]]])
+# p = [7]
+# a(ptn_to_linked_things(p), [[[7],[]]])
 
-p = [1, 1]
-a(ptn_to_linked_things(p), [[[1, 1],[]], [[2, 1],[1]]])
+# p = [1, 1]
+# a(ptn_to_linked_things(p), [[[1, 1],[]], [[2, 1],[1]]])
 
-p = [3, 2, 1]
-a(ptn_to_linked_things(p), [[[3, 2, 1],[]], [[4, 3, 1],[1, 1]], [[4, 2, 1],[1]], [[5, 2, 1], [2]], [[6, 3, 1],[3, 1]]])
+# p = [3, 2, 1]
+# a(ptn_to_linked_things(p), [[[3, 2, 1],[]], [[4, 3, 1],[1, 1]], [[4, 2, 1],[1]], [[5, 2, 1], [2]], [[6, 3, 1],[3, 1]]])
 
 
 # test_row_shape_to_linked_skew_partitions
