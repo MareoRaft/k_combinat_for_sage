@@ -135,7 +135,7 @@ def straighten(s, gamma):
         raise NotImplemented(
             'Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
     elif s.__class__.__name__ == 'HallLittlewood_qp_with_category':
-        return compositional_hall_littlewood_Qp(gamma, base_ring=s.base_ring())
+        return compositional_hall_littlewood_Qp(gamma, t=s.t, base_ring=s.base_ring())
     elif s.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
         new_gamma = list(reversed(sorted(gamma)))
         if has_nonnegative_parts(new_gamma):
@@ -546,7 +546,7 @@ class HallLittlewoodVertexOperator:
         return HLQp(input_)
 
 
-def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
+def compositional_hall_littlewood_Qp(gamma, t = None, base_ring=QQ['t']):
     r""" Given gamma, returns the compositional Hall-Littlewood polynomial `H_{\gamma}(\mathbf{x}; t)` in the Q' basis, as defined in [cat]_ section 4.4.
 
     If the composition gamma is a partition, this is just the Hall-Littlewood Q' polynomial.
@@ -558,7 +558,9 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
         True
     """
     sym = SymmetricFunctions(base_ring)
-    HLQp = sym.hall_littlewood().Qp()
+    if t is None:
+        t = base_ring.gen()
+    HLQp = sym.hall_littlewood(t=t).Qp()
     if is_weakly_decreasing(gamma) and all(term > 0 for term in gamma):
         # this is MUCH faster than the HallLittlewoodVertexOperator for partitions of length 5ish
         gamma = Partition(gamma)
@@ -651,7 +653,7 @@ class CatalanFunction:
                                  base_ring=self.base_ring)
         return new_obj
 
-    def eval(self):
+    def eval(self, t=None):
         r""" Return the catalan function in terms of the Hall-Littlewood Q' basis.
 
         EXAMPLES::
@@ -669,8 +671,9 @@ class CatalanFunction:
             s[4, 1]
         """
         # setup
-        hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
-        t = self.base_ring.gen()
+        if t is None:
+            t = self.base_ring.gen()
+        hl = SymmetricFunctions(self.base_ring).hall_littlewood(t=t).Qp()
         # formula
         roots_complement = self.roots.complement()
         # print(roots_complement)
