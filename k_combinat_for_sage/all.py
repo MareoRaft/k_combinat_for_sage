@@ -669,6 +669,15 @@ class CatalanFunction:
             HLQp[4, 1] - t*HLQp[5]
             sage: s(cf.eval())
             s[4, 1]
+
+        This function can also specialize `t` to an arbitrary integer. ::
+
+            sage: cf.eval(t=1)
+            HLQp[4, 1] - HLQp[5]
+            sage: cf.eval(t=-1)
+            HLQp[4, 1] + HLQp[5]
+            sage: s(cf.eval(t=-1))
+            s[4, 1]
         """
         # setup
         if t is None:
