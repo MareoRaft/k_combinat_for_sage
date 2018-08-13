@@ -2,11 +2,23 @@
 r"""
 This module contains all functionalities that are not already organized into the other files.  New functionalities written to the library often appear here, and eventually get organized into separate files.
 
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
+
 REFERENCES:
 
 .. [Fun] `Raising operators and the Littlewood-Richardson polynomials <https://arxiv.org/pdf/1203.4729.pdf>`_.  Fun, Alex.
 .. [LN] `Finite sum Cauchy identity for dual Grothendieck polynomials <https://projecteuclid.org/download/pdf_1/euclid.pja/1407415930>`_.
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 
 from core import *
@@ -37,15 +49,24 @@ def _is_k_schur(obj):
 
 # MAIN
 def get_k_rectangles(k):
-    # A __k-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is k.
+    r""" Return the list of ``k``-rectangles.
+
+    A __``k``-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is `k`.
+    """
     return [Partition([a] * b) for (a, b) in k_rectangle_dimension_list(k)]
 
 
 def get_k_irreducible_partition_lists(k):
-    # Returns: list of lists (instead of list of Partition objects)
+    r""" Return the list of ``k``-irreducible partitions.
 
-    # Since there are n! such partitions, the big-O time can't be better than that.
-    # We could have a yeild in the function to be an iterator.
+    The `k`-irreducible partitions are output at lists, not Partition objects.
+
+    There are `k!` such partitions, and computation time starts to get slow around `k = 10`.
+
+    ..  SEEALSO::
+
+        :meth:`get_k_irreducible_partitions`
+    """
     k = NonNegativeIntegerSemiring()(k)
     k_irr_ptns = [[]]
     # NO rows of length k
@@ -61,13 +82,28 @@ def get_k_irreducible_partition_lists(k):
 
 
 def get_k_irreducible_partitions(k):
-    r""" Given ``k``, return the `n!` `k`-irreducible-partitions. """
+    r""" Return the list of ``k``-irreducible partitions.
+
+    There are `k!` such partitions, and computation time starts to get slow around `k = 10`.
+
+    ..  SEEALSO::
+
+        :meth:`get_k_irreducible_partition_lists`
+    """
     return [Partition(e) for e in get_k_irreducible_partition_lists(k)]
 
 
-def size_to_num_linked_partition_self_pairs(n):
-    # Given a natural number n, count how many partitions l of size n have the property that (l, l) has a corresponding linked-skew-diagram.
-    ps = Partitions(n)
+def size_to_num_linked_partition_self_pairs(size):
+    r""" Given a natural number ``size``, count how many partitions `l` of size ``size`` have the property that `(l, l)` has a corresponding skew-linked-diagram.
+
+    Note: A 'skew-linked-diagram' is a SkewPartition that is linked.
+
+    ..  SEEALSO::
+
+        :meth:`SkewPartition.is_linked`
+    """
+    # DO NOT ADD TO SAGE
+    ps = Partitions(size)
     count = 0
     for p in ps:
         try:
@@ -80,21 +116,24 @@ def size_to_num_linked_partition_self_pairs(n):
 
 
 def print_sequence(func, num_terms=float('inf')):
+    # DO NOT ADD TO SAGE
     n = 0
     while n < num_terms:
         print('n={}\t{}=f(n)'.format(n, func(n)))
 
 
 def size_to_k_shapes(n, k):
+    # DO NOT ADD TO SAGE
     r""" Return all partitions of size ``n`` that are ``k``-shapes. """
     return [ptn for ptn in Partitions(n) if is_k_shape(ptn, k)]
 
 
 def size_to_num_k_shapes(n, k):
+    # DO NOT ADD TO SAGE
     return len(size_to_k_shapes(n, k))
 
 
-def straighten(s, gamma):
+def straighten(basis, gamma):
     r""" Perform Schur function straightening by the Schur straightening rule.
 
     See [cat]_, Prop. 4.1.  Also known as the slinky rule.
@@ -131,57 +170,70 @@ def straighten(s, gamma):
                     num += 1
         return num
     gamma = Composition(gamma)
-    if s.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
+    if basis.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
         raise NotImplemented(
             'Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
-    elif s.__class__.__name__ == 'HallLittlewood_qp_with_category':
-        return compositional_hall_littlewood_Qp(gamma, t=s.t, base_ring=s.base_ring())
-    elif s.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
+    elif basis.__class__.__name__ == 'HallLittlewood_qp_with_category':
+        return compositional_hall_littlewood_Qp(gamma, base_ring=basis.base_ring())
+    elif basis.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
         new_gamma = list(reversed(sorted(gamma)))
         if has_nonnegative_parts(new_gamma):
-            return s(Partition(new_gamma))
+            return basis(Partition(new_gamma))
         else:
             return 0
-    elif s.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
+    elif basis.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
         rho = list(range(len(gamma) - 1, -1, -1))
         combined = [g + r for g, r in zip(gamma, rho)]
         if has_distinct_parts(combined) and has_nonnegative_parts(combined):
             sign = (-1)**number_of_noninversions(combined)
             sort_combined = reversed(sorted(combined))
             new_gamma = [sc - r for sc, r in zip(sort_combined, rho)]
-            return sign * s(Partition(new_gamma))
+            return sign * basis(Partition(new_gamma))
         else:
             return 0
     else:
         raise ValueError(
-            "The input parameter 's' should be a symmetric function basis.  For example, 's = SymmetricFunctions(QQ).s(); straighten(s, [2, 1, 3])', or one could use 'h' instead of 's'.")
+            "The input parameter 'basis' should be a symmetric function basis.  For example, 's = SymmetricFunctions(QQ).s(); straighten(s, [2, 1, 3])', or one could use 'h' instead of 's'.")
 
 
 class ShiftingSequenceSpace():
-    # A helper for ShiftingOperatorAlgebra
+    r""" A helper for ShiftingOperatorAlgebra.
+
+    Helps ShiftingOperatorAlgebra know which indices are valid and which indices are not for the basis.
+    """
     def __init__(self, base=IntegerRing()):
         self.base = base
         # category = InfiniteEnumeratedSets()
         # Parent.__init__(self, category=category)
 
     def __contains__(self, seq):
+        r""" Returns ``True`` if and only if ``seq`` is a valid shifting sequence. """
         if not isinstance(seq, tuple):
             return False
         return not any(i not in self.base for i in seq)
 
-    VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base}), but instead received {seq}.'
+    CHECK_ERROR_MESSAGE = 'Expected valid index (a tuple of {base}), but instead received {seq}.'
 
-    def validate(self, seq):
+    def check(self, seq):
+        r""" Verify that ``seq`` is a valid shifting sequence.
+
+        If it is not, raise an error.
+        """
         if not self.__contains__(seq):
-            raise ValueError(self.VALIDATION_ERROR_MESSAGE.format(
+            raise ValueError(self.CHECK_ERROR_MESSAGE.format(
                 base=self.base, seq=seq))
 
 
 class RaisingSequenceSpace(ShiftingSequenceSpace):
-    # helper for RaisingOperatorAlgebra
-    VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base} elements, where every partial sum is nonnegative and every total sum is 0), but instead received {seq}.'
+    r""" A helper for RaisingOperatorAlgebra.
+
+    Helps RaisingOperatorAlgebra know which indices are valid and which indices are not for the basis.
+    """
+
+    CHECK_ERROR_MESSAGE = 'Expected valid index (a tuple of {base} elements, where every partial sum is nonnegative and every total sum is 0), but instead received {seq}.'
 
     def __contains__(self, seq):
+        r""" Returns ``True`` if and only if ``seq`` is a valid raising sequence. """
         # check that it is a shifting sequence
         if not ShiftingSequenceSpace.__contains__(self, seq):
             return False
@@ -199,6 +251,36 @@ class RaisingSequenceSpace(ShiftingSequenceSpace):
 
 
 class ShiftingOperatorAlgebra(CombinatorialFreeModule):
+    r""" An algebra of shifting operators.
+
+    We follow the following convention:
+
+    S[(1, 0, -1, 2)] is the shifting operator that raises the first part by 1, lowers the third part by 1, and raises the fourth part by 2.
+
+    OPTIONAL ARGUMENTS:
+
+    - ``base_ring`` -- (default ``QQ['t']``) the ring you will use on the raising operators.
+
+    - ``prefix`` -- (default ``"R"``) the label for the raising operators.
+
+    EXAMPLES::
+
+        sage: S = ShiftingOperatorAlgebra()
+        sage: s = SymmetricFunctions(QQ['t']).s()
+        sage: h = SymmetricFunctions(QQ['t']).h()
+
+        sage: S[(1, -1, 2)]
+        S(1, -1, 2)
+        sage: S[(1, -1, 2)](s[5, 4])
+        s[6, 3, 2]
+        sage: S[(1, -1, 2)](h[5, 4])
+        h[6, 3, 2]
+
+        sage: (1 - S[(1,-1)]) * (1 - S[(4,)])
+        S() - S(1, -1) - S(4,) + S(5, -1)
+        sage: ((1 - S[(1,-1)]) * (1 - S[(4,)]))(s[2, 2, 1])
+        s[2, 2, 1] - s[3, 1, 1] - s[6, 2, 1] + s[7, 1, 1]
+    """
     def __init__(self, base_ring=QQ['t'], prefix='S', basis_indices=ShiftingSequenceSpace()):
         self._prefix = prefix
         self._base_ring = base_ring
@@ -217,22 +299,33 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             bracket=False)
 
     def __getitem__(self, seq):
+        r""" Return the shifting operator whose index is ``seq``.
+
+        This method is only for basis elements.
+        """
         # seq should be a basis index
-        self._basis_indices.validate(seq)
+        self._basis_indices.check(seq)
         return self.basis()[seq]
 
     def _element_constructor_(self, seq):
+        r""" Return the shifting operator whose index is ``seq``.
+
+        This method is only for basis elements.
+        """
         return self.__getitem__(seq)
 
     @cached_method
     def one_basis(self):
-        # identity basis/index
+        r""" Return the index of the identity element. """
         return tuple()
 
     def _repr_(self):
+        r""" Return a string describing ``self`` to humans. """
         return "Shifting Operator Algebra over {base_ring}".format(base_ring=self._base_ring)
 
     def product_on_basis(self, index1, index2):
+        r""" Given indices ``index1`` and ``index2``, return the product of the basis elements indexed by those indices.
+        """
         # pad with 0's
         max_len = max(len(index1), len(index2))
         index1 = index1 + (0,) * (max_len - len(index1))
@@ -245,17 +338,28 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         r""" An element of a ShiftingOperatorAlgebra. """
 
         def indices(self):
+            r""" Return the support of ``self``. """
             return self.support()
 
         def index(self):
+            r""" Return the index of ``self``.
+
+            This method is only for basis elements.
+            """
             if len(self) != 1:
                 raise ValueError(
                     "This is only defined for basis elements.  For other elements, use indices() instead.")
             return self.indices()[0]
 
         def _call_basis_on_index(self, seq, index):
-            # a 'seq' is the sequence of the BASIS element to act WITH.
-            # an 'index' is a sequence (typically a composition or a partition) that we act UPON.
+            """ Return the action of the basis element indexed by ``seq`` upon the composition ``index``.
+
+            INPUTS:
+
+            - ``seq`` -- The sequence of the basis element that acts.
+
+            - ``index`` -- A sequence (typically a composition or a partition) that we act upon.
+            """
             assert _is_sequence(index)
             # pad sequence and index with 0's
             index = index + [0] * (len(seq) - len(index))
@@ -271,6 +375,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                 else:
                     # it's some symmetric function basis element
                     parent_basis = operand.parent()
+                    # but does the base ring of the parent basis agree with the base ring of the operator algebra??
                     # process the vectors
                     dic = operand.monomial_coefficients()
                     assert len(dic) == 1
@@ -285,8 +390,11 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                             'SymmetricFunctionAlgebra_schur_with_category',
                             'HallLittlewood_qp_with_category'):
                         # print('coeff: {}'.format(coeff))
+                        # print('parent basis: {}'.format(parent_basis))
                         # print('composition BEFORE straighten: {}'.format(out_composition))
                         # print(straighten(parent_basis, out_composition))
+                        # print('op algebra base ring: {}'.format(self.parent().base_ring()))
+                        # print('           basis base ring: {}'.format(parent_basis.base_ring()))
                         return coeff * straighten(parent_basis, out_composition)
                     else:
                         return coeff * parent_basis(out_composition)
@@ -538,6 +646,7 @@ class HallLittlewoodVertexOperator:
     def __call__(self, input_):
         gamma = self.composition
         sym = self.sym
+        # should we be passing t in to the hall littlewood vertex operator here?
         HLQp = sym.hall_littlewood().Qp()
         # print('called on input: {} with gamma: {}'.format(input_, gamma))
         # iterate
@@ -546,7 +655,7 @@ class HallLittlewoodVertexOperator:
         return HLQp(input_)
 
 
-def compositional_hall_littlewood_Qp(gamma, t = None, base_ring=QQ['t']):
+def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t'], t=None):
     r""" Given gamma, returns the compositional Hall-Littlewood polynomial `H_{\gamma}(\mathbf{x}; t)` in the Q' basis, as defined in [cat]_ section 4.4.
 
     If the composition gamma is a partition, this is just the Hall-Littlewood Q' polynomial.
@@ -557,20 +666,22 @@ def compositional_hall_littlewood_Qp(gamma, t = None, base_ring=QQ['t']):
         sage: compositional_hall_littlewood_Qp([3, 3, 2]) == hl[3, 3, 2]
         True
     """
+    # print('comp hall little got base ring: {}'.format(base_ring))
     sym = SymmetricFunctions(base_ring)
     if t is None:
-        t = base_ring.gen()
-    HLQp = sym.hall_littlewood(t=t).Qp()
-    if is_weakly_decreasing(gamma) and all(term > 0 for term in gamma):
+        HLQp = sym.hall_littlewood().Qp()
+    else:
+        HLQp = sym.hall_littlewood(t=t).Qp()
+    if is_weakly_decreasing(gamma) and all(term > 0 for term in gamma[:-1]) and ((not gamma) or gamma[-1] >=0):
         # this is MUCH faster than the HallLittlewoodVertexOperator for partitions of length 5ish
         gamma = Partition(gamma)
         return HLQp(gamma)
     else:
         H = HallLittlewoodVertexOperator
-        return H(gamma)(HLQp.one())
+        return H(gamma, base_ring=base_ring)(HLQp.one())
 
 
-def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
+def raising_roots_operator(roots, base_ring=QQ['t'], t=1):
     r""" Return the operator `\prod_{(i,j) \in roots} (1 - tR_{ij})`.
 
     Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator
@@ -588,7 +699,7 @@ def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     return op
 
 
-def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
+def qt_raising_roots_operator(roots, base_ring=QQ['t', 'q'], t=None, q=None):
     r""" Return the operator `\prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in roots} (1 - qR_{ij})`.
 
     The q-t analogue of :meth:`raising_roots_operator`, defined by
@@ -602,8 +713,8 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
         t = base_ring.gens()[0]
     if q is None:
         q = base_ring.gens()[1]
-    op1 = raising_roots_operator(roots, t=q, base_ring=base_ring)
-    op2 = raising_roots_operator(roots, t=t, base_ring=base_ring)
+    op1 = raising_roots_operator(roots, base_ring=base_ring, t=q)
+    op2 = raising_roots_operator(roots, base_ring=base_ring, t=t)
     return lambda x: (op2 * op1)(x)
 
 
@@ -633,7 +744,7 @@ class CatalanFunction:
     def __init__(self, roots, index, base_ring=None, prefix=None):
         assert _is_sequence(index)
         self.index = index
-        assert is_roots(roots)
+        assert root_ideal._is_roots(roots)
         self.roots = RootIdeal(roots, len(self.index))
         self.base_ring = base_ring if base_ring is not None else self.BASE_RING_DEFAULT
         self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
@@ -689,7 +800,7 @@ class CatalanFunction:
         roots_complement = self.roots.complement()
         # print(roots_complement)
         op = raising_roots_operator(
-            roots_complement, t=t, base_ring=self.base_ring)
+            roots_complement, base_ring=self.base_ring, t=t)
         # print(op)
         hl_poly = hl(self.index)
         # print(hl_poly)
@@ -953,7 +1064,7 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     # formula
     roots = RootIdeal(roots, n=len(index))
     roots_complement = roots.complement()
-    op = raising_roots_operator(roots_complement, t=1, base_ring=base_ring)
+    op = raising_roots_operator(roots_complement, base_ring=base_ring, t=1)
     cat_func = op(Kh)
     return cat_func
 
@@ -1110,7 +1221,7 @@ def double_schur(index, n):
     where `l` is the length of `\lambda`, in [Fun]_ p.9 equation (9).
     """
     l = len(index)
-    op = raising_roots_operator(l, t=1, base_ring=ZZ)
+    op = raising_roots_operator(l, base_ring=ZZ, t=1)
     rho = list(reversed(staircase_shape(l)))
     h_index = DoubleHomogeneous(index, rho, n)
     return op(h_index)

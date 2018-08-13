@@ -1,6 +1,18 @@
 r"""
 A place for things that may be useful in core sage (not specific to k-combinatorics)
+
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 # ^*^ sphinx insert ^*^
 

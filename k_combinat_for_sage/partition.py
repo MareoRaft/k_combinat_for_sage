@@ -1,11 +1,30 @@
 # -*- coding: utf-8 -*-
 r"""
 Sage has a builtin `Partition <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/partition.html>`_ object.  *This* module adds extra useful functions for partitions:
+
+AUTHORS:
+- Matthew Lancellotti (2018): Initial version
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 # ^*^ sphinx insert ^*^
 
 # HELPERS
+
+
+def is_weakly_decreasing(li):
+    return all(li[i] >= li[i+1] for i in range(len(li)-1))
+
+
+def is_strictly_decreasing(li):
+    return all(li[i] > li[i+1] for i in range(len(li)-1))
 
 
 def _is_sequence(obj):
@@ -40,6 +59,10 @@ def k_size(ptn, k):
         3
         sage: Partition([2, 1, 1]).k_size(4)
         4
+
+    ..  SEEALSO::
+
+        :meth:`k_boundary`, :meth:`SkewPartition.size`
     """
     ptn = Partition(ptn)
     return ptn.k_boundary(k).size()
@@ -77,6 +100,10 @@ def boundary(ptn):
 
         sage: boundary(Partition([3, 1]))
         [(3,0), (3,1), (2,1), (1,1), (1,2), (0,2)]
+
+    ..  SEEALSO::
+
+        :meth:`k_rim`.  You might have been looking for :meth:`k_boundary` instead.
     """
     def horizontal_piece(xy, bdy):
         (start_x, start_y) = xy
@@ -119,6 +146,10 @@ def k_rim(ptn, k):
 
         sage: k_rim(Partition([3, 1]), 1)
         [(3,0), (2,0), (2,1), (1,1), (0,1), (0,2)])
+
+    ..  SEEALSO::
+
+        :meth:`k_interior`, :meth:`k_boundary`, :meth:`boundary`
     """
     interior_rim = boundary(ptn.k_interior(k))
     # get leftmost vertical line
@@ -149,6 +180,10 @@ def k_row_lengths(ptn, k):
 
         sage: k_row_lengths(Partition([4, 4, 4, 3, 2]), 2)
         [0, 1, 1, 1, 2]
+
+    ..  SEEALSO::
+
+        :meth:`k_column_lengths`, :meth:`k_boundary`, :meth:`SkewPartition.row_lengths`, :meth:`SkewPartition.column_lengths`
     """
     return ptn.k_boundary(k).row_lengths()
 
@@ -165,12 +200,20 @@ def k_column_lengths(ptn, k):
 
         sage: k_column_lengths(Partition([4, 4, 4, 3, 2]), 2)
         [1, 1, 1, 2]
+
+    ..  SEEALSO::
+
+        :meth:`k_row_lengths`, :meth:`k_boundary`, :meth:`SkewPartition.row_lengths`, :meth:`SkewPartition.column_lengths`
     """
     return ptn.k_boundary(k).column_lengths()
 
 
 def has_rectangle(ptn, h, w):
     r""" A partition ``ptn`` has an `h` x `w` rectangle if it's Ferrer's diagram has `h` (*or more*) rows of length `w` (*exactly*).
+
+    ..  SEEALSO::
+
+        :meth:`has_k_rectangle`
     """
     assert h >= 1
     assert w >= 1
@@ -188,13 +231,13 @@ def has_k_rectangle(ptn, k):
 
     .. SEEALSO::
 
-        :meth:`is_k_irreducible`, :meth:`has_k_rectangle`
+        :meth:`is_k_irreducible`, :meth:`is_k_reducible`, :meth:`has_rectangle`
     """
     return any(has_rectangle(ptn, a, b) for (a, b) in k_rectangle_dimension_list(k))
 
 
 def is_k_bounded(ptn, k):
-    r""" Returns True if and only if the partition is bounded by `k`.
+    r""" Returns ``True`` if and only if the partition ``ptn`` is bounded by ``k``.
 
     EXAMPLES::
 
@@ -285,6 +328,10 @@ def next(p, min=[], max=None, type=None):
     - ``max`` -- (default ``None``) The 'maximum partition' that ``next_within_bounds(p)`` must be contained in.  If set to ``None``, then there is no restriction.
 
     - ``type`` -- The type of partitions allowed.  For example, 'strict' for strictly decreasing partitions.
+
+    ..  SEEALSO::
+
+        :meth:`next`
     """
     # make sure min <= p <= max
     if max is not None:
@@ -340,6 +387,10 @@ def is_k_core(ptn, k):
         True
         sage: is_k_core(Partition([2, 1]), 3)
         False
+
+    ..  SEEALSO::
+
+        :meth:`Core`
     """
     ptn = Partition(ptn)
     for row_hook_lengths in ptn.hook_lengths():
@@ -351,6 +402,8 @@ def is_k_core(ptn, k):
 
 def to_k_core(ptn, k):
     r""" Shift the rows of ``ptn`` minimally in order to create a `k`-core.
+
+    Returns a :class:`Partition` object, not a :class:`Core` object.
 
     If you plug a `k`-bounded partition into this function and use `k+1` as the input constant, then this is the well-known bijection between `k`-bounded partitions and `k+1`-cores.
     """

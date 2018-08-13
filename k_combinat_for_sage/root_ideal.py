@@ -2,11 +2,23 @@
 r"""
 Sage does *not* have a builtin 'RootIdeal' object.  *This* module contains a RootIdeal class and useful functions pertaining to root ideals:
 
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
+
 REFERENCES:
 
 .. [cat] `Catalan functions and k-schur positivity <https://arxiv.org/abs/1804.03701>`_
 .. [scat] Skew-linked Catalan functions and k-schur positivity.  Jonah Blasiak, Jennifer Morse, Anna Pun, and Daniel Summers.  Not to be confused with 'Catalan functions and k-schur positivity.'
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 import partition
 import skew_partition
@@ -19,6 +31,10 @@ def is_pseudo_partition(seq):
     r""" Return whether ``seq`` is a pseudo-partition.
 
     A __pseudo partition__ is a composition `\gamma` such that `\gamma + \rho` is a partition, where `\rho` is the staircase shape.
+
+    ..  SEEALSO::
+
+        :meth:`staircase_shape`
     """
     # TODO: test
     if not all(term in IntegerRing() for term in seq):
@@ -48,12 +64,20 @@ def staircase_shape(n):
     r""" Given ``n``, return the composition `[n-1, n-2, \ldots, 0]` commonly denoted `\rho`.
 
     Yes, this INCLUDES a 0 at the end!
+
+    ..  SEEALSO::
+
+        :meth:`RootIdeals.init_staircase`
     """
     return Composition(range(n - 1, -1, -1))
 
 
 def skew_partition_to_selected_rows(sp):
     r""" Given a skew partition ``sp``, follow the bounce algorithm and return the indices of the selected rows.
+
+    ..  SEEALSO::
+
+        :meth:`selected_rows_to_maximum_root_ideal`
     """
     # actually this may ONLY WORK for catty-connected skew-partitions, because i'm not sure how we deal with 'missing' rows
     # arguably we should call it a linked_skew_partition
@@ -94,7 +118,12 @@ def skew_partition_to_selected_rows(sp):
 
 
 def selected_rows_to_maximum_root_ideal(n, selected_indices):
-    # Given the dimension of the square n and the selected rows, output the root ideal
+    r""" Given the dimension of the square n and the selected rows, output the root ideal.
+
+    ..  SEEALSO::
+
+        :meth:`skew_partition_to_selected_rows`
+    """
     root_ideal_cells = []
     selected_indices = set(selected_indices)
     permitted_col_indices = set(range(n)) - selected_indices
@@ -144,6 +173,12 @@ def skew_partition_to_removable_roots(sp, type='max'):
 
 
 def removable_roots_to_partition(corners, n):
+    r""" Given the ``corners`` (removable roots) which define a root ideal, return the partition corresponding to that root ideal.
+
+    ..  SEEALSO::
+
+        :meth:`RootIdeals.init_from_removable_roots`, :meth:`to_partition`
+    """
     corners = sorted(corners)
     # r is the row index or the 'y' value
     # c is the col index of the 'x' value
@@ -165,8 +200,11 @@ def removable_roots_to_partition(corners, n):
 # RootIdeal stuff
 
 
-def is_roots(obj):
-    # Dirty indicator of whether object is roots (is it an iterable of pairs of natural numbers).
+def _is_roots(obj):
+    r""" Helper function.
+
+    Dirty indicator of whether object is roots (is it an iterable of pairs of natural numbers).
+    """
     try:
         iter(obj)
     except:
@@ -192,7 +230,7 @@ class RootIdeal(list):
 
     def __init__(self, lis, n=None):
         # validate the roots
-        assert is_roots(lis)
+        assert _is_roots(lis)
         # figure out n
         if n is not None:
             self.n = n
@@ -208,6 +246,25 @@ class RootIdeal(list):
         return hash(tuple(self))
 
     def next(self, min=[], max=None, type='strict'):
+        r"""Get the next root ideal lexicographically that contains min and is contained in max.
+
+        This is the same method as :meth:`Partition.next_within_bounds`, but using the corresponding root ideals instead of partitions.
+
+        INPUTS:
+
+        - ``self`` -- The RootIdeal.
+
+        - ``min`` -- (default ``[]``, the empty root ideal) The 'minimum root ideal' that ``next(self)`` must contain.
+
+        - ``max`` -- (default ``None``) The 'maximum root ideal' that ``next(self)`` must be contained in.  If set to ``None``, then there is no restriction.
+
+        - ``type`` -- The type of root ideals allowed.  For example, 'strict' for strictly decreasing root ideals.
+
+        ..  SEEALSO::
+
+            :meth:`Partition.next_within_bounds`
+        """
+
         # figure out dimension of square
         n = self.n
         ptn = self.to_partition()
@@ -247,6 +304,10 @@ class RootIdeal(list):
             True
             sage: ri.down(4) == None
             True
+
+        ..  SEEALSO::
+
+            :meth:`up`, :meth:`down_path`, :meth:`up_path`, :meth:`top`, :meth:`bottom`
         """
         # Note: I am assuming the cells in the root ideal are IN ORDER with y coordinates weakly increasing, and for fixed y, x strictly increasing
         for (r, c) in ri:
@@ -281,6 +342,10 @@ class RootIdeal(list):
             1
             sage: ri.up(4)
             2
+
+        ..  SEEALSO::
+
+            :meth:`down`, :meth:`down_path`, :meth:`up_path`, :meth:`top`, :meth:`bottom`
         """
         for (r, c) in reversed(root_ideal):
             if c == index:
@@ -314,6 +379,10 @@ class RootIdeal(list):
             [3]
             sage: ri.down_path(4)
             [4]
+
+        ..  SEEALSO::
+
+            :meth:`down`, :meth:`up`, :meth:`up_path`, :meth:`top`, :meth:`bottom`
         """
         def next_func(index): return root_ideal.down(index)
         return _generate_path(next_func, start_index)
@@ -343,6 +412,10 @@ class RootIdeal(list):
             [3, 1]
             sage: ri.up_path(4)
             [4, 2, 0]
+
+        ..  SEEALSO::
+
+            :meth:`down`, :meth:`up`, :meth:`down_path`, :meth:`top`, :meth:`bottom`
         """
         def next_func(index): return root_ideal.up(index)
         return _generate_path(next_func, start_index)
@@ -372,6 +445,10 @@ class RootIdeal(list):
             1
             sage: ri.top(4)
             0
+
+        ..  SEEALSO::
+
+            :meth:`down`, :meth:`up`, :meth:`down_path`, :meth:`up_path`, :meth:`bottom`
         """
         return root_ideal.up_path(start_index)[-1]
 
@@ -400,6 +477,10 @@ class RootIdeal(list):
             3
             sage: ri.bottom(4)
             4
+
+        ..  SEEALSO::
+
+            :meth:`down`, :meth:`up`, :meth:`down_path`, :meth:`up_path`, :meth:`top`
         """
         return root_ideal.down_path(start_index)[-1]
 
@@ -431,6 +512,10 @@ class RootIdeal(list):
             [15, 7, 4, 2]
 
         This is also the lengths of the bounce paths in [cat]_ Definition 5.2.
+
+        ..  SEEALSO::
+
+            :meth:`down_path`
     """
         if not self:
             mu = ptn
@@ -451,6 +536,8 @@ class RootIdeal(list):
     def to_partition(root_ideal):
         r""" Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal).
 
+        Returns a :class:`Partition` object.
+
         EXAMPLES:
 
         The red part of the following picture (please ignore the diagonal) represents the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)].
@@ -464,6 +551,10 @@ class RootIdeal(list):
             sage: ri = RootIdeal([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)])
             sage: ri.to_partition()
             [5, 2, 2, 2]
+
+        ..  SEEALSO::
+
+            :meth:`RootIdeals.init_from_partition`
         """
         if root_ideal is None or root_ideal == False:
             return root_ideal
@@ -504,9 +595,13 @@ class RootIdeal(list):
             sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             sage: ri.is_strict()
             False
+
+        ..  SEEALSO::
+
+            :meth:`partition.is_strictly_decreasing`
         """
         ptn = ri.to_partition()
-        return skew_partition.is_strictly_decreasing(ptn)
+        return partition.is_strictly_decreasing(ptn)
 
     def complement(self):
         r""" Return this root ideal's complement in the upper-staircase-shape.
@@ -543,6 +638,10 @@ class RootIdeal(list):
             True
             sage: ri2.complement() == ri1
             True
+
+        ..  SEEALSO::
+
+            :meth:`RootIdeals.init_staircase`
         """
         n = self.n
         ri_staircase = RootIdeals().init_staircase(n)
@@ -577,31 +676,39 @@ class RootIdeals:
         ri = self.init_from_partition(ptn, n)
         return ri
 
-    def init_from_skew_partition(self, sp, type='max', method='removable roots'):
+    def init_from_skew_partition(self, sp, type='max', algorithm='removable roots'):
         r""" Given a SkewPartition ``sp`` and a type of root ideal ('max' or 'min'), return the corresponding root ideal.
 
         A type of ``'min'`` returns `\Phi(\lambda, \mu)` while a type of ``'max'`` returns `\Phi^+(\lambda, \mu)` as notated in [scat]_ at the bottom of page 1.
+
+        ..  SEEALSO::
+
+            :meth:`init_all_from_skew_partition`
         """
-        if method == 'removable roots':
+        if algorithm == 'removable roots':
             corners = skew_partition_to_removable_roots(sp, type)
             n = len(sp.outer())
             root_ideal = self.init_from_removable_roots(corners, n)
-        elif method == 'bounce':
+        elif algorithm == 'bounce':
             if type != 'max':
                 raise Exception(
-                    'The bounce method can only yield the maximum root ideal (type=max).')
+                    'The bounce algorithm can only yield the maximum root ideal (type=max).')
             selected_indices = skew_partition_to_selected_rows(sp)
             n = len(sp.outer())
             root_ideal = selected_rows_to_maximum_root_ideal(
                 n, selected_indices)
         else:
-            raise ValueError('Unknown method.')
+            raise ValueError('Unknown algorithm.')
         return RootIdeal(root_ideal)
 
     def init_all_from_skew_partition(self, sp, type='strict'):
         r""" Given a skew partition ``sp``, find the corresponding set (but given as a list here) of root ideals.
 
         (This is the set `\{\Psi \in \Delta^+(\mathfrak{R}) \mid \Phi(\lambda, \mu) \subset \Psi \subset \Phi^+(\lambda, \mu)\} = [(\lambda, \mu)]` found in [scat]_ at the bottom of page 1.)
+
+        ..  SEEALSO::
+
+            :meth:`init_from_skew_partition`
         """
         # We could change this to an iterator if users may not want all the root ideals.
         min_ri = self.init_from_skew_partition(sp, type='min')
@@ -633,6 +740,10 @@ class RootIdeals:
             sage: k_ri = RootIdeals().init_k_schur_from_partition([3, 3, 2, 2, 2], 4, n=8)
             sage: k_ri.to_partition()
             [6, 5, 3, 2, 1]
+
+        ..  SEEALSO::
+
+            :meth:`is_pseudo_partition`
         """
         assert is_pseudo_partition(seq)
         assert all(term <= k for term in seq)
@@ -678,6 +789,10 @@ class RootIdeals:
             [(0,1), (0,2), (1,2)]
             sage: RootIdeals().init_staircase(4)
             [(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]
+
+        ..  SEEALSO::
+
+            :meth:`staircase_shape`
         """
         return self.init_from_partition(staircase_shape(n), n)
 
@@ -706,6 +821,8 @@ class RootIdeals:
         """
         assert partition._is_sequence(composition)
         assert all(term >= 1 for term in composition)
+        if isinstance(composition, (Partition, Composition)):
+            composition = list(composition)
         cells_complement = []
         index_previous = -1
         for term in composition:

@@ -2,10 +2,22 @@
 r"""
 Sage does *not* have a builtin 'kShape' object.  *This* module contains useful functions pertaining to `k`-shapes:
 
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
+
 REFERENCES:
 
 .. [genocchi] `Combinatorics of k-shapes and Genocchi numbers <https://www.lri.fr/~hivert/PAPER/kshapes.pdf>`_, in FPSAC 2011, Reykjav´k, Iceland DMTCS proc. AO, 2011, 493-504.
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 from partition import *
 import skew_partition
@@ -138,6 +150,10 @@ def is_k_reducible_by_rectangle(p, k, hw):
     - ``k`` -- the `k` of the `k`-shape
 
     - ``hw`` -- an ordered pair ``hw`` = `(h, w)`, where `h` is the height of the rectangle and `w` is the width.
+
+    ..  SEEALSO::
+
+        :meth:`is_reducible`
     """
     assert is_k_shape(p, k)
     (h, w) = hw
@@ -180,6 +196,10 @@ def is_reducible(ptn, k):
 
         sage: is_reducible(Partition([5, 3, 2, 1, 1]), k=4)
         False
+
+    ..  SEEALSO::
+
+        :meth:`is_irreducible`, :meth:`k_to_irreducible_k_shapes`
     """
     rect_dim_list = k_rectangle_dimension_list(
         k) + k_rectangle_dimension_list(k-1)
@@ -209,6 +229,10 @@ def is_irreducible(s, k):
 
         sage: is_irreducible(Partition([5, 3, 2, 1, 1]), k=4)
         True
+
+    ..  SEEALSO::
+
+        :meth:`is_reducible`, :meth:`k_to_irreducible_k_shapes`
     """
     return not is_reducible(s, k)
 
@@ -223,6 +247,10 @@ def k_to_irreducible_k_shapes(k):
 
         sage: k_to_irreducible_k_shapes(3)
         [[], [1], [2, 1]]
+
+    ..  SEEALSO::
+
+        :meth:`is_reducible`, :meth:`is_irreducible`
     """
     bound = (k-1)*k/2
     n_bound = bound**2
