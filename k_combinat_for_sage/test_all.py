@@ -1207,10 +1207,8 @@ a(cat_func.eval(), hl[3, 1, 1] - t**2*hl[4, 1])
 
 # issue #9
 K = FractionField(QQ['t'])
-elm = CFS.init_from_indexed_root_ideal([], [3, 3, 2, 1], base_ring=K)
-elm.eval()
-
-
+cf = CFS.init_from_indexed_root_ideal([], [3, 3, 2, 1], base_ring=K)
+cf.eval()
 
 
 # test catalan function expand
