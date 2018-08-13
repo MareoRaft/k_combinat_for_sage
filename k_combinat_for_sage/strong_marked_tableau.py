@@ -78,6 +78,10 @@ def strong_tableau_has_row_marking(tab, row_index):
     Checks if a strong tableau ``tab`` has a row marking in row
     ``row_index`` (row indexing starts at 0) and returns ``True``
     if row_marking is present; ``False`` otherwise.
+
+    ..  SEEALSO::
+
+        :meth:`is_row_markable`
     """
     # WARNING: Indices start at 0
     if len(tab) <= row_index:
@@ -149,7 +153,7 @@ def _strong_marked_tableau(lis, k):
 
 
 def k_coverees1(root, k):
-    # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See method 2 of k_coverees.
+    # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See algorithm 2 of k_coverees.
     # one way to get the k coverees
     root = Core(root, k+1)
     root = root.to_partition()
@@ -172,18 +176,18 @@ def k_coverees1(root, k):
     return coverees
 
 
-def k_coverees(core, k, method=1):
-    # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See method 2 below.
+def k_coverees(core, k, algorithm=1):
+    # THIS FUNCTIONALITY IS ALREADY BUILTIN.  See algorithm 2 below.
     r""" Given a `k+1`-core, find all sub-`k+1`-cores that have `k`-boundary 1 less than the given. """
-    if method == 1:
+    if algorithm == 1:
         return k_coverees1(core, k)
-    elif method == 2:
+    elif algorithm == 2:
         core = Core(core, k+1)
         coveree_core_list = core.strong_down_list()
         coverees = set(c.to_partition() for c in coveree_core_list)
         return coverees
     else:
-        raise ValueError('Unknown method.')
+        raise ValueError('Unknown algorithm.')
 
 
 def __go_to_ribbon_head(cells, start_cell):
@@ -235,7 +239,12 @@ def row_markings_to_markings(core_sequence, row_markings):
 
 
 def is_row_markable(outer_core, inner_core, row_marking):
-    r""" Given two cores (typically consecutive cores in a core sequence), see if ``row_marking`` is a possible row_marking of outer_core/inner_core """
+    r""" Given two cores (typically consecutive cores in a core sequence), see if ``row_marking`` is a possible row_marking of outer_core/inner_core.
+
+    ..  SEEALSO::
+
+        :meth:`strong_tableau_has_row_marking`
+    """
     try:
         row_marking_to_marking(outer_core, inner_core, row_marking)
         return True
@@ -274,6 +283,10 @@ def end_core_to_marked_core_sequences(end_core, k, row_markings):
 
         sage: end_core_to_marked_core_sequences([5, 3, 1], 2, [1])
         {([3, 1, 1], [5, 3, 1]), ([4, 2], [5, 3, 1])}
+
+    ..  SEEALSO::
+
+        :meth:`end_core_to_strong_marked_tableaux`
     """
     # check inputs
     k = NonNegativeIntegerSemiring()(k)
@@ -322,6 +335,10 @@ def end_core_to_strong_marked_tableaux(end_core, k, row_markings):
         sage: end_core_to_strong_marked_tableaux([5, 3, 1], 2, [1])
         {[[None, None, None, 1, 1], [None, 1, -1], [None]],
          [[None, None, None, None, 1], [None, None, -1], [1]]}
+
+    ..  SEEALSO::
+
+        :meth:`end_core_to_marked_core_sequences`
     """
     core_sequences = end_core_to_marked_core_sequences(
         end_core, k, row_markings)

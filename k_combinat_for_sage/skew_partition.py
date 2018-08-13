@@ -7,24 +7,21 @@ REFERENCES:
 .. [mem] Lam, T., Lapointe, L., Morse, J., & Shimozono, M. (2013). `The poset of k-shapes and branching rules for k-Schur functions <http://breakfreerun.org/index.php/ebooks/the-poset-of-k-shapes-and-branching-rules-for-k-schur-functions>`_. Memoirs of the American Mathematical Society, 223(1050), 1-113. DOI: 10.1090/S0065-9266-2012-00655-1
 """
 from sage.all import *
+from partition import is_weakly_decreasing
 # ^*^ sphinx insert ^*^
-
-# HELPERS (only exist as helper functions for other things):
-
-
-def is_weakly_decreasing(li):
-    return all(li[i] >= li[i+1] for i in range(len(li)-1))
-
-
-def is_strictly_decreasing(li):
-    return all(li[i] > li[i+1] for i in range(len(li)-1))
 
 
 # SkewPartition stuff
+
+
 def is_symmetric(sp):
     r""" A SkewPartition is *symmetric* if its inner and outer shapes are symmetric.
 
-    Returns True if and only if the SkewPartition `sp` is equal to its own conjugate.
+    Returns ``True`` if and only if the SkewPartition ``sp`` is equal to its own conjugate.
+
+    ..  SEEALSO::
+
+        :meth:`Partition.is_symmetric`
     """
     return sp == sp.conjugate()
 
@@ -49,6 +46,10 @@ def right(sp, row_index):
 
         sage: right(SkewPartition([[2, 1, 1, 1], [1, 1]]), 1) == None
         True
+
+    ..  SEEALSO::
+
+        :meth:`left`, :meth:`top`, :meth:`bottom`
     """
     # first check to make sure the cell exists
     if sp.row_lengths()[row_index] == 0:
@@ -79,6 +80,10 @@ def left(sp, row_index):
 
         sage: left(SkewPartition([[2, 1, 1, 1], [1, 1]]), 1) == None
         True
+
+    ..  SEEALSO::
+
+        :meth:`right`, :meth:`top`, :meth:`bottom`
     """
     # first check to make sure the cell exists
     if sp.row_lengths()[row_index] == 0:
@@ -116,6 +121,10 @@ def top(sp, col_index):
 
         sage: top(SkewPartition([[4, 1, 1], [2]]), 4)
         IndexError: list index out of range
+
+    ..  SEEALSO::
+
+        :meth:`right`, :meth:`left`, :meth:`bottom`
     """
     return right(sp.conjugate(), col_index)
 
@@ -143,6 +152,10 @@ def bottom(sp, col_index):
 
         sage: bottom(SkewPartition([[4, 1, 1], [2]]), 4)
         IndexError: list index out of range
+
+    ..  SEEALSO::
+
+        :meth:`right`, :meth:`left`, :meth:`top`
     """
     return left(sp.conjugate(), col_index)
 
@@ -162,6 +175,10 @@ def is_linked(sp):
 
         sage: is_linked(SkewPartition([[3, 2], [1]]))
         False
+
+    ..  SEEALSO::
+
+        :meth:`row_lengths`, :meth:`column_lengths`
     """
     return is_weakly_decreasing(sp.row_lengths()) and is_weakly_decreasing(sp.column_lengths())
 
@@ -194,12 +211,12 @@ def row_col_to_skew_partition(rs, cs):
     return SkewPartition([outer, inner])
 
 
-def k_boundary_to_partition(sp, k=None, strict=True):
+def k_boundary_to_partition(sp, k=None, check=True):
     r""" Given a ``k``-boundary ``sp`` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.
 
     (For the definition of `k`-boundary, see Section 2.2 of [mem]_)
 
-    If strict is set to True, the program will assert that the skew-shape really is a `k`-boundary.
+    If ``check`` is set to ``True``, the program will assert that the skew-shape really is a `k`-boundary.
 
     TODO: test
 
@@ -210,18 +227,22 @@ def k_boundary_to_partition(sp, k=None, strict=True):
 
         sage: k_boundary_to_partition(SkewPartition([[3, 1], [2]]), k=2)
         Error
-        sage: k_boundary_to_partition(SkewPartition([[3, 1], [2]]), strict=False)
+        sage: k_boundary_to_partition(SkewPartition([[3, 1], [2]]), check=False)
         [3, 1]
+
+    ..  SEEALSO::
+
+        :meth:`is_k_boundary`, :meth:`outer`
     """
-    if strict:
+    if check:
         assert is_k_boundary(sp, k)
     return sp.outer()
 
 
 def is_k_boundary(sp, k=None):
-    r""" Given a skew-shape ``sp`` and natural number ``k``, return True if and only if `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
+    r""" Given a skew-shape ``sp`` and natural number ``k``, return ``True`` if and only if `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
 
-    Given a skew-shape `sp` *only*, return True if and only if there exists some `k` such that `sp` is a `k`-boundary.
+    Given a skew-shape ``sp`` *only*, return ``True`` if and only if there exists some `k` such that `sp` is a `k`-boundary.
 
     TODO: test
 
@@ -233,6 +254,10 @@ def is_k_boundary(sp, k=None):
         True
         sage: is_k_boundary(SkewPartition([[3, 2, 1], [2, 1]]), k=2)
         False
+
+    ..  SEEALSO::
+
+        :meth:`Partition.k_boundary`
     """
     if k is None:
         max_hook_length = sp.outer().hook_length(0, 0)
@@ -245,7 +270,7 @@ def is_k_boundary(sp, k=None):
 
         (Any other partition containing this skew_shape would necessarily have a northeast corner that the skew_shape does *not have*.  But in order for the skew-shape to be a k-boundary, it *must have* that northeast corner.)
         """
-        l = k_boundary_to_partition(sp, strict=False)
+        l = k_boundary_to_partition(sp, check=False)
         r"""now that we have the partition, we simply compute it's hook-length for each cell and verify that for each cell of values k or less, it appears in the sp"""
         correct_k_boundary = l.k_boundary(k)
         return sp == correct_k_boundary
@@ -260,6 +285,10 @@ def row_shape_to_linked_skew_partitions(rs):
 
         sage: row_shape_to_linked_skew_partitions(Partition([3, 1, 1]))
         [[3, 1, 1] / [], [4, 1, 1] / [1], [5, 2, 1] / [2, 1]]
+
+    ..  SEEALSO::
+
+        :meth:`is_linked`, :meth:`row_lengths`
     """
     def ptn_to_linked_things(p):
         def thing_to_added_row_things(sp, row_len):
@@ -316,6 +345,10 @@ def size_to_linked_skew_partitions(size):
 
         sage: size_to_linked_skew_partitions(3)
         [[3] / [], [2, 1] / [], [3, 1] / [1], [1, 1, 1] / [], [2, 1, 1] / [1], [3, 2, 1] / [2, 1]]
+
+    ..  SEEALSO::
+
+        :meth:`is_linked`, :meth:`size`
     """
     linked_skew_ptns = []
     # Here is one major optimization that's possible: Instead of first calculating all Partitions(size), and then doing the ptn_to_linked_things algo for each partition, actually go through the work of generating the partitions manually, and use ptn_to_linked_things algo as you go.  This is to ELIMINATE the redundancy of having two partitions that START with the same sub-partition.

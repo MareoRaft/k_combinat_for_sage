@@ -37,15 +37,24 @@ def _is_k_schur(obj):
 
 # MAIN
 def get_k_rectangles(k):
-    # A __k-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is k.
+    r""" Return the list of ``k``-rectangles.
+
+    A __``k``-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is `k`.
+    """
     return [Partition([a] * b) for (a, b) in k_rectangle_dimension_list(k)]
 
 
 def get_k_irreducible_partition_lists(k):
-    # Returns: list of lists (instead of list of Partition objects)
+    r""" Return the list of ``k``-irreducible partitions.
 
-    # Since there are n! such partitions, the big-O time can't be better than that.
-    # We could have a yeild in the function to be an iterator.
+    The `k`-irreducible partitions are output at lists, not Partition objects.
+
+    There are `k!` such partitions, and computation time starts to get slow around `k = 10`.
+
+    ..  SEEALSO::
+
+        :meth:`get_k_irreducible_partitions`
+    """
     k = NonNegativeIntegerSemiring()(k)
     k_irr_ptns = [[]]
     # NO rows of length k
@@ -61,13 +70,28 @@ def get_k_irreducible_partition_lists(k):
 
 
 def get_k_irreducible_partitions(k):
-    r""" Given ``k``, return the `n!` `k`-irreducible-partitions. """
+    r""" Return the list of ``k``-irreducible partitions.
+
+    There are `k!` such partitions, and computation time starts to get slow around `k = 10`.
+
+    ..  SEEALSO::
+
+        :meth:`get_k_irreducible_partition_lists`
+    """
     return [Partition(e) for e in get_k_irreducible_partition_lists(k)]
 
 
-def size_to_num_linked_partition_self_pairs(n):
-    # Given a natural number n, count how many partitions l of size n have the property that (l, l) has a corresponding linked-skew-diagram.
-    ps = Partitions(n)
+def size_to_num_linked_partition_self_pairs(size):
+    r""" Given a natural number ``size``, count how many partitions `l` of size ``size`` have the property that `(l, l)` has a corresponding skew-linked-diagram.
+
+    Note: A 'skew-linked-diagram' is a SkewPartition that is linked.
+
+    ..  SEEALSO::
+
+        :meth:`SkewPartition.is_linked`
+    """
+    # DO NOT ADD TO SAGE
+    ps = Partitions(size)
     count = 0
     for p in ps:
         try:
@@ -80,17 +104,20 @@ def size_to_num_linked_partition_self_pairs(n):
 
 
 def print_sequence(func, num_terms=float('inf')):
+    # DO NOT ADD TO SAGE
     n = 0
     while n < num_terms:
         print('n={}\t{}=f(n)'.format(n, func(n)))
 
 
 def size_to_k_shapes(n, k):
+    # DO NOT ADD TO SAGE
     r""" Return all partitions of size ``n`` that are ``k``-shapes. """
     return [ptn for ptn in Partitions(n) if is_k_shape(ptn, k)]
 
 
 def size_to_num_k_shapes(n, k):
+    # DO NOT ADD TO SAGE
     return len(size_to_k_shapes(n, k))
 
 
@@ -158,30 +185,43 @@ def straighten(s, gamma):
 
 
 class ShiftingSequenceSpace():
-    # A helper for ShiftingOperatorAlgebra
+    r""" A helper for ShiftingOperatorAlgebra.
+
+    Helps ShiftingOperatorAlgebra know which indices are valid and which indices are not for the basis.
+    """
     def __init__(self, base=IntegerRing()):
         self.base = base
         # category = InfiniteEnumeratedSets()
         # Parent.__init__(self, category=category)
 
     def __contains__(self, seq):
+        r""" Returns ``True`` if and only if ``seq`` is a valid shifting sequence. """
         if not isinstance(seq, tuple):
             return False
         return not any(i not in self.base for i in seq)
 
-    VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base}), but instead received {seq}.'
+    CHECK_ERROR_MESSAGE = 'Expected valid index (a tuple of {base}), but instead received {seq}.'
 
-    def validate(self, seq):
+    def check(self, seq):
+        r""" Verify that ``seq`` is a valid shifting sequence.
+
+        If it is not, raise an error.
+        """
         if not self.__contains__(seq):
-            raise ValueError(self.VALIDATION_ERROR_MESSAGE.format(
+            raise ValueError(self.CHECK_ERROR_MESSAGE.format(
                 base=self.base, seq=seq))
 
 
 class RaisingSequenceSpace(ShiftingSequenceSpace):
-    # helper for RaisingOperatorAlgebra
-    VALIDATION_ERROR_MESSAGE = 'Expected valid index (a tuple of {base} elements, where every partial sum is nonnegative and every total sum is 0), but instead received {seq}.'
+    r""" A helper for RaisingOperatorAlgebra.
+
+    Helps RaisingOperatorAlgebra know which indices are valid and which indices are not for the basis.
+    """
+
+    CHECK_ERROR_MESSAGE = 'Expected valid index (a tuple of {base} elements, where every partial sum is nonnegative and every total sum is 0), but instead received {seq}.'
 
     def __contains__(self, seq):
+        r""" Returns ``True`` if and only if ``seq`` is a valid raising sequence. """
         # check that it is a shifting sequence
         if not ShiftingSequenceSpace.__contains__(self, seq):
             return False
@@ -199,6 +239,36 @@ class RaisingSequenceSpace(ShiftingSequenceSpace):
 
 
 class ShiftingOperatorAlgebra(CombinatorialFreeModule):
+    r""" An algebra of shifting operators.
+
+    We follow the following convention:
+
+    S[(1, 0, -1, 2)] is the shifting operator that raises the first part by 1, lowers the third part by 1, and raises the fourth part by 2.
+
+    OPTIONAL ARGUMENTS:
+
+    - ``base_ring`` -- (default ``QQ['t']``) the ring you will use on the raising operators.
+
+    - ``prefix`` -- (default ``"R"``) the label for the raising operators.
+
+    EXAMPLES::
+
+        sage: S = ShiftingOperatorAlgebra()
+        sage: s = SymmetricFunctions(QQ['t']).s()
+        sage: h = SymmetricFunctions(QQ['t']).h()
+
+        sage: S[(1, -1, 2)]
+        S(1, -1, 2)
+        sage: S[(1, -1, 2)](s[5, 4])
+        s[6, 3, 2]
+        sage: S[(1, -1, 2)](h[5, 4])
+        h[6, 3, 2]
+
+        sage: (1 - S[(1,-1)]) * (1 - S[(4,)])
+        S() - S(1, -1) - S(4,) + S(5, -1)
+        sage: ((1 - S[(1,-1)]) * (1 - S[(4,)]))(s[2, 2, 1])
+        s[2, 2, 1] - s[3, 1, 1] - s[6, 2, 1] + s[7, 1, 1]
+    """
     def __init__(self, base_ring=QQ['t'], prefix='S', basis_indices=ShiftingSequenceSpace()):
         self._prefix = prefix
         self._base_ring = base_ring
@@ -217,22 +287,33 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             bracket=False)
 
     def __getitem__(self, seq):
+        r""" Return the shifting operator whose index is ``seq``.
+
+        This method is only for basis elements.
+        """
         # seq should be a basis index
-        self._basis_indices.validate(seq)
+        self._basis_indices.check(seq)
         return self.basis()[seq]
 
     def _element_constructor_(self, seq):
+        r""" Return the shifting operator whose index is ``seq``.
+
+        This method is only for basis elements.
+        """
         return self.__getitem__(seq)
 
     @cached_method
     def one_basis(self):
-        # identity basis/index
+        r""" Return the index of the identity element. """
         return tuple()
 
     def _repr_(self):
+        r""" Return a string describing ``self`` to humans. """
         return "Shifting Operator Algebra over {base_ring}".format(base_ring=self._base_ring)
 
     def product_on_basis(self, index1, index2):
+        r""" Given indices ``index1`` and ``index2``, return the product of the basis elements indexed by those indices.
+        """
         # pad with 0's
         max_len = max(len(index1), len(index2))
         index1 = index1 + (0,) * (max_len - len(index1))
@@ -245,17 +326,28 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         r""" An element of a ShiftingOperatorAlgebra. """
 
         def indices(self):
+            r""" Return the support of ``self``. """
             return self.support()
 
         def index(self):
+            r""" Return the index of ``self``.
+
+            This method is only for basis elements.
+            """
             if len(self) != 1:
                 raise ValueError(
                     "This is only defined for basis elements.  For other elements, use indices() instead.")
             return self.indices()[0]
 
         def _call_basis_on_index(self, seq, index):
-            # a 'seq' is the sequence of the BASIS element to act WITH.
-            # an 'index' is a sequence (typically a composition or a partition) that we act UPON.
+            """ Return the action of the basis element indexed by ``seq`` upon the composition ``index``.
+
+            INPUTS:
+
+            - ``seq`` -- The sequence of the basis element that acts.
+
+            - ``index`` -- A sequence (typically a composition or a partition) that we act upon.
+            """
             assert _is_sequence(index)
             # pad sequence and index with 0's
             index = index + [0] * (len(seq) - len(index))
@@ -631,7 +723,7 @@ class CatalanFunction:
     def __init__(self, roots, index, base_ring=None, prefix=None):
         assert _is_sequence(index)
         self.index = index
-        assert is_roots(roots)
+        assert root_ideal._is_roots(roots)
         self.roots = RootIdeal(roots, len(self.index))
         self.base_ring = base_ring if base_ring is not None else self.BASE_RING_DEFAULT
         self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
