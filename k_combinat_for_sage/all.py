@@ -681,8 +681,10 @@ class CatalanFunction:
         """
         # setup
         if t is None:
+            hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
             t = self.base_ring.gen()
-        hl = SymmetricFunctions(self.base_ring).hall_littlewood(t=t).Qp()
+        else:
+            hl = SymmetricFunctions(self.base_ring).hall_littlewood(t=t).Qp()
         # formula
         roots_complement = self.roots.complement()
         # print(roots_complement)
