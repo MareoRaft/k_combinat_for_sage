@@ -1166,12 +1166,17 @@ base_ring = QQ['t']
 t = base_ring.gen()
 sym = SymmetricFunctions(base_ring)
 hl = sym.hall_littlewood().Qp()
+spec_hl = sym.hall_littlewood(t=1).Qp()
 s = sym.s()
 # empty product
 ri = RIS.init_from_partition([2, 1], n=3)
 g = [3, 1, 1]
 cat_func = CatalanFunction(ri, g)
 a(cat_func.eval(), hl[3, 1, 1])
+a(cat_func.eval(t=1), spec_hl[3, 1, 1])
+
+for gamma in [[1], [1, 1], [2], [2, 1]]:
+        a(cf.eval(t=1), spec_hl(gamma))
 
 gamma = [1]
 cf = CatalanFunction([], gamma)
