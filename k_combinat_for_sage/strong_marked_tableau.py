@@ -2,8 +2,20 @@
 r"""
 Sage has have a builtin `StrongTableau <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/k_tableau.html>`_ object.  *This* module contains useful functions pertaining to Standard Marked Tableau (SMT), the most standard form of a StrongTableau (a strong tableau with standard weight).
 
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
+
 REFERENCES:
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 
 from partition import *
