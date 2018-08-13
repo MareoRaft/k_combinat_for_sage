@@ -1228,6 +1228,10 @@ a(RIS.init_parabolic_from_composition([1, 2]), [(0, 1), (0, 2)])
 a(RIS.init_parabolic_from_composition([2, 1]), [(0, 2), (1, 2)])
 a(RIS.init_parabolic_from_composition([2, 2]), [(0, 2), (0, 3), (1, 2), (1, 3)])
 a(RIS.init_parabolic_from_composition([1, 3, 2]), [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)])
+# and different input types
+a(RIS.init_parabolic_from_composition([1, 1]), [(0, 1)])
+a(RIS.init_parabolic_from_composition(Partition([1, 1])), [(0, 1)])
+a(RIS.init_parabolic_from_composition(Composition([1, 1])), [(0, 1)])
 
 
 # test bottom for root ideal

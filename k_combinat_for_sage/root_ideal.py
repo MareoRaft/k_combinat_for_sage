@@ -821,6 +821,8 @@ class RootIdeals:
         """
         assert partition._is_sequence(composition)
         assert all(term >= 1 for term in composition)
+        if isinstance(composition, (Partition, Composition)):
+            composition = list(composition)
         cells_complement = []
         index_previous = -1
         for term in composition:
