@@ -2,11 +2,23 @@
 r"""
 This module contains all functionalities that are not already organized into the other files.  New functionalities written to the library often appear here, and eventually get organized into separate files.
 
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
+
 REFERENCES:
 
 .. [Fun] `Raising operators and the Littlewood-Richardson polynomials <https://arxiv.org/pdf/1203.4729.pdf>`_.  Fun, Alex.
 .. [LN] `Finite sum Cauchy identity for dual Grothendieck polynomials <https://projecteuclid.org/download/pdf_1/euclid.pja/1407415930>`_.
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 
 from core import *

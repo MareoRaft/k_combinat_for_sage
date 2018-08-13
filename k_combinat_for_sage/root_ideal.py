@@ -2,11 +2,23 @@
 r"""
 Sage does *not* have a builtin 'RootIdeal' object.  *This* module contains a RootIdeal class and useful functions pertaining to root ideals:
 
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
+
 REFERENCES:
 
 .. [cat] `Catalan functions and k-schur positivity <https://arxiv.org/abs/1804.03701>`_
 .. [scat] Skew-linked Catalan functions and k-schur positivity.  Jonah Blasiak, Jennifer Morse, Anna Pun, and Daniel Summers.  Not to be confused with 'Catalan functions and k-schur positivity.'
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 import partition
 import skew_partition

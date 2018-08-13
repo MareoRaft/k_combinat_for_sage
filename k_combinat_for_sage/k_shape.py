@@ -2,10 +2,22 @@
 r"""
 Sage does *not* have a builtin 'kShape' object.  *This* module contains useful functions pertaining to `k`-shapes:
 
+AUTHORS:
+
+- Matthew Lancellotti (2018): Initial version
+
 REFERENCES:
 
 .. [genocchi] `Combinatorics of k-shapes and Genocchi numbers <https://www.lri.fr/~hivert/PAPER/kshapes.pdf>`_, in FPSAC 2011, Reykjav´k, Iceland DMTCS proc. AO, 2011, 493-504.
 """
+
+#*****************************************************************************
+#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#*****************************************************************************
+
 from sage.all import *
 from partition import *
 import skew_partition
