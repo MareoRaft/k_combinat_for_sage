@@ -4,13 +4,15 @@ Sage has have a builtin `StrongTableau <https://doc.sagemath.org/html/en/referen
 
 AUTHORS:
 
-- Matthew Lancellotti (2018): Initial version
+- George H. Seelinger (2018): Initial code
+- Matthew Lancellotti (2018): added more functions
 
 REFERENCES:
 """
 
 #*****************************************************************************
-#  Copyright (C) 2018 Matthew Lancellotti <mvlancellotti@gmail.com>
+#  Copyright (C) 2018 George H. Seelinger <ghseeli@gmail.com> and
+#  Matthew Lancellotti <mvlancellotti@gmail.com>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #                  http://www.gnu.org/licenses/
