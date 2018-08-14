@@ -174,7 +174,7 @@ def straighten(basis, gamma):
         raise NotImplemented(
             'Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
     elif basis.__class__.__name__ == 'HallLittlewood_qp_with_category':
-        return compositional_hall_littlewood_Qp(gamma, base_ring=basis.base_ring())
+        return compositional_hall_littlewood_Qp(gamma, base_ring=basis.base_ring(), t=basis.t)
     elif basis.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
         new_gamma = list(reversed(sorted(gamma)))
         if has_nonnegative_parts(new_gamma):

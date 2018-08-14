@@ -1180,7 +1180,12 @@ cat_func = CatalanFunction(ri, g)
 a(cat_func.eval(), hl[3, 1, 1])
 a(cat_func.eval(t=1), spec_hl[3, 1, 1])
 
-for gamma in [[1], [1, 1], [2], [2, 1]]:
+for ideal,gamma in [
+                ([],[1]),
+                ([(0,1)],[1, 1]),
+                ([],[2]),
+                ([(0,1)], [2, 1]) ]:
+        cf = CatalanFunction(ideal, gamma)
         a(cf.eval(t=1), spec_hl(gamma))
 
 gamma = [1]
