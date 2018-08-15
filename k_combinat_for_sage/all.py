@@ -39,7 +39,10 @@ import strong_marked_tableau
 
 # HELPERS
 def _is_k_schur(obj):
-    # checks if obj is a k-schur function (coming from the 'kSchur_with_category' class)
+    r""" Helper function.
+
+    Checks if ``obj`` is a `k`-schur function (coming from the 'kSchur_with_category' class).
+    """
     try:
         classname = obj.parent().__class__.__name__
         return classname == 'kSchur_with_category'
@@ -368,6 +371,8 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             return [v + s for v, s in zip(index, seq)]
 
         def __call__(self, operand):
+            r""" Return the action of this shifting operator element on the index ``operand``.
+            """
             def raise_func(seq, operand):
                 # seq is the index
                 if _is_sequence(operand):
@@ -388,20 +393,13 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                             'SymmetricFunctionAlgebra_witt_with_category',
                             'SymmetricFunctionAlgebra_schur_with_category',
                             'HallLittlewood_qp_with_category'):
-                        # print('coeff: {}'.format(coeff))
-                        # print('composition BEFORE straighten: {}'.format(out_composition))
-                        # print(straighten(parent_basis, out_composition))
                         return coeff * straighten(parent_basis, out_composition)
                     else:
                         return coeff * parent_basis(out_composition)
 
             def call_monomial(seq, coeff, operand, power=1):
-                # print('BEFORE')
-                # print('(operand, coeff) = ({}, {})'.format(operand, coeff))
                 for _ in range(power):
                     operand = raise_func(seq, operand)
-                # print('AFTER')
-                # print('(operand, coeff) = ({}, {})'.format(operand, coeff))
                 return (operand, coeff)
             # start here
             if hasattr(operand, '_get_indices_for_index_operator'):
@@ -551,6 +549,8 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
 
     class Element(ShiftingOperatorAlgebra.Element):
         def __call__(self, operand):
+        r""" Return the action of this raising operator element on the index ``operand``.
+        """
             if _is_k_schur(operand):
                 # convert to catalans
                 kschur = operand.parent()
@@ -598,9 +598,17 @@ class HallLittlewoodVertexOperator:
         self.sym = SymmetricFunctions(self.base_ring)
 
     def __repr__(self):
+        r""" Return a human-friendly string representation of this Hall-Littlewood vertex operator.
+
+        This string also serves as an example of what somebody might type to create this Hall-Littlewood vertex operator in sage.
+        """
         return '{}({})'.format(self.__class__.__name__, self.composition)
 
     def _hh(self, k):
+        r""" Internal helper function.
+
+        Return the homogeneous function indexed by the integer ``k``.
+        """
         # homogeneous indexed by an integer k (positive or negative)
         # if k is less than 0, result is 0
         # if k ==0 result is s([])
@@ -618,6 +626,10 @@ class HallLittlewoodVertexOperator:
             raise ValueError
 
     def _skewbyeeq(self, k, f):
+        r""" Internal helper function.
+
+        Given integer ``k`` and function ``f``, return the function `f` skewed by e[k](1-t).
+        """
         # skew by e[k](1-t)
         sym = self.sym
         e = sym.e()
@@ -633,17 +645,25 @@ class HallLittlewoodVertexOperator:
             raise ValueError
 
     def _op(self, m, f):
-        # Jing's Hall-Littlewood creation operator
+        r""" Internal helper function.
+
+        This method is Jing's Hall-Littlewood creation operator.
+        """
         # EXAMPLES::
         #     sage: op(2,op(3,s(1)))
         #     t*s[3, 2] + t^2*s[4, 1] + t^3*s[5]
         return sum((-1)**k * self._hh(m+k) * self._skewbyeeq(k, f) for k in range(f.degree() + 1))
 
     def __call__(self, input_):
+        r""" Return the action of this Hall-Littlewood operator on ``input_``.
+
+        INPUTS:
+
+        - ``input_`` -- A list, composition, or partition or integers.
+        """
         gamma = self.composition
         sym = self.sym
         HLQp = sym.hall_littlewood().Qp()
-        # print('called on input: {} with gamma: {}'.format(input_, gamma))
         # iterate
         for part in reversed(gamma):
             input_ = self._op(part, input_)
@@ -741,16 +761,26 @@ class CatalanFunction:
         self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
 
     def __eq__(self, other):
+        r""" Return whether this catalan function is equal to the catalan function ``other``. """
         # TODO: account for the fact that DIFFERENT root/index pairs could actually give the SAME catalan function!!
         return self.roots == other.roots and self.index == other.index and self.base_ring == other.base_ring
 
     def __repr__(self):
+        r""" Return a human-friendly string representation of this catalan function. """
         return '{}({}; {})'.format(self.prefix, self.roots, self.index)
 
     def _get_indices_for_index_operator(self):
+        r""" Internal helper function.
+
+        This method is defined so that an element of any :class:`ShiftingOperatorAlgebra` (such as a raising operator or a pieri operator) can act on this catalan function.
+        """
         return self.index
 
     def _new_object_for_index_operator(self, new_index):
+        r""" Internal helper function.
+
+        This method is defined so that an element of any :class:`ShiftingOperatorAlgebra` (such as a raising operator or a pieri operator) can act on this catalan function.
+        """
         new_obj = self.__class__(self.roots, new_index,
                                  base_ring=self.base_ring)
         return new_obj
@@ -777,14 +807,10 @@ class CatalanFunction:
         t = self.base_ring.gen()
         # formula
         roots_complement = self.roots.complement()
-        # print(roots_complement)
         op = raising_roots_operator(
             roots_complement, t=t, base_ring=self.base_ring)
-        # print(op)
         hl_poly = hl(self.index)
-        # print(hl_poly)
         cat_func = op(hl_poly)
-        # print(cat_func)
         return cat_func
 
     def expand(self, *args, **kwargs):
@@ -916,6 +942,7 @@ class CatalanFunctions:
 
 ##############
 def k_plus_one_core_to_k_schur_function(p, k, base_ring=QQ['t']):
+    r""" Given a `k+1`-core ``p``, the natural number ``k`` itself, and optionally a ``base_ring``, return the corresponding `k`-schur function. """
     # TODO: compare the performance of this function to existing k-schur function.
     p = Core(p, k+1)
     return k_shape_to_catalan_function(p, k, base_ring)
@@ -956,13 +983,22 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
         # self._init_category_(CommutativeRings()) # i think .Commutative() above is a better solution
 
     def is_prime_field(self):
+        r""" Return whether the infinite dimensional free algebra is a prime field (it never is!).
+
+        Note that this method exists for internal compatability.
+        """
         return False
 
     def _element_constructor_(self, monoid_el):
+        r""" Return the element whose index is ``monoid_el``.
+
+        Note: This method is only for basis elements.  This method for internal use.
+        """
         assert monoid_el in self._basis_monoid
         return self.basis()[monoid_el]
 
     def __getitem__(self, user_input):
+        r""" Given an integer ``user_input``, return the corresponding basis element. """
         # USER front entrance to creating elements "x[4]"
         assert user_input in IntegerRing()
         monoid_el = self._basis_monoid.gen(user_input)
@@ -970,14 +1006,18 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
 
     @cached_method
     def one_basis(self):
-        # identity index
+        r""" Return the index of the identity element. """
         return self._basis_monoid.one()
 
     def product_on_basis(self, monoid_el1, monoid_el2):
+        r""" Given indices ``monoid_el1`` and ``monoid_el2``, return the product of the basis elements indexed by those indices.
+        """
         monoid_el_product = monoid_el1 * monoid_el2
         return self._element_constructor_(monoid_el_product)
 
     def _repr_(self):
+        r""" Return a human-friendly string representation of this infinite-dimensional free algebra.
+        """
         return "{class_name} with generators indexed by integers, over {base_ring}".format(class_name=self.__class__.__name__, base_ring=self._base_ring)
 
 
@@ -1161,10 +1201,18 @@ class DoubleHomogeneous:
         return '{}({})[{}, {}]'.format(self.prefix, self.n, self.index1, self.index2)
 
     def _get_indices_for_index_operator(self):
+        r""" Internal helper function.
+
+        This method is defined so that an element of any :class:`ShiftingOperatorAlgebra` (such as a raising operator) can act on this double homogeneous function.
+        """
         pair = (self.index1, self.index2)
         return pair
 
     def _new_object_for_index_operator(self, indices):
+        r""" Internal helper function.
+
+        This method is defined so that an element of any :class:`ShiftingOperatorAlgebra` (such as a raising operator) can act on this double homogeneous function.
+        """
         (index1, index2) = indices
         new_obj = self.__class__(index1, index2, self.n)
         return new_obj
@@ -1207,6 +1255,9 @@ def double_schur(index, n):
 
 
 def double_catalan_function(roots, index, n):
+    r""" Given some ``roots`` (typically a :class:`RootIdeal`), an ``index``, and the something something of the double homemgeneous function ``n``, return the corresponding double catalan function.
+    """
+    # TODO: test this
     # setup
     l = len(index)
     rho = list(reversed(staircase_shape(l)))
@@ -1220,7 +1271,7 @@ def double_catalan_function(roots, index, n):
 
 
 def substitute(f, t=None, q=None):
-    # take in a symmetric function ``f`` and plug the inputted ``t`` and ``q`` values.
+    r""" Given a symmetric function ``f``, plug the inputted ``t`` and ``q`` values into it and return the resulting function. """
     # a t value of 'None' will leave t as-is.
     basis = f.parent()
     base_ring = f.base_ring()
@@ -1237,4 +1288,5 @@ def substitute(f, t=None, q=None):
 
 
 def ungraded(f):
+    r""" Given a symmetric function ``f``, return the result of plugging in `t = 1`. """
     return substitute(f, t=1)
