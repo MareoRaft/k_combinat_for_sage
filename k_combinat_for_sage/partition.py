@@ -20,10 +20,18 @@ from sage.all import *
 
 
 def is_weakly_decreasing(li):
+    r""" Return whether every term in the iterable ``li`` is greater than or equal to the following term.
+
+    Used internally to check when a Partition, Composition, or list is weakly decreasing.
+    """
     return all(li[i] >= li[i+1] for i in range(len(li)-1))
 
 
 def is_strictly_decreasing(li):
+    r""" Return whether every term in the iterable ``li`` is greater than the following term.
+
+    Used internally to check when a Partition, Composition, or list is strictly decreasing.
+    """
     return all(li[i] > li[i+1] for i in range(len(li)-1))
 
 

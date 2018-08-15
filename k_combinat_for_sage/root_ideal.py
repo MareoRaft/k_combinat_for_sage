@@ -243,6 +243,10 @@ class RootIdeal(list):
         list.__init__(self, lis)
 
     def __hash__(self):
+        r""" Return the hash of this root ideal.
+
+        Thanks to this method, every RootIdeal object is hashable, which is needed internally for other things to work.
+        """
         return hash(tuple(self))
 
     def next(self, min=[], max=None, type='strict'):

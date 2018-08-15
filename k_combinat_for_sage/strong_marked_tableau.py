@@ -225,6 +225,12 @@ def __go_to_ribbon_head(cells, start_cell):
 
 
 def row_marking_to_marking(outer_core, inner_core, row_marking):
+    r""" Convert a row marking to a marking.
+
+    Given the skew shape defined by ``outer_core`` and ``inner_core``, and the row index ``row_marking`` where a marking exists, return the marking `(\text{marking row index}, \text{marking column index})`.
+
+    Note that `\text{marking row index}` mentioned above is simply ``row_marking``.  Therefore, the real usefulness of this function is that it finds the column index of the marking.
+    """
     sp = SkewPartition([outer_core, inner_core])
     cells = sp.cells()
     row_indices = set(cell[0] for cell in cells)
@@ -239,6 +245,10 @@ def row_marking_to_marking(outer_core, inner_core, row_marking):
 
 
 def row_markings_to_markings(core_sequence, row_markings):
+    r""" Given a ``core_sequence`` and corresponding ``row_markings`` for each cover of the sequence, convert the row markings to markings and return them.
+
+    Each row marking in ``row_markings`` is merely the row index of where the marking occurs.  The purpose of this function is to convert each row marking to a "marking" which includes the column index.
+    """
     assert len(core_sequence) == len(row_markings) + 1
     markings = []
     for index in range(len(row_markings)):
