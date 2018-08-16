@@ -576,56 +576,56 @@ k = 2
 a(has_k_rectangle(p, k), True)
 
 
-# test_partition.next
+# test_partition.next_within_bounds
 min_ = []
 max_ = []
 p = []
-a(partition.next(p, min=min_, max=max_), func=is_False_or_None)
+a(partition.next_within_bounds(p, min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [1]
-a(partition.next([], min=min_, max=max_), [1])
-a(partition.next([1], min=min_, max=max_), func=is_False_or_None)
+a(partition.next_within_bounds([], min=min_, max=max_), [1])
+a(partition.next_within_bounds([1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [1, 1]
-a(partition.next([], min=min_, max=max_), [1])
-a(partition.next([1], min=min_, max=max_), [1, 1])
-a(partition.next([1, 1], min=min_, max=max_), func=is_False_or_None)
+a(partition.next_within_bounds([], min=min_, max=max_), [1])
+a(partition.next_within_bounds([1], min=min_, max=max_), [1, 1])
+a(partition.next_within_bounds([1, 1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [2]
-a(partition.next([], min=min_, max=max_), [1])
-a(partition.next([1], min=min_, max=max_), [2])
-a(partition.next([2], min=min_, max=max_), func=is_False_or_None)
+a(partition.next_within_bounds([], min=min_, max=max_), [1])
+a(partition.next_within_bounds([1], min=min_, max=max_), [2])
+a(partition.next_within_bounds([2], min=min_, max=max_), func=is_False_or_None)
 
 min_ = []
 max_ = [2, 1]
-a(partition.next([], min=min_, max=max_), [1])
-a(partition.next([1], min=min_, max=max_), [1, 1])
-a(partition.next([1, 1], min=min_, max=max_), [2])
-a(partition.next([2], min=min_, max=max_), [2, 1])
-a(partition.next([2, 1], min=min_, max=max_), func=is_False_or_None)
+a(partition.next_within_bounds([], min=min_, max=max_), [1])
+a(partition.next_within_bounds([1], min=min_, max=max_), [1, 1])
+a(partition.next_within_bounds([1, 1], min=min_, max=max_), [2])
+a(partition.next_within_bounds([2], min=min_, max=max_), [2, 1])
+a(partition.next_within_bounds([2, 1], min=min_, max=max_), func=is_False_or_None)
 
 min_ = [1, 1]
 max_ = [3, 2, 1]
-a(partition.next([1, 1], min=min_, max=max_), [1, 1, 1])
-a(partition.next([1, 1, 1], min=min_, max=max_), [2, 1])
+a(partition.next_within_bounds([1, 1], min=min_, max=max_), [1, 1, 1])
+a(partition.next_within_bounds([1, 1, 1], min=min_, max=max_), [2, 1])
 
 
 # test_RootIdeal_next
 ri = RootIdeal([], n=4)
-a(ri.next(), [(0,3)])
+a(ri.next_within_bounds(), [(0,3)])
 
 max_ri = RootIdeal([(0,0), (0,1), (1,0), (1,1)])
 min_ri = RootIdeal([])
 ri = RootIdeal([(0,1), (1,1)])
-a(ri.next(min=min_ri, max=max_ri), [(0,0), (0,1)])
+a(ri.next_within_bounds(min=min_ri, max=max_ri), [(0,0), (0,1)])
 
 max_ri = RootIdeal([(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)])
 min_ri = RootIdeal([(0,2), (0,3)])
 ri = RootIdeal([(0,1), (0,2), (0,3)])
-a(ri.next(min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
+a(ri.next_within_bounds(min=min_ri, max=max_ri), [(0,1), (0,2), (0,3), (1,3)])
 
 
 # test_RIS.init_all_from_skew_partition

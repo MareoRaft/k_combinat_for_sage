@@ -41,7 +41,24 @@ import strong_marked_tableau
 def _is_k_schur(obj):
     r""" Helper function.
 
-    Checks if ``obj`` is a `k`-schur function (coming from the 'kSchur_with_category' class).
+    Checks if ``obj`` is coming from the 'kSchur_with_category' class.
+
+    EXAMPLES::
+
+    An example of a `k`-schur function::
+
+        sage: Sym = SymmetricFunctions(QQ)
+        sage: KB = Sym.kBoundedSubspace(3,1)
+        sage: ks = KB.kschur()
+        sage: _is_k_schur(ks[2, 1] + ks[1, 1])
+        True
+
+    The following is a schur function, *not* a `k`-schur function:
+
+        sage: Sym = SymmetricFunctions(QQ)
+        sage: s = Sym.schur()
+        sage: _is_k_schur(s[2, 1] + s[1, 1])
+        False
     """
     try:
         classname = obj.parent().__class__.__name__
@@ -55,6 +72,17 @@ def get_k_rectangles(k):
     r""" Return the list of ``k``-rectangles.
 
     A __``k``-rectangle__ is a partition whose Ferrer's diagram is a rectangle whose largest hook-length is `k`.
+
+    EXAMPLES::
+
+        sage: get_k_rectangles(0)
+        []
+        sage: get_k_rectangles(1)
+        [[1]]
+        sage: get_k_rectangles(2)
+        [[2], [1, 1]]
+        sage: get_k_rectangles(3)
+        [[3], [2, 2], [1, 1, 1]]
     """
     return [Partition([a] * b) for (a, b) in k_rectangle_dimension_list(k)]
 
@@ -65,6 +93,17 @@ def get_k_irreducible_partition_lists(k):
     The `k`-irreducible partitions are output at lists, not Partition objects.
 
     There are `k!` such partitions, and computation time starts to get slow around `k = 10`.
+
+    EXAMPLES::
+
+        sage: get_k_irreducible_partition_lists(0)
+        [[]]
+        sage: get_k_irreducible_partition_lists(1)
+        [[]]
+        sage: get_k_irreducible_partition_lists(2)
+        [[], [1]]
+        sage: get_k_irreducible_partition_lists(3)
+        [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
 
     ..  SEEALSO::
 
@@ -87,7 +126,20 @@ def get_k_irreducible_partition_lists(k):
 def get_k_irreducible_partitions(k):
     r""" Return the list of ``k``-irreducible partitions.
 
+    The output is a list of :class:`Partition` objects.
+
     There are `k!` such partitions, and computation time starts to get slow around `k = 10`.
+
+    EXAMPLES::
+
+        sage: get_k_irreducible_partitions(0)
+        [[]]
+        sage: get_k_irreducible_partitions(1)
+        [[]]
+        sage: get_k_irreducible_partitions(2)
+        [[], [1]]
+        sage: get_k_irreducible_partitions(3)
+        [[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]
 
     ..  SEEALSO::
 
@@ -99,7 +151,18 @@ def get_k_irreducible_partitions(k):
 def size_to_num_linked_partition_self_pairs(size):
     r""" Given a natural number ``size``, count how many partitions `l` of size ``size`` have the property that `(l, l)` has a corresponding skew-linked-diagram.
 
-    Note: A 'skew-linked-diagram' is a SkewPartition that is linked.
+    Note: A 'skew-linked-diagram' is a :class:`SkewPartition` that is linked.
+
+    EXAMPLES::
+
+        sage: size_to_num_linked_partition_self_pairs(0)
+        1
+        sage: size_to_num_linked_partition_self_pairs(1)
+        1
+        sage: size_to_num_linked_partition_self_pairs(2)
+        1
+        sage: size_to_num_linked_partition_self_pairs(3)
+        2
 
     ..  SEEALSO::
 
@@ -200,9 +263,21 @@ def straighten(s, gamma):
 
 
 class ShiftingSequenceSpace():
-    r""" A helper for ShiftingOperatorAlgebra.
+    r""" A helper for :class:`ShiftingOperatorAlgebra.`
 
-    Helps ShiftingOperatorAlgebra know which indices are valid and which indices are not for the basis.
+    Helps :class:`ShiftingOperatorAlgebra` know which indices are valid and which indices are not for the basis.
+
+    EXAMPLES::
+
+        sage: S = ShiftingSequenceSpace()
+        sage: (1, -1) in S
+        True
+        sage: (1, -1, 0, 9) in S
+        True
+        sage: [1, -1] in S
+        False
+        sage: (0.5, 1) in S
+        False
     """
     def __init__(self, base=IntegerRing()):
         self.base = base
@@ -210,7 +285,20 @@ class ShiftingSequenceSpace():
         # Parent.__init__(self, category=category)
 
     def __contains__(self, seq):
-        r""" Returns ``True`` if and only if ``seq`` is a valid shifting sequence. """
+        r""" Returns ``True`` if and only if ``seq`` is a valid shifting sequence.
+
+        EXAMPLES::
+
+            sage: S = ShiftingSequenceSpace()
+            sage: (1, -1) in S
+            True
+            sage: (1, -1, 0, 9) in S
+            True
+            sage: [1, -1] in S
+            False
+            sage: (0.5, 1) in S
+            False
+        """
         if not isinstance(seq, tuple):
             return False
         return not any(i not in self.base for i in seq)
@@ -221,6 +309,20 @@ class ShiftingSequenceSpace():
         r""" Verify that ``seq`` is a valid shifting sequence.
 
         If it is not, raise an error.
+
+        EXAMPLES::
+
+            sage: S = ShiftingSequenceSpace()
+            sage: S.check((1, -1))
+            sage: S.check((1, -1, 0, 9))
+            sage: S.check([1, -1])
+            Traceback (most recent call last):
+            ...
+            ValueError: Expected valid index (a tuple of Integer Ring), but instead received [1, -1].
+            sage: S.check((0.5, 1))
+            Traceback (most recent call last):
+            ...
+            ValueError: Expected valid index (a tuple of Integer Ring), but instead received [1, -1].
         """
         if not self.__contains__(seq):
             raise ValueError(self.CHECK_ERROR_MESSAGE.format(
@@ -228,15 +330,40 @@ class ShiftingSequenceSpace():
 
 
 class RaisingSequenceSpace(ShiftingSequenceSpace):
-    r""" A helper for RaisingOperatorAlgebra.
+    r""" A helper for :class:`RaisingOperatorAlgebra`.
 
-    Helps RaisingOperatorAlgebra know which indices are valid and which indices are not for the basis.
+    Helps :class:`RaisingOperatorAlgebra` know which indices are valid and which indices are not for the basis.
+
+    EXAMPLES::
+
+        sage: RS = RaisingSequenceSpace()
+        sage: (1, -1) in RS
+        True
+        sage: (1, 0, -1) in RS
+        True
+        sage: (1, -1, 0, 9) in RS
+        False
+        sage: [1, -1] in RS
+        False
     """
 
     CHECK_ERROR_MESSAGE = 'Expected valid index (a tuple of {base} elements, where every partial sum is nonnegative and every total sum is 0), but instead received {seq}.'
 
     def __contains__(self, seq):
-        r""" Returns ``True`` if and only if ``seq`` is a valid raising sequence. """
+        r""" Returns ``True`` if and only if ``seq`` is a valid raising sequence.
+
+        EXAMPLES::
+
+            sage: RS = RaisingSequenceSpace()
+            sage: (1, -1) in RS
+            True
+            sage: (1, 0, -1) in RS
+            True
+            sage: (1, -1, 0, 9) in RS
+            False
+            sage: [1, -1] in RS
+            False
+        """
         # check that it is a shifting sequence
         if not ShiftingSequenceSpace.__contains__(self, seq):
             return False
@@ -304,7 +431,13 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
     def __getitem__(self, seq):
         r""" Return the shifting operator whose index is ``seq``.
 
-        This method is only for basis elements.
+        This method is only for basis indices.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra()
+            sage: S[1, 1, -9]
+            S(1, 1, -9)
         """
         # seq should be a basis index
         self._basis_indices.check(seq)
@@ -313,65 +446,131 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
     def _element_constructor_(self, seq):
         r""" Return the shifting operator whose index is ``seq``.
 
-        This method is only for basis elements.
+        This method is only for basis indices.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra()
+            sage: S._element_constructor_([1, 1, -9])
+            S(1, 1, -9)
         """
         return self.__getitem__(seq)
 
     @cached_method
     def one_basis(self):
-        r""" Return the index of the identity element. """
+        r""" Return the index of the identity element.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra()
+            sage: S.one_basis()
+            ()
+        """
         return tuple()
 
     def _repr_(self):
-        r""" Return a string describing ``self`` to humans. """
+        r""" Return a string describing ``self`` to humans.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra()
+            sage: S
+            Shifting Operator Algebra over Univariate Polynomial Ring in t over Rational Field
+        """
         return "Shifting Operator Algebra over {base_ring}".format(base_ring=self._base_ring)
 
     def product_on_basis(self, index1, index2):
         r""" Given indices ``index1`` and ``index2``, return the product of the basis elements indexed by those indices.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra()
+            sage: S.product_on_basis([1, 1], [0, 1, 2])
+            S(1, 2, 2)
         """
         # pad with 0's
         max_len = max(len(index1), len(index2))
-        index1 = index1 + (0,) * (max_len - len(index1))
-        index2 = index2 + (0,) * (max_len - len(index2))
+        index1 = tuple(index1) + (0,) * (max_len - len(index1))
+        index2 = tuple(index2) + (0,) * (max_len - len(index2))
         # add the vectors
         index_product = tuple(i1 + i2 for i1, i2 in zip(index1, index2))
         return self.__getitem__(index_product)
 
     class Element(CombinatorialFreeModule.Element):
-        r""" An element of a ShiftingOperatorAlgebra. """
+        r""" An element of a :class`ShiftingOperatorAlgebra`. """
 
         def indices(self):
-            r""" Return the support of ``self``. """
+            r""" Return the support of ``self``.
+
+            EXAMPLES::
+
+                sage: S = ShiftingOperatorAlgebra()
+                sage: (S[2, 1] + S[1, 1]).indices()
+                [(1, 1), (2, 1)]
+            """
             return self.support()
 
         def index(self):
             r""" Return the index of ``self``.
 
             This method is only for basis elements.
-            """
+
+            EXAMPLES::
+
+                sage: S = ShiftingOperatorAlgebra()
+                sage: S[2, 1].index()
+                (2, 1)
+                sage: (S[2, 1] + S[1, 1]).index()
+                Traceback (most recent call last):
+                ...
+                ValueError: This is only defined for basis elements.  For other elements, use indices() instead.
+         """
             if len(self) != 1:
                 raise ValueError(
                     "This is only defined for basis elements.  For other elements, use indices() instead.")
             return self.indices()[0]
 
         def _call_basis_on_index(self, seq, index):
-            """ Return the action of the basis element indexed by ``seq`` upon the composition ``index``.
+            """ For internal use only!
+
+            Return the action of the basis element indexed by ``seq`` upon the composition ``index``.
 
             INPUTS:
 
             - ``seq`` -- The sequence of the basis element that acts.
 
             - ``index`` -- A sequence (typically a composition or a partition) that we act upon.
+
+            EXAMPLES::
+
+                sage: S = ShiftingOperatorAlgebra()
+                sage: S[2, 1]._call_basis_on_index([1, 1], [1, 2, 3, 4, 5])
+                [2, 3, 3, 4, 5]
             """
             assert _is_sequence(index)
             # pad sequence and index with 0's
-            index = index + [0] * (len(seq) - len(index))
-            seq = seq + (0,) * (len(index) - len(seq))
+            index = list(index) + [0] * (len(seq) - len(index))
+            seq = tuple(seq) + (0,) * (len(index) - len(seq))
             # raise and drop
             return [v + s for v, s in zip(index, seq)]
 
         def __call__(self, operand):
             r""" Return the action of this shifting operator element on the index ``operand``.
+
+            EXAMPLES::
+
+                sage: S = ShiftingOperatorAlgebra()
+
+                sage: S[2, 1]([1, 2, 3, 4])
+                [([3, 3, 3, 4], 1)]
+
+                sage: S[2, 1](([1, 2, 3, 4], [1, 1, 1]))
+                ([([3, 3, 3, 4], 1)], [([3, 2, 1], 1)])
+
+                sage: Sym = SymmetricFunctions(QQ['t'])
+                sage: s = Sym.schur()
+                sage: S[2, 1](s[4, 3, 2, 1])
+                s[6, 4, 2, 1]
             """
             def raise_func(seq, operand):
                 # seq is the index
@@ -436,7 +635,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
     For a definition of raising operators, see [cat]_ Definition 2.1, but be wary that the notation is different there.  See :meth:`ij` for a way to create operators using the notation in the paper.
 
-    If you do NOT want any restrictions on the allowed sequences, use :class:`ShiftingOperatorAlgebra` instead of 'RaisingOperatorAlgebra'.
+    If you do NOT want any restrictions on the allowed sequences, use :class:`ShiftingOperatorAlgebra` instead of :class:`RaisingOperatorAlgebra`.
 
     OPTIONAL ARGUMENTS:
 
@@ -528,7 +727,8 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
                                          basis_indices=ShiftingSequenceSpace())
 
     def i(self, i):
-        r""" Return the Pieri operator `u_i`.
+        r"""
+        Return the Pieri operator `u_i`.
 
         Shorthand element constructor that allows you to create Pieri operators using the familiar `u_i` notation, with the exception that indices here are 0-based, not 1-based.
 
@@ -549,8 +749,24 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
 
     class Element(ShiftingOperatorAlgebra.Element):
         def __call__(self, operand):
-        r""" Return the action of this raising operator element on the index ``operand``.
-        """
+            r"""
+            Return the action of this raising operator element on the index ``operand``.
+
+            EXAMPLES::
+
+                sage: R = RaisingOperatorAlgebra()
+
+                sage: R[1, -1]([1, 2, 3, 4])
+                [([2, 1, 3, 4], 1)]
+
+                sage: R[1, -1](([1, 2, 3, 4], [1, 1, 1]))
+                ([([2, 1, 3, 4], 1)], [([2, 0, 1], 1)])
+
+                sage: Sym = SymmetricFunctions(QQ['t'])
+                sage: s = Sym.schur()
+                sage: R[1, -1](s[4, 3, 2, 1])
+                s[5, 2, 2, 1]
+            """
             if _is_k_schur(operand):
                 # convert to catalans
                 kschur = operand.parent()
@@ -577,7 +793,7 @@ class HallLittlewoodVertexOperator:
 
     INPUTS:
 
-    - ``base_ring`` -- (default ``QQ['t']``) the base ring to build the SymmetricFunctions upon.
+    - ``base_ring`` -- (default ``QQ['t']``) the base ring to build the :class:`SymmetricFunctions` upon.
 
     EXAMPLES::
 
@@ -601,6 +817,12 @@ class HallLittlewoodVertexOperator:
         r""" Return a human-friendly string representation of this Hall-Littlewood vertex operator.
 
         This string also serves as an example of what somebody might type to create this Hall-Littlewood vertex operator in sage.
+
+        EXAMPLES::
+
+            sage: H = HallLittlewoodVertexOperator
+            sage: H([4, 1, 3])
+            HallLittlewoodVertexOperator([4, 1, 3])
         """
         return '{}({})'.format(self.__class__.__name__, self.composition)
 
@@ -608,11 +830,25 @@ class HallLittlewoodVertexOperator:
         r""" Internal helper function.
 
         Return the homogeneous function indexed by the integer ``k``.
+
+        EXAMPLES::
+
+            sage: op = HallLittlewoodVertexOperator([4, 1, 3])
+            sage: op._hh(-2)
+            0
+            sage: op._hh(-1)
+            0
+            sage: op._hh(0)
+            s[]
+            sage: op._hh(1)
+            s[1]
+            sage: op._hh(2)
+            s[2]
         """
         # homogeneous indexed by an integer k (positive or negative)
         # if k is less than 0, result is 0
-        # if k ==0 result is s([])
-        # if k>0 then the result is s([k])
+        # if k == 0, result is s([])
+        # if k > 0, then the result is s([k])
         sym = self.sym
         s = sym.s()
         if k == 0:
@@ -649,9 +885,6 @@ class HallLittlewoodVertexOperator:
 
         This method is Jing's Hall-Littlewood creation operator.
         """
-        # EXAMPLES::
-        #     sage: op(2,op(3,s(1)))
-        #     t*s[3, 2] + t^2*s[4, 1] + t^3*s[5]
         return sum((-1)**k * self._hh(m+k) * self._skewbyeeq(k, f) for k in range(f.degree() + 1))
 
     def __call__(self, input_):
@@ -659,7 +892,21 @@ class HallLittlewoodVertexOperator:
 
         INPUTS:
 
-        - ``input_`` -- A list, composition, or partition or integers.
+        - ``input_`` -- A symmetric function.
+
+        EXAMPLES:
+
+        We typically act on the identity, so let's retrieve the identity::
+
+            sage: Sym = SymmetricFunctions(QQ['t'])
+            sage: hl = Sym.hall_littlewood().Qp()
+            sage: one = hl.one()
+
+        Let's look at the action of `H_{4, 1, 3}` on the identity::
+
+            sage: H = HallLittlewoodVertexOperator
+            sage: H([4, 1, 3])(one)
+            (t-1)*HLQp[4, 2, 2] + t*HLQp[4, 3, 1]
         """
         gamma = self.composition
         sym = self.sym
@@ -878,7 +1125,7 @@ class CatalanFunctions:
         return CatalanFunction(roots, index, base_ring, prefix)
 
     def init_from_skew_partition(self, sp, base_ring=None, prefix=None):
-        r""" Given a SkewPartition ``sp``, return the catalan function `H(\Phi^+(sp); rs(sp))`. """
+        r""" Given a :class:`SkewPartition` ``sp``, return the catalan function `H(\Phi^+(sp); rs(sp))`. """
         ri = skew_partition_to_root_ideal(sp, type='max')
         rs = sp.row_lengths()
         return self.init_from_indexed_root_ideal(ri, rs, base_ring, prefix)
@@ -890,15 +1137,15 @@ class CatalanFunctions:
         return self.init_from_skew_partition(sp, base_ring, prefix)
 
     def init_from_k_shape(self, p, k, base_ring=None, prefix=None):
-        r""" Given `k` and a `k`-shape `p`, return the catalan function `H(\Phi^+(p); rs(p))`. """
+        r""" Given ``k`` and a `k`-shape ``p``, return the catalan function `H(\Phi^+(p); rs(p))`. """
         assert is_k_shape(p, k)
         sp = SkewPartition([p, []])
         return self.init_from_skew_partition(self, sp, base_ring, prefix)
 
     def init_from_k_schur(self, func, base_ring=None, prefix=None):
-        r""" Given a k-schur function ``func`` `= s^k_\lambda(x;t)`, initialize the catalan function `H(\Delta^k(\lambda); \lambda)`.
+        r""" Given a `k`-schur function ``func`` `= s^k_\lambda(x;t)`, initialize the catalan function `H(\Delta^k(\lambda); \lambda)`.
 
-        Mathematically, these two functions are equal.  The usefulness of this method is that you input a ``sage.combinat.sf.new_kschur.kSchur_with_category`` object and you obtain a ``CatalanFunction`` object.
+        Mathematically, these two functions are equal.  The usefulness of this method is that you input a ``sage.combinat.sf.new_kschur.kSchur_with_category`` object and you obtain a :class:`CatalanFunction` object.
 
         EXAMPLES::
 
@@ -1028,7 +1275,7 @@ r""" ``DoubleRing`` is the ring `\Lambda(a)` found in [Fun]_ section 3. """
 def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
     r""" The dual K-theoretic h, often denoted Kh, is defined for any integer `k` by the formula `h_k(x, r) = \sum_{i=0}^{k} \binom{r + i - 1}{i} h_{k - i}(x)` in [LN]_ p.88 top-right.
 
-    If `k` and `r` are compositions, then it is recursively defined as `h_k(x, r) = \prod_j h_{k_j}(x, r_j)`.
+    If ``k`` and ``r`` are compositions, then it is recursively defined as `h_k(x, r) := \prod_j h_{k_j}(x, r_j)`.
 
     EXAMPLES::
 
@@ -1060,7 +1307,7 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     r"""
     INPUTS:
 
-    - ``roots`` -- iterable of roots `\Phi` (typically a root ideal)
+    - ``roots`` -- iterable of roots `\Phi` (typically a :class:`RootIdeal`)
 
     - ``index`` -- composition `\gamma` that indexes `h_\gamma(x; \alpha)`
 
