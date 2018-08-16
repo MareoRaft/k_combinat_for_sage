@@ -4,15 +4,15 @@ Sage has have a builtin `StrongTableau <https://doc.sagemath.org/html/en/referen
 
 AUTHORS:
 
-- George H. Seelinger (2018): Initial code
-- Matthew Lancellotti (2018): added more functions
+- George Seelinger (2018): Initial version
+- Matthew Lancellotti (2018): End core to strong marked tableaux
 
 REFERENCES:
 """
 
 #*****************************************************************************
-#  Copyright (C) 2018 George H. Seelinger <ghseeli@gmail.com> and
-#  Matthew Lancellotti <mvlancellotti@gmail.com>
+#  Copyright (C) 2018 George Seelinger <ghseeli@gmail.com> and
+#          Matthew Lancellotti <mvlancellotti@gmail.com>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #                  http://www.gnu.org/licenses/
@@ -230,6 +230,36 @@ def row_marking_to_marking(outer_core, inner_core, row_marking):
     Given the skew shape defined by ``outer_core`` and ``inner_core``, and the row index ``row_marking`` where a marking exists, return the marking `(\text{marking row index}, \text{marking column index})`.
 
     Note that `\text{marking row index}` mentioned above is simply ``row_marking``.  Therefore, the real usefulness of this function is that it finds the column index of the marking.
+
+    EXAMPLES:
+
+    The skew shape [3, 2, 2] / [2, 1] depicted by
+
+    .. image:: _static/marking.JPG
+        :width: 140px
+        :align: center
+        :alt: The skew shape [3, 2, 2] / [2, 1]
+
+    has the marking `(0, 2)` in row `0`.  Hence::
+
+        sage: row_marking_to_marking([3, 2, 2], [2, 1], 0)
+        (0, 2)
+
+    It also has the marking `(1, 1)` in row `1`.  Therefore::
+
+        sage: row_marking_to_marking([3, 2, 2], [2, 1], 1)
+        (1, 1)
+
+    It has no marking in row `2`, so::
+
+        sage: row_marking_to_marking([3, 2, 2], [2, 1], 2)
+        Traceback (most recent call last):
+        ...
+        ValueError: no such row marking
+
+    ..  SEEALSO::
+
+        :meth:`row_markings_to_markings`
     """
     sp = SkewPartition([outer_core, inner_core])
     cells = sp.cells()
@@ -247,7 +277,30 @@ def row_marking_to_marking(outer_core, inner_core, row_marking):
 def row_markings_to_markings(core_sequence, row_markings):
     r""" Given a ``core_sequence`` and corresponding ``row_markings`` for each cover of the sequence, convert the row markings to markings and return them.
 
-    Each row marking in ``row_markings`` is merely the row index of where the marking occurs.  The purpose of this function is to convert each row marking to a "marking" which includes the column index.
+    Each row marking in ``row_markings`` is merely the row index of where the marking occurs.  The purpose of this function is to convert each row marking to a "marking" which includes the column index.  In order to understand this function, it is best to understand :meth:`row_marking_to_marking` first.
+
+    EXAMPLES:
+
+    Consider the core sequence ([], [1], [1, 1], [2, 1, 1]) which corresponds to the sequence of skew shapes
+
+    .. image:: _static/markings.JPG
+        :height: 140px
+        :align: center
+        :alt: The skew shapes [1] / []; [1, 1] / [1]; and [2, 1, 1] / [1, 1].
+
+    Now consider the row markings 0, 1, and 2, respectively.  Pair each skew shape up with its respective row marking, and then convert the row marking to a marking.  Row marking 0 corresponds to marking `(0, 0)`, row marking 1 corresponds to marking `(1, 0)`, and row marking 2 corresponds to marking `(2, 0)`::
+
+        sage: row_markings_to_markings(([], [1], [1, 1], [2, 1, 1]), [0, 1, 2])
+        [(0, 0), (1, 0), (2, 0)]
+
+    Similarly::
+
+        sage: row_markings_to_markings(([], [1], [1, 1], [2, 1, 1]), [0, 1, 0])
+        [(0, 0), (1, 0), (0, 1)]
+
+    ..  SEEALSO::
+
+        :meth:`row_marking_to_marking`
     """
     assert len(core_sequence) == len(row_markings) + 1
     markings = []
@@ -263,7 +316,25 @@ def row_markings_to_markings(core_sequence, row_markings):
 
 
 def is_row_markable(outer_core, inner_core, row_marking):
-    r""" Given two cores (typically consecutive cores in a core sequence), see if ``row_marking`` is a possible row_marking of outer_core/inner_core.
+    r""" Given two cores (typically consecutive cores in a core sequence), see if ``row_marking`` is a possible row_marking of ``outer_core`` / ``inner_core``.
+
+    EXAMPLES:
+
+    Consider the skew shape [3, 2, 2] / [2, 1] depicted
+
+    .. image:: _static/marking.JPG
+        :height: 140px
+        :align: center
+        :alt: The skew shape [3, 2, 2] / [2, 1]
+
+    It has a marking in row 0 and row 1, but not in row 2::
+
+        sage: is_row_markable([3, 2, 2], [2, 1], 0)
+        True
+        sage: is_row_markable([3, 2, 2], [2, 1], 1)
+        True
+        sage: is_row_markable([3, 2, 2], [2, 1], 2)
+        False
 
     ..  SEEALSO::
 
@@ -277,7 +348,36 @@ def is_row_markable(outer_core, inner_core, row_marking):
 
 
 def k_marked_coverees(core, k, row_marking):
-    r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given with the given row_marking. """
+    r""" Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given with the given row_marking.
+
+    INPUTS:
+
+    - ``core`` -- a `k+1`-core
+
+    - ``k`` -- an integer
+
+    - ``row_marking`` -- The desired row marking for the covers
+
+    OUTPUTS:
+
+    The set of all `k+1`-cores `\lambda` that satify:
+
+      * ``core`` is a cover of `\lambda`
+      * The skew shape ``core`` / `\lambda` has a marking in the row indexed ``row_marking``.
+
+    EXAMPLES::
+
+        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 0)
+        {[5, 4, 2, 2, 1]}
+        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 1)
+        {[6, 2, 2, 2, 1], [6, 3, 2, 2]}
+        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 2)
+        {}
+        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 3)
+        {[6, 4, 2, 1, 1]}
+        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 4)
+        {[6, 3, 2, 2]}
+    """
     coverees = k_coverees(core, k)
     marked_coverees = [c for c in coverees
                        if is_row_markable(core, c, row_marking)]

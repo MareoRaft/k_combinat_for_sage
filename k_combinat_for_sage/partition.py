@@ -3,6 +3,7 @@ r"""
 Sage has a builtin `Partition <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/partition.html>`_ object.  *This* module adds extra useful functions for partitions:
 
 AUTHORS:
+
 - Matthew Lancellotti (2018): Initial version
 """
 
@@ -22,7 +23,16 @@ from sage.all import *
 def is_weakly_decreasing(li):
     r""" Return whether every term in the iterable ``li`` is greater than or equal to the following term.
 
-    Used internally to check when a Partition, Composition, or list is weakly decreasing.
+    Used internally to check when a :class:`Partition`, :class:`Composition`, or list is weakly decreasing.
+
+    EXAMPLES::
+
+        sage: is_weakly_decreasing([3, 2, 1])
+        True
+        sage: is_weakly_decreasing([3, 2, 2])
+        True
+        sage: is_weakly_decreasing([3, 2, 3])
+        False
     """
     return all(li[i] >= li[i+1] for i in range(len(li)-1))
 
@@ -30,7 +40,16 @@ def is_weakly_decreasing(li):
 def is_strictly_decreasing(li):
     r""" Return whether every term in the iterable ``li`` is greater than the following term.
 
-    Used internally to check when a Partition, Composition, or list is strictly decreasing.
+    Used internally to check when a :class:`Partition`, :class:`Composition`, or list is strictly decreasing.
+
+    EXAMPLES::
+
+        sage: is_strictly_decreasing([3, 2, 1])
+        True
+        sage: is_strictly_decreasing([3, 2, 2])
+        False
+        sage: is_strictly_decreasing([3, 2, 3])
+        False
     """
     return all(li[i] > li[i+1] for i in range(len(li)-1))
 
@@ -39,6 +58,17 @@ def _is_sequence(obj):
     r""" Helper function for internal use.
 
     Return whether ``obj`` is one of our allowed 'compositions'.
+
+    EXAMPLES::
+
+        sage: _is_sequence([3, 2, 2])
+        True
+        sage: _is_sequence(Composition([3, 2, 2]))
+        True
+        sage: _is_sequence(Partition([3, 2, 2]))
+        True
+        sage: _is_sequence(vector([3, 2, 2]))
+        False
     """
     return isinstance(obj, (list, Composition, Partition))
 
@@ -47,6 +77,11 @@ def k_rectangle_dimension_list(k):
     r""" Return the list of dimension pairs `(h, w)` such that `h + w = k + 1`.
 
     This exists mainly as a helper function for :meth:`partition.has_rectangle` and :meth:`k_shape.is_reducible`.
+
+    EXAMPLES::
+
+        sage: k_rectangle_dimension_list(3)
+        [(3, 1), (2, 2), (1, 3)]
     """
     return [(k-i+1, i) for i in range(1, k+1)]
 
@@ -55,7 +90,7 @@ def k_rectangle_dimension_list(k):
 def k_size(ptn, k):
     r""" Given a partition ``ptn`` and a ``k``, return the size of the `k`-boundary.
 
-    This is the same as the `length <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/core.html#sage.combinat.core.Core.length>`_ method of the `Core <https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/core.html#sage.combinat.core.Core>`_ object, with the exception that here we don't require ``ptn`` to be a `k+1`-core.
+    This is the same as the length method :meth:`sage.combinat.core.Core.length` of the :class:`sage.combinat.core.Core` object, with the exception that here we don't require ``ptn`` to be a `k+1`-core.
 
     EXAMPLES::
 
@@ -219,6 +254,17 @@ def k_column_lengths(ptn, k):
 def has_rectangle(ptn, h, w):
     r""" A partition ``ptn`` has an `h` x `w` rectangle if it's Ferrer's diagram has `h` (*or more*) rows of length `w` (*exactly*).
 
+    EXAMPLES::
+
+        sage: has_rectangle([3, 3, 3, 3], 2, 3)
+        True
+        sage: has_rectangle([3, 3], 2, 3)
+        True
+        sage: has_rectangle([4, 3], 2, 3)
+        False
+        sage: has_rectangle([3], 2, 3)
+        False
+
     ..  SEEALSO::
 
         :meth:`has_k_rectangle`
@@ -236,6 +282,18 @@ def has_k_rectangle(ptn, k):
     r""" A partition ``ptn`` has a `k`-rectangle if it's Ferrer's diagram contains `k-i+1` rows (*or more*) of length `i` (*exactly*) for any `i` in `[1, k]`.
 
     This is mainly a helper function for :meth:`is_k_reducible` and :meth:`is_k_irreducible`, the only difference between this function and :meth:`is_k_reducible` being that this function allows any partition as input while :meth:`is_k_reducible` requires the input to be `k`-bounded.
+
+    EXAMPLES:
+
+    The partition [1, 1, 1] has at least 2 rows of length 1::
+
+        sage: is_k_reducible(Partition([1, 1, 1]), 2)
+        True
+
+    The partition [1, 1, 1] does *not* have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4::
+
+        sage: is_k_reducible(Partition([1, 1, 1]), 4)
+        False
 
     .. SEEALSO::
 
@@ -268,12 +326,15 @@ def is_k_reducible(ptn, k):
 
     (Also, a `k`-bounded partition is `k`-reducible if and only if it is not `k`-irreducible.)
 
-    EXAMPLES::
+    EXAMPLES:
 
-        # The partition [1, 1, 1] has at least 2 rows of length 1.
+    The partition [1, 1, 1] has at least 2 rows of length 1::
+
         sage: is_k_reducible(Partition([1, 1, 1]), 2)
         True
-        # The partition [1, 1, 1] does *not* have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4.
+
+    The partition [1, 1, 1] does *not* have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4::
+
         sage: is_k_reducible(Partition([1, 1, 1]), 4)
         False
 
@@ -317,14 +378,13 @@ def is_symmetric(ptn):
 
         sage: is_symmetric(Partition([2, 1]))
         True
-
         sage: is_symmetric(Partition([3, 1]))
         False
     """
     return ptn == ptn.conjugate()
 
 
-def next(p, min=[], max=None, type=None):
+def next_within_bounds(p, min=[], max=None, type=None):
     r"""Get the next partition lexicographically that contains min and is contained in max.
 
     INPUTS:
@@ -335,12 +395,46 @@ def next(p, min=[], max=None, type=None):
 
     - ``max`` -- (default ``None``) The 'maximum partition' that ``next_within_bounds(p)`` must be contained in.  If set to ``None``, then there is no restriction.
 
-    - ``type`` -- The type of partitions allowed.  For example, 'strict' for strictly decreasing partitions.
+    - ``type`` -- (default ``None``) The type of partitions allowed.  For example, 'strict' for strictly decreasing partitions, or ``None`` to allow any valid partition.
+
+    EXAMPLES::
+
+        sage: m = [1, 1]
+        sage: M = [3, 2, 1]
+        sage: Partition([1, 1]).next_within_bounds(min=m, max=M)
+        sage: [1, 1, 1]
+        sage: Partition([1, 1, 1]).next_within_bounds(min=m, max=M)
+        sage: [2, 1]
+        sage: Partition([2, 1]).next_within_bounds(min=m, max=M)
+        sage: [2, 1, 1]
+        sage: Partition([2, 1, 1]).next_within_bounds(min=m, max=M)
+        sage: [2, 2]
+        sage: Partition([2, 2]).next_within_bounds(min=m, max=M)
+        sage: [2, 2, 1]
+        sage: Partition([2, 2, 1]).next_within_bounds(min=m, max=M)
+        sage: [3, 1]
+        sage: Partition([3, 1]).next_within_bounds(min=m, max=M)
+        sage: [3, 1, 1]
+        sage: Partition([3, 1, 1]).next_within_bounds(min=m, max=M)
+        sage: [3, 2]
+        sage: Partition([3, 2]).next_within_bounds(min=m, max=M)
+        sage: [3, 2, 1]
+        sage: Partition([3, 2, 1]).next_within_bounds(min=m, max=M) == None
+        sage: True
 
     ..  SEEALSO::
 
         :meth:`next`
     """
+    # validate inputs
+    try:
+        assert isinstance(min, (list, Partition))
+    except AssertionError:
+        raise ValueError('Input parameter ``min`` must be a Partition or a list.')
+    try:
+        assert isinstance(max, (list, Partition)) or max is None
+    except AssertionError:
+        raise ValueError('Input parameter ``max`` must be a Partition, a list, or ``None``.')
     # make sure min <= p <= max
     if max is not None:
         assert Partition(max).contains(Partition(p))
@@ -414,6 +508,13 @@ def to_k_core(ptn, k):
     Returns a :class:`Partition` object, not a :class:`Core` object.
 
     If you plug a `k`-bounded partition into this function and use `k+1` as the input constant, then this is the well-known bijection between `k`-bounded partitions and `k+1`-cores.
+
+    EXAMPLES::
+
+        sage: to_k_core([1, 1], 3)
+        [1, 1]
+        sage: to_k_core([2, 1], 3)
+        [3, 1]
     """
     error = ValueError(
         'The minimal-row-shifting algorithm applied to the partition {} does not produce a {}-core.'.format(ptn, k))
@@ -442,6 +543,6 @@ def to_k_core(ptn, k):
         previous_part = part
         previous_core_len = len(core)
     core = Partition(core)
-    if not core.is_k_core(k):
+    if not is_k_core(core, k):
         raise error
     return core

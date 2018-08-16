@@ -30,7 +30,20 @@ from partition import is_weakly_decreasing
 def is_symmetric(sp):
     r""" A SkewPartition is *symmetric* if its inner and outer shapes are symmetric.
 
-    Returns ``True`` if and only if the SkewPartition ``sp`` is equal to its own conjugate.
+    Return ``True`` if and only if the :class:`SkewPartition` ``sp`` is equal to its own conjugate.
+
+    EXAMPLES::
+
+        sage: SkewPartition([[], []]).is_symmetric()
+        sage: True
+        sage: SkewPartition([[1], []]).is_symmetric()
+        sage: True
+        sage: SkewPartition([[4, 3, 3, 1], [1]]).is_symmetric()
+        sage: True
+        sage: SkewPartition([[4, 3, 3, 1], [1, 1]]).is_symmetric()
+        sage: False
+        sage: SkewPartition([[5, 3, 3, 1], [2, 2]]).is_symmetric()
+        sage: False
 
     ..  SEEALSO::
 
@@ -225,7 +238,7 @@ def row_col_to_skew_partition(rs, cs):
 
 
 def k_boundary_to_partition(sp, k=None, check=True):
-    r""" Given a ``k``-boundary ``sp`` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is `sp`.
+    r""" Given a ``k``-boundary ``sp`` (`k`-boundaries are a specific type of skew-shape), output the original partition whose `k`-boundary is ``sp``.
 
     (For the definition of `k`-boundary, see Section 2.2 of [mem]_)
 
@@ -253,9 +266,9 @@ def k_boundary_to_partition(sp, k=None, check=True):
 
 
 def is_k_boundary(sp, k=None):
-    r""" Given a skew-shape ``sp`` and natural number ``k``, return ``True`` if and only if `sp` is a `k`-boundary.  (Section 2.2 of [mem]_)
+    r""" Given a skew-shape ``sp`` and natural number ``k``, return ``True`` if and only if ``sp`` is a `k`-boundary.  (Section 2.2 of [mem]_)
 
-    Given a skew-shape ``sp`` *only*, return ``True`` if and only if there exists some `k` such that `sp` is a `k`-boundary.
+    Given a skew-shape ``sp`` *only*, return ``True`` if and only if there exists some `k` such that ``sp`` is a `k`-boundary.
 
     TODO: test
 

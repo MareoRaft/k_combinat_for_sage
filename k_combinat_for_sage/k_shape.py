@@ -30,9 +30,9 @@ import skew_partition
 def is_k_shape(ptn, k):
     r""" A partition is a `k`-*shape* if its `k`-boundary has row-shape and col-shape that are partitions themselves. (Definition 2.1 of [genocchi]_)
 
-    Given a partition `ptn` and a natural number `k`, returns True if and only if `ptn` is a `k`-shape.
+    Given a :class:`Partition` ``ptn`` and a natural number ``k``, returns ``True`` if and only if ``ptn`` is a `k`-shape.
 
-    Given a partition `ptn` *only*, returns True if and only if there exists some `k \in [1, n-1]` such that `ptn` is a `k`-shape.
+    Given a :class:`Partition` ``ptn`` *only*, returns ``True`` if and only if there exists some `k \in [1, n-1]` such that ``ptn`` is a `k`-shape.
 
     EXAMPLES::
 
@@ -151,6 +151,19 @@ def is_k_reducible_by_rectangle(p, k, hw):
 
     - ``hw`` -- an ordered pair ``hw`` = `(h, w)`, where `h` is the height of the rectangle and `w` is the width.
 
+    EXAMPLES:
+
+        sage: Partition([1]).is_k_reducible_by_rectangle(1, (1,1))
+        sage: True
+        sage: Partition([2, 1]).is_k_reducible_by_rectangle(1, (1,1))
+        sage: True
+        sage: Partition([1, 1]).is_k_reducible_by_rectangle(2, (1,1))
+        sage: False
+        sage: Partition([1, 1]).is_k_reducible_by_rectangle(2, (1,2))
+        sage: True
+        sage: Partition([1, 1]).is_k_reducible_by_rectangle(2, (2,1))
+        sage: False
+
     ..  SEEALSO::
 
         :meth:`is_reducible`
@@ -181,7 +194,7 @@ def is_reducible(ptn, k):
 
     Note that this is different than the definition of a reducible partition!
 
-    Given a `k`-shape `ptn` and a natural number `k`, returns True if and only if `ptn` is reducible.
+    Given a `k`-shape ``ptn`` and a natural number ``k``, returns ``True`` if and only if ``ptn`` is reducible.
 
     (Also, a `k`-shape is reducible if and only if it is not irreducible.)
 
@@ -210,11 +223,11 @@ def is_reducible(ptn, k):
 
 
 def is_irreducible(s, k):
-    r""" A `k`-shape `ptn` is called *irreducible* if there does *not* exist a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.
+    r""" A ``k``-shape ``ptn`` is called *irreducible* if there does *not* exist a `k`- or `k-1`-rectangle corresponding to both the `k`-row-shape and `k`-column-shape of `ptn`.
 
     For a more rigorous definition, see Definition 3.7 of [genocchi]_.
 
-    Given a `k`-shape `ptn` and a natural number `k`, returns True if and only if `ptn` is irreducible.
+    Given a `k`-shape ``ptn`` and a natural number ``k``, returns ``True`` if and only if ``ptn`` is irreducible.
 
     (Also, a `k`-shape is irreducible if and only if it is not reducible.)
 
