@@ -199,7 +199,7 @@ def size_to_num_k_shapes(n, k):
     return len(size_to_k_shapes(n, k))
 
 
-def straighten(s, gamma):
+def straighten(basis, gamma):
     r""" Perform Schur function straightening by the Schur straightening rule.
 
     See [cat]_, Prop. 4.1.  Also known as the slinky rule.
@@ -236,30 +236,30 @@ def straighten(s, gamma):
                     num += 1
         return num
     gamma = Composition(gamma)
-    if s.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
+    if basis.__class__.__name__ in ('SymmetricFunctionAlgebra_monomial_with_category', 'SymmetricFunctionAlgebra_dual_with_category'):
         raise NotImplemented(
             'Straightening does not exist (that i know of) for the monomial basis or the forgotten/dual basis.')
-    elif s.__class__.__name__ == 'HallLittlewood_qp_with_category':
-        return compositional_hall_littlewood_Qp(gamma, base_ring=s.base_ring())
-    elif s.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
+    elif basis.__class__.__name__ == 'HallLittlewood_qp_with_category':
+        return compositional_hall_littlewood_Qp(gamma, base_ring=basis.base_ring(), t=basis.t)
+    elif basis.__class__.__name__ in ('SymmetricFunctionAlgebra_homogeneous_with_category', 'SymmetricFunctionAlgebra_elementary_with_category', 'SymmetricFunctionAlgebra_power_with_category', 'SymmetricFunctionAlgebra_witt_with_category'):
         new_gamma = list(reversed(sorted(gamma)))
         if has_nonnegative_parts(new_gamma):
-            return s(Partition(new_gamma))
+            return basis(Partition(new_gamma))
         else:
             return 0
-    elif s.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
+    elif basis.__class__.__name__ == 'SymmetricFunctionAlgebra_schur_with_category':
         rho = list(range(len(gamma) - 1, -1, -1))
         combined = [g + r for g, r in zip(gamma, rho)]
         if has_distinct_parts(combined) and has_nonnegative_parts(combined):
             sign = (-1)**number_of_noninversions(combined)
             sort_combined = reversed(sorted(combined))
             new_gamma = [sc - r for sc, r in zip(sort_combined, rho)]
-            return sign * s(Partition(new_gamma))
+            return sign * basis(Partition(new_gamma))
         else:
             return 0
     else:
         raise ValueError(
-            "The input parameter 's' should be a symmetric function basis.  For example, 's = SymmetricFunctions(QQ).s(); straighten(s, [2, 1, 3])', or one could use 'h' instead of 's'.")
+            "The input parameter 'basis' should be a symmetric function basis.  For example, 's = SymmetricFunctions(QQ).s(); straighten(s, [2, 1, 3])', or one could use 'h' instead of 's'.")
 
 
 class ShiftingSequenceSpace():
@@ -579,6 +579,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                 else:
                     # it's some symmetric function basis element
                     parent_basis = operand.parent()
+                    # but does the base ring of the parent basis agree with the base ring of the operator algebra??
                     # process the vectors
                     dic = operand.monomial_coefficients()
                     assert len(dic) == 1
@@ -910,6 +911,7 @@ class HallLittlewoodVertexOperator:
         """
         gamma = self.composition
         sym = self.sym
+        # should we be passing t in to the hall littlewood vertex operator here?
         HLQp = sym.hall_littlewood().Qp()
         # iterate
         for part in reversed(gamma):
@@ -917,7 +919,7 @@ class HallLittlewoodVertexOperator:
         return HLQp(input_)
 
 
-def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
+def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t'], t=None):
     r""" Given gamma, returns the compositional Hall-Littlewood polynomial `H_{\gamma}(\mathbf{x}; t)` in the Q' basis, as defined in [cat]_ section 4.4.
 
     If the composition gamma is a partition, this is just the Hall-Littlewood Q' polynomial.
@@ -929,17 +931,20 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t']):
         True
     """
     sym = SymmetricFunctions(base_ring)
-    HLQp = sym.hall_littlewood().Qp()
-    if is_weakly_decreasing(gamma) and all(term > 0 for term in gamma):
+    if t is None:
+        HLQp = sym.hall_littlewood().Qp()
+    else:
+        HLQp = sym.hall_littlewood(t=t).Qp()
+    if is_weakly_decreasing(gamma) and all(term > 0 for term in gamma[:-1]) and ((not gamma) or gamma[-1] >=0):
         # this is MUCH faster than the HallLittlewoodVertexOperator for partitions of length 5ish
         gamma = Partition(gamma)
         return HLQp(gamma)
     else:
         H = HallLittlewoodVertexOperator
-        return H(gamma)(HLQp.one())
+        return H(gamma, base_ring=base_ring)(HLQp.one())
 
 
-def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
+def raising_roots_operator(roots, base_ring=QQ['t'], t=1):
     r""" Return the operator `\prod_{(i,j) \in roots} (1 - tR_{ij})`.
 
     Given a list of roots `roots = \Phi` (often a root ideal), and optionally a variable `t`, return the operator
@@ -957,7 +962,7 @@ def raising_roots_operator(roots, t=1, base_ring=QQ['t']):
     return op
 
 
-def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
+def qt_raising_roots_operator(roots, base_ring=QQ['t', 'q'], t=None, q=None):
     r""" Return the operator `\prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in roots} (1 - qR_{ij})`.
 
     The q-t analogue of :meth:`raising_roots_operator`, defined by
@@ -971,8 +976,8 @@ def qt_raising_roots_operator(roots, t=None, q=None, base_ring=QQ['t', 'q']):
         t = base_ring.gens()[0]
     if q is None:
         q = base_ring.gens()[1]
-    op1 = raising_roots_operator(roots, t=q, base_ring=base_ring)
-    op2 = raising_roots_operator(roots, t=t, base_ring=base_ring)
+    op1 = raising_roots_operator(roots, base_ring=base_ring, t=q)
+    op2 = raising_roots_operator(roots, base_ring=base_ring, t=t)
     return lambda x: (op2 * op1)(x)
 
 
@@ -1032,7 +1037,7 @@ class CatalanFunction:
                                  base_ring=self.base_ring)
         return new_obj
 
-    def eval(self):
+    def eval(self, t=None):
         r""" Return the catalan function in terms of the Hall-Littlewood Q' basis.
 
         EXAMPLES::
@@ -1048,14 +1053,26 @@ class CatalanFunction:
             HLQp[4, 1] - t*HLQp[5]
             sage: s(cf.eval())
             s[4, 1]
+
+        This function can also specialize `t` to an arbitrary integer. ::
+
+            sage: cf.eval(t=1)
+            HLQp[4, 1] - HLQp[5]
+            sage: cf.eval(t=-1)
+            HLQp[4, 1] + HLQp[5]
+            sage: s(cf.eval(t=-1))
+            s[4, 1]
         """
         # setup
-        hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
-        t = self.base_ring.gen()
+        if t is None:
+            hl = SymmetricFunctions(self.base_ring).hall_littlewood().Qp()
+            t = self.base_ring.gen()
+        else:
+            hl = SymmetricFunctions(self.base_ring).hall_littlewood(t=t).Qp()
         # formula
         roots_complement = self.roots.complement()
         op = raising_roots_operator(
-            roots_complement, t=t, base_ring=self.base_ring)
+            roots_complement, base_ring=self.base_ring, t=t)
         hl_poly = hl(self.index)
         cat_func = op(hl_poly)
         return cat_func
@@ -1330,7 +1347,7 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     # formula
     roots = RootIdeal(roots, n=len(index))
     roots_complement = roots.complement()
-    op = raising_roots_operator(roots_complement, t=1, base_ring=base_ring)
+    op = raising_roots_operator(roots_complement, base_ring=base_ring, t=1)
     cat_func = op(Kh)
     return cat_func
 
@@ -1495,7 +1512,7 @@ def double_schur(index, n):
     where `l` is the length of `\lambda`, in [Fun]_ p.9 equation (9).
     """
     l = len(index)
-    op = raising_roots_operator(l, t=1, base_ring=ZZ)
+    op = raising_roots_operator(l, base_ring=ZZ, t=1)
     rho = list(reversed(staircase_shape(l)))
     h_index = DoubleHomogeneous(index, rho, n)
     return op(h_index)
