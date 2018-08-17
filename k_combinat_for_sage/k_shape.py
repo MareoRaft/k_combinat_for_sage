@@ -41,6 +41,7 @@ def is_k_shape(ptn, k):
         sage: is_k_shape(Partition([3, 1]), 2)
         True
     """
+    ptn = Partition(ptn)
     if k is None:
         # see if it's a k-shape for any k in [1, n-1].
         # (note that every partition is a 0-shape and an n-shape)

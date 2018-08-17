@@ -345,12 +345,13 @@ class RootIdeal(list):
         # validate the roots
         assert _is_roots(lis)
         # figure out n
+        n_best_guess = max(c for (r, c) in lis) + 1 if lis else 1
         if n is not None:
+            if n < n_best_guess:
+                raise ValueError('There is a root that falls outside of the n x n grid.  n is too small or one of the roots is incorrect.')
             self.n = n
-        elif lis:
-            self.n = max(c for (r, c) in lis) + 1
         else:
-            self.n = 1
+            self.n = n_best_guess
         # normalize the roots
         lis = sorted(lis)
         list.__init__(self, lis)
@@ -402,14 +403,10 @@ class RootIdeal(list):
 
             :meth:`Partition.next_within_bounds`
         """
-        try:
-            assert isinstance(min, RootIdeal) or _is_roots(min)
-        except AssertionError:
-            raise ValueError('Input parameter ``min`` must be a RootIdeal or an iterable of roots.')
-        try:
-            assert isinstance(max, RootIdeal) or _is_roots(max) or max is None
-        except AssertionError:
-            raise ValueError('Input parameter ``max`` must be a RootIdeal, an iterable of roots, or ``None``.')
+        if not (isinstance(min, RootIdeal) or _is_roots(min)):
+            raise ValueError('Input parameter ``min`` must be a RootIdeal or an iterable of roots.  Your inputted ``min`` parameter was: {}'.format(min))
+        if not (isinstance(max, RootIdeal) or _is_roots(max) or max is None):
+            raise ValueError('Input parameter ``max`` must be a RootIdeal, an iterable of roots, or ``None``.  Your inputted ``min`` parameter was: {}'.format(max))
         n = self.n
         ptn = self.to_partition()
         min_ptn = RootIdeal(min, n=n).to_partition()
@@ -878,7 +875,7 @@ class RootIdeals:
             root_ideal = selected_rows_to_maximum_root_ideal(
                 n, selected_indices)
         else:
-            raise ValueError('Unknown algorithm.')
+            raise ValueError('The requested algorithm "{}" does not exist.'.format(algorithm))
         return RootIdeal(root_ideal)
 
     def init_all_from_skew_partition(self, sp, type='strict'):

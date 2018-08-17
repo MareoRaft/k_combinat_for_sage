@@ -1156,9 +1156,24 @@ a(op(s[4, 2]), s[4, 2] + (-t-q)*s[5, 1] + t*q*s[6])
 
 
 # test catalan function init methods
-cf = CatalanFunctions().init_from_indexed_root_ideal([(0,2), (1,2)], [6, 6, 5])
+CFS = CatalanFunctions()
+
+cf = CFS.init_from_indexed_root_ideal([(0,2), (1,2)], [6, 6, 5])
 a(cf.roots, [(0,2), (1,2)])
 a(cf.index, [6, 6, 5])
+
+K = FractionField(QQ['t'])
+elm = CFS.init_from_indexed_root_ideal([], [3, 3, 2, 1], base_ring=K)
+
+sp = SkewPartition([[2, 1, 1], [1]])
+CFS.init_from_skew_partition(sp)
+
+CFS.init_from_row_and_column_lengths([1, 1, 1], [2, 1])
+
+ptn = [4, 3, 2, 1]
+k = 1
+assert is_k_shape(ptn, k)
+CFS.init_from_k_shape(ptn, k)
 
 
 # test catalan function
