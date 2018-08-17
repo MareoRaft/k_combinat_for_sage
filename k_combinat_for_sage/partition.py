@@ -427,13 +427,9 @@ def next_within_bounds(p, min=[], max=None, type=None):
         :meth:`next`
     """
     # validate inputs
-    try:
-        assert isinstance(min, (list, Partition))
-    except AssertionError:
+    if not isinstance(min, (list, Partition)):
         raise ValueError('Input parameter ``min`` must be a Partition or a list.')
-    try:
-        assert isinstance(max, (list, Partition)) or max is None
-    except AssertionError:
+    if not (isinstance(max, (list, Partition)) or max is None):
         raise ValueError('Input parameter ``max`` must be a Partition, a list, or ``None``.')
     # make sure min <= p <= max
     if max is not None:

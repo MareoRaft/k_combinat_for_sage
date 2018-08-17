@@ -410,6 +410,9 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         S() - S(1, -1) - S(4,) + S(5, -1)
         sage: ((1 - S[(1,-1)]) * (1 - S[(4,)]))(s[2, 2, 1])
         s[2, 2, 1] - s[3, 1, 1] - s[6, 2, 1] + s[7, 1, 1]
+
+    ..  SEEALSO::
+        :class:`RaisingOperatorAlgebra`, :class:`PieriOperatorAlgebra`
     """
     def __init__(self, base_ring=QQ['t'], prefix='S', basis_indices=ShiftingSequenceSpace()):
         self._prefix = prefix
@@ -452,6 +455,8 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
 
             sage: S = ShiftingOperatorAlgebra()
             sage: S._element_constructor_([1, 1, -9])
+            S(1, 1, -9)
+            sage: S[1, 1, -9]
             S(1, 1, -9)
         """
         return self.__getitem__(seq)
@@ -546,6 +551,9 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                 sage: S = ShiftingOperatorAlgebra()
                 sage: S[2, 1]._call_basis_on_index([1, 1], [1, 2, 3, 4, 5])
                 [2, 3, 3, 4, 5]
+
+            ..  SEEALSO::
+                :meth:`__call__`
             """
             assert _is_sequence(index)
             # pad sequence and index with 0's
@@ -661,6 +669,9 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         R() - R(0, 1, -1) - R(1, -1) + R(1, 0, -1)
         sage: ((1 - R[(1,-1)]) * (1 - R[(0,1,-1)]))(s[2, 2, 1])
         (-3*t-2)*s[] + s[2, 2, 1] - s[3, 1, 1] + s[3, 2]
+
+    ..  SEEALSO::
+        :class:`ShiftingOperatorAlgebra`
     """
 
     def __init__(self, base_ring=QQ['t'], prefix='R'):
@@ -680,6 +691,9 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
             sage: R.ij(0, 2)
             R((1, 0, -1))
+
+        ..  SEEALSO::
+            :meth:`ShiftingOperatorAlgebra._element_constructor_`, :meth:`ShiftingOperatorAlgebra.__getitem__`
         """
         if not i in NonNegativeIntegerSemiring():
             raise ValueError(
@@ -718,9 +732,11 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
         sage: ks = Sym.kBoundedSubspace(4, t).kschur()
         sage: u.i(2)(ks[2, 2, 1])
         ks4[2, 2, 1] + t^2*ks4[3, 2] + t^3*ks4[4, 1]
-        # TODO: verify by hand that above is really correct, or maybe a simpler example
-    """
 
+    ..  SEEALSO::
+        :class:`ShiftingOperatorAlgebra`
+    """
+    # TODO: verify by hand that above is really correct, or maybe a simpler example
     def __init__(self, base_ring=QQ['t'], prefix='u'):
         ShiftingOperatorAlgebra.__init__(self,
                                          base_ring=base_ring,
@@ -739,6 +755,9 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
 
             sage: u.i(2)
             u((0, 0, -1))
+
+        ..  SEEALSO::
+            :meth:`ShiftingOperatorAlgebra._element_constructor_`, :meth:`ShiftingOperatorAlgebra.__getitem__`
         """
         if not i in NonNegativeIntegerSemiring():
             raise ValueError(
@@ -802,6 +821,9 @@ class HallLittlewoodVertexOperator:
         sage: one = SymmetricFunctions(QQ['t']).hall_littlewood().Qp().one()
         sage: H([4, 1, 3])(one) == H(4)(H(1)(H(3)(one)))
         True
+
+    ..  SEEALSO::
+        :meth:`sage.combinat.sf.new_kschur.KBoundedSubspaceBases.ElementMethods.hl_creation_operator`
     """
 
     def __init__(self, composition, base_ring=QQ['t']):
@@ -885,6 +907,9 @@ class HallLittlewoodVertexOperator:
         r""" Internal helper function.
 
         This method is Jing's Hall-Littlewood creation operator.
+
+        ..  SEEALSO::
+            :meth:`sage.combinat.sf.new_kschur.KBoundedSubspaceBases.ElementMethods.hl_creation_operator`
         """
         return sum((-1)**k * self._hh(m+k) * self._skewbyeeq(k, f) for k in range(f.degree() + 1))
 
@@ -908,6 +933,9 @@ class HallLittlewoodVertexOperator:
             sage: H = HallLittlewoodVertexOperator
             sage: H([4, 1, 3])(one)
             (t-1)*HLQp[4, 2, 2] + t*HLQp[4, 3, 1]
+
+        ..  SEEALSO::
+            :meth:`sage.combinat.sf.new_kschur.KBoundedSubspaceBases.ElementMethods.hl_creation_operator`
         """
         gamma = self.composition
         sym = self.sym
@@ -929,6 +957,9 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t'], t=None):
         sage: hl = SymmetricFunctions(QQ['t']).hall_littlewood().Qp()
         sage: compositional_hall_littlewood_Qp([3, 3, 2]) == hl[3, 3, 2]
         True
+
+    ..  SEEALSO::
+        :meth:`sage.combinat.sf.hall_littlewood.HallLittlewood.Qp`
     """
     sym = SymmetricFunctions(base_ring)
     if t is None:
@@ -954,6 +985,38 @@ def raising_roots_operator(roots, base_ring=QQ['t'], t=1):
         \prod_{(i,j) \in \Phi} (1 - tR_{ij}).
 
     If you input an integer for roots (e.g. ``roots = 3``), it will use the biggest possible root ideal in the `n` x `n` grid (the '`n`-th staircase root ideal').
+
+    EXAMPLES:
+
+    Consider the root ideal [(0, 1)] in the 2 x 2 grid.  This root ideal gives the raising roots operator `1 - R_{01}`::
+
+        sage: R = RaisingOperatorAlgebra()
+        sage: 1 - R.ij(0, 1)
+        R() - R(1, -1)
+
+        sage: raising_roots_operator([(0, 1)])
+        R() - R(1, -1)
+
+        sage: raising_roots_operator(2)
+        R() - R(1, -1)
+
+    We can pass in `t` in addition to get the raising roots operator `1 - t R_{01}`.  We can also choose a base ring to work over::
+
+        sage: K = FractionField(ZZ['t'])
+        sage: t = K.gen()
+        sage: R = RaisingOperatorAlgebra(base_ring=K)
+
+        sage: 1 - t * R.ij(0, 1)
+        R() - t*R(1, -1)
+
+        sage: raising_roots_operator([(0, 1)], base_ring=K, t=t)
+        R() - t*R(1, -1)
+
+        sage: raising_roots_operator(2, base_ring=K, t=t)
+        R() - t*R(1, -1)
+
+    ..  SEEALSO::
+        :meth:`qt_raising_roots_operator`, :class:`CatalanFunction`
     """
     R = RaisingOperatorAlgebra(base_ring=base_ring)
     if roots in NonNegativeIntegerSemiring():
@@ -969,6 +1032,28 @@ def qt_raising_roots_operator(roots, base_ring=QQ['t', 'q'], t=None, q=None):
 
     ..  MATH::
         \prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in \Phi} (1 - qR_{ij}).
+
+    EXAMPLES:
+
+    Consider the root ideal [(0, 1)] in the 2 x 2 grid.  This root ideal gives the "qt" raising roots operator `(1 - t R_{01})(1 - q R_{01})` which equals `1 + (-t-q) R_{01} + t q R_{01}^2`::
+
+        sage: K = QQ['t', 'q']
+        sage: (t, q) = K.gens()
+        sage: R = RaisingOperatorAlgebra(base_ring=K)
+
+        sage: (1 - t*R.ij(0, 1)) * (1 - q*R.ij(0, 1))
+        R() + (-t-q)*R(1, -1) + t*q*R(2, -2)
+
+        sage: qt_raising_roots_operator([(0, 1)], base_ring=K, t=t, q=q)
+        R() + (-t-q)*R(1, -1) + t*q*R(2, -2)
+
+    Since ``QQ['t', 'q']`` happens to be the default base ring, and its generators are ``t`` and ``q``, we did not actually need to pass in the base ring, `t`, nor `q` in the above example::
+
+        sage: qt_raising_roots_operator([(0, 1)])
+        R() + (-t-q)*R(1, -1) + t*q*R(2, -2)
+
+    ..  SEEALSO::
+        :meth:`raising_roots_operator`
     """
     if roots in NonNegativeIntegerSemiring():
         roots = RootIdeals().init_staircase(roots)
@@ -978,7 +1063,7 @@ def qt_raising_roots_operator(roots, base_ring=QQ['t', 'q'], t=None, q=None):
         q = base_ring.gens()[1]
     op1 = raising_roots_operator(roots, base_ring=base_ring, t=q)
     op2 = raising_roots_operator(roots, base_ring=base_ring, t=t)
-    return lambda x: (op2 * op1)(x)
+    return op2 * op1
 
 
 class CatalanFunction:
@@ -999,7 +1084,8 @@ class CatalanFunction:
         sage: CatalanFunction([(0,2), (1,2)], [6, 6, 5])
         H([(0, 2), (1, 2)]; [6, 6, 5])
 
-    There are in fact many ways to initialize a catalan function, and the methods for doing so are found in :class:`CatalanFunctions`.
+    ..  SEEALSO::
+        There are more ways to initialize a catalan function, and the methods for doing so are found in :class:`CatalanFunctions`.
     """
     BASE_RING_DEFAULT = QQ['t']
     PREFIX_DEFAULT = 'H'
@@ -1013,18 +1099,49 @@ class CatalanFunction:
         self.prefix = prefix if prefix is not None else self.PREFIX_DEFAULT
 
     def __eq__(self, other):
-        r""" Return whether this catalan function is equal to the catalan function ``other``. """
+        r""" Return whether this catalan function is equal to the catalan function ``other``.
+
+        EXAMPLES::
+
+            sage: cf1 = CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+            sage: cf2 = CatalanFunction({(1,2), (0,2)}, Partition([6, 6, 5]))
+            sage: cf1 == cf2
+            True
+        """
         # TODO: account for the fact that DIFFERENT root/index pairs could actually give the SAME catalan function!!
         return self.roots == other.roots and self.index == other.index and self.base_ring == other.base_ring
 
     def __repr__(self):
-        r""" Return a human-friendly string representation of this catalan function. """
+        r""" Return a human-friendly string representation of this catalan function.
+
+        EXAMPLES::
+
+            sage: cf = CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+            sage: cf
+            H([(0, 2), (1, 2)]; [6, 6, 5])
+        """
         return '{}({}; {})'.format(self.prefix, self.roots, self.index)
 
     def _get_indices_for_index_operator(self):
         r""" Internal helper function.
 
         This method is defined so that an element of any :class:`ShiftingOperatorAlgebra` (such as a raising operator or a pieri operator) can act on this catalan function.
+
+        EXAMPLES::
+
+            sage: cf = CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+            sage: cf._get_indices_for_index_operator()
+            [6, 6, 5]
+
+        This is what allows you to do something like::
+
+            sage: cf = CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+            sage: R = RaisingOperatorAlgebra()
+            sage: R.ij(0, 1)(cf)
+            H([(0, 2), (1, 2)]; [7, 5, 5])
+
+        ..  SEEALSO::
+            :meth:`_new_object_for_index_operator`
         """
         return self.index
 
@@ -1032,6 +1149,24 @@ class CatalanFunction:
         r""" Internal helper function.
 
         This method is defined so that an element of any :class:`ShiftingOperatorAlgebra` (such as a raising operator or a pieri operator) can act on this catalan function.
+
+        Returns a brand new :class:`CatalanFunction`.
+
+        EXAMPLES::
+
+            sage: cf = CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+            sage: cf._new_object_for_index_operator([7, 5, 5])
+            H([(0, 2), (1, 2)]; [7, 5, 5])
+
+        This is what allows you to do something like::
+
+            sage: cf = CatalanFunction([(0,2), (1,2)], [6, 6, 5])
+            sage: R = RaisingOperatorAlgebra()
+            sage: R.ij(0, 1)(cf)
+            H([(0, 2), (1, 2)]; [7, 5, 5])
+
+        ..  SEEALSO::
+            :meth:`_get_indices_for_index_operator`
         """
         new_obj = self.__class__(self.roots, new_index,
                                  base_ring=self.base_ring)
@@ -1054,7 +1189,7 @@ class CatalanFunction:
             sage: s(cf.eval())
             s[4, 1]
 
-        This function can also specialize `t` to an arbitrary integer. ::
+        This function can also specialize `t` to an arbitrary integer::
 
             sage: cf.eval(t=1)
             HLQp[4, 1] - HLQp[5]
@@ -1062,6 +1197,9 @@ class CatalanFunction:
             HLQp[4, 1] + HLQp[5]
             sage: s(cf.eval(t=-1))
             s[4, 1]
+
+        ..  SEEALSO::
+            :meth:`expand`
         """
         # setup
         if t is None:
@@ -1102,6 +1240,9 @@ class CatalanFunction:
             x0^4*x1 + x0^3*x1^2 + x0^2*x1^3 + x0*x1^4
             sage: cf.expand(2, alphabet='y')
             y0^4*y1 + y0^3*y1^2 + y0^2*y1^3 + y0*y1^4
+
+        ..  SEEALSO::
+            :meth:`eval`
         """
         return self.eval().expand(*args, **kwargs)
 
@@ -1141,23 +1282,52 @@ class CatalanFunctions:
         """
         return CatalanFunction(roots, index, base_ring, prefix)
 
-    def init_from_skew_partition(self, sp, base_ring=None, prefix=None):
-        r""" Given a :class:`SkewPartition` ``sp``, return the catalan function `H(\Phi^+(sp); rs(sp))`. """
-        ri = skew_partition_to_root_ideal(sp, type='max')
+    def init_from_skew_partition(self, sp, base_ring=None, prefix=None, algorithm='removable roots'):
+        r""" Given a skew partition ``sp``, return the catalan function `H(\Phi^+(sp); rs(sp))`.
+
+        Given a linked :class:`SkewPartition` ``sp``, return the :class:`CatalanFunction` `H(\Phi^+(sp); rs(sp))`.
+
+        EXAMPLES::
+
+            sage: CFS = CatalanFunctions()
+            sage: sp = SkewPartition([[2, 1, 1], [1]])
+            sage: CFS.init_from_skew_partition(sp)
+            H([(0, 1), (0, 2)]; [1, 1, 1])
+
+        ..  SEEALSO::
+            :meth:`init_from_row_and_column_lengths`
+        """
+        ri = RootIdeals().init_from_skew_partition(sp, type='max', algorithm=algorithm)
         rs = sp.row_lengths()
         return self.init_from_indexed_root_ideal(ri, rs, base_ring, prefix)
 
-    def init_from_row_and_column_lengths(self, row_lengths, column_lengths, base_ring=None, prefix=None):
+    def init_from_row_and_column_lengths(self, row_lengths, column_lengths, base_ring=None, prefix=None, algorithm='removable roots'):
         r""" Determine the skew partition `D` with row-shape ``row_lengths`` and column-shape ``column_lengths``, and return the catalan function `H(\Phi^+(D); \text{row_lengths})`.
-        """
-        sp = SkewPartitions().init_from_row_and_column_length(row_lengths, column_lengths)
-        return self.init_from_skew_partition(sp, base_ring, prefix)
 
-    def init_from_k_shape(self, p, k, base_ring=None, prefix=None):
-        r""" Given ``k`` and a `k`-shape ``p``, return the catalan function `H(\Phi^+(p); rs(p))`. """
+        EXAMPLES::
+
+            sage: CFS = CatalanFunctions()
+            sage: CFS.init_from_row_and_column_lengths([1, 1, 1], [2, 1])
+            H([(0, 1), (0, 2)]; [1, 1, 1])
+
+        ..  SEEALSO::
+            :meth:`init_from_skew_partition`
+        """
+        sp = SkewPartitions().from_row_and_column_length(row_lengths, column_lengths)
+        return self.init_from_skew_partition(sp, base_ring=base_ring, prefix=prefix, algorithm=algorithm)
+
+    def init_from_k_shape(self, p, k, base_ring=None, prefix=None, algorithm='removable roots'):
+        r""" Given ``k`` and a `k`-shape ``p``, return the catalan function `H(\Phi^+(p); rs(p))`.
+
+        EXAMPLES::
+
+            sage: CFS = CatalanFunctions()
+            sage: CFS.init_from_k_shape([4, 3, 2, 1], 1)
+            H([]; [4, 3, 2, 1])
+        """
         assert is_k_shape(p, k)
         sp = SkewPartition([p, []])
-        return self.init_from_skew_partition(self, sp, base_ring, prefix)
+        return self.init_from_skew_partition(sp, base_ring=base_ring, prefix=prefix, algorithm=algorithm)
 
     def init_from_k_schur(self, func, base_ring=None, prefix=None):
         r""" Given a `k`-schur function ``func`` `= s^k_\lambda(x;t)`, initialize the catalan function `H(\Delta^k(\lambda); \lambda)`.
@@ -1173,9 +1343,8 @@ class CatalanFunctions:
             sage: func = ks[2, 1, 1]
             sage: CatalanFunction(func, base_ring=base_ring)
             H([]; [2, 1, 1])
-
-            # TODO: make sure [] above is correct.  go by hand.
         """
+        # TODO: make sure [] above is correct.  go by hand.
         # check inputs
         assert _is_k_schur(func)
         assert len(func.support()) == 1
@@ -1183,7 +1352,7 @@ class CatalanFunctions:
         index = func.support()[0]
         k = func.parent().k
         roots = partition_to_k_schur_root_ideal(index, k)
-        # return
+        # initialize from roots and index
         return self.init_from_indexed_root_ideal(roots, index, base_ring, prefix)
 
     def init_parabolic_from_composition_and_index(self, composition, index, base_ring=None, prefix=None):
@@ -1221,6 +1390,9 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
     To change the ring that the algebra works over, use ``base_ring=`` (default ``ZZ``).
 
     To change the prefix of the generators, use ``prefix=`` (default ``'x'``).
+
+    ..  SEEALSO::
+        sage.algebras.free_algebra, https://doc.sagemath.org/html/en/reference/monoids/sage/monoids/free_abelian_monoid.html, sage.monoids.free_monoid, sage.monoids.free_abelian_monoid
     """
 
     def __init__(self,
@@ -1229,8 +1401,9 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
                  basis_indices=None,
                  index_set=NonNegativeIntegerSemiring()):
         self._base_ring = base_ring
+        self._index_set = index_set
         self._basis_monoid = FreeMonoid(
-            index_set=index_set, commutative=True, prefix=prefix) if basis_indices is None else basis_indices
+            index_set=self._index_set, commutative=True, prefix=prefix) if basis_indices is None else basis_indices
         # category
         category = Algebras(self._base_ring.category()
                             ).WithBasis().Commutative()
@@ -1250,6 +1423,12 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
         r""" Return whether the infinite dimensional free algebra is a prime field (it never is!).
 
         Note that this method exists for internal compatability.
+
+        EXAMPLES::
+
+            sage: A = InfiniteDimensionalFreeAlgebra()
+            sage: A.is_prime_field()
+            False
         """
         return False
 
@@ -1257,12 +1436,27 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
         r""" Return the element whose index is ``monoid_el``.
 
         Note: This method is only for basis elements.  This method for internal use.
+
+        EXAMPLES::
+
+        ..  SEEALSO::
+            :meth:`__getitem__`
         """
         assert monoid_el in self._basis_monoid
         return self.basis()[monoid_el]
 
     def __getitem__(self, user_input):
-        r""" Given an integer ``user_input``, return the corresponding basis element. """
+        r""" Given an integer ``user_input``, return the corresponding basis element.
+
+        EXAMPLES::
+
+            sage: A = InfiniteDimensionalFreeAlgebra()
+            sage: A[4]
+            x[4]
+
+        ..  SEEALSO::
+            :meth:`_element_constructor_`
+        """
         # USER front entrance to creating elements "x[4]"
         assert user_input in IntegerRing()
         monoid_el = self._basis_monoid.gen(user_input)
@@ -1270,23 +1464,51 @@ class InfiniteDimensionalFreeAlgebra(CombinatorialFreeModule):
 
     @cached_method
     def one_basis(self):
-        r""" Return the index of the identity element. """
+        r""" Return the index of the identity element.
+
+        EXAMPLES::
+
+            sage: A.one_basis()
+            1
+        """
         return self._basis_monoid.one()
 
     def product_on_basis(self, monoid_el1, monoid_el2):
         r""" Given indices ``monoid_el1`` and ``monoid_el2``, return the product of the basis elements indexed by those indices.
+
+
+
         """
         monoid_el_product = monoid_el1 * monoid_el2
         return self._element_constructor_(monoid_el_product)
 
     def _repr_(self):
         r""" Return a human-friendly string representation of this infinite-dimensional free algebra.
+
+        EXAMPLES::
+
+            sage: F = InfiniteDimensionalFreeAlgebra()
+            sage: F
+            InfiniteDimensionalFreeAlgebra_with_category with generators indexed by Non negative integer semiring, over Integer Ring
+
+            sage: F = InfiniteDimensionalFreeAlgebra(base_ring=QQ, index_set=ZZ)
+            sage: F
+            InfiniteDimensionalFreeAlgebra_with_category with generators indexed by Integer Ring, over Rational Field
         """
-        return "{class_name} with generators indexed by integers, over {base_ring}".format(class_name=self.__class__.__name__, base_ring=self._base_ring)
+        return "{class_name} with generators indexed by {index_set}, over {base_ring}".format(class_name=self.__class__.__name__, base_ring=self._base_ring, index_set=self._index_set)
 
 
 DoubleRing = InfiniteDimensionalFreeAlgebra(prefix='a', index_set=IntegerRing())
-r""" ``DoubleRing`` is the ring `\Lambda(a)` found in [Fun]_ section 3. """
+r""" ``DoubleRing`` is the ring `\Lambda(a)` found in [Fun]_ section 3.
+
+EXAMPLES::
+
+    sage: DoubleRing
+    InfiniteDimensionalFreeAlgebra_with_category with generators indexed by Integer Ring, over Integer Ring
+
+..  SEEALSO::
+    :class:`InfiniteDimensionalFreeAlgebra`
+"""
 
 
 def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
@@ -1304,6 +1526,9 @@ def dual_k_theoretic_homogeneous(k, r, base_ring=QQ):
 
         sage: dual_k_theoretic_homogeneous([2, 1], [1, 1])
         h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1
+
+    ..  SEEALSO::
+        :meth:`dual_k_catalan_function`
     """
     if _is_sequence(k):
         # pad with 0's
@@ -1341,6 +1566,9 @@ def dual_k_catalan_function(roots, index, index2, base_ring=QQ):
     ..  MATH::
 
         \prod_{ij \in \Delta^+ \smallsetminus \Phi} (1 - R_{ij}) h_\gamma(x; \alpha).
+
+    ..  SEEALSO::
+        :meth:`dual_k_theoretic_homogeneous`, :meth:`dual_grothendieck_function`
     """
     # setup
     Kh = dual_k_theoretic_homogeneous(index, index2, base_ring=base_ring)
@@ -1362,6 +1590,9 @@ def dual_grothendieck_function(composition, base_ring=QQ):
         sage: h = SymmetricFunctions(QQ).h()
         sage: dual_grothendieck_function([2, 1])
         h[1]*h[2] + h[2] - h[3]
+
+    ..  SEEALSO::
+        :meth:`dual_k_catalan_function`
     """
     roots = []  # because dual_k_catalan_function will take the complement
     n = len(composition)
@@ -1378,6 +1609,9 @@ def double_homogeneous_building_block(p, n):
         h_p(x_1, \ldots, x_n \,||\, a) \,= \sum_{n \geq i_1 \geq \ldots \geq i_p \geq 1} (x_{i_1} - a_{i_1})(x_{i_2} - a_{i_2 - 1}) \cdots (x_{i_p} - a_{i_p - p + 1})
 
     in [Fun]_ section 3 between equation (6) and (7).  Note that our indices are 0-based.
+
+    ..  SEEALSO::
+        :class:`DoubleHomogeneous`, :meth:`double_homogeneous_building_block_shifted`, :meth:`shift`
     """
     a = DoubleRing
     sym = SymmetricFunctions(DoubleRing)
@@ -1395,13 +1629,14 @@ def double_homogeneous_building_block(p, n):
 
 def shift(element):
     r""" The function `\tau` which acts on any element of `\Lambda(a)` (``DoubleRing``) by sending each element `a_i` to `a_{i+1}` for all `i`.  It can be found in [Fun]_ p.8 between equations (6) and (7).
+
+    ..  SEEALSO::
+        :meth:`double_homogeneous_building_block_shifted`, :meth:`double_homogeneous_building_block`
     """
     # idea, use .hom ``f = ZZ.hom(GF(3))``
     # sage: R.<x> = ZZ[]
     # sage: f = R.hom([x])
-
     # idea, define something on x[i] in general and take the induces hom
-
     # idea, manual
     a = DoubleRing
     new_monomials = []
@@ -1417,7 +1652,11 @@ def shift(element):
 
 
 def double_homogeneous_building_block_shifted(r, s, n):
-    r""" Given `r` and `s`, returns `h_{r, s} = \tau^s h_r(x \,||\, a)`, as defined in [Fun]_ before eq (8). """
+    r""" Given `r` and `s`, returns `h_{r, s} = \tau^s h_r(x \,||\, a)`, as defined in [Fun]_ before eq (8).
+
+    ..  SEEALSO::
+        :class:`DoubleHomogeneous`, :meth:`double_homogeneous_building_block`, :meth:`shift`
+    """
     if n > 0:
         out = double_homogeneous_building_block(r, n)
         for _ in range(s):
@@ -1535,7 +1774,11 @@ def double_catalan_function(roots, index, n):
 
 
 def substitute(f, t=None, q=None):
-    r""" Given a symmetric function ``f``, plug the inputted ``t`` and ``q`` values into it and return the resulting function. """
+    r""" Given a symmetric function ``f``, plug the inputted ``t`` and ``q`` values into it and return the resulting function.
+
+    ..  SEEALSO::
+        :meth:`SymmetricFunctionAlgebra_schur_with_category.element_class.plethysm`, :meth:`ungraded`
+    """
     # a t value of 'None' will leave t as-is.
     basis = f.parent()
     base_ring = f.base_ring()
@@ -1552,5 +1795,9 @@ def substitute(f, t=None, q=None):
 
 
 def ungraded(f):
-    r""" Given a symmetric function ``f``, return the result of plugging in `t = 1`. """
+    r""" Given a symmetric function ``f``, return the result of plugging in `t = 1`.
+
+    ..  SEEALSO::
+        :meth:`substitute`
+    """
     return substitute(f, t=1)
