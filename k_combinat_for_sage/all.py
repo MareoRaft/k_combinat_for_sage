@@ -826,7 +826,7 @@ class HallLittlewoodVertexOperator:
         :meth:`sage.combinat.sf.new_kschur.KBoundedSubspaceBases.ElementMethods.hl_creation_operator`
     """
 
-    def __init__(self, composition, base_ring=QQ['t']):
+    def __init__(self, composition, base_ring=QQ['t'], t=None):
         if composition in NonNegativeIntegerSemiring():
             self.composition = Composition([composition])
         elif _is_sequence(composition):
@@ -835,6 +835,7 @@ class HallLittlewoodVertexOperator:
             raise ValueError('Bad composition.')
         self.base_ring = base_ring
         self.sym = SymmetricFunctions(self.base_ring)
+        self._t = t
 
     def __repr__(self):
         r""" Return a human-friendly string representation of this Hall-Littlewood vertex operator.
@@ -892,7 +893,10 @@ class HallLittlewoodVertexOperator:
         # skew by e[k](1-t)
         sym = self.sym
         e = sym.e()
-        t = self.base_ring.gen()
+        if self._t is None:
+            t = self.base_ring.gen()
+        else:
+            t = self._t
         if k == 0:
             return f
         elif k < 0:
@@ -939,8 +943,10 @@ class HallLittlewoodVertexOperator:
         """
         gamma = self.composition
         sym = self.sym
-        # should we be passing t in to the hall littlewood vertex operator here?
-        HLQp = sym.hall_littlewood().Qp()
+        if self._t is None:
+            HLQp = sym.hall_littlewood().Qp()
+        else:
+            HLQp = sym.hall_littlewood(t=self._t).Qp()
         # iterate
         for part in reversed(gamma):
             input_ = self._op(part, input_)
@@ -972,8 +978,10 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t'], t=None):
         return HLQp(gamma)
     else:
         H = HallLittlewoodVertexOperator
-        return H(gamma, base_ring=base_ring)(HLQp.one())
-
+        if t is None:
+            return H(gamma, base_ring=base_ring)(HLQp.one())
+        else:
+            return H(gamma, base_ring=base_ring, t=t)(HLQp.one())
 
 def raising_roots_operator(roots, base_ring=QQ['t'], t=1):
     r""" Return the operator `\prod_{(i,j) \in roots} (1 - tR_{ij})`.
