@@ -978,10 +978,7 @@ def compositional_hall_littlewood_Qp(gamma, base_ring=QQ['t'], t=None):
         return HLQp(gamma)
     else:
         H = HallLittlewoodVertexOperator
-        if t is None:
-            return H(gamma, base_ring=base_ring)(HLQp.one())
-        else:
-            return H(gamma, base_ring=base_ring, t=t)(HLQp.one())
+        return H(gamma, base_ring=base_ring, t=t)(HLQp.one())
 
 def raising_roots_operator(roots, base_ring=QQ['t'], t=1):
     r""" Return the operator `\prod_{(i,j) \in roots} (1 - tR_{ij})`.
