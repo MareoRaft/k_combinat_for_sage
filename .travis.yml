@@ -13,7 +13,7 @@ before_install:
 - mkdir "${DIR_INSTALL}"
 - cd "${DIR_INSTALL}"
 - FILE_NAME="sage-7.6-Ubuntu_12.04-x86_64.tar.bz2" # note that this should probably match the version of ubuntu that Travis is using!
-- wget -q http://mirrors.mit.edu/sage/linux/64bit/"${FILE_NAME}"
+- wget -q https://mirrors.sorengard.com/sage/linux/64bit/"${FILE_NAME}"
 - tar -xf "${FILE_NAME}"
 - sudo ln -s "${DIR_INSTALL}/SageMath/sage" "/usr/local/bin/sage"
 - sage --version
