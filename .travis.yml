@@ -12,8 +12,8 @@ before_install:
 - DIR_INSTALL="${DIR_REPO}/temp-install-sage"
 - mkdir "${DIR_INSTALL}"
 - cd "${DIR_INSTALL}"
-- FILE_NAME="sage-7.6-Ubuntu_12.04-x86_64.tar.bz2" # note that this should probably match the version of ubuntu that Travis is using!
-- wget -q https://mirrors.sorengard.com/sage/linux/64bit/"${FILE_NAME}"
+- FILE_NAME="sage-8.1-Ubuntu_14.04-x86_64.tar.bz2" # note that this should probably match the version of ubuntu that Travis is using!  NOTE THAT UBUNTU 12 IS NO LONGER SUPPORTED BY SAGE
+- wget -q http://mirrors.mit.edu/sage/linux/64bit/"${FILE_NAME}"
 - tar -xf "${FILE_NAME}"
 - sudo ln -s "${DIR_INSTALL}/SageMath/sage" "/usr/local/bin/sage"
 - sage --version
