@@ -1,0 +1,5 @@
+partition
+=========================
+
+..	automodule:: partition
+    :members:
