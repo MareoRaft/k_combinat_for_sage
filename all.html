@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>and beyond! &#8212; k-Schur combinatorics for SageMath 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/sage.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.4',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -29,14 +21,16 @@
     <script src="_static/thebe.js" type="text/javascript"></script>
     <script src="_static/thebe-sage.js" type="text/javascript"></script>
 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="strong_marked_tableau.html" title="Strong Marked Tableau"
              accesskey="P">previous</a> |</li>
@@ -56,8 +50,958 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="and-beyond">
-<h1>and beyond!<a class="headerlink" href="#and-beyond" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-all">
+<span id="and-beyond"></span><h1>and beyond!<a class="headerlink" href="#module-all" title="Permalink to this headline">¶</a></h1>
+<p>This module contains all functionalities that are not already organized into the other files.  New functionalities written to the library often appear here, and eventually get organized into separate files.</p>
+<p>AUTHORS:</p>
+<ul class="simple">
+<li>Matthew Lancellotti (2018): Initial version</li>
+</ul>
+<p>REFERENCES:</p>
+<table class="docutils citation" frame="void" id="fun" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Fun]</td><td><em>(<a class="fn-backref" href="#id4">1</a>, <a class="fn-backref" href="#id10">2</a>, <a class="fn-backref" href="#id11">3</a>, <a class="fn-backref" href="#id12">4</a>, <a class="fn-backref" href="#id15">5</a>)</em> <a class="reference external" href="https://arxiv.org/pdf/1203.4729.pdf">Raising operators and the Littlewood-Richardson polynomials</a>.  Fun, Alex.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="ln" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[LN]</td><td><em>(<a class="fn-backref" href="#id13">1</a>, <a class="fn-backref" href="#id14">2</a>)</em> <a class="reference external" href="https://projecteuclid.org/download/pdf_1/euclid.pja/1407415930">Finite sum Cauchy identity for dual Grothendieck polynomials</a>.</td></tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="all.CatalanFunction">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">CatalanFunction</code><span class="sig-paren">(</span><em>roots</em>, <em>index</em>, <em>base_ring=None</em>, <em>prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A catalan function <span class="math notranslate nohighlight">\(H(\Psi; \gamma)\)</span> as discussed in <a class="reference internal" href="root_ideal.html#cat" id="id1">[cat]</a> section 4.</p>
+<p>By definition,</p>
+<div class="math notranslate nohighlight">
+\[H(\Psi; \gamma) := \prod_{ij \in \Psi} (1 - R_{ij})^{-1} s_\gamma = \prod_{ij \in \Delta^+ \smallsetminus \Psi} (1 - R_{ij}) H_\gamma\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_\gamma\)</span> is a schur function and <span class="math notranslate nohighlight">\(H_\gamma\)</span> is a Hall-Littlewood Q’ function.</p>
+<p>The parameters for initializing a catalan function are exactly the same as in <a class="reference internal" href="#all.CatalanFunctions.init_from_indexed_root_ideal" title="all.CatalanFunctions.init_from_indexed_root_ideal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">CatalanFunctions.init_from_indexed_root_ideal()</span></code></a>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">CatalanFunction</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="go">H([(0, 2), (1, 2)]; [6, 6, 5])</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">There are more ways to initialize a catalan function, and the methods for doing so are found in <a class="reference internal" href="#all.CatalanFunctions" title="all.CatalanFunctions"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatalanFunctions</span></code></a>.</p>
+</div>
+<dl class="method">
+<dt id="all.CatalanFunction.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>t=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunction.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunction.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the catalan function in terms of the Hall-Littlewood Q’ basis.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">delta_plus</span> <span class="o">=</span> <span class="n">partition_to_root_ideal</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">cf</span> <span class="o">=</span> <span class="n">CatalanFunction</span><span class="p">(</span><span class="n">delta_plus</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">sage: </span><span class="n">cf</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="go">HLQp[3, 1, 1]</span>
+
+<span class="gp">sage: </span><span class="n">s</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">schur</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">cf</span> <span class="o">=</span> <span class="n">CatalanFunction</span><span class="p">([],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">sage: </span><span class="n">cf</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="go">HLQp[4, 1] - t*HLQp[5]</span>
+<span class="gp">sage: </span><span class="n">s</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span>
+<span class="go">s[4, 1]</span>
+</pre></div>
+</div>
+<p>This function can also specialize <span class="math notranslate nohighlight">\(t\)</span> to an arbitrary integer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">cf</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">HLQp[4, 1] - HLQp[5]</span>
+<span class="gp">sage: </span><span class="n">cf</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">t</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">HLQp[4, 1] + HLQp[5]</span>
+<span class="gp">sage: </span><span class="n">s</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">t</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">s[4, 1]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.CatalanFunction.expand" title="all.CatalanFunction.expand"><code class="xref py py-meth docutils literal notranslate"><span class="pre">expand()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.CatalanFunction.expand">
+<code class="descname">expand</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunction.expand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunction.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand the catalan function as a symmetric polynomial in <code class="docutils literal notranslate"><span class="pre">n</span></code> variables.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">n</span></code> – a nonnegative integer</li>
+<li><code class="docutils literal notranslate"><span class="pre">alphabet</span></code> – (default: <code class="docutils literal notranslate"><span class="pre">'x'</span></code>) a variable for the expansion</li>
+</ul>
+<p>OUTPUT:</p>
+<p>A monomial expansion of <code class="docutils literal notranslate"><span class="pre">self</span></code> in the <span class="math notranslate nohighlight">\(n\)</span> variables
+labelled <code class="docutils literal notranslate"><span class="pre">x0</span></code>, <code class="docutils literal notranslate"><span class="pre">x1</span></code>, …, <code class="docutils literal notranslate"><span class="pre">x{n-1}</span></code> (or just <code class="docutils literal notranslate"><span class="pre">x</span></code>
+if <span class="math notranslate nohighlight">\(n = 1\)</span>), where <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">alphabet</span></code>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">cf</span> <span class="o">=</span> <span class="n">CatalanFunction</span><span class="p">([],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">sage: </span><span class="n">cf</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">sage: </span><span class="n">cf</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">x0^4*x1 + x0^3*x1^2 + x0^2*x1^3 + x0*x1^4</span>
+<span class="gp">sage: </span><span class="n">cf</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+<span class="go">y0^4*y1 + y0^3*y1^2 + y0^2*y1^3 + y0*y1^4</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.CatalanFunction.eval" title="all.CatalanFunction.eval"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval()</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="all.CatalanFunctions">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">CatalanFunctions</code><a class="reference internal" href="_modules/all.html#CatalanFunctions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunctions" title="Permalink to this definition">¶</a></dt>
+<dd><p>The family of catalan functions, as discussed in <a class="reference internal" href="root_ideal.html#cat" id="id2">[cat]</a> section 4.</p>
+<p>Use this class as a factory to initialize a <a class="reference internal" href="#all.CatalanFunction" title="all.CatalanFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatalanFunction</span></code></a> object with any valid identifying data.  See the <code class="docutils literal notranslate"><span class="pre">init_from...</span></code> methods below for all possible ways to create a catalan function.</p>
+<dl class="method">
+<dt id="all.CatalanFunctions.init_from_indexed_root_ideal">
+<code class="descname">init_from_indexed_root_ideal</code><span class="sig-paren">(</span><em>roots</em>, <em>index</em>, <em>base_ring=None</em>, <em>prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunctions.init_from_indexed_root_ideal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunctions.init_from_indexed_root_ideal" title="Permalink to this definition">¶</a></dt>
+<dd><p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">roots</span></code> – iterable of roots <span class="math notranslate nohighlight">\(\Phi\)</span> (typically a root ideal)</li>
+<li><code class="docutils literal notranslate"><span class="pre">index</span></code> – composition <span class="math notranslate nohighlight">\(\gamma\)</span> that indexes the root ideal and appears in <span class="math notranslate nohighlight">\(s_\gamma\)</span> and <span class="math notranslate nohighlight">\(H_\gamma\)</span> below</li>
+</ul>
+<p>OPTIONAL INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">base_ring</span></code> – (default <code class="docutils literal notranslate"><span class="pre">QQ['t']</span></code>) the ring over which to build the <span class="math notranslate nohighlight">\(h_\gamma(x; \alpha)\)</span>‘s</li>
+</ul>
+<p>OUTPUTS:</p>
+<p>The catalan function</p>
+<div class="math notranslate nohighlight">
+\[H(\Phi; \gamma) := \prod_{ij \in \Phi} (1 - R_{ij})^{-1} s_\gamma = \prod_{ij \in \Delta^+ \smallsetminus \Phi} (1 - R_{ij}) H_\gamma\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_\gamma\)</span> is a schur function and <span class="math notranslate nohighlight">\(H_\gamma\)</span> is a Hall-Littlewood Q’ function.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">CatalanFunctions</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_indexed_root_ideal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="go">H([(0, 2), (1, 2)]; [6, 6, 5])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.CatalanFunctions.init_from_k_schur">
+<code class="descname">init_from_k_schur</code><span class="sig-paren">(</span><em>func</em>, <em>base_ring=None</em>, <em>prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunctions.init_from_k_schur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunctions.init_from_k_schur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <span class="math notranslate nohighlight">\(k\)</span>-schur function <code class="docutils literal notranslate"><span class="pre">func</span></code> <span class="math notranslate nohighlight">\(= s^k_\lambda(x;t)\)</span>, initialize the catalan function <span class="math notranslate nohighlight">\(H(\Delta^k(\lambda); \lambda)\)</span>.</p>
+<p>Mathematically, these two functions are equal.  The usefulness of this method is that you input a <code class="docutils literal notranslate"><span class="pre">sage.combinat.sf.new_kschur.kSchur_with_category</span></code> object and you obtain a <a class="reference internal" href="#all.CatalanFunction" title="all.CatalanFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatalanFunction</span></code></a> object.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">base_ring</span> <span class="o">=</span> <span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Sym</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">base_ring</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">t</span> <span class="o">=</span> <span class="n">base_ring</span><span class="o">.</span><span class="n">gen</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">ks</span> <span class="o">=</span> <span class="n">Sym</span><span class="o">.</span><span class="n">kBoundedSubspace</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">kschur</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">func</span> <span class="o">=</span> <span class="n">ks</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">CatalanFunction</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">base_ring</span><span class="o">=</span><span class="n">base_ring</span><span class="p">)</span>
+<span class="go">H([]; [2, 1, 1])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.CatalanFunctions.init_from_k_shape">
+<code class="descname">init_from_k_shape</code><span class="sig-paren">(</span><em>p</em>, <em>k</em>, <em>base_ring=None</em>, <em>prefix=None</em>, <em>algorithm='removable roots'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunctions.init_from_k_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunctions.init_from_k_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given <code class="docutils literal notranslate"><span class="pre">k</span></code> and a <span class="math notranslate nohighlight">\(k\)</span>-shape <code class="docutils literal notranslate"><span class="pre">p</span></code>, return the catalan function <span class="math notranslate nohighlight">\(H(\Phi^+(p); rs(p))\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">CFS</span> <span class="o">=</span> <span class="n">CatalanFunctions</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">CFS</span><span class="o">.</span><span class="n">init_from_k_shape</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">H([]; [4, 3, 2, 1])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.CatalanFunctions.init_from_row_and_column_lengths">
+<code class="descname">init_from_row_and_column_lengths</code><span class="sig-paren">(</span><em>row_lengths</em>, <em>column_lengths</em>, <em>base_ring=None</em>, <em>prefix=None</em>, <em>algorithm='removable roots'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunctions.init_from_row_and_column_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunctions.init_from_row_and_column_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the skew partition <span class="math notranslate nohighlight">\(D\)</span> with row-shape <code class="docutils literal notranslate"><span class="pre">row_lengths</span></code> and column-shape <code class="docutils literal notranslate"><span class="pre">column_lengths</span></code>, and return the catalan function <span class="math notranslate nohighlight">\(H(\Phi^+(D); \text{row_lengths})\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">CFS</span> <span class="o">=</span> <span class="n">CatalanFunctions</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">CFS</span><span class="o">.</span><span class="n">init_from_row_and_column_lengths</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">H([(0, 1), (0, 2)]; [1, 1, 1])</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.CatalanFunctions.init_from_skew_partition" title="all.CatalanFunctions.init_from_skew_partition"><code class="xref py py-meth docutils literal notranslate"><span class="pre">init_from_skew_partition()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.CatalanFunctions.init_from_skew_partition">
+<code class="descname">init_from_skew_partition</code><span class="sig-paren">(</span><em>sp</em>, <em>base_ring=None</em>, <em>prefix=None</em>, <em>algorithm='removable roots'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunctions.init_from_skew_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunctions.init_from_skew_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a skew partition <code class="docutils literal notranslate"><span class="pre">sp</span></code>, return the catalan function <span class="math notranslate nohighlight">\(H(\Phi^+(sp); rs(sp))\)</span>.</p>
+<p>Given a linked <code class="xref py py-class docutils literal notranslate"><span class="pre">SkewPartition</span></code> <code class="docutils literal notranslate"><span class="pre">sp</span></code>, return the <a class="reference internal" href="#all.CatalanFunction" title="all.CatalanFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatalanFunction</span></code></a> <span class="math notranslate nohighlight">\(H(\Phi^+(sp); rs(sp))\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">CFS</span> <span class="o">=</span> <span class="n">CatalanFunctions</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">sp</span> <span class="o">=</span> <span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="gp">sage: </span><span class="n">CFS</span><span class="o">.</span><span class="n">init_from_skew_partition</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+<span class="go">H([(0, 1), (0, 2)]; [1, 1, 1])</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.CatalanFunctions.init_from_row_and_column_lengths" title="all.CatalanFunctions.init_from_row_and_column_lengths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">init_from_row_and_column_lengths()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.CatalanFunctions.init_parabolic_from_composition_and_index">
+<code class="descname">init_parabolic_from_composition_and_index</code><span class="sig-paren">(</span><em>composition</em>, <em>index</em>, <em>base_ring=None</em>, <em>prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#CatalanFunctions.init_parabolic_from_composition_and_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.CatalanFunctions.init_parabolic_from_composition_and_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a composition <span class="math notranslate nohighlight">\(\eta\)</span> of positive integers and an index <span class="math notranslate nohighlight">\(\gamma\)</span>, return the parabolic catalan function <span class="math notranslate nohighlight">\(H(\Delta(\eta), \gamma)\)</span>, where</p>
+<div class="math notranslate nohighlight">
+\[\Delta(\eta) := \{ \alpha \in \Delta^+_{|\eta|} \:\text{above the block diagonal with block sizes}\: \eta_1, \ldots, \eta_r\}\]</div>
+<p>as in <a class="reference internal" href="root_ideal.html#cat" id="id3">[cat]</a> just below Conjecture 3.3.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">CatalanFunctions</span><span class="p">()</span><span class="o">.</span><span class="n">init_parabolic_from_composition_and_index</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="go">H([(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]; [1, 2, 3, 4, 5, 6])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="all.DoubleHomogeneous">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">DoubleHomogeneous</code><span class="sig-paren">(</span><em>index1</em>, <em>index2</em>, <em>prefix='h'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#DoubleHomogeneous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.DoubleHomogeneous" title="Permalink to this definition">¶</a></dt>
+<dd><p>INPUTS:</p>
+<p><code class="docutils literal notranslate"><span class="pre">mu1</span></code> – composition</p>
+<p><code class="docutils literal notranslate"><span class="pre">mu2</span></code> – composition</p>
+<p><code class="docutils literal notranslate"><span class="pre">n</span></code> – number of <span class="math notranslate nohighlight">\(x\)</span> variables</p>
+<p>EXAMPLES:</p>
+<p>Create the double homogeneous <span class="math notranslate nohighlight">\(h^{(4)}_{\mu, \beta}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">DoubleHomogeneous</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create the double homogeneous shifted building block <span class="math notranslate nohighlight">\(h_{r, s}\)</span> in 4 variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">r</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">sage: </span><span class="n">s</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">sage: </span><span class="n">DoubleHomogeneous</span><span class="p">([</span><span class="n">r</span><span class="p">],</span> <span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create the double homogeneous symmetric building block <span class="math notranslate nohighlight">\(h_p(x \,||\, a)\)</span> in 4 variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">p</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">sage: </span><span class="n">DoubleHomogeneous</span><span class="p">([</span><span class="n">p</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="all.DoubleHomogeneous.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#DoubleHomogeneous.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.DoubleHomogeneous.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the number of variables <code class="docutils literal notranslate"><span class="pre">n</span></code>, return <code class="docutils literal notranslate"><span class="pre">self</span></code> expanded in terms of the shifted double homogeneous building blocks <span class="math notranslate nohighlight">\(h_{r, s}\)</span>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="all.DoubleRing">
+<code class="descclassname">all.</code><code class="descname">DoubleRing</code><em class="property"> = InfiniteDimensionalFreeAlgebra_with_category with generators indexed by Integer Ring, over Integer Ring</em><a class="headerlink" href="#all.DoubleRing" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">DoubleRing</span></code> is the ring <span class="math notranslate nohighlight">\(\Lambda(a)\)</span> found in <a class="reference internal" href="#fun" id="id4">[Fun]</a> section 3.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">DoubleRing</span>
+<span class="go">InfiniteDimensionalFreeAlgebra_with_category with generators indexed by Integer Ring, over Integer Ring</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.InfiniteDimensionalFreeAlgebra" title="all.InfiniteDimensionalFreeAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">InfiniteDimensionalFreeAlgebra</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="all.HallLittlewoodVertexOperator">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">HallLittlewoodVertexOperator</code><span class="sig-paren">(</span><em>composition</em>, <em>base_ring=Univariate Polynomial Ring in t over Rational Field</em>, <em>t=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#HallLittlewoodVertexOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.HallLittlewoodVertexOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Hall-Littlewood vertex operator.</p>
+<p>Garsia’s version of Jing’s Hall-Littlewood vertex operators.  These are defined in equations 4.2 and 4.3 of <a class="reference internal" href="root_ideal.html#cat" id="id5">[cat]</a> and appear visually as a bold capital H.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">base_ring</span></code> – (default <code class="docutils literal notranslate"><span class="pre">QQ['t']</span></code>) the base ring to build the <code class="xref py py-class docutils literal notranslate"><span class="pre">SymmetricFunctions</span></code> upon.</li>
+</ul>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">H</span> <span class="o">=</span> <span class="n">HallLittlewoodVertexOperator</span>
+<span class="gp">sage: </span><span class="n">one</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">hall_littlewood</span><span class="p">()</span><span class="o">.</span><span class="n">Qp</span><span class="p">()</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">H</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])(</span><span class="n">one</span><span class="p">)</span> <span class="o">==</span> <span class="n">H</span><span class="p">(</span><span class="mi">4</span><span class="p">)(</span><span class="n">H</span><span class="p">(</span><span class="mi">1</span><span class="p">)(</span><span class="n">H</span><span class="p">(</span><span class="mi">3</span><span class="p">)(</span><span class="n">one</span><span class="p">)))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sage.combinat.sf.new_kschur.KBoundedSubspaceBases.ElementMethods.hl_creation_operator()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="all.InfiniteDimensionalFreeAlgebra">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">InfiniteDimensionalFreeAlgebra</code><span class="sig-paren">(</span><em>base_ring=Integer Ring</em>, <em>prefix='x'</em>, <em>basis_indices=None</em>, <em>index_set=Non negative integer semiring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#InfiniteDimensionalFreeAlgebra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.InfiniteDimensionalFreeAlgebra" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the algebra generated by <code class="docutils literal notranslate"><span class="pre">x[0],</span> <span class="pre">x[1],</span> <span class="pre">x[2],</span> <span class="pre">...</span></code> over the integers.</p>
+<p>To change the index set of the generators, use <code class="docutils literal notranslate"><span class="pre">index_set=</span></code> (default <code class="docutils literal notranslate"><span class="pre">NN</span></code>).  To overhaul the set of generators entirely (not recommended), use <code class="docutils literal notranslate"><span class="pre">basis_indices=</span></code>.</p>
+<p>To change the ring that the algebra works over, use <code class="docutils literal notranslate"><span class="pre">base_ring=</span></code> (default <code class="docutils literal notranslate"><span class="pre">ZZ</span></code>).</p>
+<p>To change the prefix of the generators, use <code class="docutils literal notranslate"><span class="pre">prefix=</span></code> (default <code class="docutils literal notranslate"><span class="pre">'x'</span></code>).</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">sage.algebras.free_algebra, <a class="reference external" href="https://doc.sagemath.org/html/en/reference/monoids/sage/monoids/free_abelian_monoid.html">https://doc.sagemath.org/html/en/reference/monoids/sage/monoids/free_abelian_monoid.html</a>, sage.monoids.free_monoid, sage.monoids.free_abelian_monoid</p>
+</div>
+<dl class="method">
+<dt id="all.InfiniteDimensionalFreeAlgebra.is_prime_field">
+<code class="descname">is_prime_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#InfiniteDimensionalFreeAlgebra.is_prime_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.InfiniteDimensionalFreeAlgebra.is_prime_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether the infinite dimensional free algebra is a prime field (it never is!).</p>
+<p>Note that this method exists for internal compatability.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">A</span> <span class="o">=</span> <span class="n">InfiniteDimensionalFreeAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">A</span><span class="o">.</span><span class="n">is_prime_field</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.InfiniteDimensionalFreeAlgebra.one_basis">
+<code class="descname">one_basis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#InfiniteDimensionalFreeAlgebra.one_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.InfiniteDimensionalFreeAlgebra.one_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the identity element.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">A</span><span class="o">.</span><span class="n">one_basis</span><span class="p">()</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.InfiniteDimensionalFreeAlgebra.product_on_basis">
+<code class="descname">product_on_basis</code><span class="sig-paren">(</span><em>monoid_el1</em>, <em>monoid_el2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#InfiniteDimensionalFreeAlgebra.product_on_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.InfiniteDimensionalFreeAlgebra.product_on_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given indices <code class="docutils literal notranslate"><span class="pre">monoid_el1</span></code> and <code class="docutils literal notranslate"><span class="pre">monoid_el2</span></code>, return the product of the basis elements indexed by those indices.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="all.PieriOperatorAlgebra">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">PieriOperatorAlgebra</code><span class="sig-paren">(</span><em>base_ring=Univariate Polynomial Ring in t over Rational Field</em>, <em>prefix='u'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#PieriOperatorAlgebra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.PieriOperatorAlgebra" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Pieri operator <span class="math notranslate nohighlight">\(u_i\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">u</span> <span class="o">=</span> <span class="n">PieriOperatorAlgebra</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Act on catalan function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">cf</span> <span class="o">=</span> <span class="n">CatalanFunction</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">sage: </span><span class="n">u</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="mi">2</span><span class="p">)(</span><span class="n">cf</span><span class="p">)</span>
+<span class="go">CatalanFunction([(0,2), (1,2)], [6, 6, 5])</span>
+</pre></div>
+</div>
+<p>Act on k-schur function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">base_ring</span> <span class="o">=</span> <span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Sym</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">base_ring</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">t</span> <span class="o">=</span> <span class="n">base_ring</span><span class="o">.</span><span class="n">gen</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">ks</span> <span class="o">=</span> <span class="n">Sym</span><span class="o">.</span><span class="n">kBoundedSubspace</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">kschur</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">u</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="mi">2</span><span class="p">)(</span><span class="n">ks</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">ks4[2, 2, 1] + t^2*ks4[3, 2] + t^3*ks4[4, 1]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.ShiftingOperatorAlgebra" title="all.ShiftingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="all.PieriOperatorAlgebra.i">
+<code class="descname">i</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#PieriOperatorAlgebra.i"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.PieriOperatorAlgebra.i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Pieri operator <span class="math notranslate nohighlight">\(u_i\)</span>.</p>
+<p>Shorthand element constructor that allows you to create Pieri operators using the familiar <span class="math notranslate nohighlight">\(u_i\)</span> notation, with the exception that indices here are 0-based, not 1-based.</p>
+<p>EXAMPLES:</p>
+<p>Create the Pieri operator which lowers part 2 (indices are 0-based):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">u</span><span class="o">.</span><span class="n">i</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">u((0, 0, -1))</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra._element_constructor_()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra.__getitem__()</span></code></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="all.RaisingOperatorAlgebra">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">RaisingOperatorAlgebra</code><span class="sig-paren">(</span><em>base_ring=Univariate Polynomial Ring in t over Rational Field</em>, <em>prefix='R'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#RaisingOperatorAlgebra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.RaisingOperatorAlgebra" title="Permalink to this definition">¶</a></dt>
+<dd><p>An algebra of raising operators.</p>
+<p>This class subclasses <a class="reference internal" href="#all.ShiftingOperatorAlgebra" title="all.ShiftingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra</span></code></a> and inherits the large majority of its functionality from there.</p>
+<p>We follow the following convention!:</p>
+<p>R[(1, 0, -1)] is the raising operator that raises the first part by 1 and lowers the third part by 1.</p>
+<p>For a definition of raising operators, see <a class="reference internal" href="root_ideal.html#cat" id="id6">[cat]</a> Definition 2.1, but be wary that the notation is different there.  See <a class="reference internal" href="#all.RaisingOperatorAlgebra.ij" title="all.RaisingOperatorAlgebra.ij"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ij()</span></code></a> for a way to create operators using the notation in the paper.</p>
+<p>If you do NOT want any restrictions on the allowed sequences, use <a class="reference internal" href="#all.ShiftingOperatorAlgebra" title="all.ShiftingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra</span></code></a> instead of <a class="reference internal" href="#all.RaisingOperatorAlgebra" title="all.RaisingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">RaisingOperatorAlgebra</span></code></a>.</p>
+<p>OPTIONAL ARGUMENTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">base_ring</span></code> – (default <code class="docutils literal notranslate"><span class="pre">QQ['t']</span></code>) the ring you will use on the raising operators.</li>
+<li><code class="docutils literal notranslate"><span class="pre">prefix</span></code> – (default <code class="docutils literal notranslate"><span class="pre">&quot;R&quot;</span></code>) the label for the raising operators.</li>
+</ul>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">R</span> <span class="o">=</span> <span class="n">RaisingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">s</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">s</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">h</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">h</span><span class="p">()</span>
+
+<span class="gp">sage: </span><span class="n">R</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+<span class="go">R(1, -1)</span>
+<span class="gp">sage: </span><span class="n">R</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)](</span><span class="n">s</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">s[6, 3]</span>
+<span class="gp">sage: </span><span class="n">R</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)](</span><span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">h[6, 3]</span>
+
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">R</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">R</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+<span class="go">R() - R(0, 1, -1) - R(1, -1) + R(1, 0, -1)</span>
+<span class="gp">sage: </span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">R</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">R</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)]))(</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">(-3*t-2)*s[] + s[2, 2, 1] - s[3, 1, 1] + s[3, 2]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.ShiftingOperatorAlgebra" title="all.ShiftingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="all.RaisingOperatorAlgebra.ij">
+<code class="descname">ij</code><span class="sig-paren">(</span><em>i</em>, <em>j</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#RaisingOperatorAlgebra.ij"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.RaisingOperatorAlgebra.ij" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the raising operator <span class="math notranslate nohighlight">\(R_{ij}\)</span> as notated in <a class="reference internal" href="root_ideal.html#cat" id="id7">[cat]</a> Definition 2.1.</p>
+<p>Shorthand element constructor that allows you to create raising operators using the familiar <span class="math notranslate nohighlight">\(R_{ij}\)</span> notation found in <a class="reference internal" href="root_ideal.html#cat" id="id8">[cat]</a> Definition 2.1, with the exception that indices here are 0-based, not 1-based.</p>
+<p>EXAMPLES:</p>
+<p>Create the raising operator which raises part 0 and lowers part 2 (indices are 0-based):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">R</span><span class="o">.</span><span class="n">ij</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">R((1, 0, -1))</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra._element_constructor_()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra.__getitem__()</span></code></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="all.RaisingSequenceSpace">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">RaisingSequenceSpace</code><span class="sig-paren">(</span><em>base=Integer Ring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#RaisingSequenceSpace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.RaisingSequenceSpace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper for <a class="reference internal" href="#all.RaisingOperatorAlgebra" title="all.RaisingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">RaisingOperatorAlgebra</span></code></a>.</p>
+<p>Helps <a class="reference internal" href="#all.RaisingOperatorAlgebra" title="all.RaisingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">RaisingOperatorAlgebra</span></code></a> know which indices are valid and which indices are not for the basis.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">RS</span> <span class="o">=</span> <span class="n">RaisingSequenceSpace</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">RS</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">RS</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span> <span class="ow">in</span> <span class="n">RS</span>
+<span class="go">False</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">RS</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="all.ShiftingOperatorAlgebra">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">ShiftingOperatorAlgebra</code><span class="sig-paren">(</span><em>base_ring=Univariate Polynomial Ring in t over Rational Field</em>, <em>prefix='S'</em>, <em>basis_indices=&lt;all.ShiftingSequenceSpace instance&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingOperatorAlgebra" title="Permalink to this definition">¶</a></dt>
+<dd><p>An algebra of shifting operators.</p>
+<p>We follow the following convention:</p>
+<p>S[(1, 0, -1, 2)] is the shifting operator that raises the first part by 1, lowers the third part by 1, and raises the fourth part by 2.</p>
+<p>OPTIONAL ARGUMENTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">base_ring</span></code> – (default <code class="docutils literal notranslate"><span class="pre">QQ['t']</span></code>) the ring you will use on the raising operators.</li>
+<li><code class="docutils literal notranslate"><span class="pre">prefix</span></code> – (default <code class="docutils literal notranslate"><span class="pre">&quot;R&quot;</span></code>) the label for the raising operators.</li>
+</ul>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">s</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">s</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">h</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">h</span><span class="p">()</span>
+
+<span class="gp">sage: </span><span class="n">S</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="go">S(1, -1, 2)</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)](</span><span class="n">s</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">s[6, 3, 2]</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)](</span><span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">h[6, 3, 2]</span>
+
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">S</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">S</span><span class="p">[(</span><span class="mi">4</span><span class="p">,)])</span>
+<span class="go">S() - S(1, -1) - S(4,) + S(5, -1)</span>
+<span class="gp">sage: </span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">S</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">S</span><span class="p">[(</span><span class="mi">4</span><span class="p">,)]))(</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">s[2, 2, 1] - s[3, 1, 1] - s[6, 2, 1] + s[7, 1, 1]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.RaisingOperatorAlgebra" title="all.RaisingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">RaisingOperatorAlgebra</span></code></a>, <a class="reference internal" href="#all.PieriOperatorAlgebra" title="all.PieriOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">PieriOperatorAlgebra</span></code></a></p>
+</div>
+<dl class="class">
+<dt id="all.ShiftingOperatorAlgebra.Element">
+<em class="property">class </em><code class="descname">Element</code><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.Element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingOperatorAlgebra.Element" title="Permalink to this definition">¶</a></dt>
+<dd><p>An element of a :class`ShiftingOperatorAlgebra`.</p>
+<dl class="method">
+<dt id="all.ShiftingOperatorAlgebra.Element.index">
+<code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.Element.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingOperatorAlgebra.Element.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>This method is only for basis elements.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">()</span>
+<span class="go">(2, 1)</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">index</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">This is only defined for basis elements.  For other elements, use indices() instead.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.ShiftingOperatorAlgebra.Element.indices">
+<code class="descname">indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.Element.indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingOperatorAlgebra.Element.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the support of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>
+<span class="go">[(1, 1), (2, 1)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="all.ShiftingOperatorAlgebra.one_basis">
+<code class="descname">one_basis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.one_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingOperatorAlgebra.one_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the identity element.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="o">.</span><span class="n">one_basis</span><span class="p">()</span>
+<span class="go">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="all.ShiftingOperatorAlgebra.product_on_basis">
+<code class="descname">product_on_basis</code><span class="sig-paren">(</span><em>index1</em>, <em>index2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.product_on_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingOperatorAlgebra.product_on_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given indices <code class="docutils literal notranslate"><span class="pre">index1</span></code> and <code class="docutils literal notranslate"><span class="pre">index2</span></code>, return the product of the basis elements indexed by those indices.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="o">.</span><span class="n">product_on_basis</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">S(1, 2, 2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">ShiftingOperatorAlgebra.</code><code class="descname">Element</code><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.Element"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>An element of a :class`ShiftingOperatorAlgebra`.</p>
+<dl class="method">
+<dt>
+<code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.Element.index"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the index of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>This method is only for basis elements.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">()</span>
+<span class="go">(2, 1)</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">index</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">This is only defined for basis elements.  For other elements, use indices() instead.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingOperatorAlgebra.Element.indices"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the support of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>
+<span class="go">[(1, 1), (2, 1)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="all.ShiftingSequenceSpace">
+<em class="property">class </em><code class="descclassname">all.</code><code class="descname">ShiftingSequenceSpace</code><span class="sig-paren">(</span><em>base=Integer Ring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingSequenceSpace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingSequenceSpace" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper for <code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra.</span></code></p>
+<p>Helps <a class="reference internal" href="#all.ShiftingOperatorAlgebra" title="all.ShiftingOperatorAlgebra"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShiftingOperatorAlgebra</span></code></a> know which indices are valid and which indices are not for the basis.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingSequenceSpace</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">S</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span> <span class="ow">in</span> <span class="n">S</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">S</span>
+<span class="go">False</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">S</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="all.ShiftingSequenceSpace.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ShiftingSequenceSpace.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ShiftingSequenceSpace.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify that <code class="docutils literal notranslate"><span class="pre">seq</span></code> is a valid shifting sequence.</p>
+<p>If it is not, raise an error.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">S</span> <span class="o">=</span> <span class="n">ShiftingSequenceSpace</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="o">.</span><span class="n">check</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="o">.</span><span class="n">check</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="o">.</span><span class="n">check</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">Expected valid index (a tuple of Integer Ring), but instead received [1, -1].</span>
+<span class="gp">sage: </span><span class="n">S</span><span class="o">.</span><span class="n">check</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">Expected valid index (a tuple of Integer Ring), but instead received [1, -1].</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="all.compositional_hall_littlewood_Qp">
+<code class="descclassname">all.</code><code class="descname">compositional_hall_littlewood_Qp</code><span class="sig-paren">(</span><em>gamma</em>, <em>base_ring=Univariate Polynomial Ring in t over Rational Field</em>, <em>t=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#compositional_hall_littlewood_Qp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.compositional_hall_littlewood_Qp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gamma, returns the compositional Hall-Littlewood polynomial <span class="math notranslate nohighlight">\(H_{\gamma}(\mathbf{x}; t)\)</span> in the Q’ basis, as defined in <a class="reference internal" href="root_ideal.html#cat" id="id9">[cat]</a> section 4.4.</p>
+<p>If the composition gamma is a partition, this is just the Hall-Littlewood Q’ polynomial.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">hl</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">hall_littlewood</span><span class="p">()</span><span class="o">.</span><span class="n">Qp</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">compositional_hall_littlewood_Qp</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="n">hl</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sage.combinat.sf.hall_littlewood.HallLittlewood.Qp()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.double_catalan_function">
+<code class="descclassname">all.</code><code class="descname">double_catalan_function</code><span class="sig-paren">(</span><em>roots</em>, <em>index</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#double_catalan_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.double_catalan_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given some <code class="docutils literal notranslate"><span class="pre">roots</span></code> (typically a <code class="xref py py-class docutils literal notranslate"><span class="pre">RootIdeal</span></code>), an <code class="docutils literal notranslate"><span class="pre">index</span></code>, and the something something of the double homemgeneous function <code class="docutils literal notranslate"><span class="pre">n</span></code>, return the corresponding double catalan function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.double_homogeneous_building_block">
+<code class="descclassname">all.</code><code class="descname">double_homogeneous_building_block</code><span class="sig-paren">(</span><em>p</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#double_homogeneous_building_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.double_homogeneous_building_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>The double complete homogeneous symmetric polynomial “building block” <span class="math notranslate nohighlight">\(h_p(x || a)\)</span>.</p>
+<p>Defined as</p>
+<div class="math notranslate nohighlight">
+\[h_p(x_1, \ldots, x_n \,||\, a) \,= \sum_{n \geq i_1 \geq \ldots \geq i_p \geq 1} (x_{i_1} - a_{i_1})(x_{i_2} - a_{i_2 - 1}) \cdots (x_{i_p} - a_{i_p - p + 1})\]</div>
+<p>in <a class="reference internal" href="#fun" id="id10">[Fun]</a> section 3 between equation (6) and (7).  Note that our indices are 0-based.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.DoubleHomogeneous" title="all.DoubleHomogeneous"><code class="xref py py-class docutils literal notranslate"><span class="pre">DoubleHomogeneous</span></code></a>, <a class="reference internal" href="#all.double_homogeneous_building_block_shifted" title="all.double_homogeneous_building_block_shifted"><code class="xref py py-meth docutils literal notranslate"><span class="pre">double_homogeneous_building_block_shifted()</span></code></a>, <a class="reference internal" href="#all.shift" title="all.shift"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shift()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.double_homogeneous_building_block_shifted">
+<code class="descclassname">all.</code><code class="descname">double_homogeneous_building_block_shifted</code><span class="sig-paren">(</span><em>r</em>, <em>s</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#double_homogeneous_building_block_shifted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.double_homogeneous_building_block_shifted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given <span class="math notranslate nohighlight">\(r\)</span> and <span class="math notranslate nohighlight">\(s\)</span>, returns <span class="math notranslate nohighlight">\(h_{r, s} = \tau^s h_r(x \,||\, a)\)</span>, as defined in <a class="reference internal" href="#fun" id="id11">[Fun]</a> before eq (8).</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.DoubleHomogeneous" title="all.DoubleHomogeneous"><code class="xref py py-class docutils literal notranslate"><span class="pre">DoubleHomogeneous</span></code></a>, <a class="reference internal" href="#all.double_homogeneous_building_block" title="all.double_homogeneous_building_block"><code class="xref py py-meth docutils literal notranslate"><span class="pre">double_homogeneous_building_block()</span></code></a>, <a class="reference internal" href="#all.shift" title="all.shift"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shift()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.double_schur">
+<code class="descclassname">all.</code><code class="descname">double_schur</code><span class="sig-paren">(</span><em>index</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#double_schur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.double_schur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a composition <code class="docutils literal notranslate"><span class="pre">index</span></code> <span class="math notranslate nohighlight">\(= \lambda\)</span> and the number of variables <span class="math notranslate nohighlight">\(n\)</span>, return the double Schur function defined by</p>
+<div class="math notranslate nohighlight">
+\[s_\lambda(x_1, \ldots, x_n \,||\, a) = \text{det}\left(h^{(n)}_{\lambda_i + i - j, j - 1}\right)\]</div>
+<p>or equivalently, defined by</p>
+<div class="math notranslate nohighlight">
+\[s_\lambda(x_1, \ldots, x_n \,||\, a) = \prod_{ij \in \Delta^+(l)} (1 - R_{ij}) h^{(n)}_{\lambda, (0, \ldots, l-1)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(l\)</span> is the length of <span class="math notranslate nohighlight">\(\lambda\)</span>, in <a class="reference internal" href="#fun" id="id12">[Fun]</a> p.9 equation (9).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.dual_grothendieck_function">
+<code class="descclassname">all.</code><code class="descname">dual_grothendieck_function</code><span class="sig-paren">(</span><em>composition</em>, <em>base_ring=Rational Field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#dual_grothendieck_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.dual_grothendieck_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a composition <span class="math notranslate nohighlight">\(composition = \lambda\)</span>, return the dual Grothendieck function defined by <span class="math notranslate nohighlight">\(g_\lambda(x) = \text{det}(h_{\lambda_i + j - i}(x, i - 1))\)</span> in <a class="reference internal" href="#ln" id="id13">[LN]</a> p.88 equation (4).</p>
+<p>Equivalently, the dual Grothendieck function is <span class="math notranslate nohighlight">\(g_\lambda(x) = \prod_{ij \in \Delta^+} (1 - R_{ij}) h_\lambda(x; (0, 1, \ldots, n-1))\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">h</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">)</span><span class="o">.</span><span class="n">h</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">dual_grothendieck_function</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">h[1]*h[2] + h[2] - h[3]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.dual_k_catalan_function" title="all.dual_k_catalan_function"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dual_k_catalan_function()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.dual_k_catalan_function">
+<code class="descclassname">all.</code><code class="descname">dual_k_catalan_function</code><span class="sig-paren">(</span><em>roots</em>, <em>index</em>, <em>index2</em>, <em>base_ring=Rational Field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#dual_k_catalan_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.dual_k_catalan_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">roots</span></code> – iterable of roots <span class="math notranslate nohighlight">\(\Phi\)</span> (typically a <code class="xref py py-class docutils literal notranslate"><span class="pre">RootIdeal</span></code>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">index</span></code> – composition <span class="math notranslate nohighlight">\(\gamma\)</span> that indexes <span class="math notranslate nohighlight">\(h_\gamma(x; \alpha)\)</span></li>
+<li><code class="docutils literal notranslate"><span class="pre">index2</span></code> – composition <span class="math notranslate nohighlight">\(\alpha\)</span> used in <span class="math notranslate nohighlight">\(h_\gamma(x; \alpha)\)</span></li>
+</ul>
+<p>OPTIONAL INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">base_ring</span></code> – (default <code class="docutils literal notranslate"><span class="pre">QQ</span></code>) the ring over which to build the <span class="math notranslate nohighlight">\(h_\gamma(x; \alpha)\)</span>‘s</li>
+</ul>
+<p>OUTPUTS:</p>
+<p>The ‘dual k’ catalan function</p>
+<div class="math notranslate nohighlight">
+\[\prod_{ij \in \Delta^+ \smallsetminus \Phi} (1 - R_{ij}) h_\gamma(x; \alpha).\]</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.dual_k_theoretic_homogeneous" title="all.dual_k_theoretic_homogeneous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dual_k_theoretic_homogeneous()</span></code></a>, <a class="reference internal" href="#all.dual_grothendieck_function" title="all.dual_grothendieck_function"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dual_grothendieck_function()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.dual_k_theoretic_homogeneous">
+<code class="descclassname">all.</code><code class="descname">dual_k_theoretic_homogeneous</code><span class="sig-paren">(</span><em>k</em>, <em>r</em>, <em>base_ring=Rational Field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#dual_k_theoretic_homogeneous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.dual_k_theoretic_homogeneous" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dual K-theoretic h, often denoted Kh, is defined for any integer <span class="math notranslate nohighlight">\(k\)</span> by the formula <span class="math notranslate nohighlight">\(h_k(x, r) = \sum_{i=0}^{k} \binom{r + i - 1}{i} h_{k - i}(x)\)</span> in <a class="reference internal" href="#ln" id="id14">[LN]</a> p.88 top-right.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">k</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code> are compositions, then it is recursively defined as <span class="math notranslate nohighlight">\(h_k(x, r) := \prod_j h_{k_j}(x, r_j)\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">dual_k_theoretic_homogeneous</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">1</span>
+
+<span class="gp">sage: </span><span class="n">dual_k_theoretic_homogeneous</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">base_ring</span><span class="o">=</span><span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span>
+<span class="go">h[1] + 2</span>
+
+<span class="gp">sage: </span><span class="n">dual_k_theoretic_homogeneous</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">h[1]**2 + h[1]*h[2] + 2*h[1] + h[2] + 1</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.dual_k_catalan_function" title="all.dual_k_catalan_function"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dual_k_catalan_function()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.get_k_irreducible_partition_lists">
+<code class="descclassname">all.</code><code class="descname">get_k_irreducible_partition_lists</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#get_k_irreducible_partition_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.get_k_irreducible_partition_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of <code class="docutils literal notranslate"><span class="pre">k</span></code>-irreducible partitions.</p>
+<p>The <span class="math notranslate nohighlight">\(k\)</span>-irreducible partitions are output at lists, not Partition objects.</p>
+<p>There are <span class="math notranslate nohighlight">\(k!\)</span> such partitions, and computation time starts to get slow around <span class="math notranslate nohighlight">\(k = 10\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">get_k_irreducible_partition_lists</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">[[]]</span>
+<span class="gp">sage: </span><span class="n">get_k_irreducible_partition_lists</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[[]]</span>
+<span class="gp">sage: </span><span class="n">get_k_irreducible_partition_lists</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[[], [1]]</span>
+<span class="gp">sage: </span><span class="n">get_k_irreducible_partition_lists</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.get_k_irreducible_partitions" title="all.get_k_irreducible_partitions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_k_irreducible_partitions()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.get_k_irreducible_partitions">
+<code class="descclassname">all.</code><code class="descname">get_k_irreducible_partitions</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#get_k_irreducible_partitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.get_k_irreducible_partitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of <code class="docutils literal notranslate"><span class="pre">k</span></code>-irreducible partitions.</p>
+<p>The output is a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Partition</span></code> objects.</p>
+<p>There are <span class="math notranslate nohighlight">\(k!\)</span> such partitions, and computation time starts to get slow around <span class="math notranslate nohighlight">\(k = 10\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">get_k_irreducible_partitions</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">[[]]</span>
+<span class="gp">sage: </span><span class="n">get_k_irreducible_partitions</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[[]]</span>
+<span class="gp">sage: </span><span class="n">get_k_irreducible_partitions</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[[], [1]]</span>
+<span class="gp">sage: </span><span class="n">get_k_irreducible_partitions</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[[], [1], [1, 1], [2], [2, 1], [2, 1, 1]]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.get_k_irreducible_partition_lists" title="all.get_k_irreducible_partition_lists"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_k_irreducible_partition_lists()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.get_k_rectangles">
+<code class="descclassname">all.</code><code class="descname">get_k_rectangles</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#get_k_rectangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.get_k_rectangles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of <code class="docutils literal notranslate"><span class="pre">k</span></code>-rectangles.</p>
+<p>A __``k``-<a href="#id17"><span class="problematic" id="id18">rectangle__</span></a> is a partition whose Ferrer’s diagram is a rectangle whose largest hook-length is <span class="math notranslate nohighlight">\(k\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">get_k_rectangles</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">[]</span>
+<span class="gp">sage: </span><span class="n">get_k_rectangles</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[[1]]</span>
+<span class="gp">sage: </span><span class="n">get_k_rectangles</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[[2], [1, 1]]</span>
+<span class="gp">sage: </span><span class="n">get_k_rectangles</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[[3], [2, 2], [1, 1, 1]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.k_plus_one_core_to_k_schur_function">
+<code class="descclassname">all.</code><code class="descname">k_plus_one_core_to_k_schur_function</code><span class="sig-paren">(</span><em>p</em>, <em>k</em>, <em>base_ring=Univariate Polynomial Ring in t over Rational Field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#k_plus_one_core_to_k_schur_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.k_plus_one_core_to_k_schur_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <span class="math notranslate nohighlight">\(k+1\)</span>-core <code class="docutils literal notranslate"><span class="pre">p</span></code>, the natural number <code class="docutils literal notranslate"><span class="pre">k</span></code> itself, and optionally a <code class="docutils literal notranslate"><span class="pre">base_ring</span></code>, return the corresponding <span class="math notranslate nohighlight">\(k\)</span>-schur function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.qt_raising_roots_operator">
+<code class="descclassname">all.</code><code class="descname">qt_raising_roots_operator</code><span class="sig-paren">(</span><em>roots</em>, <em>base_ring=Multivariate Polynomial Ring in t</em>, <em>q over Rational Field</em>, <em>t=None</em>, <em>q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#qt_raising_roots_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.qt_raising_roots_operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the operator <span class="math notranslate nohighlight">\(\prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in roots} (1 - qR_{ij})\)</span>.</p>
+<p>The q-t analogue of <a class="reference internal" href="#all.raising_roots_operator" title="all.raising_roots_operator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">raising_roots_operator()</span></code></a>, defined by</p>
+<div class="math notranslate nohighlight">
+\[\prod_{ij \in \Phi} (1 - tR_{ij}) \prod_{ij \in \Phi} (1 - qR_{ij}).\]</div>
+<p>EXAMPLES:</p>
+<p>Consider the root ideal [(0, 1)] in the 2 x 2 grid.  This root ideal gives the “qt” raising roots operator <span class="math notranslate nohighlight">\((1 - t R_{01})(1 - q R_{01})\)</span> which equals <span class="math notranslate nohighlight">\(1 + (-t-q) R_{01} + t q R_{01}^2\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">K</span> <span class="o">=</span> <span class="n">QQ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">gens</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">R</span> <span class="o">=</span> <span class="n">RaisingOperatorAlgebra</span><span class="p">(</span><span class="n">base_ring</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
+
+<span class="gp">sage: </span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="o">*</span><span class="n">R</span><span class="o">.</span><span class="n">ij</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">*</span><span class="n">R</span><span class="o">.</span><span class="n">ij</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">R() + (-t-q)*R(1, -1) + t*q*R(2, -2)</span>
+
+<span class="gp">sage: </span><span class="n">qt_raising_roots_operator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">base_ring</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+<span class="go">R() + (-t-q)*R(1, -1) + t*q*R(2, -2)</span>
+</pre></div>
+</div>
+<p>Since <code class="docutils literal notranslate"><span class="pre">QQ['t',</span> <span class="pre">'q']</span></code> happens to be the default base ring, and its generators are <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code>, we did not actually need to pass in the base ring, <span class="math notranslate nohighlight">\(t\)</span>, nor <span class="math notranslate nohighlight">\(q\)</span> in the above example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">qt_raising_roots_operator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="go">R() + (-t-q)*R(1, -1) + t*q*R(2, -2)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.raising_roots_operator" title="all.raising_roots_operator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">raising_roots_operator()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.raising_roots_operator">
+<code class="descclassname">all.</code><code class="descname">raising_roots_operator</code><span class="sig-paren">(</span><em>roots</em>, <em>base_ring=Univariate Polynomial Ring in t over Rational Field</em>, <em>t=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#raising_roots_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.raising_roots_operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the operator <span class="math notranslate nohighlight">\(\prod_{(i,j) \in roots} (1 - tR_{ij})\)</span>.</p>
+<p>Given a list of roots <span class="math notranslate nohighlight">\(roots = \Phi\)</span> (often a root ideal), and optionally a variable <span class="math notranslate nohighlight">\(t\)</span>, return the operator</p>
+<div class="math notranslate nohighlight">
+\[\prod_{(i,j) \in \Phi} (1 - tR_{ij}).\]</div>
+<p>If you input an integer for roots (e.g. <code class="docutils literal notranslate"><span class="pre">roots</span> <span class="pre">=</span> <span class="pre">3</span></code>), it will use the biggest possible root ideal in the <span class="math notranslate nohighlight">\(n\)</span> x <span class="math notranslate nohighlight">\(n\)</span> grid (the ‘<span class="math notranslate nohighlight">\(n\)</span>-th staircase root ideal’).</p>
+<p>EXAMPLES:</p>
+<p>Consider the root ideal [(0, 1)] in the 2 x 2 grid.  This root ideal gives the raising roots operator <span class="math notranslate nohighlight">\(1 - R_{01}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">R</span> <span class="o">=</span> <span class="n">RaisingOperatorAlgebra</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="mi">1</span> <span class="o">-</span> <span class="n">R</span><span class="o">.</span><span class="n">ij</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">R() - R(1, -1)</span>
+
+<span class="gp">sage: </span><span class="n">raising_roots_operator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="go">R() - R(1, -1)</span>
+
+<span class="gp">sage: </span><span class="n">raising_roots_operator</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">R() - R(1, -1)</span>
+</pre></div>
+</div>
+<p>We can pass in <span class="math notranslate nohighlight">\(t\)</span> in addition to get the raising roots operator <span class="math notranslate nohighlight">\(1 - t R_{01}\)</span>.  We can also choose a base ring to work over:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">K</span> <span class="o">=</span> <span class="n">FractionField</span><span class="p">(</span><span class="n">ZZ</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">])</span>
+<span class="gp">sage: </span><span class="n">t</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">gen</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">R</span> <span class="o">=</span> <span class="n">RaisingOperatorAlgebra</span><span class="p">(</span><span class="n">base_ring</span><span class="o">=</span><span class="n">K</span><span class="p">)</span>
+
+<span class="gp">sage: </span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">ij</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">R() - t*R(1, -1)</span>
+
+<span class="gp">sage: </span><span class="n">raising_roots_operator</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">base_ring</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+<span class="go">R() - t*R(1, -1)</span>
+
+<span class="gp">sage: </span><span class="n">raising_roots_operator</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">base_ring</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+<span class="go">R() - t*R(1, -1)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.qt_raising_roots_operator" title="all.qt_raising_roots_operator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">qt_raising_roots_operator()</span></code></a>, <a class="reference internal" href="#all.CatalanFunction" title="all.CatalanFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatalanFunction</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.shift">
+<code class="descclassname">all.</code><code class="descname">shift</code><span class="sig-paren">(</span><em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#shift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>The function <span class="math notranslate nohighlight">\(\tau\)</span> which acts on any element of <span class="math notranslate nohighlight">\(\Lambda(a)\)</span> (<code class="docutils literal notranslate"><span class="pre">DoubleRing</span></code>) by sending each element <span class="math notranslate nohighlight">\(a_i\)</span> to <span class="math notranslate nohighlight">\(a_{i+1}\)</span> for all <span class="math notranslate nohighlight">\(i\)</span>.  It can be found in <a class="reference internal" href="#fun" id="id15">[Fun]</a> p.8 between equations (6) and (7).</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.double_homogeneous_building_block_shifted" title="all.double_homogeneous_building_block_shifted"><code class="xref py py-meth docutils literal notranslate"><span class="pre">double_homogeneous_building_block_shifted()</span></code></a>, <a class="reference internal" href="#all.double_homogeneous_building_block" title="all.double_homogeneous_building_block"><code class="xref py py-meth docutils literal notranslate"><span class="pre">double_homogeneous_building_block()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.size_to_k_shapes">
+<code class="descclassname">all.</code><code class="descname">size_to_k_shapes</code><span class="sig-paren">(</span><em>n</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#size_to_k_shapes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.size_to_k_shapes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all partitions of size <code class="docutils literal notranslate"><span class="pre">n</span></code> that are <code class="docutils literal notranslate"><span class="pre">k</span></code>-shapes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.size_to_num_linked_partition_self_pairs">
+<code class="descclassname">all.</code><code class="descname">size_to_num_linked_partition_self_pairs</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#size_to_num_linked_partition_self_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.size_to_num_linked_partition_self_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a natural number <code class="docutils literal notranslate"><span class="pre">size</span></code>, count how many partitions <span class="math notranslate nohighlight">\(l\)</span> of size <code class="docutils literal notranslate"><span class="pre">size</span></code> have the property that <span class="math notranslate nohighlight">\((l, l)\)</span> has a corresponding skew-linked-diagram.</p>
+<p>Note: A ‘skew-linked-diagram’ is a <code class="xref py py-class docutils literal notranslate"><span class="pre">SkewPartition</span></code> that is linked.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">size_to_num_linked_partition_self_pairs</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">sage: </span><span class="n">size_to_num_linked_partition_self_pairs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">sage: </span><span class="n">size_to_num_linked_partition_self_pairs</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">sage: </span><span class="n">size_to_num_linked_partition_self_pairs</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SkewPartition.is_linked()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.straighten">
+<code class="descclassname">all.</code><code class="descname">straighten</code><span class="sig-paren">(</span><em>basis</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#straighten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.straighten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Schur function straightening by the Schur straightening rule.</p>
+<p>See <a class="reference internal" href="root_ideal.html#cat" id="id16">[cat]</a>, Prop. 4.1.  Also known as the slinky rule.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}s_{\gamma}(\mathbf{x}) = \begin{cases}
+    \text{sgn}(\gamma+\rho) s_{\text{sort}(\gamma+\rho) -\rho}(\mathbf{x}) &amp; \text{if } \gamma + \rho \text{ has distinct nonnegative parts,} \\
+    0 &amp; \text{otherwise,}
+\end{cases}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\rho=(\ell-1,\ell-2,\dots,0)\)</span>, <span class="math notranslate nohighlight">\(\text{sort}(\beta)\)</span> denotes the weakly decreasing sequence obtained by sorting <span class="math notranslate nohighlight">\(\beta\)</span>, and <span class="math notranslate nohighlight">\(\text{sgn}(\beta)\)</span> denotes the sign of the (shortest possible) sorting permutation.</p>
+<p>EXAMPLES:</p>
+<p>We know s[2, 1, 3] := -s[2, 2, 2]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">s</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">QQ</span><span class="p">)</span><span class="o">.</span><span class="n">s</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="n">straighten</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">-s[2, 2, 2]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.substitute">
+<code class="descclassname">all.</code><code class="descname">substitute</code><span class="sig-paren">(</span><em>f</em>, <em>t=None</em>, <em>q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#substitute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.substitute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a symmetric function <code class="docutils literal notranslate"><span class="pre">f</span></code>, plug the inputted <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code> values into it and return the resulting function.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SymmetricFunctionAlgebra_schur_with_category.element_class.plethysm()</span></code>, <a class="reference internal" href="#all.ungraded" title="all.ungraded"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ungraded()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="all.ungraded">
+<code class="descclassname">all.</code><code class="descname">ungraded</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/all.html#ungraded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#all.ungraded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a symmetric function <code class="docutils literal notranslate"><span class="pre">f</span></code>, return the result of plugging in <span class="math notranslate nohighlight">\(t = 1\)</span>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#all.substitute" title="all.substitute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">substitute()</span></code></a></p>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -66,31 +1010,28 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="strong_marked_tableau.html"
-                                  title="previous chapter">Strong Marked Tableau</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/all.rst.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <!-- The shading of the "Go" button should be consistent -->
-                <!-- with the colour of the header and footer. See the file -->
-                <!-- doc/common/themes/sage/theme.conf for colours used by -->
-                <!-- the Sage theme. -->
-                <input type="submit" style="background-color: #B8B9F6" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="strong_marked_tableau.html"
+                        title="previous chapter">Strong Marked Tableau</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/all.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -101,6 +1042,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="strong_marked_tableau.html" title="Strong Marked Tableau"
              >previous</a> |</li>
@@ -117,7 +1061,7 @@
     
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Matthew Lancellotti, George Seelinger, Jennifer Morse.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
     <script type="text/javascript">
 /*global jQuery, window */

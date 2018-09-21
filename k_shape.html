@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>\(k\)-shape &#8212; k-Schur combinatorics for SageMath 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/sage.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.4',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -30,14 +22,16 @@
     <script src="_static/thebe.js" type="text/javascript"></script>
     <script src="_static/thebe-sage.js" type="text/javascript"></script>
 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="root_ideal.html" title="root ideal"
              accesskey="N">next</a> |</li>
@@ -60,8 +54,190 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="shape">
-<h1><span class="math">\(k\)</span>-shape<a class="headerlink" href="#shape" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-k_shape">
+<span id="shape"></span><h1><span class="math notranslate nohighlight">\(k\)</span>-shape<a class="headerlink" href="#module-k_shape" title="Permalink to this headline">¶</a></h1>
+<p>Sage does <em>not</em> have a builtin ‘kShape’ object.  <em>This</em> module contains useful functions pertaining to <span class="math notranslate nohighlight">\(k\)</span>-shapes:</p>
+<p>AUTHORS:</p>
+<ul class="simple">
+<li>Matthew Lancellotti (2018): Initial version</li>
+</ul>
+<p>REFERENCES:</p>
+<table class="docutils citation" frame="void" id="genocchi" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[genocchi]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>)</em> <a class="reference external" href="https://www.lri.fr/~hivert/PAPER/kshapes.pdf">Combinatorics of k-shapes and Genocchi numbers</a>, in FPSAC 2011, Reykjav´k, Iceland DMTCS proc. AO, 2011, 493-504.</td></tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="k_shape.h_bounds">
+<code class="descclassname">k_shape.</code><code class="descname">h_bounds</code><span class="sig-paren">(</span><em>p</em>, <em>k</em>, <em>width</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_shape.html#h_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_shape.h_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recall the <span class="math notranslate nohighlight">\(H_i\)</span> as defined in Definition 3.3 of <a class="reference internal" href="#genocchi" id="id1">[genocchi]</a>.</p>
+<p>Given a natural number <code class="docutils literal notranslate"><span class="pre">k</span></code> (used for the <span class="math notranslate nohighlight">\(k\)</span>-shape or <span class="math notranslate nohighlight">\(k\)</span>-boundary) and a width <code class="docutils literal notranslate"><span class="pre">width</span></code>, returns <span class="math notranslate nohighlight">\((y_\text{min}, y_\text{max})\)</span>, the two vertical coordinates which define the horizontal strip.</p>
+<p>EXAMPLES:</p>
+<p>The 4-boundary of partition (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) is shown below on a cartesian plane with the vertical lines corresponding to the vertical bounds shown in blue.</p>
+<a class="reference internal image-reference" href="_images/h-v-bounds.png"><img alt="The skew-shape (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) / (7, 4, 2, 1, 1, 1) is shown on a cartesian plane with the vertical lines y = 0, y = 1, y = 2, and y = 10 labelled." class="align-center" src="_images/h-v-bounds.png" style="height: 240px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">h_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">(0, 2)</span>
+<span class="gp">sage: </span><span class="n">h_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">(2, 3)</span>
+<span class="gp">sage: </span><span class="n">h_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">(3, 10)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">h_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">99</span><span class="p">)</span>
+<span class="go">(0, 0)</span>
+<span class="gp">sage: </span><span class="n">h_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">min() arg is an empty sequence</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#k_shape.v_bounds" title="k_shape.v_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">v_bounds()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="k_shape.is_irreducible">
+<code class="descclassname">k_shape.</code><code class="descname">is_irreducible</code><span class="sig-paren">(</span><em>s</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_shape.html#is_irreducible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_shape.is_irreducible" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <code class="docutils literal notranslate"><span class="pre">k</span></code>-shape <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is called <em>irreducible</em> if there does <em>not</em> exist a <span class="math notranslate nohighlight">\(k\)</span>- or <span class="math notranslate nohighlight">\(k-1\)</span>-rectangle corresponding to both the <span class="math notranslate nohighlight">\(k\)</span>-row-shape and <span class="math notranslate nohighlight">\(k\)</span>-column-shape of <span class="math notranslate nohighlight">\(ptn\)</span>.</p>
+<p>For a more rigorous definition, see Definition 3.7 of <a class="reference internal" href="#genocchi" id="id2">[genocchi]</a>.</p>
+<p>Given a <span class="math notranslate nohighlight">\(k\)</span>-shape <code class="docutils literal notranslate"><span class="pre">ptn</span></code> and a natural number <code class="docutils literal notranslate"><span class="pre">k</span></code>, returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is irreducible.</p>
+<p>(Also, a <span class="math notranslate nohighlight">\(k\)</span>-shape is irreducible if and only if it is not reducible.)</p>
+<p>EXAMPLES:</p>
+<p>The partition [3, 2, 1] has 3-row-shape [2, 2, 1] and 3-column-shape [2, 2, 1].  It is not 3-irreducible because there exists a 2x2-rectangle R in the 3-row-shape and the cells that make up R when viewed in the 3-column-shape form a 2x2-rectangle (you can’t see it, but the 2’s are switched here):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_irreducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>In this example, no good rectangle can be found, making it irreducible:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_irreducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#k_shape.is_reducible" title="k_shape.is_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_reducible()</span></code></a>, <a class="reference internal" href="#k_shape.k_to_irreducible_k_shapes" title="k_shape.k_to_irreducible_k_shapes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_to_irreducible_k_shapes()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="k_shape.is_k_reducible_by_rectangle">
+<code class="descclassname">k_shape.</code><code class="descname">is_k_reducible_by_rectangle</code><span class="sig-paren">(</span><em>p</em>, <em>k</em>, <em>hw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_shape.html#is_k_reducible_by_rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_shape.is_k_reducible_by_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the <code class="docutils literal notranslate"><span class="pre">k</span></code>-shape is <span class="math notranslate nohighlight">\(k\)</span>-reducible for a <span class="math notranslate nohighlight">\(k\)</span>-rectangle of specific dimensions <span class="math notranslate nohighlight">\(h\)</span> x <span class="math notranslate nohighlight">\(w\)</span>.</p>
+<p>See Proposition 3.8 in Combinatorics of k-shapes and Genocchi numbers.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">p</span></code> – a Partition (and a <span class="math notranslate nohighlight">\(k\)</span>-shape)</li>
+<li><code class="docutils literal notranslate"><span class="pre">k</span></code> – the <span class="math notranslate nohighlight">\(k\)</span> of the <span class="math notranslate nohighlight">\(k\)</span>-shape</li>
+<li><code class="docutils literal notranslate"><span class="pre">hw</span></code> – an ordered pair <code class="docutils literal notranslate"><span class="pre">hw</span></code> = <span class="math notranslate nohighlight">\((h, w)\)</span>, where <span class="math notranslate nohighlight">\(h\)</span> is the height of the rectangle and <span class="math notranslate nohighlight">\(w\)</span> is the width.</li>
+</ul>
+<p>EXAMPLES:</p>
+<blockquote>
+<div>sage: Partition([1]).is_k_reducible_by_rectangle(1, (1,1))
+sage: True
+sage: Partition([2, 1]).is_k_reducible_by_rectangle(1, (1,1))
+sage: True
+sage: Partition([1, 1]).is_k_reducible_by_rectangle(2, (1,1))
+sage: False
+sage: Partition([1, 1]).is_k_reducible_by_rectangle(2, (1,2))
+sage: True
+sage: Partition([1, 1]).is_k_reducible_by_rectangle(2, (2,1))
+sage: False</div></blockquote>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#k_shape.is_reducible" title="k_shape.is_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_reducible()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="k_shape.is_k_shape">
+<code class="descclassname">k_shape.</code><code class="descname">is_k_shape</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_shape.html#is_k_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_shape.is_k_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>A partition is a <span class="math notranslate nohighlight">\(k\)</span>-<em>shape</em> if its <span class="math notranslate nohighlight">\(k\)</span>-boundary has row-shape and col-shape that are partitions themselves. (Definition 2.1 of <a class="reference internal" href="#genocchi" id="id3">[genocchi]</a>)</p>
+<p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">Partition</span></code> <code class="docutils literal notranslate"><span class="pre">ptn</span></code> and a natural number <code class="docutils literal notranslate"><span class="pre">k</span></code>, returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is a <span class="math notranslate nohighlight">\(k\)</span>-shape.</p>
+<p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">Partition</span></code> <code class="docutils literal notranslate"><span class="pre">ptn</span></code> <em>only</em>, returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if there exists some <span class="math notranslate nohighlight">\(k \in [1, n-1]\)</span> such that <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is a <span class="math notranslate nohighlight">\(k\)</span>-shape.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_shape</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">sage: </span><span class="n">is_k_shape</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="k_shape.is_reducible">
+<code class="descclassname">k_shape.</code><code class="descname">is_reducible</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_shape.html#is_reducible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_shape.is_reducible" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <code class="docutils literal notranslate"><span class="pre">k</span></code>-shape <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is called <em>reducible</em> if there exists a <span class="math notranslate nohighlight">\(k\)</span>- or <span class="math notranslate nohighlight">\(k-1\)</span>-rectangle corresponding to both the <span class="math notranslate nohighlight">\(k\)</span>-row-shape and <span class="math notranslate nohighlight">\(k\)</span>-column-shape of <span class="math notranslate nohighlight">\(ptn\)</span>.</p>
+<p>For a more rigorous definition, see Definition 3.7 of <a class="reference internal" href="#genocchi" id="id4">[genocchi]</a>.</p>
+<p>Note that this is different than the definition of a reducible partition!</p>
+<p>Given a <span class="math notranslate nohighlight">\(k\)</span>-shape <code class="docutils literal notranslate"><span class="pre">ptn</span></code> and a natural number <code class="docutils literal notranslate"><span class="pre">k</span></code>, returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is reducible.</p>
+<p>(Also, a <span class="math notranslate nohighlight">\(k\)</span>-shape is reducible if and only if it is not irreducible.)</p>
+<p>EXAMPLES:</p>
+<p>The partition [3, 2, 1] has 3-row-shape [2, 2, 1] and 3-column-shape [2, 2, 1].  It is 3-reducible because there exists a 2x2-rectangle R in the 3-row-shape and the cells that make up R when viewed in the 3-column-shape form a 2x2-rectangle (you can’t see it, but the 2’s are switched here):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_reducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>In this example, no good rectangle can be found:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_reducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#k_shape.is_irreducible" title="k_shape.is_irreducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_irreducible()</span></code></a>, <a class="reference internal" href="#k_shape.k_to_irreducible_k_shapes" title="k_shape.k_to_irreducible_k_shapes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_to_irreducible_k_shapes()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="k_shape.k_to_irreducible_k_shapes">
+<code class="descclassname">k_shape.</code><code class="descname">k_to_irreducible_k_shapes</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_shape.html#k_to_irreducible_k_shapes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_shape.k_to_irreducible_k_shapes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a natural number <code class="docutils literal notranslate"><span class="pre">k</span></code>, return a list of all irreducible <span class="math notranslate nohighlight">\(k\)</span>-shapes.</p>
+<p>Note that the algorithm runs very slowly after <span class="math notranslate nohighlight">\(k=4\)</span> :(.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_to_irreducible_k_shapes</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[[], [1], [2, 1]]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#k_shape.is_reducible" title="k_shape.is_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_reducible()</span></code></a>, <a class="reference internal" href="#k_shape.is_irreducible" title="k_shape.is_irreducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_irreducible()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="k_shape.v_bounds">
+<code class="descclassname">k_shape.</code><code class="descname">v_bounds</code><span class="sig-paren">(</span><em>p</em>, <em>k</em>, <em>height</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_shape.html#v_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_shape.v_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is <span class="math notranslate nohighlight">\(V_i\)</span>, the vertical analog of <a class="reference internal" href="#k_shape.h_bounds" title="k_shape.h_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">h_bounds()</span></code></a>.</p>
+<p>EXAMPLES:</p>
+<p>The 4-boundary of partition (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) is shown below on a cartesian plane with the vertical lines corresponding to the vertical bounds shown in blue.</p>
+<a class="reference internal image-reference" href="_images/h-v-bounds.png"><img alt="The skew-shape (10, 7, 4, 2, 2, 2, 1, 1, 1, 1) / (7, 4, 2, 1, 1, 1) is shown on a cartesian plane with the vertical lines y = 0, y = 1, y = 2, and y = 10 labelled." class="align-center" src="_images/h-v-bounds.png" style="height: 240px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">v_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">(0, 1)</span>
+<span class="gp">sage: </span><span class="n">v_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">(1, 2)</span>
+<span class="gp">sage: </span><span class="n">v_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">(2, 2)</span>
+<span class="gp">sage: </span><span class="n">v_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">(2, 10)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">v_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">99</span><span class="p">)</span>
+<span class="go">(0, 0)</span>
+<span class="gp">sage: </span><span class="n">v_bounds</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">min() arg is an empty sequence</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#k_shape.h_bounds" title="k_shape.h_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">h_bounds()</span></code></a></p>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -70,34 +246,31 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="skew_partition.html"
-                                  title="previous chapter">skew partition</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="root_ideal.html"
-                                  title="next chapter">root ideal</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/k_shape.rst.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <!-- The shading of the "Go" button should be consistent -->
-                <!-- with the colour of the header and footer. See the file -->
-                <!-- doc/common/themes/sage/theme.conf for colours used by -->
-                <!-- the Sage theme. -->
-                <input type="submit" style="background-color: #B8B9F6" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="skew_partition.html"
+                        title="previous chapter">skew partition</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="root_ideal.html"
+                        title="next chapter">root ideal</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/k_shape.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -108,6 +281,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="root_ideal.html" title="root ideal"
              >next</a> |</li>
@@ -127,7 +303,7 @@
     
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Matthew Lancellotti, George Seelinger, Jennifer Morse.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
     <script type="text/javascript">
 /*global jQuery, window */

@@ -1,0 +1,671 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>strong_marked_tableau &#8212; k-Schur combinatorics for SageMath 0.1.4 documentation</title>
+    <link rel="stylesheet" href="../_static/sage.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/MathJax.js?config=TeX-AMS_HTML-full,../mathjax_sage.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="icon" href="../_static/sageicon.png" type="image/x-icon" />
+    <script src="../_static/thebe.js" type="text/javascript"></script>
+    <script src="../_static/thebe-sage.js" type="text/javascript"></script>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+    
+      <a href="../../index.html"><img src="../_static/logo_sagemath_black.svg" height="28" style="vertical-align: middle" title="Sage Logo"></a>
+    
+  
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">k-Schur combinatorics for SageMath 0.1.4 documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for strong_marked_tableau</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Sage has have a builtin `StrongTableau &lt;https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/k_tableau.html&gt;`_ object.  *This* module contains useful functions pertaining to Standard Marked Tableau (SMT), the most standard form of a StrongTableau (a strong tableau with standard weight).</span>
+
+<span class="sd">AUTHORS:</span>
+
+<span class="sd">- George Seelinger (2018): Initial version</span>
+<span class="sd">- Matthew Lancellotti (2018): End core to strong marked tableaux</span>
+
+<span class="sd">REFERENCES:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#*****************************************************************************</span>
+<span class="c1">#  Copyright (C) 2018 George Seelinger &lt;ghseeli@gmail.com&gt; and</span>
+<span class="c1">#          Matthew Lancellotti &lt;mvlancellotti@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1">#  Distributed under the terms of the GNU General Public License (GPL)</span>
+<span class="c1">#                  http://www.gnu.org/licenses/</span>
+<span class="c1">#*****************************************************************************</span>
+
+<span class="kn">from</span> <span class="nn">sage.all</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">partition</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">skew_partition</span>
+<span class="n">SetPartitionsAk</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">SetPartitionsBk</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">SetPartitionsIk</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">SetPartitionsPRk</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">SetPartitionsPk</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">SetPartitionsRk</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">SetPartitionsSk</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">SetPartitionsTk</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+
+<span class="k">def</span> <span class="nf">shape_cell_indices</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="c1"># r&quot;&quot;&quot;</span>
+    <span class="c1"># Takes a shape (partition or list of lists) and returns the</span>
+    <span class="c1"># indices of the cells in the shape.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">Partition</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shape</span><span class="o">.</span><span class="n">cells</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">tableau_cell_indices</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
+    <span class="c1"># r&quot;&quot;&quot;</span>
+    <span class="c1"># Takes a tableau (or list of lists) and returns the indices</span>
+    <span class="c1"># of the cells in the tableau.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">tab</span> <span class="o">=</span> <span class="n">Tableau</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shape_cell_indices</span><span class="p">(</span><span class="n">tab</span><span class="o">.</span><span class="n">shape</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">tableau_contains</span><span class="p">(</span><span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">):</span>
+    <span class="c1"># r&quot;&quot;&quot;</span>
+    <span class="c1"># Checks to see if `inner` tableau is contained in the `outer`</span>
+    <span class="c1"># tableau exactly. Somewhat dangerous function.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">ol</span> <span class="o">=</span> <span class="n">outer</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="n">il</span> <span class="o">=</span> <span class="n">inner</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">tableau_cell_indices</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">row_index</span><span class="p">,</span> <span class="n">col_index</span><span class="p">)</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">il</span><span class="p">[</span><span class="n">row_index</span><span class="p">][</span><span class="n">col_index</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ol</span><span class="p">[</span><span class="n">row_index</span><span class="p">][</span><span class="n">col_index</span><span class="p">]</span> <span class="ow">and</span> <span class="n">il</span><span class="p">[</span><span class="n">row_index</span><span class="p">][</span><span class="n">col_index</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">strong_tableau_quotient2</span><span class="p">(</span><span class="n">outer_tab</span><span class="p">,</span> <span class="n">inner_shape</span><span class="p">):</span>
+    <span class="c1"># r&quot;&quot;&quot;</span>
+    <span class="c1"># Takes a strong tableau and skews it; that is, it sets all the</span>
+    <span class="c1"># cells in `outer_tab` that are contained in `inner_shape` to `None`</span>
+    <span class="c1"># and returns a `Tableau` object.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">ol</span> <span class="o">=</span> <span class="n">outer_tab</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">shape_cell_indices</span><span class="p">(</span><span class="n">inner_shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">row_index</span><span class="p">,</span> <span class="n">col_index</span><span class="p">)</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="n">ol</span><span class="p">[</span><span class="n">row_index</span><span class="p">][</span><span class="n">col_index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">Tableau</span><span class="p">(</span><span class="n">ol</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">strong_tableau_quotient</span><span class="p">(</span><span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">):</span>
+    <span class="c1"># r&quot;&quot;&quot;</span>
+    <span class="c1"># Takes a strong tableau and skews it; that is, it sets all the</span>
+    <span class="c1"># cells in `outer_tab` that are contained in `inner_shape` to `None`</span>
+    <span class="c1"># and returns a `StrongTableau` object.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">tableau_contains</span><span class="p">(</span><span class="n">outer</span><span class="p">,</span> <span class="n">inner</span><span class="p">)</span>
+    <span class="n">ol</span> <span class="o">=</span> <span class="n">outer</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">tableau_cell_indices</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">row_index</span><span class="p">,</span> <span class="n">col_index</span><span class="p">)</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="n">ol</span><span class="p">[</span><span class="n">row_index</span><span class="p">][</span><span class="n">col_index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">StrongTableau</span><span class="p">(</span><span class="n">ol</span><span class="p">,</span> <span class="n">outer</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="strong_tableau_has_row_marking"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.strong_tableau_has_row_marking">[docs]</a><span class="k">def</span> <span class="nf">strong_tableau_has_row_marking</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">row_index</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns whether ``tab`` has a row marking in row ``row_index``.</span>
+
+<span class="sd">    Checks if a strong tableau ``tab`` has a row marking in row</span>
+<span class="sd">    ``row_index`` (row indexing starts at 0) and returns ``True``</span>
+<span class="sd">    if row_marking is present; ``False`` otherwise.</span>
+
+<span class="sd">    ..  SEEALSO::</span>
+
+<span class="sd">        :meth:`is_row_markable`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># WARNING: Indices start at 0</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">row_index</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="n">tab</span><span class="p">[</span><span class="n">row_index</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span> <span class="ow">in</span> <span class="p">[</span><span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<span class="k">def</span> <span class="nf">add_skew_tabs</span><span class="p">(</span><span class="n">tab1</span><span class="p">,</span> <span class="n">tab2</span><span class="p">):</span>
+    <span class="c1"># Delete this</span>
+    <span class="c1"># Dangerous if overlapping entries / has 0&#39;s</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span><span class="n">RationalField</span><span class="p">(),</span> <span class="n">tab1</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+    <span class="n">m2</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span><span class="n">RationalField</span><span class="p">(),</span> <span class="n">tab2</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+    <span class="n">added</span> <span class="o">=</span> <span class="n">m1</span><span class="o">+</span><span class="n">m2</span>
+    <span class="n">tab_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">added</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Tableau</span><span class="p">(</span><span class="n">tab_list</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">add_skew_tab_to_tab</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">skew_tab</span><span class="p">):</span>
+    <span class="c1"># r&quot;&quot;&quot;</span>
+    <span class="c1"># Given a tableau `tab` as a base, this function layers a skew tableau</span>
+    <span class="c1"># `skew_tab` on top of it.</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">skew_list</span> <span class="o">=</span> <span class="n">skew_tab</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="c1"># Necessary because skew strong tableaux does not get item correctly?</span>
+    <span class="n">tab_list</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tableau_cell_indices</span><span class="p">(</span><span class="n">tab</span><span class="p">):</span>
+        <span class="n">skew_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tab_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Tableau</span><span class="p">(</span><span class="n">skew_list</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">shape_to_homogeneous_tab</span><span class="p">(</span><span class="n">outer_shape</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">inner_shape</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">outer_shape</span><span class="p">)):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inner_shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">row</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">inner_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> \
+                <span class="p">[</span><span class="n">entry</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">outer_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">inner_shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">row</span> <span class="o">+</span> <span class="p">[</span><span class="n">entry</span><span class="p">]</span><span class="o">*</span><span class="n">outer_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Tableau</span><span class="p">(</span><span class="n">li</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">std_strong_tab_from_core_sequence</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">markings</span><span class="p">):</span>
+    <span class="c1"># &#39;markings&#39; are (row,col) coordinates</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">StrongTableaux</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span><span class="o">.</span><span class="n">an_element</span><span class="p">()</span>
+    <span class="n">wt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">core_zero</span> <span class="o">=</span> <span class="n">core_sequence</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">Tableau</span><span class="p">([[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">core_zero</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">core_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">)):</span>
+        <span class="n">skew</span> <span class="o">=</span> <span class="n">shape_to_homogeneous_tab</span><span class="p">(</span>
+            <span class="n">core_sequence</span><span class="p">[</span><span class="n">core_index</span><span class="p">],</span> <span class="n">core_index</span><span class="p">,</span> <span class="n">core_sequence</span><span class="p">[</span><span class="n">core_index</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">add_skew_tab_to_tab</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">skew</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">StrongTableaux</span><span class="o">.</span><span class="n">add_marking</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">markings</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">wt</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_strong_marked_tableau</span><span class="p">(</span><span class="n">lis</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="c1"># helper to create a strong marked tableau</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">StrongTableau</span><span class="p">(</span><span class="n">lis</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">weight</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not a standard weight SMT.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="o">!=</span> <span class="n">st</span><span class="o">.</span><span class="n">to_standard_list</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not a standard SMT.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">st</span>
+
+
+<span class="k">def</span> <span class="nf">k_coverees1</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="c1"># THIS FUNCTIONALITY IS ALREADY BUILTIN.  See algorithm 2 of k_coverees.</span>
+    <span class="c1"># one way to get the k coverees</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Core</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">to_partition</span><span class="p">()</span>
+    <span class="c1"># set of coveree candidates (a superset of the coverees)</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">add_to_candidates</span><span class="p">(</span><span class="n">ptn</span><span class="p">,</span> <span class="n">is_root</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># add to dictionary if not already there</span>
+        <span class="k">if</span> <span class="n">ptn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="n">candidates</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ptn</span><span class="p">)</span>
+            <span class="c1"># if it is not a leaf, recurse</span>
+            <span class="k">if</span> <span class="n">is_root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ptn</span><span class="o">.</span><span class="n">is_core</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ptn</span><span class="o">.</span><span class="n">removable_cells</span><span class="p">():</span>
+                    <span class="n">sub_ptn</span> <span class="o">=</span> <span class="n">ptn</span><span class="o">.</span><span class="n">remove_cell</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+                    <span class="n">add_to_candidates</span><span class="p">(</span><span class="n">sub_ptn</span><span class="p">)</span>
+    <span class="n">add_to_candidates</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">is_root</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Now that all k+1-cores (and some other things) have been populated in candidates, filter to the ones that really are k+1-cores and have correct k-boundary size.</span>
+    <span class="n">coverees</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ptn</span> <span class="k">for</span> <span class="n">ptn</span> <span class="ow">in</span> <span class="n">candidates</span> <span class="k">if</span> <span class="n">ptn</span><span class="o">.</span><span class="n">is_core</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                   <span class="ow">and</span> <span class="n">k_size</span><span class="p">(</span><span class="n">ptn</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">==</span> <span class="n">k_size</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">coverees</span>
+
+
+<div class="viewcode-block" id="k_coverees"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.k_coverees">[docs]</a><span class="k">def</span> <span class="nf">k_coverees</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># THIS FUNCTIONALITY IS ALREADY BUILTIN.  See algorithm 2 below.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Given a `k+1`-core, find all sub-`k+1`-cores that have `k`-boundary 1 less than the given. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">k_coverees1</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="n">Core</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">coveree_core_list</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">strong_down_list</span><span class="p">()</span>
+        <span class="n">coverees</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">to_partition</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coveree_core_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">coverees</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown algorithm.&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">__go_to_ribbon_head</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">start_cell</span><span class="p">):</span>
+    <span class="c1"># Given the cells of a ribbon or multiple disconnected ribbons, and a starting point, find the head of the ribbon</span>
+    <span class="k">if</span> <span class="n">start_cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Starting position is not in list of cells.&#39;</span><span class="p">)</span>
+    <span class="n">cell</span> <span class="o">=</span> <span class="n">start_cell</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">right_cell</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">right_cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">right_cell</span>
+            <span class="k">continue</span>
+        <span class="n">down_cell</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">down_cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">down_cell</span>
+            <span class="k">continue</span>
+        <span class="k">break</span>
+    <span class="c1"># nothing to right or down, so we must have reached head of ribbon</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">cell</span>
+    <span class="k">return</span> <span class="n">head</span>
+
+
+<div class="viewcode-block" id="row_marking_to_marking"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.row_marking_to_marking">[docs]</a><span class="k">def</span> <span class="nf">row_marking_to_marking</span><span class="p">(</span><span class="n">outer_core</span><span class="p">,</span> <span class="n">inner_core</span><span class="p">,</span> <span class="n">row_marking</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert a row marking to a marking.</span>
+
+<span class="sd">    Given the skew shape defined by ``outer_core`` and ``inner_core``, and the row index ``row_marking`` where a marking exists, return the marking `(\text{marking row index}, \text{marking column index})`.</span>
+
+<span class="sd">    Note that `\text{marking row index}` mentioned above is simply ``row_marking``.  Therefore, the real usefulness of this function is that it finds the column index of the marking.</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The skew shape [3, 2, 2] / [2, 1] depicted by</span>
+
+<span class="sd">    .. image:: _static/marking.JPG</span>
+<span class="sd">        :width: 140px</span>
+<span class="sd">        :align: center</span>
+<span class="sd">        :alt: The skew shape [3, 2, 2] / [2, 1]</span>
+
+<span class="sd">    has the marking `(0, 2)` in row `0`.  Hence::</span>
+
+<span class="sd">        sage: row_marking_to_marking([3, 2, 2], [2, 1], 0)</span>
+<span class="sd">        (0, 2)</span>
+
+<span class="sd">    It also has the marking `(1, 1)` in row `1`.  Therefore::</span>
+
+<span class="sd">        sage: row_marking_to_marking([3, 2, 2], [2, 1], 1)</span>
+<span class="sd">        (1, 1)</span>
+
+<span class="sd">    It has no marking in row `2`, so::</span>
+
+<span class="sd">        sage: row_marking_to_marking([3, 2, 2], [2, 1], 2)</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        ValueError: no such row marking</span>
+
+<span class="sd">    ..  SEEALSO::</span>
+
+<span class="sd">        :meth:`row_markings_to_markings`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sp</span> <span class="o">=</span> <span class="n">SkewPartition</span><span class="p">([</span><span class="n">outer_core</span><span class="p">,</span> <span class="n">inner_core</span><span class="p">])</span>
+    <span class="n">cells</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">cells</span><span class="p">()</span>
+    <span class="n">row_indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">row_marking</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">row_indices</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;no such row marking&#39;</span><span class="p">)</span>
+    <span class="n">start_cell</span> <span class="o">=</span> <span class="p">(</span><span class="n">row_marking</span><span class="p">,</span> <span class="n">skew_partition</span><span class="o">.</span><span class="n">right</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">row_marking</span><span class="p">))</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">__go_to_ribbon_head</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">start_cell</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">head</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">row_marking</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">head</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;no such row marking&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="row_markings_to_markings"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.row_markings_to_markings">[docs]</a><span class="k">def</span> <span class="nf">row_markings_to_markings</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">,</span> <span class="n">row_markings</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Given a ``core_sequence`` and corresponding ``row_markings`` for each cover of the sequence, convert the row markings to markings and return them.</span>
+
+<span class="sd">    Each row marking in ``row_markings`` is merely the row index of where the marking occurs.  The purpose of this function is to convert each row marking to a &quot;marking&quot; which includes the column index.  In order to understand this function, it is best to understand :meth:`row_marking_to_marking` first.</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    Consider the core sequence ([], [1], [1, 1], [2, 1, 1]) which corresponds to the sequence of skew shapes</span>
+
+<span class="sd">    .. image:: _static/markings.JPG</span>
+<span class="sd">        :height: 140px</span>
+<span class="sd">        :align: center</span>
+<span class="sd">        :alt: The skew shapes [1] / []; [1, 1] / [1]; and [2, 1, 1] / [1, 1].</span>
+
+<span class="sd">    Now consider the row markings 0, 1, and 2, respectively.  Pair each skew shape up with its respective row marking, and then convert the row marking to a marking.  Row marking 0 corresponds to marking `(0, 0)`, row marking 1 corresponds to marking `(1, 0)`, and row marking 2 corresponds to marking `(2, 0)`::</span>
+
+<span class="sd">        sage: row_markings_to_markings(([], [1], [1, 1], [2, 1, 1]), [0, 1, 2])</span>
+<span class="sd">        [(0, 0), (1, 0), (2, 0)]</span>
+
+<span class="sd">    Similarly::</span>
+
+<span class="sd">        sage: row_markings_to_markings(([], [1], [1, 1], [2, 1, 1]), [0, 1, 0])</span>
+<span class="sd">        [(0, 0), (1, 0), (0, 1)]</span>
+
+<span class="sd">    ..  SEEALSO::</span>
+
+<span class="sd">        :meth:`row_marking_to_marking`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_markings</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">markings</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row_markings</span><span class="p">)):</span>
+        <span class="c1"># get vars</span>
+        <span class="n">row_marking</span> <span class="o">=</span> <span class="n">row_markings</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">inner_core</span> <span class="o">=</span> <span class="n">core_sequence</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">outer_core</span> <span class="o">=</span> <span class="n">core_sequence</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># convert to marking</span>
+        <span class="n">marking</span> <span class="o">=</span> <span class="n">row_marking_to_marking</span><span class="p">(</span><span class="n">outer_core</span><span class="p">,</span> <span class="n">inner_core</span><span class="p">,</span> <span class="n">row_marking</span><span class="p">)</span>
+        <span class="n">markings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marking</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">markings</span></div>
+
+
+<div class="viewcode-block" id="is_row_markable"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.is_row_markable">[docs]</a><span class="k">def</span> <span class="nf">is_row_markable</span><span class="p">(</span><span class="n">outer_core</span><span class="p">,</span> <span class="n">inner_core</span><span class="p">,</span> <span class="n">row_marking</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Given two cores (typically consecutive cores in a core sequence), see if ``row_marking`` is a possible row_marking of ``outer_core`` / ``inner_core``.</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    Consider the skew shape [3, 2, 2] / [2, 1] depicted</span>
+
+<span class="sd">    .. image:: _static/marking.JPG</span>
+<span class="sd">        :height: 140px</span>
+<span class="sd">        :align: center</span>
+<span class="sd">        :alt: The skew shape [3, 2, 2] / [2, 1]</span>
+
+<span class="sd">    It has a marking in row 0 and row 1, but not in row 2::</span>
+
+<span class="sd">        sage: is_row_markable([3, 2, 2], [2, 1], 0)</span>
+<span class="sd">        True</span>
+<span class="sd">        sage: is_row_markable([3, 2, 2], [2, 1], 1)</span>
+<span class="sd">        True</span>
+<span class="sd">        sage: is_row_markable([3, 2, 2], [2, 1], 2)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    ..  SEEALSO::</span>
+
+<span class="sd">        :meth:`strong_tableau_has_row_marking`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">row_marking_to_marking</span><span class="p">(</span><span class="n">outer_core</span><span class="p">,</span> <span class="n">inner_core</span><span class="p">,</span> <span class="n">row_marking</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="k_marked_coverees"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.k_marked_coverees">[docs]</a><span class="k">def</span> <span class="nf">k_marked_coverees</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">row_marking</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given with the given row_marking.</span>
+
+<span class="sd">    INPUTS:</span>
+
+<span class="sd">    - ``core`` -- a `k+1`-core</span>
+
+<span class="sd">    - ``k`` -- an integer</span>
+
+<span class="sd">    - ``row_marking`` -- The desired row marking for the covers</span>
+
+<span class="sd">    OUTPUTS:</span>
+
+<span class="sd">    The set of all `k+1`-cores `\lambda` that satify:</span>
+
+<span class="sd">      * ``core`` is a cover of `\lambda`</span>
+<span class="sd">      * The skew shape ``core`` / `\lambda` has a marking in the row indexed ``row_marking``.</span>
+
+<span class="sd">    EXAMPLES::</span>
+
+<span class="sd">        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 0)</span>
+<span class="sd">        {[5, 4, 2, 2, 1]}</span>
+<span class="sd">        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 1)</span>
+<span class="sd">        {[6, 2, 2, 2, 1], [6, 3, 2, 2]}</span>
+<span class="sd">        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 2)</span>
+<span class="sd">        {}</span>
+<span class="sd">        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 3)</span>
+<span class="sd">        {[6, 4, 2, 1, 1]}</span>
+<span class="sd">        sage: k_marked_coverees([6, 4, 2, 2, 1], 5, 4)</span>
+<span class="sd">        {[6, 3, 2, 2]}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coverees</span> <span class="o">=</span> <span class="n">k_coverees</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">marked_coverees</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coverees</span>
+                       <span class="k">if</span> <span class="n">is_row_markable</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">row_marking</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">marked_coverees</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="end_core_to_marked_core_sequences"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.end_core_to_marked_core_sequences">[docs]</a><span class="k">def</span> <span class="nf">end_core_to_marked_core_sequences</span><span class="p">(</span><span class="n">end_core</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">row_markings</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the set of core sequences marked by ``row_markings`` ending in ``end_core``.</span>
+
+<span class="sd">    INPUTS:</span>
+
+<span class="sd">    - ``end_core`` -- a `k+1`-core</span>
+
+<span class="sd">    - ``k`` -- All of the cores in the core sequences are `k+1`-cores.</span>
+
+<span class="sd">    - ``row_markings`` -- vector of row-indices indicating the rows of the markings for each core sequence.  (Note that &quot;markings&quot; are row-col-coordinates, while &quot;row_markings&quot; are merely row-coordinates.)</span>
+
+<span class="sd">    OUTPUTS:</span>
+
+<span class="sd">    - A set of all possible core sequences that end in ``end_core`` and can be marked by the row marking vector ``row_markings``.</span>
+
+<span class="sd">    EXAMPLES::</span>
+
+<span class="sd">        sage: end_core_to_marked_core_sequences([5, 3, 1], 2, [0, 1, 2, 0, 1])</span>
+<span class="sd">        {([], [1], [1, 1], [2, 1, 1], [3, 1, 1], [5, 3, 1])}</span>
+
+<span class="sd">        sage: end_core_to_marked_core_sequences([5, 3, 1], 2, [1])</span>
+<span class="sd">        {([3, 1, 1], [5, 3, 1]), ([4, 2], [5, 3, 1])}</span>
+
+<span class="sd">    ..  SEEALSO::</span>
+
+<span class="sd">        :meth:`end_core_to_strong_marked_tableaux`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check inputs</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">NonNegativeIntegerSemiring</span><span class="p">()(</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">end_core</span> <span class="o">=</span> <span class="n">Core</span><span class="p">(</span><span class="n">end_core</span><span class="p">,</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">end_core</span> <span class="o">=</span> <span class="n">end_core</span><span class="o">.</span><span class="n">to_partition</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">row_marking</span> <span class="ow">in</span> <span class="n">row_markings</span><span class="p">:</span>
+        <span class="n">NonNegativeIntegerSemiring</span><span class="p">()(</span><span class="n">row_marking</span><span class="p">)</span>
+    <span class="c1"># find marked core sequences</span>
+    <span class="n">sequences</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">row_markings</span><span class="p">:</span>
+        <span class="c1"># base case</span>
+        <span class="n">sequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">end_core</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># inductive step</span>
+        <span class="n">coverees</span> <span class="o">=</span> <span class="n">k_marked_coverees</span><span class="p">(</span><span class="n">end_core</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">row_markings</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">coveree</span> <span class="ow">in</span> <span class="n">coverees</span><span class="p">:</span>
+            <span class="n">prefix_sequences</span> <span class="o">=</span> <span class="n">end_core_to_marked_core_sequences</span><span class="p">(</span>
+                <span class="n">coveree</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">row_markings</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">prefix_sequence</span> <span class="ow">in</span> <span class="n">prefix_sequences</span><span class="p">:</span>
+                <span class="n">sequence</span> <span class="o">=</span> <span class="n">prefix_sequence</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">end_core</span><span class="p">])</span>
+                <span class="n">sequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">sequences</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="end_core_to_strong_marked_tableaux"><a class="viewcode-back" href="../strong_marked_tableau.html#strong_marked_tableau.end_core_to_strong_marked_tableaux">[docs]</a><span class="k">def</span> <span class="nf">end_core_to_strong_marked_tableaux</span><span class="p">(</span><span class="n">end_core</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">row_markings</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the set of strong marked tableaux marked by ``row_markings`` ending in ``end_core``.</span>
+
+<span class="sd">    INPUTS:</span>
+
+<span class="sd">    - ``end_core`` -- a `k+1`-core</span>
+
+<span class="sd">    - ``k`` -- All of the cores in the core sequences are `k+1`-cores.</span>
+
+<span class="sd">    - ``row_markings`` -- vector of row-indices indicating the rows of the markings for each core sequence.  (Note that &quot;markings&quot; are row-col-coordinates, while &quot;row_markings&quot; are merely row-coordinates.)</span>
+
+<span class="sd">    OUTPUTS:</span>
+
+<span class="sd">    - A set of all possible strong marked tableau that end in ``end_core`` and can be marked by the row marking vector ``row_markings``.</span>
+
+<span class="sd">    EXAMPLES::</span>
+
+<span class="sd">        sage: end_core_to_strong_marked_tableaux([5, 3, 1], 2, [0, 1, 2, 0, 1])</span>
+<span class="sd">        {[[-1, 3, -4, 5, 5], [-2, 5, -5], [-3]]}</span>
+
+<span class="sd">        sage: end_core_to_strong_marked_tableaux([5, 3, 1], 2, [1])</span>
+<span class="sd">        {[[None, None, None, 1, 1], [None, 1, -1], [None]],</span>
+<span class="sd">         [[None, None, None, None, 1], [None, None, -1], [1]]}</span>
+
+<span class="sd">    ..  SEEALSO::</span>
+
+<span class="sd">        :meth:`end_core_to_marked_core_sequences`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">core_sequences</span> <span class="o">=</span> <span class="n">end_core_to_marked_core_sequences</span><span class="p">(</span>
+        <span class="n">end_core</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">row_markings</span><span class="p">)</span>
+    <span class="n">smts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">core_sequence</span> <span class="ow">in</span> <span class="n">core_sequences</span><span class="p">:</span>
+        <span class="n">markings</span> <span class="o">=</span> <span class="n">row_markings_to_markings</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">,</span> <span class="n">row_markings</span><span class="p">)</span>
+        <span class="n">smt</span> <span class="o">=</span> <span class="n">std_strong_tab_from_core_sequence</span><span class="p">(</span><span class="n">core_sequence</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">markings</span><span class="p">)</span>
+        <span class="n">smts</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">smt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">smts</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+  
+    
+      <a href="../../index.html"><img src="../_static/logo_sagemath_black.svg" height="28" style="vertical-align: middle" title="Sage Logo"></a>
+    
+  
+  
+        <li class="nav-item nav-item-0"><a href="../index.html">k-Schur combinatorics for SageMath 0.1.4 documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Matthew Lancellotti, George Seelinger, Jennifer Morse.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
+    </div>
+    <script type="text/javascript">
+/*global jQuery, window */
+/* Sphinx sidebar toggle.  Putting this code at the end of the body
+ * enables the toggle for the live, static, and offline docs.  Note:
+ * sage.misc.html.math_parse() eats jQuery's dollar-sign shortcut. */
+var jq = jQuery;
+jq(document).ready(function () {
+    var bar, bod, bg, fg, key, tog, wid_old, wid_new, resize, get_state, set_state;
+    bod = jq('div.bodywrapper');
+    bar = jq('div.sphinxsidebar');
+    tog = jq('<div class="sphinxsidebartoggle"></div>');
+
+    /* Delayed resize helper.  Not perfect but good enough. */
+    resize = function () {
+        setTimeout(function () {
+            tog.height(bod.height());
+        }, 100);
+    };
+    jq(window).resize(function () {
+        resize();
+    });
+
+    /* Setup and add the toggle. See Sphinx v0.5.1 default.css. */
+    fg = jq('div.sphinxsidebar p a').css('color') || 'rgb(152, 219, 204)';
+    bg = jq('div.document').css('background-color') || 'rgb(28, 78, 99)';
+    wid_old = '230px';
+    wid_new = '5px';
+    tog.css('background-color', bg)
+        .css('border-width', '0px')
+        .css('border-right', wid_new + ' ridge ' + bg)
+        .css('cursor', 'pointer')
+        .css('position', 'absolute')
+        .css('left', '-' + wid_new)
+        .css('top', '0px')
+        .css('width', wid_new);
+    bod.css('position', 'relative');
+    bod.prepend(tog);
+    resize();
+
+    /* Cookie helpers. */
+    key = 'sphinxsidebar=';
+    set_state = function (s) {
+        var date = new Date();
+        /* Expiry in 7 days. */
+        date.setTime(date.getTime() + (7 * 24 * 3600 * 1000));
+        document.cookie = key + encodeURIComponent(s) + '; expires=' +
+            date.toUTCString() + '; path=/';
+    };
+    get_state = function () {
+        var i, c, crumbs = document.cookie.split(';');
+        for (i = 0; i < crumbs.length; i += 1) {
+            c = crumbs[i].replace(/^\s+/, '');
+            if (c.indexOf(key) === 0) {
+                return decodeURIComponent(c.substring(key.length, c.length));
+            }
+        }
+        return null;
+    };
+
+    /* Event handlers. */
+    tog.mouseover(function (ev) {
+        tog.css('border-right-color', fg);
+    }).mouseout(function (ev) {
+        tog.css('border-right-color', bg);
+    }).click(function (ev) {
+        if (bod.hasClass('wide')) {
+            bod.removeClass('wide');
+            bod.css('margin-left', wid_old);
+            bar.css('width', wid_old);
+            bar.show();
+            set_state('visible');
+        } else {
+            set_state('hidden');
+            bar.hide();
+            bar.css('width', '0px');
+            bod.css('margin-left', wid_new);
+            bod.addClass('wide');
+        }
+        resize();
+    });
+
+    /* Hide the normally visible sidebar? */
+    if (get_state() === 'hidden') {
+        tog.trigger('click');
+    } else {
+        set_state('visible');
+    }
+});
+    </script>
+  </body>
+</html>

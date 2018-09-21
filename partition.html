@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>partition &#8212; k-Schur combinatorics for SageMath 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/sage.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.4',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -30,14 +22,16 @@
     <script src="_static/thebe.js" type="text/javascript"></script>
     <script src="_static/thebe-sage.js" type="text/javascript"></script>
 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="skew_partition.html" title="skew partition"
              accesskey="N">next</a> |</li>
@@ -60,8 +54,354 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="partition">
-<h1>partition<a class="headerlink" href="#partition" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-partition">
+<span id="partition"></span><h1>partition<a class="headerlink" href="#module-partition" title="Permalink to this headline">¶</a></h1>
+<p>Sage has a builtin <a class="reference external" href="https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/partition.html">Partition</a> object.  <em>This</em> module adds extra useful functions for partitions:</p>
+<p>AUTHORS:</p>
+<ul class="simple">
+<li>Matthew Lancellotti (2018): Initial version</li>
+</ul>
+<dl class="function">
+<dt id="partition.boundary">
+<code class="descclassname">partition.</code><code class="descname">boundary</code><span class="sig-paren">(</span><em>ptn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#boundary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the integer coordinates of points on the boundary of <code class="docutils literal notranslate"><span class="pre">ptn</span></code>.</p>
+<p>The boundary of a partition is the set <span class="math notranslate nohighlight">\(\{ \text{NE}(d) \mid \forall d\:\text{diagonal} \}\)</span>.  That is, for every diagonal line <span class="math notranslate nohighlight">\(y = x + b\)</span> where <span class="math notranslate nohighlight">\(b \in \mathbb{Z}\)</span>, we find the northeasternmost (NE) point on that diagonal which is also in the Ferrer’s diagram (here, the Ferrer’s diagram is interpreted as 1 x 1 cells in the Euclidean plane).</p>
+<p>The boundary will go from bottom-right to top-left in the French convention.</p>
+<p>EXAMPLES:</p>
+<p>The partition (1)</p>
+<a class="reference internal image-reference" href="_images/boundary-1.JPG"><img alt="The shape of partition 1 on a cartesian plane with the points (1, 0), (1, 1), and (0, 1) labelled." class="align-center" src="_images/boundary-1.JPG" style="height: 140px;" /></a>
+<p>has boundary [(1, 0), (1, 1), (0, 1)]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">boundary</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">[(1,0), (1,1), (0,1)]</span>
+</pre></div>
+</div>
+<p>The partition (3, 1)</p>
+<a class="reference internal image-reference" href="_images/boundary-2.JPG"><img alt="The shape of partition (3, 1) on a cartesian plane with the points (3, 0), (3, 1), (2, 1), (1, 1), (1, 2), and (0, 2) labelled." class="align-center" src="_images/boundary-2.JPG" style="height: 170px;" /></a>
+<p>has boundary [(3, 0), (3, 1), (2, 1), (1, 1), (1, 2), (0, 2)]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">boundary</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="go">[(3,0), (3,1), (2,1), (1,1), (1,2), (0,2)]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#partition.k_rim" title="partition.k_rim"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_rim()</span></code></a>.  You might have been looking for <code class="xref py py-meth docutils literal notranslate"><span class="pre">k_boundary()</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.has_k_rectangle">
+<code class="descclassname">partition.</code><code class="descname">has_k_rectangle</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#has_k_rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.has_k_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>A partition <code class="docutils literal notranslate"><span class="pre">ptn</span></code> has a <span class="math notranslate nohighlight">\(k\)</span>-rectangle if it’s Ferrer’s diagram contains <span class="math notranslate nohighlight">\(k-i+1\)</span> rows (<em>or more</em>) of length <span class="math notranslate nohighlight">\(i\)</span> (<em>exactly</em>) for any <span class="math notranslate nohighlight">\(i\)</span> in <span class="math notranslate nohighlight">\([1, k]\)</span>.</p>
+<p>This is mainly a helper function for <a class="reference internal" href="#partition.is_k_reducible" title="partition.is_k_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_reducible()</span></code></a> and <a class="reference internal" href="#partition.is_k_irreducible" title="partition.is_k_irreducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_irreducible()</span></code></a>, the only difference between this function and <a class="reference internal" href="#partition.is_k_reducible" title="partition.is_k_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_reducible()</span></code></a> being that this function allows any partition as input while <a class="reference internal" href="#partition.is_k_reducible" title="partition.is_k_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_reducible()</span></code></a> requires the input to be <span class="math notranslate nohighlight">\(k\)</span>-bounded.</p>
+<p>EXAMPLES:</p>
+<p>The partition [1, 1, 1] has at least 2 rows of length 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_reducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The partition [1, 1, 1] does <em>not</em> have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_reducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#partition.is_k_irreducible" title="partition.is_k_irreducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_irreducible()</span></code></a>, <a class="reference internal" href="#partition.is_k_reducible" title="partition.is_k_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_reducible()</span></code></a>, <a class="reference internal" href="#partition.has_rectangle" title="partition.has_rectangle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">has_rectangle()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.has_rectangle">
+<code class="descclassname">partition.</code><code class="descname">has_rectangle</code><span class="sig-paren">(</span><em>ptn</em>, <em>h</em>, <em>w</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#has_rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.has_rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>A partition <code class="docutils literal notranslate"><span class="pre">ptn</span></code> has an <span class="math notranslate nohighlight">\(h\)</span> x <span class="math notranslate nohighlight">\(w\)</span> rectangle if it’s Ferrer’s diagram has <span class="math notranslate nohighlight">\(h\)</span> (<em>or more</em>) rows of length <span class="math notranslate nohighlight">\(w\)</span> (<em>exactly</em>).</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">has_rectangle</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">has_rectangle</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">has_rectangle</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">sage: </span><span class="n">has_rectangle</span><span class="p">([</span><span class="mi">3</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#partition.has_k_rectangle" title="partition.has_k_rectangle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">has_k_rectangle()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.is_k_bounded">
+<code class="descclassname">partition.</code><code class="descname">is_k_bounded</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#is_k_bounded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.is_k_bounded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if the partition <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is bounded by <code class="docutils literal notranslate"><span class="pre">k</span></code>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_bounded</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_k_bounded</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">7</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_k_bounded</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.is_k_core">
+<code class="descclassname">partition.</code><code class="descname">is_k_core</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#is_k_core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.is_k_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a boolean saying whether or not the Partition <code class="docutils literal notranslate"><span class="pre">ptn</span></code> is a <code class="docutils literal notranslate"><span class="pre">k</span></code>-core.</p>
+<p>EXAMPLES:</p>
+<p>In the partition (2, 1), a hook length of 2 does not occur, but a hook length of 3 does:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_core</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_k_core</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Core()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.is_k_irreducible">
+<code class="descclassname">partition.</code><code class="descname">is_k_irreducible</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#is_k_irreducible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.is_k_irreducible" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <span class="math notranslate nohighlight">\(k\)</span>-bounded partition is <span class="math notranslate nohighlight">\(k\)</span>-<em>irreducible</em> if it’s Ferrer’s diagram does <em>not</em> contain <span class="math notranslate nohighlight">\(k-i+1\)</span> rows (or more) of length <span class="math notranslate nohighlight">\(i\)</span> (exactly) for every <span class="math notranslate nohighlight">\(i \in [1, k]\)</span>.</p>
+<p>(Also, a <span class="math notranslate nohighlight">\(k\)</span>-bounded partition is <span class="math notranslate nohighlight">\(k\)</span>-irreducible if and only if it is not <span class="math notranslate nohighlight">\(k\)</span>-reducible.)</p>
+<p>EXAMPLES:</p>
+<p>The partition [1, 1, 1] has at least 2 rows of length 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_irreducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>The partition [1, 1, 1] does <em>not</em> have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_irreducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#partition.is_k_reducible" title="partition.is_k_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_reducible()</span></code></a>, <a class="reference internal" href="#partition.has_k_rectangle" title="partition.has_k_rectangle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">has_k_rectangle()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.is_k_reducible">
+<code class="descclassname">partition.</code><code class="descname">is_k_reducible</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#is_k_reducible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.is_k_reducible" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <span class="math notranslate nohighlight">\(k\)</span>-bounded partition is <span class="math notranslate nohighlight">\(k\)</span>-<em>reducible</em> if it’s Ferrer’s diagram contains <span class="math notranslate nohighlight">\(k-i+1\)</span> rows (or more) of length <span class="math notranslate nohighlight">\(i\)</span> (exactly) for some <span class="math notranslate nohighlight">\(i \in [1, k]\)</span>.</p>
+<p>(Also, a <span class="math notranslate nohighlight">\(k\)</span>-bounded partition is <span class="math notranslate nohighlight">\(k\)</span>-reducible if and only if it is not <span class="math notranslate nohighlight">\(k\)</span>-irreducible.)</p>
+<p>EXAMPLES:</p>
+<p>The partition [1, 1, 1] has at least 2 rows of length 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_reducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The partition [1, 1, 1] does <em>not</em> have 4 rows of length 1, 3 rows of length 2, 2 rows of length 3, nor 1 row of length 4:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_reducible</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#partition.is_k_irreducible" title="partition.is_k_irreducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_irreducible()</span></code></a>, <a class="reference internal" href="#partition.has_k_rectangle" title="partition.has_k_rectangle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">has_k_rectangle()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.is_strictly_decreasing">
+<code class="descclassname">partition.</code><code class="descname">is_strictly_decreasing</code><span class="sig-paren">(</span><em>li</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#is_strictly_decreasing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.is_strictly_decreasing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether every term in the iterable <code class="docutils literal notranslate"><span class="pre">li</span></code> is greater than the following term.</p>
+<p>Used internally to check when a <code class="xref py py-class docutils literal notranslate"><span class="pre">Partition</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Composition</span></code>, or list is strictly decreasing.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_strictly_decreasing</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_strictly_decreasing</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">False</span>
+<span class="gp">sage: </span><span class="n">is_strictly_decreasing</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.is_symmetric">
+<code class="descclassname">partition.</code><code class="descname">is_symmetric</code><span class="sig-paren">(</span><em>ptn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#is_symmetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.is_symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a partition <code class="docutils literal notranslate"><span class="pre">ptn</span></code>, detect if <code class="docutils literal notranslate"><span class="pre">ptn</span></code> equals its own transpose.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_symmetric</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_symmetric</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.is_weakly_decreasing">
+<code class="descclassname">partition.</code><code class="descname">is_weakly_decreasing</code><span class="sig-paren">(</span><em>li</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#is_weakly_decreasing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.is_weakly_decreasing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether every term in the iterable <code class="docutils literal notranslate"><span class="pre">li</span></code> is greater than or equal to the following term.</p>
+<p>Used internally to check when a <code class="xref py py-class docutils literal notranslate"><span class="pre">Partition</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Composition</span></code>, or list is weakly decreasing.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_weakly_decreasing</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_weakly_decreasing</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_weakly_decreasing</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.k_column_lengths">
+<code class="descclassname">partition.</code><code class="descname">k_column_lengths</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#k_column_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.k_column_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a partition, return it’s <span class="math notranslate nohighlight">\(k\)</span>-column-shape.</p>
+<p>This is the ‘column’ analog of <a class="reference internal" href="#partition.k_row_lengths" title="partition.k_row_lengths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_row_lengths()</span></code></a>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_column_lengths</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[1, 0, 0, 0, 1, 1]</span>
+
+<span class="gp">sage: </span><span class="n">k_column_lengths</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[1, 1, 1, 2]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#partition.k_row_lengths" title="partition.k_row_lengths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_row_lengths()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">k_boundary()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">SkewPartition.row_lengths()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">SkewPartition.column_lengths()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.k_rectangle_dimension_list">
+<code class="descclassname">partition.</code><code class="descname">k_rectangle_dimension_list</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#k_rectangle_dimension_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.k_rectangle_dimension_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of dimension pairs <span class="math notranslate nohighlight">\((h, w)\)</span> such that <span class="math notranslate nohighlight">\(h + w = k + 1\)</span>.</p>
+<p>This exists mainly as a helper function for <a class="reference internal" href="#partition.has_rectangle" title="partition.has_rectangle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">partition.has_rectangle()</span></code></a> and <a class="reference internal" href="k_shape.html#k_shape.is_reducible" title="k_shape.is_reducible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_shape.is_reducible()</span></code></a>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_rectangle_dimension_list</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[(3, 1), (2, 2), (1, 3)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.k_rim">
+<code class="descclassname">partition.</code><code class="descname">k_rim</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#k_rim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.k_rim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">k</span></code>-rim of <code class="docutils literal notranslate"><span class="pre">ptn</span></code> as a list of integer coordinates.</p>
+<p>The <span class="math notranslate nohighlight">\(k\)</span>-rim of a partition is the “line between” (or “intersection of”) the <span class="math notranslate nohighlight">\(k\)</span>-boundary and the <span class="math notranslate nohighlight">\(k\)</span>-interior.  (Section 2.3 of <a class="reference internal" href="k_shape.html#genocchi" id="id2">[genocchi]</a>)</p>
+<p>It will be output as an ordered list of integer coordinates, where the origin is <span class="math notranslate nohighlight">\((0, 0)\)</span>.  It will start at the top-left of the <span class="math notranslate nohighlight">\(k\)</span>-rim (using French convention) and end at the bottom-right.</p>
+<p>EXAMPLES:</p>
+<p>Consider the partition (3, 1) split up into its 1-interior and 1-boundary:</p>
+<a class="reference internal image-reference" href="_images/k-rim.JPG"><img alt="_images/k-rim.JPG" class="align-center" src="_images/k-rim.JPG" style="height: 180px;" /></a>
+<p>The line shown in bold is the 1-rim, and that information is equivalent to the integer coordinates of the points that occur along that line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_rim</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">[(3,0), (2,0), (2,1), (1,1), (0,1), (0,2)])</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_interior()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">k_boundary()</span></code>, <a class="reference internal" href="#partition.boundary" title="partition.boundary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">boundary()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.k_row_lengths">
+<code class="descclassname">partition.</code><code class="descname">k_row_lengths</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#k_row_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.k_row_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a partition, return it’s <span class="math notranslate nohighlight">\(k\)</span>-row-shape.</p>
+<p>This is equivalent to taking the <span class="math notranslate nohighlight">\(k\)</span>-boundary of the partition and then returning the row-shape of that.  We do <em>not</em> discard rows of length 0.  (Section 2.2 of <a class="reference internal" href="skew_partition.html#mem" id="id3">[mem]</a>)</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_row_lengths</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[2, 1]</span>
+
+<span class="gp">sage: </span><span class="n">k_row_lengths</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">[0, 1, 1, 1, 2]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#partition.k_column_lengths" title="partition.k_column_lengths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_column_lengths()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">k_boundary()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">SkewPartition.row_lengths()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">SkewPartition.column_lengths()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.k_size">
+<code class="descclassname">partition.</code><code class="descname">k_size</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#k_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.k_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a partition <code class="docutils literal notranslate"><span class="pre">ptn</span></code> and a <code class="docutils literal notranslate"><span class="pre">k</span></code>, return the size of the <span class="math notranslate nohighlight">\(k\)</span>-boundary.</p>
+<p>This is the same as the length method <code class="xref py py-meth docutils literal notranslate"><span class="pre">sage.combinat.core.Core.length()</span></code> of the <code class="xref py py-class docutils literal notranslate"><span class="pre">sage.combinat.core.Core</span></code> object, with the exception that here we don’t require <code class="docutils literal notranslate"><span class="pre">ptn</span></code> to be a <span class="math notranslate nohighlight">\(k+1\)</span>-core.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">k_size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">k_size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">k_size</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">k_size</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">k_boundary()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">SkewPartition.size()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.next_within_bounds">
+<code class="descclassname">partition.</code><code class="descname">next_within_bounds</code><span class="sig-paren">(</span><em>p</em>, <em>min=[]</em>, <em>max=None</em>, <em>type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#next_within_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.next_within_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next partition lexicographically that contains min and is contained in max.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">p</span></code> – The Partition.</li>
+<li><code class="docutils literal notranslate"><span class="pre">min</span></code> – (default <code class="docutils literal notranslate"><span class="pre">[]</span></code>, the empty partition) The ‘minimum partition’ that <code class="docutils literal notranslate"><span class="pre">next_within_bounds(p)</span></code> must contain.</li>
+<li><code class="docutils literal notranslate"><span class="pre">max</span></code> – (default <code class="docutils literal notranslate"><span class="pre">None</span></code>) The ‘maximum partition’ that <code class="docutils literal notranslate"><span class="pre">next_within_bounds(p)</span></code> must be contained in.  If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then there is no restriction.</li>
+<li><code class="docutils literal notranslate"><span class="pre">type</span></code> – (default <code class="docutils literal notranslate"><span class="pre">None</span></code>) The type of partitions allowed.  For example, ‘strict’ for strictly decreasing partitions, or <code class="docutils literal notranslate"><span class="pre">None</span></code> to allow any valid partition.</li>
+</ul>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="gp">sage: </span><span class="bp">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">next()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="partition.to_k_core">
+<code class="descclassname">partition.</code><code class="descname">to_k_core</code><span class="sig-paren">(</span><em>ptn</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition.html#to_k_core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition.to_k_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift the rows of <code class="docutils literal notranslate"><span class="pre">ptn</span></code> minimally in order to create a <span class="math notranslate nohighlight">\(k\)</span>-core.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Partition</span></code> object, not a <code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code> object.</p>
+<p>If you plug a <span class="math notranslate nohighlight">\(k\)</span>-bounded partition into this function and use <span class="math notranslate nohighlight">\(k+1\)</span> as the input constant, then this is the well-known bijection between <span class="math notranslate nohighlight">\(k\)</span>-bounded partitions and <span class="math notranslate nohighlight">\(k+1\)</span>-cores.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">to_k_core</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">[1, 1]</span>
+<span class="gp">sage: </span><span class="n">to_k_core</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">[3, 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -70,34 +410,31 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="core.html"
-                                  title="previous chapter">core</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="skew_partition.html"
-                                  title="next chapter">skew partition</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/partition.rst.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <!-- The shading of the "Go" button should be consistent -->
-                <!-- with the colour of the header and footer. See the file -->
-                <!-- doc/common/themes/sage/theme.conf for colours used by -->
-                <!-- the Sage theme. -->
-                <input type="submit" style="background-color: #B8B9F6" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="previous chapter">core</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="skew_partition.html"
+                        title="next chapter">skew partition</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/partition.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -108,6 +445,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="skew_partition.html" title="skew partition"
              >next</a> |</li>
@@ -127,7 +467,7 @@
     
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Matthew Lancellotti, George Seelinger, Jennifer Morse.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
     <script type="text/javascript">
 /*global jQuery, window */

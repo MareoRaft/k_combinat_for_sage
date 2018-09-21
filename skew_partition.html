@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>skew partition &#8212; k-Schur combinatorics for SageMath 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/sage.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.4',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -30,14 +22,16 @@
     <script src="_static/thebe.js" type="text/javascript"></script>
     <script src="_static/thebe-sage.js" type="text/javascript"></script>
 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="k_shape.html" title="\(k\)-shape"
              accesskey="N">next</a> |</li>
@@ -60,8 +54,258 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="skew-partition">
-<h1>skew partition<a class="headerlink" href="#skew-partition" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-skew_partition">
+<span id="skew-partition"></span><h1>skew partition<a class="headerlink" href="#module-skew_partition" title="Permalink to this headline">¶</a></h1>
+<p>Sage has a builtin <a class="reference external" href="https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/skew_partition.html">SkewPartition</a> object (a.k.a. skew-shape).  <em>This</em> module adds extra useful functions for skew partitions:</p>
+<p>AUTHORS:</p>
+<ul class="simple">
+<li>Matthew Lancellotti (2018): Initial version</li>
+</ul>
+<p>REFERENCES:</p>
+<table class="docutils citation" frame="void" id="mem" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[mem]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>)</em> Lam, T., Lapointe, L., Morse, J., &amp; Shimozono, M. (2013). <a class="reference external" href="http://breakfreerun.org/index.php/ebooks/the-poset-of-k-shapes-and-branching-rules-for-k-schur-functions">The poset of k-shapes and branching rules for k-Schur functions</a>. Memoirs of the American Mathematical Society, 223(1050), 1-113. DOI: 10.1090/S0065-9266-2012-00655-1</td></tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="skew_partition.bottom">
+<code class="descclassname">skew_partition.</code><code class="descname">bottom</code><span class="sig-paren">(</span><em>sp</em>, <em>col_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#bottom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.bottom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a SkewPartition and a 0-based column index, return the 0-based row index of the <em>bottommost</em> cell in the corresponding column.  (Section 2.1 of <a class="reference internal" href="#mem" id="id1">[mem]</a>)</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">bottom</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>An in-bounds col_index where no cells exist will return <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">bottom</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+
+<span class="gp">sage: </span><span class="n">bottom</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0</span>
+
+<span class="gp">sage: </span><span class="n">bottom</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>A col_index that is out-of-bounds of the skew partition will throw an error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">bottom</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">IndexError: list index out of range</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#skew_partition.right" title="skew_partition.right"><code class="xref py py-meth docutils literal notranslate"><span class="pre">right()</span></code></a>, <a class="reference internal" href="#skew_partition.left" title="skew_partition.left"><code class="xref py py-meth docutils literal notranslate"><span class="pre">left()</span></code></a>, <a class="reference internal" href="#skew_partition.top" title="skew_partition.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.is_k_boundary">
+<code class="descclassname">skew_partition.</code><code class="descname">is_k_boundary</code><span class="sig-paren">(</span><em>sp</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#is_k_boundary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.is_k_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a skew-shape <code class="docutils literal notranslate"><span class="pre">sp</span></code> and natural number <code class="docutils literal notranslate"><span class="pre">k</span></code>, return <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if <code class="docutils literal notranslate"><span class="pre">sp</span></code> is a <span class="math notranslate nohighlight">\(k\)</span>-boundary.  (Section 2.2 of <a class="reference internal" href="#mem" id="id2">[mem]</a>)</p>
+<p>Given a skew-shape <code class="docutils literal notranslate"><span class="pre">sp</span></code> <em>only</em>, return <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if there exists some <span class="math notranslate nohighlight">\(k\)</span> such that <code class="docutils literal notranslate"><span class="pre">sp</span></code> is a <span class="math notranslate nohighlight">\(k\)</span>-boundary.</p>
+<p>TODO: test</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_k_boundary</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]))</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_k_boundary</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_k_boundary</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Partition.k_boundary()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.is_linked">
+<code class="descclassname">skew_partition.</code><code class="descname">is_linked</code><span class="sig-paren">(</span><em>sp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#is_linked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.is_linked" title="Permalink to this definition">¶</a></dt>
+<dd><p>A skew-shape <code class="docutils literal notranslate"><span class="pre">sp</span></code> is a <em>skew-linked diagram</em> if both the row-shape and column-shape of <span class="math notranslate nohighlight">\(sp\)</span> are partitions.</p>
+<p>EXAMPLES:</p>
+<p>Both row shape and column shape are valid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_linked</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Valid row shape but invalid column shape:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_linked</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row_lengths()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">column_lengths()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.is_symmetric">
+<code class="descclassname">skew_partition.</code><code class="descname">is_symmetric</code><span class="sig-paren">(</span><em>sp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#is_symmetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.is_symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>A SkewPartition is <em>symmetric</em> if its inner and outer shapes are symmetric.</p>
+<p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if the <code class="xref py py-class docutils literal notranslate"><span class="pre">SkewPartition</span></code> <code class="docutils literal notranslate"><span class="pre">sp</span></code> is equal to its own conjugate.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[],</span> <span class="p">[]])</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="bp">True</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[]])</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="bp">True</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="bp">True</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="bp">False</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">()</span>
+<span class="gp">sage: </span><span class="bp">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Partition.is_symmetric()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.k_boundary_to_partition">
+<code class="descclassname">skew_partition.</code><code class="descname">k_boundary_to_partition</code><span class="sig-paren">(</span><em>sp</em>, <em>k=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#k_boundary_to_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.k_boundary_to_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <code class="docutils literal notranslate"><span class="pre">k</span></code>-boundary <code class="docutils literal notranslate"><span class="pre">sp</span></code> (<span class="math notranslate nohighlight">\(k\)</span>-boundaries are a specific type of skew-shape), output the original partition whose <span class="math notranslate nohighlight">\(k\)</span>-boundary is <code class="docutils literal notranslate"><span class="pre">sp</span></code>.</p>
+<p>(For the definition of <span class="math notranslate nohighlight">\(k\)</span>-boundary, see Section 2.2 of <a class="reference internal" href="#mem" id="id3">[mem]</a>)</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">check</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the program will assert that the skew-shape really is a <span class="math notranslate nohighlight">\(k\)</span>-boundary.</p>
+<p>TODO: test</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_boundary_to_partition</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]))</span>
+<span class="go">[3, 2, 1]</span>
+
+<span class="gp">sage: </span><span class="n">k_boundary_to_partition</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Error</span>
+<span class="gp">sage: </span><span class="n">k_boundary_to_partition</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="go">[3, 1]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#skew_partition.is_k_boundary" title="skew_partition.is_k_boundary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_k_boundary()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">outer()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.left">
+<code class="descclassname">skew_partition.</code><code class="descname">left</code><span class="sig-paren">(</span><em>sp</em>, <em>row_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#left"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.left" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a SkewPartition and a 0-based row index, return the 0-based column index of the <em>leftmost</em> cell in the corresponding row.  (Section 2.1 of <a class="reference internal" href="#mem" id="id4">[mem]</a>)</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">left</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">2</span>
+
+<span class="gp">sage: </span><span class="n">left</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>An input index that is out of the bounds of the skew partition will throw an error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">left</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">IndexError: list index out of range</span>
+</pre></div>
+</div>
+<p>An in-bounds index where no cells exist will return <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">left</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#skew_partition.right" title="skew_partition.right"><code class="xref py py-meth docutils literal notranslate"><span class="pre">right()</span></code></a>, <a class="reference internal" href="#skew_partition.top" title="skew_partition.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a>, <a class="reference internal" href="#skew_partition.bottom" title="skew_partition.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.right">
+<code class="descclassname">skew_partition.</code><code class="descname">right</code><span class="sig-paren">(</span><em>sp</em>, <em>row_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#right"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.right" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a SkewPartition and a 0-based row index, return the 0-based column index of the <em>rightmost</em> cell in the corresponding row.  (Section 2.1 of <a class="reference internal" href="#mem" id="id5">[mem]</a>)</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">right</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">3</span>
+
+<span class="gp">sage: </span><span class="n">right</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>An input index that is out of the bounds of the skew partition will throw an error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">right</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">IndexError: list index out of range</span>
+</pre></div>
+</div>
+<p>An in-bounds index where no cells exist will return <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">right</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#skew_partition.left" title="skew_partition.left"><code class="xref py py-meth docutils literal notranslate"><span class="pre">left()</span></code></a>, <a class="reference internal" href="#skew_partition.top" title="skew_partition.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a>, <a class="reference internal" href="#skew_partition.bottom" title="skew_partition.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.row_shape_to_linked_skew_partitions">
+<code class="descclassname">skew_partition.</code><code class="descname">row_shape_to_linked_skew_partitions</code><span class="sig-paren">(</span><em>rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#row_shape_to_linked_skew_partitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.row_shape_to_linked_skew_partitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a partition <code class="docutils literal notranslate"><span class="pre">rs</span></code>, find all linked SkewPartitions whose row-shape is <code class="docutils literal notranslate"><span class="pre">rs</span></code>.</p>
+<p>EXAMPLES:</p>
+<p>Note that [4, 2, 1] / [1, 1] is <em>not</em> linked and hence doesn’t appear in the list below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">row_shape_to_linked_skew_partitions</span><span class="p">(</span><span class="n">Partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="go">[[3, 1, 1] / [], [4, 1, 1] / [1], [5, 2, 1] / [2, 1]]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#skew_partition.is_linked" title="skew_partition.is_linked"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_linked()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">row_lengths()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.size_to_linked_skew_partitions">
+<code class="descclassname">skew_partition.</code><code class="descname">size_to_linked_skew_partitions</code><span class="sig-paren">(</span><em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#size_to_linked_skew_partitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.size_to_linked_skew_partitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a natural number <code class="docutils literal notranslate"><span class="pre">size</span></code>, return all linked SkewPartitions of size <code class="docutils literal notranslate"><span class="pre">size</span></code>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">size_to_linked_skew_partitions</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[[3] / [], [2, 1] / [], [3, 1] / [1], [1, 1, 1] / [], [2, 1, 1] / [1], [3, 2, 1] / [2, 1]]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#skew_partition.is_linked" title="skew_partition.is_linked"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_linked()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">size()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="skew_partition.top">
+<code class="descclassname">skew_partition.</code><code class="descname">top</code><span class="sig-paren">(</span><em>sp</em>, <em>col_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/skew_partition.html#top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#skew_partition.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a SkewPartition and a 0-based column index, return the 0-based row index of the <em>topmost</em> cell in the corresponding column.  (Section 2.1 of <a class="reference internal" href="#mem" id="id6">[mem]</a>)</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">top</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<p>An in-bounds col_index where no cells exist will return <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">top</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+
+<span class="gp">sage: </span><span class="n">top</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0</span>
+
+<span class="gp">sage: </span><span class="n">top</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>A col_index that is out-of-bounds of the skew partition will throw an error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">top</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">]]),</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">IndexError: list index out of range</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#skew_partition.right" title="skew_partition.right"><code class="xref py py-meth docutils literal notranslate"><span class="pre">right()</span></code></a>, <a class="reference internal" href="#skew_partition.left" title="skew_partition.left"><code class="xref py py-meth docutils literal notranslate"><span class="pre">left()</span></code></a>, <a class="reference internal" href="#skew_partition.bottom" title="skew_partition.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -70,34 +314,31 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="partition.html"
-                                  title="previous chapter">partition</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="k_shape.html"
-                                  title="next chapter"><span class="math">\(k\)</span>-shape</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/skew_partition.rst.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <!-- The shading of the "Go" button should be consistent -->
-                <!-- with the colour of the header and footer. See the file -->
-                <!-- doc/common/themes/sage/theme.conf for colours used by -->
-                <!-- the Sage theme. -->
-                <input type="submit" style="background-color: #B8B9F6" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="partition.html"
+                        title="previous chapter">partition</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="k_shape.html"
+                        title="next chapter"><span class="math notranslate nohighlight">\(k\)</span>-shape</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/skew_partition.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -108,6 +349,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="k_shape.html" title="\(k\)-shape"
              >next</a> |</li>
@@ -127,7 +371,7 @@
     
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Matthew Lancellotti, George Seelinger, Jennifer Morse.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
     <script type="text/javascript">
 /*global jQuery, window */

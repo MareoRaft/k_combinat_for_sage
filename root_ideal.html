@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>root ideal &#8212; k-Schur combinatorics for SageMath 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/sage.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.4',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -30,14 +22,16 @@
     <script src="_static/thebe.js" type="text/javascript"></script>
     <script src="_static/thebe-sage.js" type="text/javascript"></script>
 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="strong_marked_tableau.html" title="Strong Marked Tableau"
              accesskey="N">next</a> |</li>
@@ -60,8 +54,626 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="root-ideal">
-<h1>root ideal<a class="headerlink" href="#root-ideal" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-root_ideal">
+<span id="root-ideal"></span><h1>root ideal<a class="headerlink" href="#module-root_ideal" title="Permalink to this headline">¶</a></h1>
+<p>Sage does <em>not</em> have a builtin ‘RootIdeal’ object.  <em>This</em> module contains a RootIdeal class and useful functions pertaining to root ideals:</p>
+<p>AUTHORS:</p>
+<ul class="simple">
+<li>Matthew Lancellotti (2018): Initial version</li>
+</ul>
+<p>REFERENCES:</p>
+<table class="docutils citation" frame="void" id="cat" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[cat]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id5">3</a>, <a class="fn-backref" href="#id7">4</a>, <a class="fn-backref" href="#id11">5</a>, <a class="fn-backref" href="#id12">6</a>)</em> <a class="reference external" href="https://arxiv.org/abs/1804.03701">Catalan functions and k-schur positivity</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="scat" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[scat]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id4">2</a>, <a class="fn-backref" href="#id6">3</a>, <a class="fn-backref" href="#id8">4</a>, <a class="fn-backref" href="#id9">5</a>, <a class="fn-backref" href="#id10">6</a>)</em> Skew-linked Catalan functions and k-schur positivity.  Jonah Blasiak, Jennifer Morse, Anna Pun, and Daniel Summers.  Not to be confused with ‘Catalan functions and k-schur positivity.’</td></tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="root_ideal.RootIdeal">
+<em class="property">class </em><code class="descclassname">root_ideal.</code><code class="descname">RootIdeal</code><span class="sig-paren">(</span><em>lis</em>, <em>n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal" title="Permalink to this definition">¶</a></dt>
+<dd><p>A root ideal.</p>
+<p>Consider the k-1 staircase partition <span class="math notranslate nohighlight">\([k-1, k-2, \ldots, 1]\)</span> positioned in the upper-right corner of a <span class="math notranslate nohighlight">\(k\)</span> x <span class="math notranslate nohighlight">\(k\)</span> grid.  The cells in the grid are labeled with (row_index, col_index) 0-based coordinates.  Now consider any right-justified subpartition of the staircase partition.  This is a RootIdeal.  However, it is expressed not as a partition but as a list of the cells it contains.</p>
+<p>See Definition 2.1 of <a class="reference internal" href="#cat" id="id1">[cat]</a> for more.</p>
+<p>EXAMPLES:</p>
+<p>The partition <span class="math notranslate nohighlight">\([3, 1]\)</span> in the 7 x 7 grid is the root ideal <span class="math notranslate nohighlight">\([(0,4), (0,5), (0,6), (1,6)]\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)])</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="root_ideal.RootIdeal.bottom">
+<code class="descname">bottom</code><span class="sig-paren">(</span><em>root_ideal</em>, <em>start_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.bottom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.bottom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a row index <code class="docutils literal notranslate"><span class="pre">start_index</span></code>, look at it’s <a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a> and return the final index.</p>
+<p>EXAMPLES:</p>
+<p>The picture below represents the root ideal used in the examples, and the path drawn on the picture depicts the down path for index 0 specifically, demonstrating that <code class="docutils literal notranslate"><span class="pre">bottom(0)</span></code> should be 4:</p>
+<a class="reference internal image-reference" href="_images/bottom.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/bottom.JPG" style="width: 180px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeal.down" title="root_ideal.RootIdeal.down"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up" title="root_ideal.RootIdeal.up"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up_path" title="root_ideal.RootIdeal.up_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.top" title="root_ideal.RootIdeal.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.complement">
+<code class="descname">complement</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.complement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.complement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return this root ideal’s complement in the upper-staircase-shape.</p>
+<p>Given a root ideal (or just an iterable of roots), return it’s complement in the upper-staircase-shape, the result being a root ideal (or just an iterable of roots).</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">ri</span></code> – a root ideal</li>
+</ul>
+<p>OPTIONAL INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">n</span></code> – (default <code class="docutils literal notranslate"><span class="pre">None</span></code>) the side length of the n x n box you want the complement to be taken over.</li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The two root ideals depicted below are complements of each other:</p>
+<a class="reference internal image-reference" href="_images/root-ideal.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/root-ideal.JPG" style="width: 180px;" /></a>
+<a class="reference internal image-reference" href="_images/root-ideal-complement.JPG"><img alt="The root ideal [(0,1), (1,2), (2,3), (3,4)]" class="align-center" src="_images/root-ideal-complement.JPG" style="width: 180px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri1</span> <span class="o">=</span> <span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)])</span>
+<span class="gp">sage: </span><span class="n">ri2</span> <span class="o">=</span> <span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)])</span>
+<span class="gp">sage: </span><span class="n">ri1</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span> <span class="o">==</span> <span class="n">ri2</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">ri2</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span> <span class="o">==</span> <span class="n">ri1</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeals.init_staircase" title="root_ideal.RootIdeals.init_staircase"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RootIdeals.init_staircase()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.down">
+<code class="descname">down</code><span class="sig-paren">(</span><em>ri</em>, <em>row_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starting at the row corresponding to <code class="docutils literal notranslate"><span class="pre">row_index</span></code>, return the down.</p>
+<p>Given a root ideal <code class="docutils literal notranslate"><span class="pre">ri</span></code> and a starting position <code class="docutils literal notranslate"><span class="pre">row_index</span></code>, move right on that row until you hit the root ideal (you are now standing ontop of a cell of the root ideal), then move straight down until you hit the diagonal, and return the new index.</p>
+<p>EXAMPLES:</p>
+<p>The picture below represents the root ideal <code class="docutils literal notranslate"><span class="pre">ri</span></code>:</p>
+<a class="reference internal image-reference" href="_images/root-ideal.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/root-ideal.JPG" style="width: 180px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeal.up" title="root_ideal.RootIdeal.up"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up_path" title="root_ideal.RootIdeal.up_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.top" title="root_ideal.RootIdeal.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.bottom" title="root_ideal.RootIdeal.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.down_path">
+<code class="descname">down_path</code><span class="sig-paren">(</span><em>root_ideal</em>, <em>start_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.down_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.down_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a starting row index <code class="docutils literal notranslate"><span class="pre">start_index</span></code>, perform <a class="reference internal" href="#root_ideal.RootIdeal.down" title="root_ideal.RootIdeal.down"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down()</span></code></a> operations repeatedly until you can’t anymore.</p>
+<p>Returns the resulting sequence of indices as a list.  (See <a class="reference internal" href="#cat" id="id2">[cat]</a> Definition 5.2 for more)</p>
+<p>EXAMPLES:</p>
+<p>The picture below represents the root ideal used in the example, and the path drawn on the picture depicts the down path for <code class="docutils literal notranslate"><span class="pre">start_index</span></code> 0 specifically:</p>
+<a class="reference internal image-reference" href="_images/bottom.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/bottom.JPG" style="width: 180px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down_path</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">[0, 2, 4]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down_path</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[1, 3]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down_path</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[2, 4]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down_path</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[3]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down_path</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">[4]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeal.down" title="root_ideal.RootIdeal.down"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up" title="root_ideal.RootIdeal.up"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up_path" title="root_ideal.RootIdeal.up_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.top" title="root_ideal.RootIdeal.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.bottom" title="root_ideal.RootIdeal.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.down_path_column_lengths">
+<code class="descname">down_path_column_lengths</code><span class="sig-paren">(</span><em>ptn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.down_path_column_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.down_path_column_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the column shape <span class="math notranslate nohighlight">\(\mu'\)</span> as defined by Definition 2.3 of <a class="reference internal" href="#scat" id="id3">[scat]</a>.</p>
+<p>It is also introduced in the second paragraph of the overview as <span class="math notranslate nohighlight">\(\mathfrak{cs}(\Psi, \lambda)\)</span>.</p>
+<p>EXAMPLES:</p>
+<p>In Example 2.4 of <a class="reference internal" href="#scat" id="id4">[scat]</a>, the following</p>
+<img alt="The root ideal [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)] and the partition 7 6 5 2 2 2" class="align-center" src="_images/example2.4.png" />
+<p>depicts the root ideal in red and the partition on the diagonal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ptn</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">down_path_column_lengths</span><span class="p">(</span><span class="n">ptn</span><span class="p">)</span>
+<span class="go">[15, 7, 4, 2]</span>
+</pre></div>
+</div>
+<p>This is also the lengths of the bounce paths in <a class="reference internal" href="#cat" id="id5">[cat]</a> Definition 5.2.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.down_path_column_lengths_part">
+<code class="descname">down_path_column_lengths_part</code><span class="sig-paren">(</span><em>root_ideal</em>, <em>ptn</em>, <em>start_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.down_path_column_lengths_part"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.down_path_column_lengths_part" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is <span class="math notranslate nohighlight">\(\mu_i\)</span> in Definition 2.3 of <a class="reference internal" href="#scat" id="id6">[scat]</a>.</p>
+<p>This exists mainly as a helper function for <a class="reference internal" href="#root_ideal.RootIdeal.down_path_column_lengths" title="root_ideal.RootIdeal.down_path_column_lengths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path_column_lengths()</span></code></a>.</p>
+<p>EXAMPLES:</p>
+<blockquote>
+<div><p>sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
+sage: ptn = [7, 6, 5, 2, 2, 2]</p>
+<p>sage: ri.down_path_column_lengths_part(ptn, 0)
+15
+sage: ri.down_path_column_lengths_part(ptn, 1)
+8
+sage: ri.down_path_column_lengths_part(ptn, 3)
+4
+sage: ri.down_path_column_lengths_part(ptn, 2)
+7
+sage: ri.down_path_column_lengths_part(ptn, 4)
+2
+sage: ri.down_path_column_lengths_part(ptn, 5)
+2
+sage: ri.down_path_column_lengths_part(ptn, 6)
+Traceback (most recent call last):
+…
+IndexError: list index out of range</p>
+</div></blockquote>
+<p>This is also the lengths of the bounce paths in <a class="reference internal" href="#cat" id="id7">[cat]</a> Definition 5.2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.is_strict">
+<code class="descname">is_strict</code><span class="sig-paren">(</span><em>ri</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.is_strict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.is_strict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if this root ideal’s corresponding partition is strictly decreasing.</p>
+<p>Given a root ideal <code class="docutils literal notranslate"><span class="pre">ri</span></code>, check to see if it is a <em>strict root ideal</em>, as defined in Example 2.4 of <a class="reference internal" href="#scat" id="id8">[scat]</a>.  This merely means that it’s corresponding partition is strictly decreasing!</p>
+<p>EXAMPLES:</p>
+<p>In the following images, ignore the index on the diagonal and look only at the root ideal in red.</p>
+<img alt="The root ideal corresponding to the partition  8 6 5 3 2" class="align-center" src="_images/Phi.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">9</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">is_strict</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<img alt="The root ideal corresponding to the partition  5 2 2 2" class="align-center" src="_images/Ksi.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">is_strict</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="partition.html#partition.is_strictly_decreasing" title="partition.is_strictly_decreasing"><code class="xref py py-meth docutils literal notranslate"><span class="pre">partition.is_strictly_decreasing()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.next_within_bounds">
+<code class="descname">next_within_bounds</code><span class="sig-paren">(</span><em>min=[]</em>, <em>max=None</em>, <em>type='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.next_within_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.next_within_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next root ideal lexicographically that contains min and is contained in max.</p>
+<p>This is the same method as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Partition.next_within_bounds()</span></code>, but using the corresponding root ideals instead of partitions.  It is best to understand that method before looking at this one.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">self</span></code> – The RootIdeal.</li>
+<li><code class="docutils literal notranslate"><span class="pre">min</span></code> – (default <code class="docutils literal notranslate"><span class="pre">[]</span></code>, the empty root ideal) The ‘minimum root ideal’ that <code class="docutils literal notranslate"><span class="pre">next(self)</span></code> must contain.</li>
+<li><code class="docutils literal notranslate"><span class="pre">max</span></code> – (default <code class="docutils literal notranslate"><span class="pre">None</span></code>) The ‘maximum root ideal’ that <code class="docutils literal notranslate"><span class="pre">next(self)</span></code> must be contained in.  If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then there is no restriction.</li>
+<li><code class="docutils literal notranslate"><span class="pre">type</span></code> – (default <code class="docutils literal notranslate"><span class="pre">'strict'</span></code>) The type of root ideals allowed.  For example, ‘strict’ for strictly decreasing root ideals, or <code class="docutils literal notranslate"><span class="pre">None</span></code> to allow any valid upper root ideal.</li>
+</ul>
+<p>Note also that the default type is <code class="docutils literal notranslate"><span class="pre">'strict'</span></code>, whereas <code class="xref py py-meth docutils literal notranslate"><span class="pre">Partition.next_within_bounds()</span></code> has default type <code class="docutils literal notranslate"><span class="pre">None</span></code>!</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">m</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)]</span>
+<span class="gp">sage: </span><span class="n">M</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)]</span>
+<span class="gp">sage: </span><span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="go">[(0, 2), (0, 3), (1, 3)]</span>
+<span class="gp">sage: </span><span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="go">[(0, 1), (0, 2), (0, 3), (1, 3)]</span>
+<span class="gp">sage: </span><span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+<span class="go">[(0, 1), (0, 2), (0, 3), (1, 2), (1, 3)]</span>
+<span class="gp">sage: </span><span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">next_within_bounds</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">M</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Partition.next_within_bounds()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.to_partition">
+<code class="descname">to_partition</code><span class="sig-paren">(</span><em>root_ideal</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.to_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.to_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a root ideal (list of cells), return the corresponding partition (the row shape of the root ideal).</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">Partition</span></code> object.</p>
+<p>EXAMPLES:</p>
+<p>The red part of the following picture (please ignore the diagonal) represents the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)].</p>
+<img alt="The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] inside a 6 by 6 grid." class="align-center" src="_images/Ksi.png" />
+<p>But it can also be interpreted as the partition 5 2 2 2 (in the Hebrew convention).  Therefore, <code class="docutils literal notranslate"><span class="pre">to_partition()</span></code> acting on the root ideal will output 5 2 2 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeal</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)])</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">to_partition</span><span class="p">()</span>
+<span class="go">[5, 2, 2, 2]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeals.init_from_partition" title="root_ideal.RootIdeals.init_from_partition"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RootIdeals.init_from_partition()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.top">
+<code class="descname">top</code><span class="sig-paren">(</span><em>root_ideal</em>, <em>start_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a column index <code class="docutils literal notranslate"><span class="pre">start_index</span></code>, look at it’s <a class="reference internal" href="#root_ideal.RootIdeal.up_path" title="root_ideal.RootIdeal.up_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up_path()</span></code></a> and return the final index.</p>
+<p>EXAMPLES:</p>
+<p>The picture below represents the root ideal <code class="docutils literal notranslate"><span class="pre">ri</span></code>:</p>
+<a class="reference internal image-reference" href="_images/root-ideal.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/root-ideal.JPG" style="width: 180px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeal.down" title="root_ideal.RootIdeal.down"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up" title="root_ideal.RootIdeal.up"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up_path" title="root_ideal.RootIdeal.up_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.bottom" title="root_ideal.RootIdeal.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.up">
+<code class="descname">up</code><span class="sig-paren">(</span><em>root_ideal</em>, <em>col_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starting at the column corresponding to <code class="docutils literal notranslate"><span class="pre">col_index</span></code>, return the up.</p>
+<p>Same as <a class="reference internal" href="#root_ideal.RootIdeal.down" title="root_ideal.RootIdeal.down"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down()</span></code></a>, but this time you start in the <em>column</em> indicated by <code class="docutils literal notranslate"><span class="pre">column_index</span></code>, and move <em>up</em> until you hit the root ideal, then move <em>left</em> until you hit the diagonal.</p>
+<p>EXAMPLES:</p>
+<p>The picture below represents the root ideal <code class="docutils literal notranslate"><span class="pre">ri</span></code>:</p>
+<a class="reference internal image-reference" href="_images/root-ideal.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/root-ideal.JPG" style="width: 180px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="bp">None</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeal.down" title="root_ideal.RootIdeal.down"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up_path" title="root_ideal.RootIdeal.up_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.top" title="root_ideal.RootIdeal.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.bottom" title="root_ideal.RootIdeal.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeal.up_path">
+<code class="descname">up_path</code><span class="sig-paren">(</span><em>root_ideal</em>, <em>start_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeal.up_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeal.up_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a>, but uses a <em>column</em> index to start with, and applies <em>up</em> operations repeatedly.</p>
+<p>EXAMPLES:</p>
+<p>The picture below represents the root ideal <code class="docutils literal notranslate"><span class="pre">ri</span></code>:</p>
+<a class="reference internal image-reference" href="_images/root-ideal.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/root-ideal.JPG" style="width: 180px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up_path</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">[0]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up_path</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[1]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up_path</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[2, 0]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up_path</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[3, 1]</span>
+<span class="gp">sage: </span><span class="n">ri</span><span class="o">.</span><span class="n">up_path</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">[4, 2, 0]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeal.down" title="root_ideal.RootIdeal.down"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.up" title="root_ideal.RootIdeal.up"><code class="xref py py-meth docutils literal notranslate"><span class="pre">up()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.down_path" title="root_ideal.RootIdeal.down_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_path()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.top" title="root_ideal.RootIdeal.top"><code class="xref py py-meth docutils literal notranslate"><span class="pre">top()</span></code></a>, <a class="reference internal" href="#root_ideal.RootIdeal.bottom" title="root_ideal.RootIdeal.bottom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bottom()</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="root_ideal.RootIdeals">
+<em class="property">class </em><code class="descclassname">root_ideal.</code><code class="descname">RootIdeals</code><a class="reference internal" href="_modules/root_ideal.html#RootIdeals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals" title="Permalink to this definition">¶</a></dt>
+<dd><p>The family of root ideals.</p>
+<p>Use this class as a factory to initialize a <a class="reference internal" href="#root_ideal.RootIdeal" title="root_ideal.RootIdeal"><code class="xref py py-class docutils literal notranslate"><span class="pre">RootIdeal</span></code></a> object with any valid identifying data.  See the <code class="docutils literal notranslate"><span class="pre">init_from...</span></code> methods below for ways to create a root ideal.  Remember that you can also create a root ideal directly from an iterable of roots using <a class="reference internal" href="#root_ideal.RootIdeal" title="root_ideal.RootIdeal"><code class="xref py py-class docutils literal notranslate"><span class="pre">RootIdeal</span></code></a>.</p>
+<dl class="method">
+<dt id="root_ideal.RootIdeals.init_all_from_skew_partition">
+<code class="descname">init_all_from_skew_partition</code><span class="sig-paren">(</span><em>sp</em>, <em>type='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeals.init_all_from_skew_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals.init_all_from_skew_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">SkewPartition</span></code> <code class="docutils literal notranslate"><span class="pre">sp</span></code>, find the corresponding set (but given as a list here) of root ideals.</p>
+<p>(This is the set <span class="math notranslate nohighlight">\(\{\Psi \in \Delta^+(\mathfrak{R}) \mid \Phi(\lambda, \mu) \subset \Psi \subset \Phi^+(\lambda, \mu)\} = [(\lambda, \mu)]\)</span> found in <a class="reference internal" href="#scat" id="id9">[scat]</a> at the bottom of page 1.)</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">sp</span> <span class="o">=</span> <span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[]])</span>
+<span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_all_from_skew_partition</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+<span class="go">[[(0, 1), (0, 2), (0, 3), (1, 3)], [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3)]]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeals.init_from_skew_partition" title="root_ideal.RootIdeals.init_from_skew_partition"><code class="xref py py-meth docutils literal notranslate"><span class="pre">init_from_skew_partition()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeals.init_from_partition">
+<code class="descname">init_from_partition</code><span class="sig-paren">(</span><em>ptn</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeals.init_from_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals.init_from_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a partition and the size of the square, return the corresponding root ideal.  (This is the inverse function to <a class="reference internal" href="#root_ideal.RootIdeal.to_partition" title="root_ideal.RootIdeal.to_partition"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RootIdeal.to_partition()</span></code></a> in the context of an <span class="math notranslate nohighlight">\(n\)</span> x <span class="math notranslate nohighlight">\(n\)</span> grid.)</p>
+<p>EXAMPLES:</p>
+<p>The red part of the following picture (please ignore the diagonal) can be interpreted as the partition 5 2 2 2 (in the Hebrew convention):</p>
+<img alt="The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] inside a 6 by 6 grid." class="align-center" src="_images/Ksi.png" />
+<p>Therefore the partition 5 2 2 2 with <span class="math notranslate nohighlight">\(n=6\)</span> corresponds to the root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_partition</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">[(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeals.init_from_removable_roots">
+<code class="descname">init_from_removable_roots</code><span class="sig-paren">(</span><em>corners</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeals.init_from_removable_roots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals.init_from_removable_roots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the removable roots <code class="docutils literal notranslate"><span class="pre">corners</span></code> of a root ideal and the size length <span class="math notranslate nohighlight">\(n\)</span> of the <span class="math notranslate nohighlight">\(n\)</span> x <span class="math notranslate nohighlight">\(n\)</span> grid, return the root ideal itself.</p>
+<p>EXAMPLES:</p>
+<p>The root ideal [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)] in the <span class="math notranslate nohighlight">\(6\)</span> x <span class="math notranslate nohighlight">\(6\)</span> grid shown below in red (please ignore the diagonal) has removable roots <span class="math notranslate nohighlight">\((0, 1)\)</span> and <span class="math notranslate nohighlight">\((3, 4)\)</span>:</p>
+<img alt="The root ideal corresponding to the partition  5 2 2 2" class="align-center" src="_images/Ksi.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">removable_roots_to_root_ideal</span><span class="p">({(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">[(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeals.init_from_skew_partition">
+<code class="descname">init_from_skew_partition</code><span class="sig-paren">(</span><em>sp</em>, <em>type='max'</em>, <em>algorithm='removable roots'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeals.init_from_skew_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals.init_from_skew_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">SkewPartition</span></code> <code class="docutils literal notranslate"><span class="pre">sp</span></code> and a type of root ideal (‘max’ or ‘min’), return the corresponding root ideal.</p>
+<p>A type of <code class="docutils literal notranslate"><span class="pre">'min'</span></code> returns <span class="math notranslate nohighlight">\(\Phi(\lambda, \mu)\)</span> while a type of <code class="docutils literal notranslate"><span class="pre">'max'</span></code> returns <span class="math notranslate nohighlight">\(\Phi^+(\lambda, \mu)\)</span> as notated in <a class="reference internal" href="#scat" id="id10">[scat]</a> at the bottom of page 1.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_skew_partition</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+<span class="go">[(0, 1), (0, 2), (0, 3), (1, 3)]</span>
+<span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_skew_partition</span><span class="p">(</span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="go">[(0, 1), (0, 2), (0, 3), (1, 2), (1, 3)]</span>
+
+<span class="gp">sage: </span><span class="n">sp</span> <span class="o">=</span> <span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+<span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_from_skew_partition</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+<span class="go">[(0, 3), (0, 4), (0, 5), (1, 4), (1, 5)]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeals.init_all_from_skew_partition" title="root_ideal.RootIdeals.init_all_from_skew_partition"><code class="xref py py-meth docutils literal notranslate"><span class="pre">init_all_from_skew_partition()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeals.init_k_schur_from_pseudo_partition">
+<code class="descname">init_k_schur_from_pseudo_partition</code><span class="sig-paren">(</span><em>seq</em>, <em>k</em>, <em>n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeals.init_k_schur_from_pseudo_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals.init_k_schur_from_pseudo_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <code class="docutils literal notranslate"><span class="pre">k</span></code>-bounded “pseudo-partition” <code class="docutils literal notranslate"><span class="pre">seq</span></code> <span class="math notranslate nohighlight">\(= \mu\)</span> and the dimension <span class="math notranslate nohighlight">\(n\)</span> of the <span class="math notranslate nohighlight">\(n\)</span> x <span class="math notranslate nohighlight">\(n\)</span> grid, return the corresponding <span class="math notranslate nohighlight">\(k\)</span>-Schur root ideal <span class="math notranslate nohighlight">\(\Delta^k(\mu)\)</span>, as defined in <a class="reference internal" href="#cat" id="id11">[cat]</a> Definition 2.2 as</p>
+<div class="math notranslate nohighlight">
+\[\Delta^k(\mu) = \{(i,j) \in \Delta^+_n \mid k - \mu_i + i &lt; j \}\]</div>
+<p>EXAMPLES:</p>
+<p>The following diagram depicts the <span class="math notranslate nohighlight">\(k\)</span>-bounded partition on the diagonal and the resulting <span class="math notranslate nohighlight">\(k\)</span>-schur root ideal:</p>
+<a class="reference internal image-reference" href="_images/k-schur-root-ideal.JPG"><img alt="The partition 3 3 2 2 2 and the root ideal [(0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (2, 5), (2, 6), (2, 7), (3, 6), (3, 7), (4, 7)]" class="align-center" src="_images/k-schur-root-ideal.JPG" style="height: 200px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_ri</span> <span class="o">=</span> <span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_k_schur_from_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">4</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">sage: </span><span class="n">k_ri</span><span class="o">.</span><span class="n">to_partition</span><span class="p">()</span>
+<span class="go">[6, 5, 3, 2, 1]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.is_pseudo_partition" title="root_ideal.is_pseudo_partition"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_pseudo_partition()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeals.init_parabolic_from_composition">
+<code class="descname">init_parabolic_from_composition</code><span class="sig-paren">(</span><em>composition</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeals.init_parabolic_from_composition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals.init_parabolic_from_composition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a composition of positive integers, return the parabolic root ideal.</p>
+<p>Given a composition <span class="math notranslate nohighlight">\(\eta\)</span> of positive integers, return the parabolic root ideal <span class="math notranslate nohighlight">\(\Delta(\eta)\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[\Delta(\eta) := \{ \alpha \in \Delta^+_{|\eta|} \:\text{above the block diagonal with block sizes}\: \eta_1, \ldots, \eta_r\}\]</div>
+<p>in <a class="reference internal" href="#cat" id="id12">[cat]</a> just below Conjecture 3.3.</p>
+<p>EXAMPLES:</p>
+<a class="reference internal image-reference" href="_images/parabolic-root-ideal.png"><img alt="The root ideal [(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]" class="align-center" src="_images/parabolic-root-ideal.png" style="width: 200px;" /></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_parabolic_from_composition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">[(0,1), (0,2), (0,3), (0,4), (0,5), (1,4), (1,5), (2,4), (2,5), (3,4), (3,5)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="root_ideal.RootIdeals.init_staircase">
+<code class="descname">init_staircase</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#RootIdeals.init_staircase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.RootIdeals.init_staircase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given <span class="math notranslate nohighlight">\(n\)</span>, return the root ideal commonly denoted <span class="math notranslate nohighlight">\(\Delta^+\)</span>, which is the maximum possible root ideal in an <span class="math notranslate nohighlight">\(n\)</span> x <span class="math notranslate nohighlight">\(n\)</span> grid.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_staircase</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[(0,1), (0,2), (1,2)]</span>
+<span class="gp">sage: </span><span class="n">RootIdeals</span><span class="p">()</span><span class="o">.</span><span class="n">init_staircase</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">[(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.staircase_shape" title="root_ideal.staircase_shape"><code class="xref py py-meth docutils literal notranslate"><span class="pre">staircase_shape()</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="root_ideal.is_pseudo_partition">
+<code class="descclassname">root_ideal.</code><code class="descname">is_pseudo_partition</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#is_pseudo_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.is_pseudo_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether <code class="docutils literal notranslate"><span class="pre">seq</span></code> is a pseudo-partition.</p>
+<p>A __pseudo <a href="#id13"><span class="problematic" id="id14">partition__</span></a> is a composition <span class="math notranslate nohighlight">\(\gamma\)</span> such that <span class="math notranslate nohighlight">\(\gamma + \rho\)</span> is a partition, where <span class="math notranslate nohighlight">\(\rho\)</span> is the staircase shape.</p>
+<p>Another way to think of this function is that it will return <code class="docutils literal notranslate"><span class="pre">False</span></code> if the “slope” ever exceeds <span class="math notranslate nohighlight">\(+1\)</span>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_pseudo_partition</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_pseudo_partition</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_pseudo_partition</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_pseudo_partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_pseudo_partition</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.staircase_shape" title="root_ideal.staircase_shape"><code class="xref py py-meth docutils literal notranslate"><span class="pre">staircase_shape()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="root_ideal.removable_roots_to_partition">
+<code class="descclassname">root_ideal.</code><code class="descname">removable_roots_to_partition</code><span class="sig-paren">(</span><em>corners</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#removable_roots_to_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.removable_roots_to_partition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the removable roots that define a root ideal, return the partition corresponding to that root ideal.</p>
+<p>Given the <code class="docutils literal notranslate"><span class="pre">corners</span></code> (removable roots) that define a root ideal as well as the size <code class="docutils literal notranslate"><span class="pre">n</span></code> of the <span class="math notranslate nohighlight">\(n\)</span> x <span class="math notranslate nohighlight">\(n\)</span> root ideal grid, return the partition corresponding to that root ideal.</p>
+<p>EXAMPLES:</p>
+<p>Consider that <span class="math notranslate nohighlight">\(n = 6\)</span> and the removable roots are <span class="math notranslate nohighlight">\((0, 3)\)</span> and <span class="math notranslate nohighlight">\((1, 4)\)</span>.  This function essentially draws a 6 x 6 grid, and then fills in the cells <span class="math notranslate nohighlight">\((0, 3)\)</span> and <span class="math notranslate nohighlight">\((1, 4)\)</span>.</p>
+<a class="reference internal image-reference" href="_images/removable-roots-to-partition.JPG"><img alt="The root ideal [(0,2), (0,3), (0,4), (1,3), (1,4), (2,4)]" class="align-center" src="_images/removable-roots-to-partition.JPG" style="width: 240px;" /></a>
+<p>All cells to the north and east of the filled in ones also become shaded.  This shades the root ideal [(0, 3), (0, 4), (0, 5), (1, 4), (1, 5)] which corresponds to the partition [3, 2], so the function will return <code class="docutils literal notranslate"><span class="pre">Partition([3,</span> <span class="pre">2])</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">removable_roots_to_partition</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">[3, 2]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeals.init_from_removable_roots" title="root_ideal.RootIdeals.init_from_removable_roots"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RootIdeals.init_from_removable_roots()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_partition()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="root_ideal.selected_rows_to_maximum_root_ideal">
+<code class="descclassname">root_ideal.</code><code class="descname">selected_rows_to_maximum_root_ideal</code><span class="sig-paren">(</span><em>n</em>, <em>selected_indices</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#selected_rows_to_maximum_root_ideal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.selected_rows_to_maximum_root_ideal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the dimension of the square and the selected rows, output the root ideal.</p>
+<p>Given the dimension <code class="docutils literal notranslate"><span class="pre">n</span></code> of the square and the selected rows whose indices are <code class="docutils literal notranslate"><span class="pre">selected_indices</span></code>, return the maximum root ideal.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">selected_rows_to_maximum_root_ideal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">RootIdeal([])</span>
+<span class="gp">sage: </span><span class="n">selected_rows_to_maximum_root_ideal</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">RootIdeal([])</span>
+<span class="gp">sage: </span><span class="n">selected_rows_to_maximum_root_ideal</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">RootIdeal([(0, 1)])</span>
+<span class="gp">sage: </span><span class="n">selected_rows_to_maximum_root_ideal</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">RootIdeal([(0, 1), (0, 2)])</span>
+<span class="gp">sage: </span><span class="n">selected_rows_to_maximum_root_ideal</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">RootIdeal([(0, 1), (0, 2), (0, 3), (1, 3)])</span>
+<span class="gp">sage: </span><span class="n">selected_rows_to_maximum_root_ideal</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">RootIdeal([(0, 2), (0, 3), (0, 4), (1, 3), (1, 4)])</span>
+<span class="gp">sage: </span><span class="n">selected_rows_to_maximum_root_ideal</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">RootIdeal([(0, 2), (0, 3), (0, 4), (1, 3), (1, 4), (2, 4)])</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.skew_partition_to_selected_rows" title="root_ideal.skew_partition_to_selected_rows"><code class="xref py py-meth docutils literal notranslate"><span class="pre">skew_partition_to_selected_rows()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="root_ideal.skew_partition_to_removable_roots">
+<code class="descclassname">root_ideal.</code><code class="descname">skew_partition_to_removable_roots</code><span class="sig-paren">(</span><em>sp</em>, <em>type='max'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#skew_partition_to_removable_roots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.skew_partition_to_removable_roots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a SkewPartition <code class="docutils literal notranslate"><span class="pre">sp</span></code>, return the removable roots of the corresponding ‘min’ or ‘max’ root ideal.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">sp</span></code> – a <code class="xref py py-class docutils literal notranslate"><span class="pre">SkewPartition</span></code></li>
+</ul>
+<p>OPTIONAL INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">type</span></code> – (default <code class="docutils literal notranslate"><span class="pre">'max'</span></code>) the type of root ideal you want to use.  <code class="docutils literal notranslate"><span class="pre">'min'</span></code> is the minimum root ideal (as far as containment goes) and <code class="docutils literal notranslate"><span class="pre">'max'</span></code> is the maximum root ideal.</li>
+</ul>
+<p>OUTPUT:</p>
+<p>A list of removable roots in order.</p>
+<p>TODO: find an example where min is different than max</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[],</span> <span class="p">[]])</span><span class="o">.</span><span class="n">to_removable_roots</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+<span class="go">[]</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[],</span> <span class="p">[]])</span><span class="o">.</span><span class="n">to_removable_roots</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="go">[]</span>
+
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">to_removable_roots</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+<span class="go">[(0, 2)]</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">to_removable_roots</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="go">[(0, 2)]</span>
+
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">to_removable_roots</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+<span class="go">[(0, 3), (1, 4)]</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">to_removable_roots</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="go">[(0, 3), (1, 4)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="root_ideal.skew_partition_to_selected_rows">
+<code class="descclassname">root_ideal.</code><code class="descname">skew_partition_to_selected_rows</code><span class="sig-paren">(</span><em>sp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#skew_partition_to_selected_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.skew_partition_to_selected_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a skew partition <code class="docutils literal notranslate"><span class="pre">sp</span></code>, follow the bounce algorithm and return the indices of the selected rows.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[],</span> <span class="p">[]])</span><span class="o">.</span><span class="n">to_selected_rows</span><span class="p">()</span>
+<span class="go">[]</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[]])</span><span class="o">.</span><span class="n">to_selected_rows</span><span class="p">()</span>
+<span class="go">[0]</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">to_selected_rows</span><span class="p">()</span>
+<span class="go">[0, 1]</span>
+<span class="gp">sage: </span><span class="n">SkewPartition</span><span class="p">([[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">to_selected_rows</span><span class="p">()</span>
+<span class="go">[0, 1, 2, 5]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.selected_rows_to_maximum_root_ideal" title="root_ideal.selected_rows_to_maximum_root_ideal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selected_rows_to_maximum_root_ideal()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="root_ideal.staircase_shape">
+<code class="descclassname">root_ideal.</code><code class="descname">staircase_shape</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/root_ideal.html#staircase_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#root_ideal.staircase_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given <code class="docutils literal notranslate"><span class="pre">n</span></code>, return the composition <span class="math notranslate nohighlight">\([n-1, n-2, \ldots, 0]\)</span> commonly denoted <span class="math notranslate nohighlight">\(\rho\)</span>.</p>
+<p>Yes, this INCLUDES a 0 at the end!</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">staircase_shape</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[2, 1, 0]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#root_ideal.RootIdeals.init_staircase" title="root_ideal.RootIdeals.init_staircase"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RootIdeals.init_staircase()</span></code></a></p>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -70,34 +682,31 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="k_shape.html"
-                                  title="previous chapter"><span class="math">\(k\)</span>-shape</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="strong_marked_tableau.html"
-                                  title="next chapter">Strong Marked Tableau</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/root_ideal.rst.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <!-- The shading of the "Go" button should be consistent -->
-                <!-- with the colour of the header and footer. See the file -->
-                <!-- doc/common/themes/sage/theme.conf for colours used by -->
-                <!-- the Sage theme. -->
-                <input type="submit" style="background-color: #B8B9F6" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="k_shape.html"
+                        title="previous chapter"><span class="math notranslate nohighlight">\(k\)</span>-shape</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="strong_marked_tableau.html"
+                        title="next chapter">Strong Marked Tableau</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/root_ideal.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -108,6 +717,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="strong_marked_tableau.html" title="Strong Marked Tableau"
              >next</a> |</li>
@@ -127,7 +739,7 @@
     
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Matthew Lancellotti, George Seelinger, Jennifer Morse.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
     <script type="text/javascript">
 /*global jQuery, window */

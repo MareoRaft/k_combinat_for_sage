@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Strong Marked Tableau &#8212; k-Schur combinatorics for SageMath 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/sage.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1.4',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -30,14 +22,16 @@
     <script src="_static/thebe.js" type="text/javascript"></script>
     <script src="_static/thebe-sage.js" type="text/javascript"></script>
 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="all.html" title="and beyond!"
              accesskey="N">next</a> |</li>
@@ -60,8 +54,202 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="strong-marked-tableau">
-<h1>Strong Marked Tableau<a class="headerlink" href="#strong-marked-tableau" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-strong_marked_tableau">
+<span id="strong-marked-tableau"></span><h1>Strong Marked Tableau<a class="headerlink" href="#module-strong_marked_tableau" title="Permalink to this headline">¶</a></h1>
+<p>Sage has have a builtin <a class="reference external" href="https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/k_tableau.html">StrongTableau</a> object.  <em>This</em> module contains useful functions pertaining to Standard Marked Tableau (SMT), the most standard form of a StrongTableau (a strong tableau with standard weight).</p>
+<p>AUTHORS:</p>
+<ul class="simple">
+<li>George Seelinger (2018): Initial version</li>
+<li>Matthew Lancellotti (2018): End core to strong marked tableaux</li>
+</ul>
+<p>REFERENCES:</p>
+<dl class="function">
+<dt id="strong_marked_tableau.end_core_to_marked_core_sequences">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">end_core_to_marked_core_sequences</code><span class="sig-paren">(</span><em>end_core</em>, <em>k</em>, <em>row_markings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#end_core_to_marked_core_sequences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.end_core_to_marked_core_sequences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the set of core sequences marked by <code class="docutils literal notranslate"><span class="pre">row_markings</span></code> ending in <code class="docutils literal notranslate"><span class="pre">end_core</span></code>.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">end_core</span></code> – a <span class="math notranslate nohighlight">\(k+1\)</span>-core</li>
+<li><code class="docutils literal notranslate"><span class="pre">k</span></code> – All of the cores in the core sequences are <span class="math notranslate nohighlight">\(k+1\)</span>-cores.</li>
+<li><code class="docutils literal notranslate"><span class="pre">row_markings</span></code> – vector of row-indices indicating the rows of the markings for each core sequence.  (Note that “markings” are row-col-coordinates, while “row_markings” are merely row-coordinates.)</li>
+</ul>
+<p>OUTPUTS:</p>
+<ul class="simple">
+<li>A set of all possible core sequences that end in <code class="docutils literal notranslate"><span class="pre">end_core</span></code> and can be marked by the row marking vector <code class="docutils literal notranslate"><span class="pre">row_markings</span></code>.</li>
+</ul>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">end_core_to_marked_core_sequences</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">{([], [1], [1, 1], [2, 1, 1], [3, 1, 1], [5, 3, 1])}</span>
+
+<span class="gp">sage: </span><span class="n">end_core_to_marked_core_sequences</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">{([3, 1, 1], [5, 3, 1]), ([4, 2], [5, 3, 1])}</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#strong_marked_tableau.end_core_to_strong_marked_tableaux" title="strong_marked_tableau.end_core_to_strong_marked_tableaux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">end_core_to_strong_marked_tableaux()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="strong_marked_tableau.end_core_to_strong_marked_tableaux">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">end_core_to_strong_marked_tableaux</code><span class="sig-paren">(</span><em>end_core</em>, <em>k</em>, <em>row_markings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#end_core_to_strong_marked_tableaux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.end_core_to_strong_marked_tableaux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the set of strong marked tableaux marked by <code class="docutils literal notranslate"><span class="pre">row_markings</span></code> ending in <code class="docutils literal notranslate"><span class="pre">end_core</span></code>.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">end_core</span></code> – a <span class="math notranslate nohighlight">\(k+1\)</span>-core</li>
+<li><code class="docutils literal notranslate"><span class="pre">k</span></code> – All of the cores in the core sequences are <span class="math notranslate nohighlight">\(k+1\)</span>-cores.</li>
+<li><code class="docutils literal notranslate"><span class="pre">row_markings</span></code> – vector of row-indices indicating the rows of the markings for each core sequence.  (Note that “markings” are row-col-coordinates, while “row_markings” are merely row-coordinates.)</li>
+</ul>
+<p>OUTPUTS:</p>
+<ul class="simple">
+<li>A set of all possible strong marked tableau that end in <code class="docutils literal notranslate"><span class="pre">end_core</span></code> and can be marked by the row marking vector <code class="docutils literal notranslate"><span class="pre">row_markings</span></code>.</li>
+</ul>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">end_core_to_strong_marked_tableaux</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">{[[-1, 3, -4, 5, 5], [-2, 5, -5], [-3]]}</span>
+
+<span class="gp">sage: </span><span class="n">end_core_to_strong_marked_tableaux</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">{[[None, None, None, 1, 1], [None, 1, -1], [None]],</span>
+<span class="go"> [[None, None, None, None, 1], [None, None, -1], [1]]}</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#strong_marked_tableau.end_core_to_marked_core_sequences" title="strong_marked_tableau.end_core_to_marked_core_sequences"><code class="xref py py-meth docutils literal notranslate"><span class="pre">end_core_to_marked_core_sequences()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="strong_marked_tableau.is_row_markable">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">is_row_markable</code><span class="sig-paren">(</span><em>outer_core</em>, <em>inner_core</em>, <em>row_marking</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#is_row_markable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.is_row_markable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given two cores (typically consecutive cores in a core sequence), see if <code class="docutils literal notranslate"><span class="pre">row_marking</span></code> is a possible row_marking of <code class="docutils literal notranslate"><span class="pre">outer_core</span></code> / <code class="docutils literal notranslate"><span class="pre">inner_core</span></code>.</p>
+<p>EXAMPLES:</p>
+<p>Consider the skew shape [3, 2, 2] / [2, 1] depicted</p>
+<a class="reference internal image-reference" href="_images/marking.JPG"><img alt="The skew shape [3, 2, 2] / [2, 1]" class="align-center" src="_images/marking.JPG" style="height: 140px;" /></a>
+<p>It has a marking in row 0 and row 1, but not in row 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">is_row_markable</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_row_markable</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">sage: </span><span class="n">is_row_markable</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#strong_marked_tableau.strong_tableau_has_row_marking" title="strong_marked_tableau.strong_tableau_has_row_marking"><code class="xref py py-meth docutils literal notranslate"><span class="pre">strong_tableau_has_row_marking()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="strong_marked_tableau.k_coverees">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">k_coverees</code><span class="sig-paren">(</span><em>core</em>, <em>k</em>, <em>algorithm=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#k_coverees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.k_coverees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <span class="math notranslate nohighlight">\(k+1\)</span>-core, find all sub-<span class="math notranslate nohighlight">\(k+1\)</span>-cores that have <span class="math notranslate nohighlight">\(k\)</span>-boundary 1 less than the given.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="strong_marked_tableau.k_marked_coverees">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">k_marked_coverees</code><span class="sig-paren">(</span><em>core</em>, <em>k</em>, <em>row_marking</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#k_marked_coverees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.k_marked_coverees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a k+1-core, find all sub-k+1-cores that have k-boundary 1 less than the given with the given row_marking.</p>
+<p>INPUTS:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">core</span></code> – a <span class="math notranslate nohighlight">\(k+1\)</span>-core</li>
+<li><code class="docutils literal notranslate"><span class="pre">k</span></code> – an integer</li>
+<li><code class="docutils literal notranslate"><span class="pre">row_marking</span></code> – The desired row marking for the covers</li>
+</ul>
+<p>OUTPUTS:</p>
+<p>The set of all <span class="math notranslate nohighlight">\(k+1\)</span>-cores <span class="math notranslate nohighlight">\(\lambda\)</span> that satify:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">core</span></code> is a cover of <span class="math notranslate nohighlight">\(\lambda\)</span></li>
+<li>The skew shape <code class="docutils literal notranslate"><span class="pre">core</span></code> / <span class="math notranslate nohighlight">\(\lambda\)</span> has a marking in the row indexed <code class="docutils literal notranslate"><span class="pre">row_marking</span></code>.</li>
+</ul>
+</div></blockquote>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">k_marked_coverees</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">{[5, 4, 2, 2, 1]}</span>
+<span class="gp">sage: </span><span class="n">k_marked_coverees</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">{[6, 2, 2, 2, 1], [6, 3, 2, 2]}</span>
+<span class="gp">sage: </span><span class="n">k_marked_coverees</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">{}</span>
+<span class="gp">sage: </span><span class="n">k_marked_coverees</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">{[6, 4, 2, 1, 1]}</span>
+<span class="gp">sage: </span><span class="n">k_marked_coverees</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">{[6, 3, 2, 2]}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="strong_marked_tableau.row_marking_to_marking">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">row_marking_to_marking</code><span class="sig-paren">(</span><em>outer_core</em>, <em>inner_core</em>, <em>row_marking</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#row_marking_to_marking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.row_marking_to_marking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a row marking to a marking.</p>
+<p>Given the skew shape defined by <code class="docutils literal notranslate"><span class="pre">outer_core</span></code> and <code class="docutils literal notranslate"><span class="pre">inner_core</span></code>, and the row index <code class="docutils literal notranslate"><span class="pre">row_marking</span></code> where a marking exists, return the marking <span class="math notranslate nohighlight">\((\text{marking row index}, \text{marking column index})\)</span>.</p>
+<p>Note that <span class="math notranslate nohighlight">\(\text{marking row index}\)</span> mentioned above is simply <code class="docutils literal notranslate"><span class="pre">row_marking</span></code>.  Therefore, the real usefulness of this function is that it finds the column index of the marking.</p>
+<p>EXAMPLES:</p>
+<p>The skew shape [3, 2, 2] / [2, 1] depicted by</p>
+<a class="reference internal image-reference" href="_images/marking.JPG"><img alt="The skew shape [3, 2, 2] / [2, 1]" class="align-center" src="_images/marking.JPG" style="width: 140px;" /></a>
+<p>has the marking <span class="math notranslate nohighlight">\((0, 2)\)</span> in row <span class="math notranslate nohighlight">\(0\)</span>.  Hence:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">row_marking_to_marking</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">(0, 2)</span>
+</pre></div>
+</div>
+<p>It also has the marking <span class="math notranslate nohighlight">\((1, 1)\)</span> in row <span class="math notranslate nohighlight">\(1\)</span>.  Therefore:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">row_marking_to_marking</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">(1, 1)</span>
+</pre></div>
+</div>
+<p>It has no marking in row <span class="math notranslate nohighlight">\(2\)</span>, so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">row_marking_to_marking</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">no such row marking</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#strong_marked_tableau.row_markings_to_markings" title="strong_marked_tableau.row_markings_to_markings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row_markings_to_markings()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="strong_marked_tableau.row_markings_to_markings">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">row_markings_to_markings</code><span class="sig-paren">(</span><em>core_sequence</em>, <em>row_markings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#row_markings_to_markings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.row_markings_to_markings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <code class="docutils literal notranslate"><span class="pre">core_sequence</span></code> and corresponding <code class="docutils literal notranslate"><span class="pre">row_markings</span></code> for each cover of the sequence, convert the row markings to markings and return them.</p>
+<p>Each row marking in <code class="docutils literal notranslate"><span class="pre">row_markings</span></code> is merely the row index of where the marking occurs.  The purpose of this function is to convert each row marking to a “marking” which includes the column index.  In order to understand this function, it is best to understand <a class="reference internal" href="#strong_marked_tableau.row_marking_to_marking" title="strong_marked_tableau.row_marking_to_marking"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row_marking_to_marking()</span></code></a> first.</p>
+<p>EXAMPLES:</p>
+<p>Consider the core sequence ([], [1], [1, 1], [2, 1, 1]) which corresponds to the sequence of skew shapes</p>
+<a class="reference internal image-reference" href="_images/markings.JPG"><img alt="The skew shapes [1] / []; [1, 1] / [1]; and [2, 1, 1] / [1, 1]." class="align-center" src="_images/markings.JPG" style="height: 140px;" /></a>
+<p>Now consider the row markings 0, 1, and 2, respectively.  Pair each skew shape up with its respective row marking, and then convert the row marking to a marking.  Row marking 0 corresponds to marking <span class="math notranslate nohighlight">\((0, 0)\)</span>, row marking 1 corresponds to marking <span class="math notranslate nohighlight">\((1, 0)\)</span>, and row marking 2 corresponds to marking <span class="math notranslate nohighlight">\((2, 0)\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">row_markings_to_markings</span><span class="p">(([],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">[(0, 0), (1, 0), (2, 0)]</span>
+</pre></div>
+</div>
+<p>Similarly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">sage: </span><span class="n">row_markings_to_markings</span><span class="p">(([],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">[(0, 0), (1, 0), (0, 1)]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#strong_marked_tableau.row_marking_to_marking" title="strong_marked_tableau.row_marking_to_marking"><code class="xref py py-meth docutils literal notranslate"><span class="pre">row_marking_to_marking()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="strong_marked_tableau.strong_tableau_has_row_marking">
+<code class="descclassname">strong_marked_tableau.</code><code class="descname">strong_tableau_has_row_marking</code><span class="sig-paren">(</span><em>tab</em>, <em>row_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/strong_marked_tableau.html#strong_tableau_has_row_marking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#strong_marked_tableau.strong_tableau_has_row_marking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether <code class="docutils literal notranslate"><span class="pre">tab</span></code> has a row marking in row <code class="docutils literal notranslate"><span class="pre">row_index</span></code>.</p>
+<p>Checks if a strong tableau <code class="docutils literal notranslate"><span class="pre">tab</span></code> has a row marking in row
+<code class="docutils literal notranslate"><span class="pre">row_index</span></code> (row indexing starts at 0) and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>
+if row_marking is present; <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#strong_marked_tableau.is_row_markable" title="strong_marked_tableau.is_row_markable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_row_markable()</span></code></a></p>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -70,34 +258,31 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="root_ideal.html"
-                                  title="previous chapter">root ideal</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="all.html"
-                                  title="next chapter">and beyond!</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/strong_marked_tableau.rst.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <!-- The shading of the "Go" button should be consistent -->
-                <!-- with the colour of the header and footer. See the file -->
-                <!-- doc/common/themes/sage/theme.conf for colours used by -->
-                <!-- the Sage theme. -->
-                <input type="submit" style="background-color: #B8B9F6" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="root_ideal.html"
+                        title="previous chapter">root ideal</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="all.html"
+                        title="next chapter">and beyond!</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/strong_marked_tableau.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -108,6 +293,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="all.html" title="and beyond!"
              >next</a> |</li>
@@ -127,7 +315,7 @@
     
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Matthew Lancellotti, George Seelinger, Jennifer Morse.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
     <script type="text/javascript">
 /*global jQuery, window */
