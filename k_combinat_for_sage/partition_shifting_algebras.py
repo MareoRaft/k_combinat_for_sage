@@ -37,19 +37,49 @@ from sage.rings.semirings.non_negative_integer_semiring import NonNegativeIntege
 
 def free_group_elm_to_partition(elm):
     r"""
-    Given an element of an abelian free group indexed by natural number
+    Given an element of an abelian free group indexed by natural numbers
     return an integer sequence of the powers.
+
+    INPUT:
+
+    -``elm`` -- an element of an abelian free group indexed by natural numbers
+
+    EXAMPLES::
+
+        sage: F = Groups.Commutative().free(NN,'F') 
+        sage: elm = F.gens()[0]^2*F.gens()[1]^(-3)*F.gens()[5]
+        sage: free_group_elm_to_partition(elm)
+        [2, -3, 0, 0, 0, 1]
     """
     power_dict = elm.dict()
     max_nonzero_entry = max(power_dict.keys())
     return tuple(power_dict.get(i,0) for i in range(max_nonzero_entry+1))
 
 def shifting_operator_action_algebra_elm_to_partition_list(elm):
+    r"""
+    Given an element in the ``ShiftingOperatorActionAlgebra``, return
+    a list of tuples of the form (powers, coefficient) representing
+    inputted element.
+
+    INPUT:
+
+    -``elm`` -- an element in the ``ShiftingOperatorActionAlgebra``
+
+    EXAMPLES::
+
+        sage: # import algebra
+        sage: S = ShiftingOperatorActionAlgebra(ZZ)
+        sage: elm = S([2,0,-1,4])+5*S([0,1,0])
+        sage: Set(shifting_operator_action_algebra_elm_to_partition_list(elm)) == Set([([2, 0, -1, 4], 1), ([0, 1, 0], 5)])
+        True
+    """
     elm_list = list(elm)
     return [(free_group_elm_to_partition(supp),coeff) for (supp,coeff) in elm_list]
 
 class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     r"""
+    A shifting operator action algera.
+
     This is an implementation of the ring on which shifting 
     operators formally act, and is meant to be isomorphic to
     `R[x_1^\pm, x_2^\pm, x_3^\pm, \ldots]` for some ring `R`.
@@ -58,13 +88,35 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     and this notion generalizes for any sequence of integers with
     finite support.
 
-    Then, the raising operator `R_{ij}` is encoded in this space as simply `\frac{x_i}{x_j}`. 
-    This is consisten with how many references work formally with raising operators
+    Then, Young's raising operator `R_{ij}` is encoded in this space as simply `\frac{x_i}{x_j}`. 
+
+    This is consisten with how many references work formally with raising operators. For instance, see
+
+
+    INPUT:
+
+    -``base_ring`` -- the ring of coefficients.
+
+    OPTIONAL ARGUMENTS:
+
+    -``prefix`` -- (default ``"F"``) a label for the basis elements
+
+    EXAMPLES:
+
+    We initialize the algebra::
+
+        sage: # import algebra
+        sage: A = ShiftingOperatorActionAlgebra(QQ)
+        sage: A.basis()
+
+    The algebra also comes equipped with homomorphisms to various
+    symmetric function bases. Note, however, not all homomorphisms are
+    equivalent...
     """
     def __init__(self, base_ring, prefix='F'):
         F = Groups.Commutative().free(NonNegativeIntegerSemiring(),prefix)
+        self.prefix = prefix
         category = F.category().Algebras(base_ring)
-
         GroupAlgebra_class.__init__(self, base_ring, F, category=category)
 #        self._register_coercions()
         base = self.base_ring()
@@ -77,13 +129,47 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
             h:h_mor, s:s_mor
         }
     def _element_constructor_(self, seq):
+        r"""
+        Construct an element of ``self``.
+
+        EXAMPLES::
+
+            sage: # import algebra
+            sage: A = ShiftingOperatorActionAlgebra(QQ,prefix='x')
+            sage: A([1,0,-1])
+            x0^1*x_2^-1
+            sage: A([0,2,0])
+            2*x1^2
+        """
         F = self.group()
         return self.basis()[prod([F.gens()[i]**(seq[i]) for i in range(len(seq))],F.one())]
 
     def _repr_(self):
-        return "Ring of polynomials in countably infinite variables on which shifting operators act over " + repr(self.base_ring())
+        r"""
+        Return a string representation of ``self``.
+
+        EXAMPLES::
+
+            sage: # import
+            sage: ShiftingOperatorActionAlgebra(QQ, prefix='x')
+            Ring of polynomials in countably infinite variables with prefix x on which shifting operators act over Rational Field
+        """
+        return "Ring of polynomials in countably infinite variables with prefix " + self.prefix + " on which shifting operators act over " + repr(self.base_ring())
 
     def from_iterable_indexed_parent(self, iterable_indexed_elm):
+        r"""
+        Return an element of ``self`` from the underlying iterables of
+        ``iterable_indexed_elm``. 
+
+        EXAMPLES::
+
+            sage: # import
+            sage: S = ShiftingOperatorActionAlgebra(QQ)
+            sage: sym = SymmetricFunctions(QQ)
+            sage: h = Sym.h()
+            sage: S.from_iterable_indexed_parent(2*h[3,2,1] + 3*h[2,1]) == 2*S([3,2,1])+3*S([2,1])
+            True
+        """
         R = iterable_indexed_elm.parent()
         if self.base_ring().has_coerce_map_from(R.base_ring()):
             f = R.module_morphism(self._element_constructor_, codomain=self)
@@ -99,9 +185,35 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     #     return GroupAlgebra_class._coerce_map_from_(self, R)
 
     def register_outgoing_morphism(self, support_map, codomain):
+        r"""
+        Registers an morphism from ``self`` to some other module over appropriate base ring.
+        The intended use is to define a morphism from ``self`` to a basis of symmetric functions.
+
+        EXAMPLES::
+
+            sage: # import
+            sage: S = ShiftingOperatorActionAlgebra(QQ)
+            sage: sym = SymmetricFunctions(QQ)
+            sage: p = Sym.p()
+            sage: zero_map = lambda part: p.zero()
+            sage: S.register_outgoing_morphism(zero_map, p)
+            sage: S.has_outgoing_morphism(p)
+            True
+            sage: ROA = RaisingOperatorAlgebra(QQ)
+            sage: op = ROA.ij(0,1)
+            sage: op(2*p[4,3]+5*p[2,2]+7*p[2]) == p.zero() # indirect doctest
+            True
+        """
         self._outgoing_morphisms[codomain] = self.module_morphism(support_map, codomain=codomain)
 
     def has_outgoing_morphism(self, codomain):
+        r"""
+        Return whether ``self`` knows of a morphism from ``self`` to ``codomain``
+
+        EXAMPLES::
+
+            sage: 
+        """
         return codomain in self._outgoing_morphisms
     
     def outgoing_morphism(self, codomain):
@@ -146,6 +258,11 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
             return sign * basis(Partition(new_gamma))
         else:
             return basis.zero()
+
+    def _repr_term(self, term):
+        pow_dict = term.dict()
+        parts = [self.prefix+repr(k)+'^'+repr(v) for (k,v) in pow_dict.iteritems()]
+        return reduce(lambda a,b: a+'*'+b, parts)
 
     # def _register_coercions(self):
     #     base = self.base_ring()
