@@ -37,7 +37,7 @@ from sage.rings.semirings.non_negative_integer_semiring import NonNegativeIntege
 
 def free_group_elm_to_partition(elm):
     r"""
-    Given an element of an abelian free group indexed by natural numbers
+    Given an element of an abelian free group indexed by natural numbers,
     return an integer sequence of the powers.
 
     INPUT:
@@ -52,7 +52,7 @@ def free_group_elm_to_partition(elm):
         [2, -3, 0, 0, 0, 1]
     """
     power_dict = elm.dict()
-    max_nonzero_entry = max(power_dict.keys())
+    max_nonzero_entry = max(power_dict.keys()+[0])
     return tuple(power_dict.get(i,0) for i in range(max_nonzero_entry+1))
 
 def shifting_operator_action_algebra_elm_to_partition_list(elm):
@@ -260,6 +260,9 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
             return basis.zero()
 
     def _repr_term(self, term):
+        r"""
+        Return a string representation of ``term``.
+        """
         pow_dict = term.dict()
         parts = [self.prefix+repr(k)+'^'+repr(v) for (k,v) in pow_dict.iteritems()]
         return reduce(lambda a,b: a+'*'+b, parts)
@@ -395,7 +398,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
 
     We follow the following convention:
 
-    S[(1, 0, -1, 2)] is the shifting operator that raises the first part by 1, lowers the third part by 1, and raises the fourth part by 2.
+    ``S[(1, 0, -1, 2)]`` is the shifting operator that raises the first part by 1, lowers the third part by 1, and raises the fourth part by 2.
 
     OPTIONAL ARGUMENTS:
 
@@ -422,7 +425,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         s[2, 2, 1] - s[3, 1, 1] - s[6, 2, 1] + s[7, 1, 1]
 
     ..  SEEALSO::
-        :class:`RaisingOperatorAlgebra`, :class:`PieriOperatorAlgebra`
+        :class:`RaisingOperatorAlgebra`
     """
     def __init__(self, base_ring=RationalField()['t'], prefix='S', basis_indices=ShiftingSequenceSpace()):
         self._prefix = prefix
@@ -471,7 +474,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             sage: S[1, 1, -9]
             S(1, 1, -9)
         """
-        return self.__getitem__(seq)
+        return self.__getitem__(tuple(seq))
 
     @cached_method
     def one_basis(self):
@@ -486,7 +489,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
         return tuple()
 
     def _repr_(self):
-        r""" Return a string describing ``self`` to humans.
+        r""" Return a string describing ``self``.
 
         EXAMPLES::
 
@@ -505,17 +508,13 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
             sage: S.product_on_basis([1, 1], [0, 1, 2])
             S(1, 2, 2)
         """
-        elm1 = self._action_algebra(index1)
-        elm2 = self._action_algebra(index2)
-        res = free_group_elm_to_partition((elm1*elm2).support_of_term()) 
-        return self.__getitem__(res)
-        # # pad with 0's
-        # max_len = max(len(index1), len(index2))
-        # index1 = tuple(index1) + (0,) * (max_len - len(index1))
-        # index2 = tuple(index2) + (0,) * (max_len - len(index2))
-        # # add the vectors
-        # index_product = tuple(i1 + i2 for i1, i2 in zip(index1, index2))
-        # return self.__getitem__(index_product)
+        # pad with 0's
+        max_len = max(len(index1), len(index2))
+        index1 = tuple(index1) + (0,) * (max_len - len(index1))
+        index2 = tuple(index2) + (0,) * (max_len - len(index2))
+        # add the vectors
+        index_product = tuple(i1 + i2 for i1, i2 in zip(index1, index2))
+        return self.__getitem__(index_product)
 
     class Element(CombinatorialFreeModule.Element):
         r""" An element of a :class`ShiftingOperatorAlgebra`. """
@@ -672,7 +671,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
     We follow the following convention!:
 
-    R[(1, 0, -1)] is the raising operator that raises the first part by 1 and lowers the third part by 1.
+    ``R[(1, 0, -1)]`` is the raising operator that raises the first part by 1 and lowers the third part by 1.
 
     For a definition of raising operators, see [cat]_ Definition 2.1, but be wary that the notation is different there.  See :meth:`ij` for a way to create operators using the notation in the paper.
 
