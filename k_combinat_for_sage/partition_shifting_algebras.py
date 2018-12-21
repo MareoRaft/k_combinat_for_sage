@@ -2,10 +2,10 @@
 r"""
 Partition Shifting and Raising Operator Algebras
 
-This module contains families of operators that act on partitions or, more 
-generally, integer sequences. In particular, this includes Young's raising 
-operators, which act on partitions by moving a cell from a smaller row to a 
-larger row, thus resulting in a partition that is higher in dominance order. 
+This module contains families of operators that act on partitions or, more
+generally, integer sequences. In particular, this includes Young's raising
+operators, which act on partitions by moving a cell from a smaller row to a
+larger row, thus resulting in a partition that is higher in dominance order.
 
 AUTHORS:
 
@@ -48,7 +48,7 @@ def free_group_elm_to_partition(elm):
     EXAMPLES::
 
         sage: from sage.combinat.partition_shifting_algebras import free_group_elm_to_partition
-        sage: F = Groups.Commutative().free(NN,'F') 
+        sage: F = Groups.Commutative().free(NN,'F')
         sage: elm = F.gens()[0]^2*F.gens()[1]^(-3)*F.gens()[5]
         sage: free_group_elm_to_partition(elm)
         (2, -3, 0, 0, 0, 1)
@@ -82,23 +82,36 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     r"""
     A shifting operator action algera.
 
-    This is an implementation of the ring on which shifting 
+    This object serves mainly as a superclass to :class:`ShiftingOperatorAlgebra`
+    and :class:`RaisingOperatorAlgebra` to act on symmetric functions. In
+    general, it is not meant to be used directly by the user. Instead, use
+    :class:`ShiftingOperatorAlgebra` or :class:`RaisingOperatorAlgebra`.
+
+    This is an implementation of the ring on which shifting
     operators formally act, and is meant to be isomorphic to
     `R[x_1^\pm, x_2^\pm, x_3^\pm, \ldots]` for some ring `R`, accomplished by
     creating the group algebra of the countably infinite commutative free group
     over ring `R`.
 
-    In particular, the partition `\lambda=(\lambda_1,\lambda_2,\ldots,
-    \lambda_\ell)` is encoded as `x_1^{\lambda_1} x_2^{\lambda_2} \cdots 
-    x_\ell^{\lambda_\ell}` and this notion generalizes for any sequence of 
-    integers withfinite support.
+    In this class, the partition `\lambda=(\lambda_1,\lambda_2,\ldots,
+    \lambda_\ell)` is encoded as `x_1^{\lambda_1} x_2^{\lambda_2} \cdots
+    x_\ell^{\lambda_\ell}` and this notion generalizes for any sequence of
+    integers with finite support.
 
-    Then, Young's raising operator `R_{ij}` is encoded in this space as simply 
-    `\frac{x_i}{x_j}`. 
+    Then, Young's raising operator `R_{ij}` is encoded in this space as simply
+    `\frac{x_i}{x_j}`.
 
-    This is consistent with how many references work formally with raising 
-    operators. For instance, see [BMPS2018]_ ??
+    To extend the action of the raising operators on a symmetric function basis,
+    one defines an `R`-module homomorphism `\phi` from `R[x_1^\pm, x_2^\pm, \ldots]`
+    to the
+    symmetric functions. Then, for a symmetric function basis `b`, we compute
+    `R_{ij} b_\lambda` by computing
+    `\frac{x_i}{x_j} x_1^{\lambda_1} \cdots x_\ell^{\lambda_\ell}` and then
+    applying `\phi` to the result.
 
+    This is consistent with how many references work formally with raising
+    operators. For instance, see exposition surrounding [BMPS2018]_
+    Equation (4.1)
 
     INPUT:
 
@@ -106,18 +119,35 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
     OPTIONAL ARGUMENTS:
 
-    -``prefix`` -- (default ``"F"``) a label for the basis elements
+    -``prefix`` -- (default ``"F"``) a label for the basis elements.
 
     EXAMPLES:
 
     We initialize the algebra::
 
         sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
-        sage: A = ShiftingOperatorActionAlgebra(QQ)
+        sage: A = ShiftingOperatorActionAlgebra(QQ); A
+        Ring of polynomials in countably infinite variables with prefix F on which shifting operators act over Rational Field
 
     The algebra also comes equipped with homomorphisms to various
     symmetric function bases. Note, however, not all homomorphisms are
-    equivalent...
+    equivalent. ::
+
+        sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
+        sage: A = ShiftingOperatorActionAlgebra(QQ, prefix='x')
+        sage: elm = A([3,2,1]); elm
+        x0^3*x1^2*x2^1
+        sage: sym = SymmetricFunctions(QQ)
+        sage: h = sym.h()
+        sage: h_mor = A.conversion_to(h)
+        sage: h_mor(elm)
+        h[3, 2, 1]
+        sage: s = sym.s()
+        sage: s_mor = A.conversion_to(s)
+        sage: s_mor(elm)
+        s[3, 2, 1]
+        sage: s_mor(elm) == s(h_mor(elm))
+        False
     """
     def __init__(self, base_ring, prefix='F'):
         F = Groups.Commutative().free(NonNegativeIntegerSemiring(),prefix)
@@ -165,7 +195,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     def from_iterable_indexed_parent(self, iterable_indexed_elm):
         r"""
         Return an element of ``self`` from the underlying iterables of
-        ``iterable_indexed_elm``. 
+        ``iterable_indexed_elm``.
 
         EXAMPLES::
 
@@ -185,10 +215,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
     def register_conversion_to(self, support_map, codomain):
         r"""
-        Creates and registers a morphism from ``self`` to some other module 
+        Creates and registers a morphism from ``self`` to some other module
         over appropriate base ring, usually a basis of symmetric functions.
 
-        The intended use is to define a morphism from 
+        The intended use is to define a morphism from
         ``self`` to a basis of symmetric functions that will be used by
         :class:`ShiftingOperatorAlgebra` or :class:`RaisingOperatorAlgebra` to
         correctly define the action of the operators on the symmetric functions.
@@ -217,7 +247,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
             True
             sage: S.unregister_conversion_to(p)
 
-        For a more illustrative example, we can implement a commutative 
+        For a more illustrative example, we can implement a commutative
         straightening on the power sum basis.::
 
             sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
@@ -237,9 +267,9 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         ..  WARNING::
 
-            Because :class:`ShiftingOperatorActionAlgebra` ultimately inherits 
-            from :class:`UniqueRepresentation`, once you register a conversion, 
-            it will apply to all instances of 
+            Because :class:`ShiftingOperatorActionAlgebra` ultimately inherits
+            from :class:`UniqueRepresentation`, once you register a conversion,
+            it will apply to all instances of
             :class:`ShiftingOperatorActionAlgebra` over the same base ring::
 
                 sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
@@ -283,10 +313,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
         """
         if codomain in self._outgoing_conversions:
             self._outgoing_conversions.pop(codomain)
-        
+
     def has_conversion_to(self, codomain):
         r"""
-        Return whether ``self`` knows of a morphism from ``self`` to 
+        Return whether ``self`` knows of a morphism from ``self`` to
         ``codomain``
 
         EXAMPLES::
@@ -307,7 +337,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
             sage: S.unregister_conversion_to(p)
         """
         return codomain in self._outgoing_conversions
-    
+
     def conversion_to(self, codomain):
         r"""
         Return module homomorphism from ``self`` to ``codomain`` if one exists,
@@ -331,12 +361,12 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     def _supp_to_h(self, supp, basis):
         r"""
         This is a helper funciton that is not meant to be called directly.
-        
-        Given the support of an element `x_1^{\gamma_1} x_2^{\gamma_2} \cdots 
-        x_\ell^{\gamma_\ell}` in the `` ShiftingOperatorActionAlgebra`` and a 
-        symmetric function algebra basis `b` generated by `\{b_1, b_2, b_3, 
-        \ldots\}`, return the element `b_{\gamma_1} b_{\gamma_2} \cdots 
-        b_{\gamma_\ell}` where `b_0 = 1` and `b_{-n} = 0` for all positive 
+
+        Given the support of an element `x_1^{\gamma_1} x_2^{\gamma_2} \cdots
+        x_\ell^{\gamma_\ell}` in the `` ShiftingOperatorActionAlgebra`` and a
+        symmetric function algebra basis `b` generated by `\{b_1, b_2, b_3,
+        \ldots\}`, return the element `b_{\gamma_1} b_{\gamma_2} \cdots
+        b_{\gamma_\ell}` where `b_0 = 1` and `b_{-n} = 0` for all positive
         integers `n`. The canonical example for `b` in this case would be `h`.
 
         EXAMPLES::
@@ -363,11 +393,11 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     def _supp_to_s(self, supp, basis):
         r"""
         This is a helper function that is not meant to be called directly.
-        
+
         Given the support of an element `x_1^{\gamma_1} x_2^{\gamma_2} \cdots
         x_\ell^{\gamma_\ell}` in the `` ShiftingOperatorActionAlgebra``, return
-        the appropriate `s_\gamma` in the Schur basis using 
-        "Schur straightening" in [BMPS2018]_.
+        the appropriate `s_\gamma` in the Schur basis using
+        "Schur function straightening" in [BMPS2018]_ Proposition 4.1.
 
         EXAMPLES::
 
@@ -398,7 +428,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
                     if lis[i] < lis[j]:
                         num += 1
             return num
-        
+
         gamma = list(free_group_elm_to_partition(supp))
         rho = list(range(len(gamma) - 1, -1, -1))
         combined = [g + r for g, r in zip(gamma, rho)]
@@ -413,19 +443,26 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     def _repr_term(self, term):
         r"""
         Return a string representation of ``term``.
+
+        EXAMPLES::
+
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
+            sage: S = ShiftingOperatorActionAlgebra(QQ, prefix='x')
+            sage: S([1,-2,3]) # indirect doctest
+            x0^1*x1^-2*x2^3
         """
         pow_dict = term.dict()
         if len(pow_dict) == 0:
             return '1'
         parts = [self.prefix+repr(k)+'^'+repr(v) for (k,v) in pow_dict.iteritems()]
         return reduce(lambda a,b: a+'*'+b, parts)
-        
+
 class ShiftingSequenceSpace():
-    r""" 
-    A helper for :class:`ShiftingOperatorAlgebra` that contains all 
+    r"""
+    A helper for :class:`ShiftingOperatorAlgebra` that contains all
     sequences (represented as tuples) in appropriate base with finite support.
 
-    Helps :class:`ShiftingOperatorAlgebra` know which indices are valid and 
+    Helps :class:`ShiftingOperatorAlgebra` know which indices are valid and
     which indices are not for the basis.
 
     EXAMPLES::
@@ -447,7 +484,7 @@ class ShiftingSequenceSpace():
         # Parent.__init__(self, category=category)
 
     def __contains__(self, seq):
-        r""" 
+        r"""
         Returns ``True`` if and only if ``seq`` is a valid shifting sequence.
 
         EXAMPLES::
@@ -470,7 +507,7 @@ class ShiftingSequenceSpace():
     CHECK_ERROR_MESSAGE = 'Expected valid index (a tuple of {base}), but instead received {seq}.'
 
     def check(self, seq):
-        r""" 
+        r"""
         Verify that ``seq`` is a valid shifting sequence.
 
         If it is not, raise an error.
@@ -496,8 +533,8 @@ class ShiftingSequenceSpace():
 
 
 class RaisingSequenceSpace(ShiftingSequenceSpace):
-    r""" 
-    A helper for :class:`RaisingOperatorAlgebra` containing all integer 
+    r"""
+    A helper for :class:`RaisingOperatorAlgebra` containing all integer
     sequences of finite support that sum to zero.
 
     Helps :class:`RaisingOperatorAlgebra` know which indices are valid and which
@@ -556,12 +593,12 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
 
     We follow the following convention:
 
-    ``S[(1, 0, -1, 2)]`` is the shifting operator that raises the first part by 
+    ``S[(1, 0, -1, 2)]`` is the shifting operator that raises the first part by
     1, lowers the third part by 1, and raises the fourth part by 2.
 
     In addition to acting on partitions, the shifting operators can also act on
-    symmetric functions in a basis `b` when a conversion from 
-    :class:`ShiftingOperatorActionAlgebra` to `b` has been registered to 
+    symmetric functions in a basis `b` when a conversion from
+    :class:`ShiftingOperatorActionAlgebra` to `b` has been registered to
     :class:`ShiftingOperatorActionAlgebra`.
 
     OPTIONAL ARGUMENTS:
@@ -604,7 +641,7 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
             prefix=self._prefix)
 
     def __getitem__(self, seq):
-        r""" 
+        r"""
         Return the shifting operator whose index is ``seq``.
 
         This method is only for basis indices.
@@ -618,7 +655,7 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
         return ShiftingOperatorActionAlgebra._element_constructor_(self, seq)
 
     def _element_constructor_(self, seq):
-        r""" 
+        r"""
         Return the shifting operator whose index is ``seq``.
 
         This method is only for basis indices.
@@ -636,7 +673,7 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
         return ShiftingOperatorActionAlgebra._element_constructor_(self, seq)
 
     def _repr_(self):
-        r""" 
+        r"""
         Return a string describing ``self``.
 
         EXAMPLES::
@@ -668,7 +705,7 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
 
     def ambient(self):
         r"""
-        Return the ambient :class:`ShiftingSequenceActionAlgebra` in which 
+        Return the ambient :class:`ShiftingSequenceActionAlgebra` in which
         the :class:`ShiftingOperatorAlgebra` ``self`` is a subalgebra.
 
         EXAMPLES::
@@ -700,13 +737,13 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
         return phi
 
     class Element(ShiftingOperatorActionAlgebra.Element):
-        r""" 
-        An element of a :class`ShiftingOperatorAlgebra`. 
+        r"""
+        An element of a :class`ShiftingOperatorAlgebra`.
         """
 
         def indices(self):
-            r""" 
-            Return the indices of ``self`` since the support is a free group 
+            r"""
+            Return the indices of ``self`` since the support is a free group
             element.
 
             EXAMPLES::
@@ -718,8 +755,8 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
             return [free_group_elm_to_partition(supp) for supp in self.support()]
 
         def index(self):
-            r""" 
-            Return the index of ``self`` since the support is a free group 
+            r"""
+            Return the index of ``self`` since the support is a free group
             element.
 
             This method is only for basis elements.
@@ -741,7 +778,7 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
 
         @staticmethod
         def _call_basis_on_index(seq, index):
-            r""" 
+            r"""
             For internal use only!
 
             Return the action of the basis element indexed by ``seq`` upon the composition ``index``.
@@ -785,22 +822,22 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
                 return self(Composition(operand))
 
 class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
-    r""" 
+    r"""
     An algebra of raising operators.
 
-    This class subclasses :class:`ShiftingOperatorAlgebra` and inherits the 
+    This class subclasses :class:`ShiftingOperatorAlgebra` and inherits the
     large majority of its functionality from there.
 
     We follow the following convention!:
 
-    ``R[(1, 0, -1)]`` is the raising operator that raises the first part by 1 
+    ``R[(1, 0, -1)]`` is the raising operator that raises the first part by 1
     and lowers the third part by 1.
 
-    For a definition of raising operators, see [cat]_ Definition 2.1, but be 
-    wary that the notation is different there.  See :meth:`ij` for a way to 
+    For a definition of raising operators, see [cat]_ Definition 2.1, but be
+    wary that the notation is different there.  See :meth:`ij` for a way to
     create operators using the notation in the paper.
 
-    If you do NOT want any restrictions on the allowed sequences, use 
+    If you do NOT want any restrictions on the allowed sequences, use
     :class:`ShiftingOperatorAlgebra` instead of :class:`RaisingOperatorAlgebra`.
 
     OPTIONAL ARGUMENTS:
@@ -823,7 +860,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         h[6, 3]
 
         sage: (1 - R[(1,-1)]) * (1 - R[(0,1,-1)]) == 1 - R[(0, 1, -1)] - R[(1, -1)] + R[(1, 0, -1)]
-        
+
         sage: ((1 - R[(1,-1)]) * (1 - R[(0,1,-1)]))(s[2, 2, 1])
         (-3*t-2)*s[] + s[2, 2, 1] - s[3, 1, 1] + s[3, 2]
 
@@ -844,17 +881,18 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
                                          basis_indices=RaisingSequenceSpace())
 
     def ij(self, i, j):
-        r""" 
+        r"""
         Return the raising operator `R_{ij}` as notated in [cat]_ Definition 2.1.
 
-        Shorthand element constructor that allows you to create raising 
-        operators using the familiar `R_{ij}` notation found in 
+        Shorthand element constructor that allows you to create raising
+        operators using the familiar `R_{ij}` notation found in
         [BMPS2018]_ Definition 2.1, with the exception that indices here are 0-based,
         not 1-based.
 
         EXAMPLES:
 
-        Create the raising operator which raises part 0 and lowers part 2 (indices are 0-based)::
+        Create the raising operator which raises part 0 and lowers part 2
+        (indices are 0-based)::
 
             sage: R.ij(0, 2)
             R((1, 0, -1))
@@ -876,4 +914,3 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         seq[j] = -1
         seq = tuple(seq)
         return self._element_constructor_(seq)
-        
