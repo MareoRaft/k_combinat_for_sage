@@ -47,10 +47,11 @@ def free_group_elm_to_partition(elm):
 
     EXAMPLES::
 
+        sage: from sage.combinat.partition_shifting_algebras import free_group_elm_to_partition
         sage: F = Groups.Commutative().free(NN,'F') 
         sage: elm = F.gens()[0]^2*F.gens()[1]^(-3)*F.gens()[5]
         sage: free_group_elm_to_partition(elm)
-        [2, -3, 0, 0, 0, 1]
+        (2, -3, 0, 0, 0, 1)
     """
     power_dict = elm.dict()
     max_nonzero_entry = max(power_dict.keys()+[0])
@@ -68,10 +69,10 @@ def shifting_operator_action_algebra_elm_to_partition_list(elm):
 
     EXAMPLES::
 
-        sage: # import algebra
+        sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra, shifting_operator_action_algebra_elm_to_partition_list
         sage: S = ShiftingOperatorActionAlgebra(ZZ)
         sage: elm = S([2,0,-1,4])+5*S([0,1,0])
-        sage: Set(shifting_operator_action_algebra_elm_to_partition_list(elm)) == Set([([2, 0, -1, 4], 1), ([0, 1, 0], 5)])
+        sage: Set(shifting_operator_action_algebra_elm_to_partition_list(elm)) == Set([((2, 0, -1, 4), 1), ((0, 1, 0), 5)])
         True
     """
     elm_list = list(elm)
@@ -83,7 +84,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
     This is an implementation of the ring on which shifting 
     operators formally act, and is meant to be isomorphic to
-    `R[x_1^\pm, x_2^\pm, x_3^\pm, \ldots]` for some ring `R`.
+    `R[x_1^\pm, x_2^\pm, x_3^\pm, \ldots]` for some ring `R`, accomplished by
+    creating the group algebra of the countably infinite commutative free group
+    over ring `R`.
+
     In particular, the partition `\lambda=(\lambda_1,\lambda_2,\ldots,
     \lambda_\ell)` is encoded as `x_1^{\lambda_1} x_2^{\lambda_2} \cdots 
     x_\ell^{\lambda_\ell}` and this notion generalizes for any sequence of 
@@ -108,9 +112,8 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
     We initialize the algebra::
 
-        sage: # import algebra
+        sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
         sage: A = ShiftingOperatorActionAlgebra(QQ)
-        sage: A.basis()
 
     The algebra also comes equipped with homomorphisms to various
     symmetric function bases. Note, however, not all homomorphisms are
@@ -127,7 +130,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
         h_mor = self.module_morphism(lambda supp: self._supp_to_h(supp,h), codomain=h)
         s = sym.s()
         s_mor = self.module_morphism(lambda supp: self._supp_to_s(supp,s), codomain=s)
-        self._outgoing_morphisms = {
+        self._outgoing_conversions = {
             h:h_mor, s:s_mor
         }
 
@@ -137,12 +140,12 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         EXAMPLES::
 
-            sage: # import algebra
-            sage: A = ShiftingOperatorActionAlgebra(QQ,prefix='x')
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
+            sage: A = ShiftingOperatorActionAlgebra(QQ, prefix='x')
             sage: A([1,0,-1])
-            x0^1*x_2^-1
-            sage: A([0,2,0])
-            2*x1^2
+            x0^1*x2^-1
+            sage: 3*A([0,2,0])
+            3*x1^2
         """
         F = self.group()
         return self.basis()[prod([F.gens()[i]**(seq[i]) for i in range(len(seq))],F.one())]
@@ -153,7 +156,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         EXAMPLES::
 
-            sage: # import algebra
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
             sage: ShiftingOperatorActionAlgebra(QQ, prefix='x')
             Ring of polynomials in countably infinite variables with prefix x on which shifting operators act over Rational Field
         """
@@ -166,10 +169,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         EXAMPLES::
 
-            sage: # import algebra
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
             sage: S = ShiftingOperatorActionAlgebra(QQ)
             sage: sym = SymmetricFunctions(QQ)
-            sage: h = Sym.h()
+            sage: h = sym.h()
             sage: S.from_iterable_indexed_parent(2*h[3,2,1] + 3*h[2,1]) == 2*S([3,2,1])+3*S([2,1])
             True
         """
@@ -180,10 +183,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
         else:
             return self._element_constructor_(iterable_indexed_elm)
 
-    def register_outgoing_morphism(self, support_map, codomain):
+    def register_conversion_to(self, support_map, codomain):
         r"""
-        Registers an morphism from ``self`` to some other module over 
-        appropriate base ring, usually a basis of symmetric functions.
+        Creates and registers a morphism from ``self`` to some other module 
+        over appropriate base ring, usually a basis of symmetric functions.
 
         The intended use is to define a morphism from 
         ``self`` to a basis of symmetric functions that will be used by
@@ -194,65 +197,136 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
         and on the Schur functions by morphisms registered to the
         :class:`ShiftingOperatorActionAlgebra`.
 
+        INPUT::
+
+        - ``support_map`` -- A map from integer sequences to ``codomain``.
+
+        - ``codomain``` -- The codomain of ``support_map``, usually a basis of symmetric functions.
+
         EXAMPLES::
 
-            sage: # import algebra
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
             sage: S = ShiftingOperatorActionAlgebra(QQ)
             sage: sym = SymmetricFunctions(QQ)
-            sage: p = Sym.p()
+            sage: p = sym.p()
             sage: zero_map = lambda part: p.zero()
-            sage: S.register_outgoing_morphism(zero_map, p)
+            sage: S.register_conversion_to(zero_map, p)
             sage: ROA = RaisingOperatorAlgebra(QQ)
             sage: op = ROA.ij(0,1)
             sage: op(2*p[4,3]+5*p[2,2]+7*p[2]) == p.zero() # indirect doctest
             True
+            sage: S.unregister_conversion_to(p)
+
+        For a more illustrative example, we can implement a commutative 
+        straightening on the power sum basis.::
+
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
+            sage: S = ShiftingOperatorActionAlgebra(QQ)
+            sage: sym = SymmetricFunctions(QQ)
+            sage: p = sym.p()
+            sage: supp_map = lambda gamma: p(list(reversed(sorted(gamma)))) if list(reversed(sorted(gamma))) in Partitions() else p.zero()
+            sage: S.register_conversion_to(supp_map, p)
+            sage: ROA = RaisingOperatorAlgebra(QQ)
+            sage: op = ROA.ij(0,1)
+            sage: op(2*p[4,3]+5*p[2,2]+7*p[2]) # indirect doctest
+            2*p[5, 2] + 5*p[3, 1]
+            sage: S.unregister_conversion_to(p)
 
         ..  SEEALSO::
             :class:`RaisingOperatorAlgebra`
-        """
-        self._outgoing_morphisms[codomain] = self.module_morphism(support_map, codomain=codomain)
 
-    def has_outgoing_morphism(self, codomain):
+        ..  WARNING::
+
+            Because :class:`ShiftingOperatorActionAlgebra` ultimately inherits 
+            from :class:`UniqueRepresentation`, once you register a conversion, 
+            it will apply to all instances of 
+            :class:`ShiftingOperatorActionAlgebra` over the same base ring::
+
+                sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
+                sage: sym = SymmetricFunctions(QQ)
+                sage: p = sym.p()
+                sage: zero_map = lambda free_gp_elm: p.zero()
+                sage: S = ShiftingOperatorActionAlgebra(QQ)
+                sage: S.has_conversion_to(p)
+                False
+                sage: S.register_conversion_to(zero_map, p)
+                sage: S.has_conversion_to(p)
+                True
+                sage: S = ShiftingOperatorActionAlgebra(QQ)
+                sage: S.has_conversion_to(p) # conversion persists across instances
+                True
+                sage: St = ShiftingOperatorActionAlgebra(QQ['t'])
+                sage: St.has_conversion_to(p)
+                False
+                sage: S.unregister_conversion_to(p)
+        """
+        precompose_map = lambda supp: support_map(free_group_elm_to_partition(support_map))
+        self._outgoing_conversions[codomain] = self.module_morphism(precompose_map, codomain=codomain)
+
+    def unregister_conversion_to(self, codomain):
+        r"""
+        Deletes a conversion from ``self`` to ``codomain``.
+
+        EXAMPLES::
+
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
+            sage: S = ShiftingOperatorActionAlgebra(QQ)
+            sage: sym = SymmetricFunctions(QQ)
+            sage: p = sym.p()
+            sage: zero_map = lambda free_gp_elm: p.zero()
+            sage: S.register_conversion_to(zero_map, p)
+            sage: S.has_conversion_to(p)
+            True
+            sage: S.unregister_conversion_to(p)
+            sage: S.has_conversion_to(p)
+            False
+        """
+        if codomain in self._outgoing_conversions:
+            self._outgoing_conversions.pop(codomain)
+        
+    def has_conversion_to(self, codomain):
         r"""
         Return whether ``self`` knows of a morphism from ``self`` to 
         ``codomain``
 
         EXAMPLES::
 
-            sage: # import algebra
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
             sage: S = ShiftingOperatorActionAlgebra(QQ)
             sage: sym = SymmetricFunctions(QQ)
             sage: s = sym.s()
-            sage: S.has_outgoing_morphism(s)
+            sage: S.has_conversion_to(s)
             True
             sage: p = sym.p()
-            sage: S.has_outgoing_morphism(p)
+            sage: S.has_conversion_to(p)
             False
-            sage: S.register_outgoing_morphism(zero_map, p)
-            sage: S.has_outgoing_morphism(p)
+            sage: zero_map = lambda part: p.zero()
+            sage: S.register_conversion_to(zero_map, p)
+            sage: S.has_conversion_to(p)
             True
+            sage: S.unregister_conversion_to(p)
         """
-        return codomain in self._outgoing_morphisms
+        return codomain in self._outgoing_conversions
     
-    def outgoing_morphism(self, codomain):
+    def conversion_to(self, codomain):
         r"""
         Return module homomorphism from ``self`` to ``codomain`` if one exists,
         otherwise return ``None``
 
         EXAMPLES::
 
-            sage: # import algebra
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
             sage: S = ShiftingOperatorActionAlgebra(QQ)
             sage: sym = SymmetricFunctions(QQ)
-            sage: s = Sym.s()
-            sage: S.outgoing_morphism(s)
+            sage: s = sym.s()
+            sage: S.conversion_to(s)
             Generic morphism:
               From: Shifting Operator Algebra over Univariate Polynomial Ring over Rational Field
               To:   Symmetric Functions over Univariate Polynomial Ring over Rational Field in the Schur basis
-            sage: S.outgoing_morphism(p) is None
+            sage: S.conversion_to(p) is None
             True
         """
-        return self._outgoing_morphisms.get(codomain, None)
+        return self._outgoing_conversions.get(codomain, None)
 
     def _supp_to_h(self, supp, basis):
         r"""
@@ -267,10 +341,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         EXAMPLES::
 
-            sage: # import algebra
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
             sage: S = ShiftingOperatorActionAlgebra(QQ)
             sage: sym = SymmetricFunctions(QQ)
-            sage: h = Sym.h()
+            sage: h = sym.h()
             sage: S._supp_to_h(S([3,2,1]).support_of_term(), h)
             h[3, 2, 1]
             sage: S._supp_to_h(S([2,3,1]).support_of_term(), h)
@@ -297,7 +371,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         EXAMPLES::
 
-            sage: # import algebra
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
             sage: S = ShiftingOperatorActionAlgebra(QQ)
             sage: sym = SymmetricFunctions(QQ)
             sage: s = sym.s()
@@ -356,6 +430,7 @@ class ShiftingSequenceSpace():
 
     EXAMPLES::
 
+        sage: from sage.combinat.partition_shifting_algebras import ShiftingSequenceSpace
         sage: S = ShiftingSequenceSpace()
         sage: (1, -1) in S
         True
@@ -377,6 +452,7 @@ class ShiftingSequenceSpace():
 
         EXAMPLES::
 
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingSequenceSpace
             sage: S = ShiftingSequenceSpace()
             sage: (1, -1) in S
             True
@@ -401,6 +477,7 @@ class ShiftingSequenceSpace():
 
         EXAMPLES::
 
+            sage: from sage.combinat.partition_shifting_algebras import ShiftingSequenceSpace
             sage: S = ShiftingSequenceSpace()
             sage: S.check((1, -1))
             sage: S.check((1, -1, 0, 9))
@@ -428,6 +505,7 @@ class RaisingSequenceSpace(ShiftingSequenceSpace):
 
     EXAMPLES::
 
+        sage: from sage.combinat.partition_shifting_algebras import RaisingSequenceSpace
         sage: RS = RaisingSequenceSpace()
         sage: (1, -1) in RS
         True
@@ -446,6 +524,7 @@ class RaisingSequenceSpace(ShiftingSequenceSpace):
 
         EXAMPLES::
 
+            sage: from sage.combinat.partition_shifting_algebras import RaisingSequenceSpace
             sage: RS = RaisingSequenceSpace()
             sage: (1, -1) in RS
             True
@@ -477,13 +556,19 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
 
     We follow the following convention:
 
-    ``S[(1, 0, -1, 2)]`` is the shifting operator that raises the first part by 1, lowers the third part by 1, and raises the fourth part by 2.
+    ``S[(1, 0, -1, 2)]`` is the shifting operator that raises the first part by 
+    1, lowers the third part by 1, and raises the fourth part by 2.
+
+    In addition to acting on partitions, the shifting operators can also act on
+    symmetric functions in a basis `b` when a conversion from 
+    :class:`ShiftingOperatorActionAlgebra` to `b` has been registered to 
+    :class:`ShiftingOperatorActionAlgebra`.
 
     OPTIONAL ARGUMENTS:
 
     - ``base_ring`` -- (default ``RationalField()['t']``) the ring you will use on the raising operators.
 
-    - ``prefix`` -- (default ``"R"``) the label for the raising operators.
+    - ``prefix`` -- (default ``"S"``) the label for the shifting operators.
 
     EXAMPLES::
 
@@ -493,6 +578,8 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
 
         sage: S[(1, -1, 2)]
         S(1, -1, 2)
+        sage: S[(1, -1, 2)]([5, 4])
+        [((6, 3, 2), 1)]
         sage: S[(1, -1, 2)](s[5, 4])
         s[6, 3, 2]
         sage: S[(1, -1, 2)](h[5, 4])
@@ -563,6 +650,16 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
     def _repr_term(self, term):
         r"""
         Return a string representation of the shifting operator.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra(QQ)
+            sage: S[1, 1, -9] # indirect doctest
+            S(1, 1, -9)
+            sage: S[1, 1, 0, -9, 0] # indirect doctest
+            S(1, 1, 0, -9)
+            sage: S.one() # indirect doctest
+            S()
         """
         if term == self.group().one():
             return self.prefix + '()'
@@ -570,17 +667,42 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
             return self.prefix + repr(free_group_elm_to_partition(term))
 
     def ambient(self):
+        r"""
+        Return the ambient :class:`ShiftingSequenceActionAlgebra` in which 
+        the :class:`ShiftingOperatorAlgebra` ``self`` is a subalgebra.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra()
+            sage: S.ambient()
+            Ring of polynomials in countably infinite variables with prefix S on which shifting operators act over Univariate Polynomial Ring in t over Rational Field
+        """
         return self.lift.codomain()
 
     @lazy_attribute
     def lift(self):
+        r"""
+        Return the lift map from the :class:`ShiftingOperatorAlgebra` ``self``
+        to the ambient :class:`ShiftingSequenceActionAlgebra`.
+
+        EXAMPLES::
+
+            sage: S = ShiftingOperatorAlgebra()
+            sage: elm = S[1, 1, -9]
+            sage: lifted = S.lift(elm); elm
+            S0^1*S1^1*S2^-9
+            sage: lifted.parent() is S.ambient()
+            True
+        """
         amb = ShiftingOperatorActionAlgebra(self._base_ring, prefix=self._prefix)
         phi = self.module_morphism(amb.monomial, codomain=amb)
         phi.register_as_coercion()
         return phi
 
     class Element(ShiftingOperatorActionAlgebra.Element):
-        r""" An element of a :class`ShiftingOperatorAlgebra`. """
+        r""" 
+        An element of a :class`ShiftingOperatorAlgebra`. 
+        """
 
         def indices(self):
             r""" 
@@ -619,7 +741,8 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
 
         @staticmethod
         def _call_basis_on_index(seq, index):
-            """ For internal use only!
+            r""" 
+            For internal use only!
 
             Return the action of the basis element indexed by ``seq`` upon the composition ``index``.
 
@@ -653,8 +776,8 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
                 lift_operand = A.from_iterable_indexed_parent(operand)
                 res = A(self)*lift_operand
                 operand_parent = operand.parent()
-                if A.has_outgoing_morphism(operand_parent):
-                    f = A.outgoing_morphism(operand_parent)
+                if A.has_conversion_to(operand_parent):
+                    f = A.conversion_to(operand_parent)
                     return f(res)
                 else:
                     return shifting_operator_action_algebra_elm_to_partition_list(res)
@@ -706,7 +829,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
     We can also use raising operators to implement the Jacobi-Trudi identity::
 
-        sage: op = (1-R[(1,-1)])*(1-R.ij[(1,0,-1)])*(1-R[(0,1,-1)])
+        sage: op = (1-R[(1,-1)])*(1-R[(1,0,-1)])*(1-R[(0,1,-1)])
         sage: s(op(h[3,2,1]))
         s[3, 2, 1]
 
