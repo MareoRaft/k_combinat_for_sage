@@ -4,8 +4,8 @@ Partition Shifting and Raising Operator Algebras
 
 This module contains families of operators that act on partitions or, more
 generally, integer sequences. In particular, this includes Young's raising
-operators `R_{ij}`, which act on integer sequences by adding `1` to the `i`th
-entry and subtracting `1` to the `j`th entry. A special case is acting on
+operators `R_{ij}`, which act on integer sequences by adding `1` to the `i` th
+entry and subtracting `1` to the `j` th entry. A special case is acting on
 partitions.
 
 AUTHORS:
@@ -251,13 +251,14 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         Note that the actions on the complete homogeneous symmetric functions
         and on the Schur functions by morphisms registered to the
-        :class:`ShiftingOperatorActionAlgebra` by :meth:`_register_builtin_conversions`.
+        :class:`ShiftingOperatorActionAlgebra` by the ``_register_builtin_conversions``
+        method.
 
-        INPUT::
+        INPUT:
 
         - ``support_map`` -- A map from integer sequences to ``codomain``.
 
-        - ``codomain``` -- The codomain of ``support_map``, usually a basis of symmetric functions.
+        - ``codomain`` -- The codomain of ``support_map``, usually a basis of symmetric functions.
 
         EXAMPLES::
 
@@ -724,7 +725,7 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
 
     class Element(ShiftingOperatorActionAlgebra.Element):
         r"""
-        An element of a :class`ShiftingOperatorAlgebra`.
+        An element of a :class:`ShiftingOperatorAlgebra`.
         """
 
         def indices(self):
@@ -841,7 +842,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
     ``R[(1, 0, -1)]`` is the raising operator that raises the first part by 1
     and lowers the third part by 1.
 
-    For a definition of raising operators, see [cat]_ Definition 2.1, but be
+    For a definition of raising operators, see [BMPS2018]_ Definition 2.1, but be
     wary that the notation is different there.  See :meth:`ij` for a way to
     create operators using the notation in the paper.
 
