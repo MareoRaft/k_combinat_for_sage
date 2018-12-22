@@ -5,7 +5,7 @@ Partition Shifting and Raising Operator Algebras
 This module contains families of operators that act on partitions or, more
 generally, integer sequences. In particular, this includes Young's raising
 operators `R_{ij}`, which act on integer sequences by adding `1` to the `i`th
-entry and subtracting `1` to the `j`th entry. A special case is acting on 
+entry and subtracting `1` to the `j`th entry. A special case is acting on
 partitions.
 
 AUTHORS:
@@ -98,12 +98,12 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
     over ring `R`. In this class, the partition `\lambda=(\lambda_1,\lambda_2,\ldots,
     \lambda_\ell)` is encoded as `x_1^{\lambda_1} x_2^{\lambda_2} \cdots
     x_\ell^{\lambda_\ell}` and this notion generalizes for any sequence of
-    integers with finite support. Then, for example, Young's raising operator 
+    integers with finite support. Then, for example, Young's raising operator
     `R_{ij}` is encoded in this space as simply `\frac{x_i}{x_j}`.
 
     To extend the action of the raising operators on a symmetric function basis,
     one defines an `R`-module homomorphism `\phi` from `R[x_1^\pm, x_2^\pm, \ldots]`
-    to the symmetric functions. Then, for a symmetric function basis `b`, we 
+    to the symmetric functions. Then, for a symmetric function basis `b`, we
     compute `R_{ij} b_\lambda` by first computing
     `\frac{x_i}{x_j} x_1^{\lambda_1} \cdots x_\ell^{\lambda_\ell}` and then
     applying `\phi` to the result.
@@ -215,10 +215,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
     def _register_builtin_conversions(self):
         r"""
-        Registers known conversions from :class:`ShiftingOperatorActionAlgebra` 
+        Registers known conversions from :class:`ShiftingOperatorActionAlgebra`
         instance ``self`` to known symmetric function bases.
 
-        Currently, the built-in bases for conversion are 
+        Currently, the built-in bases for conversion are
 
         - The complete homogeneous symmetric function basis
         - The Schur symmetric function basis
@@ -234,10 +234,10 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
         h.register_conversion(self.module_morphism(lambda supp: self._supp_to_h(supp,h), codomain=h))
         s = sym.s()
         s.register_conversion(self.module_morphism(lambda supp: self._supp_to_s(supp,s), codomain=s))
-        
+
     def build_and_register_conversion(self, support_map, codomain):
         r"""
-        Builds a module homomorphism from a map sending integer sequences to 
+        Builds a module homomorphism from a map sending integer sequences to
         ``codomain`` and registers the result into Sage's conversion model.
 
         Usually ``codomain`` is a basis of symmetric functions.
@@ -251,7 +251,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
 
         Note that the actions on the complete homogeneous symmetric functions
         and on the Schur functions by morphisms registered to the
-        :class:`ShiftingOperatorActionAlgebra` by :meth:`_register_builtin_conversions`. 
+        :class:`ShiftingOperatorActionAlgebra` by :meth:`_register_builtin_conversions`.
 
         INPUT::
 
@@ -279,7 +279,7 @@ class ShiftingOperatorActionAlgebra(GroupAlgebra_class):
             Because :class:`ShiftingOperatorActionAlgebra` ultimately inherits
             from :class:`UniqueRepresentation`, once you register a conversion,
             it will apply to all instances of
-            :class:`ShiftingOperatorActionAlgebra` over the same base ring with 
+            :class:`ShiftingOperatorActionAlgebra` over the same base ring with
             the same prefix::
 
                 sage: from sage.combinat.partition_shifting_algebras import ShiftingOperatorActionAlgebra
@@ -534,7 +534,7 @@ class RaisingSequenceSpace(ShiftingSequenceSpace):
 
 
 class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
-    r""" 
+    r"""
     An algebra of shifting operators.
 
     We follow the following convention:
@@ -542,10 +542,10 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
     ``S[(1, 0, -1, 2)]`` is the shifting operator that raises the first part by
     1, lowers the third part by 1, and raises the fourth part by 2.
 
-    In addition to acting on partitions (or any integer sequence), the shifting 
+    In addition to acting on partitions (or any integer sequence), the shifting
     operators can also act on
     symmetric functions in a basis `b` when a conversion from
-    :class:`ShiftingOperatorActionAlgebra` to `b` has been registered, 
+    :class:`ShiftingOperatorActionAlgebra` to `b` has been registered,
     preferably using :meth:`build_and_register_conversion`.
 
     OPTIONAL ARGUMENTS:
@@ -682,10 +682,10 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
         phi = self.module_morphism(amb.monomial, codomain=amb)
         phi.register_as_coercion()
         return phi
-    
+
     def build_and_register_conversion(self, support_map, codomain):
         r"""
-        Builds a module homomorphism from a map sending integer sequences to 
+        Builds a module homomorphism from a map sending integer sequences to
         ``codomain`` and registers the result into Sage's conversion model.
 
         EXAMPLES::
@@ -699,7 +699,7 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
             sage: op(2*p[4,3]+5*p[2,2]+7*p[2]) == p.zero() # indirect doctest
             True
 
-        For a more illustrative example, we can implement a simple 
+        For a more illustrative example, we can implement a simple
         (but not mathematically justified!) conversion on the monomial basis.::
 
             sage: S = RaisingOperatorAlgebra(QQ)
@@ -713,13 +713,13 @@ class ShiftingOperatorAlgebra(ShiftingOperatorActionAlgebra):
             True
 
         ..  SEEALSO::
-            :class:`RaisingOperatorAlgebra` and the 
-            ``build_and_register_conversion`` method of 
+            :class:`RaisingOperatorAlgebra` and the
+            ``build_and_register_conversion`` method of
             :class:`ShiftingOperatorActionAlgebra`
         """
         A = self.ambient()
         A.build_and_register_conversion(support_map, codomain)
-        
+
     class Element(ShiftingOperatorActionAlgebra.Element):
         r"""
         An element of a :class`ShiftingOperatorAlgebra`.
@@ -899,7 +899,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
 
         Create the raising operator which raises part 0 and lowers part 2
         (indices are 0-based)::
-        
+
             sage: R = RaisingOperatorAlgebra()
             sage: R.ij(0, 2)
             R(1, 0, -1)
