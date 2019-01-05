@@ -498,47 +498,85 @@ def is_k_core(ptn, k):
     return True
 
 
-def to_k_core(ptn, k):
-    r""" Shift the rows of ``ptn`` minimally in order to create a `k`-core.
+    def to_k_core(self, k):
+        r"""
+        WARNING!
+        It turns out that this method is NOT the same as the canonical bijection between k-1 bounded partitions and k cores.
+        
+        SIMILAR TO the canonical bijection, this function requires you to bump whole groups of rows instead of single rows
+        (whenever you bump a row a certain amount, all rows below it must be bumped by at least as much).
+        
+        DIFFERENT THAN the canonical bijection, this function only bumps rows until they have no hooks of length k, whereas
+        the canonical bijection requires the original cells before bumping to end up with hook lengths LESS THAN k.
+        
+        
+        
+        BEWARE that other functions in this repo which use `to_k_core` PROBABLY should be using the canonical bijection
+        instead!!!!
+                
+                
+                
+        Shift the rows of ``self`` minimally (BUT under the bumping constraint described above) in order to create a ``k``-core.
 
-    Returns a :class:`Partition` object, not a :class:`Core` object.
+        Returns a :class:`Partition` object, not a :class:`Core` object.
 
-    If you plug a `k`-bounded partition into this function and use `k+1` as the input constant, then this is the well-known bijection between `k`-bounded partitions and `k+1`-cores.
+        WARNING: If you plug a `k`-bounded partition into this function and use `k+1` as the input constant, then this is NOT
+        the canonical bijection between `k`-bounded partitions and `k+1`-cores.
 
-    EXAMPLES::
+        EXAMPLES::
 
-        sage: to_k_core([1, 1], 3)
-        [1, 1]
-        sage: to_k_core([2, 1], 3)
-        [3, 1]
-    """
-    error = ValueError(
-        'The minimal-row-shifting algorithm applied to the partition {} does not produce a {}-core.'.format(ptn, k))
-    core = []
-    for part in reversed(ptn):
-        if core == []:
-            core.insert(0, part)
-        else:
-            core_ptn = Partition(core)
-            last_hook_lengths = core_ptn.hook_lengths()[0]
-            # this loop could be done away with to make the program more efficient.  You can actually calculate the correct shift amount by looking for k in new_hook_lengths and seeing how much you need to shift.
-            minimum_shift = part - previous_part
-            for shift in range(minimum_shift, k):
-                # the 'shift' is the amount past core[0]
-                new_hook_lengths = [l+1+shift for l in last_hook_lengths]
-                if k not in new_hook_lengths:
-                    # add the appropriate part to core
-                    new_part = core[0] + shift
-                    # we could improve performance by simply reversing core at the end instead of prepending to the list
-                    core.insert(0, new_part)
-                    break
-            if len(core) == previous_core_len:
-                # if none of the shifts were good
-                # i think this situation actually can never happen, so if the error occurs, this is a big red flag
-                raise error
-        previous_part = part
-        previous_core_len = len(core)
-    core = Partition(core)
-    if not is_k_core(core, k):
-        raise error
-    return core
+            sage: Partition([1, 1]).to_k_core(3)
+            [1, 1]
+            sage: Partition([2, 1]).to_k_core(3)
+            [3, 1]
+
+        TESTS::
+
+            sage: Partition([1]).to_k_core(3)
+            [1]
+            sage: Partition([2]).to_k_core(3)
+            [2]
+            sage: Partition([1, 1]).to_k_core(3)
+            [1, 1]
+            sage: Partition([2, 1]).to_k_core(3)
+            [3, 1]
+            sage: Partition([1, 1, 1]).to_k_core(3)
+            [2, 1, 1]
+            sage: Partition([6, 5, 5, 2]).to_k_core(4)
+            [11, 8, 5, 2]
+            sage: Partition([2, 2, 1]).to_k_core(3)
+            [5, 3, 1]
+
+        ..  SEEALSO::
+
+            :meth:`to_core`
+        """
+        error = ValueError(
+            'the minimal-row-shifting algorithm applied to the partition {} does not produce a {}-core'.format(self, k))
+        core = []
+        for part in reversed(self):
+            if core == []:
+                core.insert(0, part)
+            else:
+                core_ptn = _Partitions(core)
+                last_hook_lengths = core_ptn.hook_lengths()[0]
+                # once you shift a row, you must shift ALL rows below it just as much (hence the minimum shift)
+                # the shift is relative to the previous row of core
+                minimum_shift = part - previous_part
+                for shift in range(minimum_shift, k):
+                    # the 'shift' is the amount past core[0] (the 'newest' row)
+                    new_hook_lengths = [l+1+shift for l in last_hook_lengths]
+                    if k not in new_hook_lengths:
+                        # add the appropriate part to core
+                        new_part = core[0] + shift
+                        core.insert(0, new_part)
+                        break
+                if len(core) == previous_core_len:
+                    # if none of the shifts were good
+                    raise error
+            previous_part = part
+            previous_core_len = len(core)
+        core = _Partitions(core)
+        if not core.is_core(k):
+            raise error
+        return core
