@@ -489,7 +489,7 @@ class RootIdeal(list):
             :meth:`down`, :meth:`down_path`, :meth:`up_path`, :meth:`top`, :meth:`bottom`
         """
         for (r, c) in reversed(root_ideal):
-            if c == index:
+            if c == col_index:
                 return r
         return None
 
@@ -928,7 +928,7 @@ class RootIdeals:
 
             :meth:`is_pseudo_partition`
         """
-        assert is_pseudo_partition(seq)
+#        assert is_pseudo_partition(seq)
         assert all(term <= k for term in seq)
         if n is None:
             n = len(seq)
