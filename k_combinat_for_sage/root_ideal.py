@@ -928,7 +928,7 @@ class RootIdeals:
 
             :meth:`is_pseudo_partition`
         """
-#        assert is_pseudo_partition(seq)
+        assert is_pseudo_partition(seq)
         assert all(term <= k for term in seq)
         if n is None:
             n = len(seq)
