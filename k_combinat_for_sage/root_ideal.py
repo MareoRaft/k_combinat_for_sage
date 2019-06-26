@@ -815,6 +815,27 @@ class RootIdeal(list):
         ri_complement = RootIdeal(ri_complement_set, n)
         return ri_complement
 
+    def removable_roots(self):
+        r"""
+        Give the set of all roots that, if removed, would still yield a root ideal.
+
+        EXAMPLES::
+
+            sage: ri = RootIdeal([(0,1),(0,2),(1,2),(0,3),(1,3)],4)
+            sage: set(ri.removable_roots()) == set([(0, 1), (1, 2)])
+            True
+            sage: ri = RootIdeal([],1)
+            sage: set(ri.removable_roots()) == set([])
+            True
+
+        TESTS::
+
+            sage: RI = RootIdeals()
+            sage: ideals = [RI.init_from_partition(part,5) for j in range(11) for part in Partitions(j,outer=[4,3,2,1])]
+            sage: all([RI.init_from_removable_roots(ideal.removable_roots(),5) == ideal for ideal in ideals])
+            True
+        """
+        return set([(i,j) for (i,j) in self if (i,j-1) not in self and (i+1,j) not in self])
 
 class RootIdeals:
     r""" The family of root ideals.
