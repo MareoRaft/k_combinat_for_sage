@@ -815,36 +815,78 @@ class RootIdeal(list):
         ri_complement = RootIdeal(ri_complement_set, n)
         return ri_complement
 
-    def _latex_(self, color='red'):
+    def _latex_(self, color='red', index=None):
         r"""
         Return LaTeX code to draw a LaTeX representation of ``self``.
 
         EXAMPLES::
 
             sage: latex(RootIdeal([],3)) # indirect doctest
-            \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}]
-            \draw[step=0.5cm,color=black] (0,0) grid (1.5,1.5);
-            \end{tikzpicture}
+            \begin{ytableau}
+              {} & {} & {} \\ 
+              {} & {} & {} \\ 
+              {} & {} & {} 
+            \end{ytableau}
             sage: latex(RootIdeal([(0,2)],3)) # indirect doctest
-            \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}]
-            \draw[step=0.5cm,color=black] (0,0) grid (1.5,1.5);
-              \node[fill=red] at (1.25,-0.25) {};
-            \end{tikzpicture}
+            \begin{ytableau}
+              {} & {} & *(red) \\ 
+              {} & {} & {} \\ 
+              {} & {} & {} 
+            \end{ytableau}
         """
         # these allow the view command to work (maybe move them somewhere more appropriate?)
+        if index:
+            assert len(index) == self.n, "Length of root ideal index must equal root ideal size!"
         from sage.misc.latex import latex            
-        latex.add_to_mathjax_avoid_list('tikzpicture')
-        latex.add_package_to_preamble_if_available('tikz')
-        begin = "\\begin{tikzpicture}[every node/.style={minimum size=.5cm-\\pgflinewidth, outer sep=0pt}]\n"
-        dec_n = str(self.n/2.0)
-        grid = "\\draw[step=0.5cm,color=black] (0,0) grid ("+dec_n+","+"-"+dec_n+");\n"
-        colors = ""
-        for (r,c) in self:
-            dec_r = str(-1*(r/2.0+0.25))
-            dec_c = str(c/2.0+0.25)
-            colors += "  \\node[fill="+color+"] at (" + dec_c + "," + dec_r + ") {};\n"
-        end = "\\end{tikzpicture}"
-        return begin+grid+colors+end    
+        latex.add_to_mathjax_avoid_list('ytableau')
+        latex.add_package_to_preamble_if_available('ytableau')
+        begin = "\\begin{ytableau}\n"
+        entries = ""
+        for i in range(self.n):
+            entries += "  "
+            for j in range(self.n):
+                if (i,j) in self:
+                    entries += "*("+color+") & "
+                elif index and i == j:
+                    entries += str(index[i]) + " & "
+                else:
+                    entries += "{} & "
+            entries = entries[:-2]
+            if i != self.n-1:
+                entries += "\\\\ \n"
+        end = "\n\\end{ytableau}"
+        return begin+entries+end    
+    
+    # def _latex_(self, color='red'):
+    #     r"""
+    #     Return LaTeX code to draw a LaTeX representation of ``self``.
+
+    #     EXAMPLES::
+
+    #         sage: latex(RootIdeal([],3)) # indirect doctest
+    #         \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}]
+    #         \draw[step=0.5cm,color=black] (0,0) grid (1.5,1.5);
+    #         \end{tikzpicture}
+    #         sage: latex(RootIdeal([(0,2)],3)) # indirect doctest
+    #         \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}]
+    #         \draw[step=0.5cm,color=black] (0,0) grid (1.5,1.5);
+    #           \node[fill=red] at (1.25,-0.25) {};
+    #         \end{tikzpicture}
+    #     """
+    #     # these allow the view command to work (maybe move them somewhere more appropriate?)
+    #     from sage.misc.latex import latex            
+    #     latex.add_to_mathjax_avoid_list('tikzpicture')
+    #     latex.add_package_to_preamble_if_available('tikz')
+    #     begin = "\\begin{tikzpicture}[every node/.style={minimum size=.5cm-\\pgflinewidth, outer sep=0pt}]\n"
+    #     dec_n = str(self.n/2.0)
+    #     grid = "\\draw[step=0.5cm,color=black] (0,0) grid ("+dec_n+","+"-"+dec_n+");\n"
+    #     colors = ""
+    #     for (r,c) in self:
+    #         dec_r = str(-1*(r/2.0+0.25))
+    #         dec_c = str(c/2.0+0.25)
+    #         colors += "  \\node[fill="+color+"] at (" + dec_c + "," + dec_r + ") {};\n"
+    #     end = "\\end{tikzpicture}"
+    #     return begin+grid+colors+end    
 
 class RootIdeals:
     r""" The family of root ideals.

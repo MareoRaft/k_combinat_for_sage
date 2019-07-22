@@ -1251,27 +1251,44 @@ class CatalanFunction:
         """
         return self.eval().expand(*args, **kwargs)
 
-    def _latex_(self):
+    def _latex_(self, color='red'):
         r"""
         Return LaTeX code to draw a LaTeX representation of a root ideal 
         encoding  ``self``.
 
         EXAMPLES::
 
-            sage: cf = CatalanFunction([(0,1)], [1,2])
+            sage: cf = CatalanFunction([(0,2)],[3,2,1])
             sage: latex(cf) # indirect doctest
-            \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}] 
-            \draw[step=0.5cm,color=black] (0,0) grid (1.0,-1.0); 
-              \node[fill=red] at (0.75,-0.25) {}; 
-              \node at (0.25,-0.25) {1}; 
-              \node at (0.75,-0.75) {2}; 
-            \end{tikzpicture}
+            \begin{ytableau}
+              3 & {} & *(red) \\ 
+              {} & 2 & {} \\ 
+              {} & {} & 1 
+            \end{ytableau}
         """
-        ideal_tikz = latex(self.roots).split("\n")
-        index_nodes = ["  \\node at (" + str(i/2.0+0.25) + "," + str(-1*(i/2.0+0.25)) + ") {" + str(self.index[i]) + "};" for i in range(len(self.index))]
-        all_lines = ideal_tikz[:-1] + index_nodes + [ideal_tikz[-1]]
-        result = reduce(lambda a,b: a+"\n"+b, all_lines)
-        return result
+        return self.roots._latex_(color=color,index=self.index)
+    
+    # def _latex_(self):
+    #     r"""
+    #     Return LaTeX code to draw a LaTeX representation of a root ideal 
+    #     encoding  ``self``.
+
+    #     EXAMPLES::
+
+    #         sage: cf = CatalanFunction([(0,1)], [1,2])
+    #         sage: latex(cf) # indirect doctest
+    #         \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}] 
+    #         \draw[step=0.5cm,color=black] (0,0) grid (1.0,-1.0); 
+    #           \node[fill=red] at (0.75,-0.25) {}; 
+    #           \node at (0.25,-0.25) {1}; 
+    #           \node at (0.75,-0.75) {2}; 
+    #         \end{tikzpicture}
+    #     """
+    #     ideal_tikz = latex(self.roots).split("\n")
+    #     index_nodes = ["  \\node at (" + str(i/2.0+0.25) + "," + str(-1*(i/2.0+0.25)) + ") {" + str(self.index[i]) + "};" for i in range(len(self.index))]
+    #     all_lines = ideal_tikz[:-1] + index_nodes + [ideal_tikz[-1]]
+    #     result = reduce(lambda a,b: a+"\n"+b, all_lines)
+    #     return result
         
 class CatalanFunctions:
     r""" The family of catalan functions, as discussed in [cat]_ section 4.
