@@ -1251,7 +1251,23 @@ class CatalanFunction:
         """
         return self.eval().expand(*args, **kwargs)
 
+    def _latex_(self, color='red'):
+        r"""
+        Return LaTeX code to draw a LaTeX representation of a root ideal 
+        encoding  ``self``.
 
+        EXAMPLES::
+
+            sage: cf = CatalanFunction([(0,2)],[3,2,1])
+            sage: latex(cf) # indirect doctest
+            \begin{ytableau}
+              3 & {} & *(red) \\ 
+              {} & 2 & {} \\ 
+              {} & {} & 1 
+            \end{ytableau}
+        """
+        return self.roots._latex_(color=color,index=self.index)
+        
 class CatalanFunctions:
     r""" The family of catalan functions, as discussed in [cat]_ section 4.
 

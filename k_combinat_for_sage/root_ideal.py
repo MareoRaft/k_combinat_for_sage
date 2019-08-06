@@ -837,6 +837,48 @@ class RootIdeal(list):
         """
         return set([(i,j) for (i,j) in self if (i,j-1) not in self and (i+1,j) not in self])
 
+    def _latex_(self, color='red', index=None):
+        r"""
+        Return LaTeX code to draw a LaTeX representation of ``self``.
+
+        EXAMPLES::
+
+            sage: latex(RootIdeal([],3)) # indirect doctest
+            \begin{ytableau}
+              {} & {} & {} \\ 
+              {} & {} & {} \\ 
+              {} & {} & {} 
+            \end{ytableau}
+            sage: latex(RootIdeal([(0,2)],3)) # indirect doctest
+            \begin{ytableau}
+              {} & {} & *(red) \\ 
+              {} & {} & {} \\ 
+              {} & {} & {} 
+            \end{ytableau}
+        """
+        # these allow the view command to work (maybe move them somewhere more appropriate?)
+        if index:
+            assert len(index) == self.n, "Length of root ideal index must equal root ideal size!"
+        from sage.misc.latex import latex            
+        latex.add_to_mathjax_avoid_list('ytableau')
+        latex.add_package_to_preamble_if_available('ytableau')
+        begin = "\\begin{ytableau}\n"
+        entries = ""
+        for i in range(self.n):
+            entries += "  "
+            for j in range(self.n):
+                if (i,j) in self:
+                    entries += "*("+color+") & "
+                elif index and i == j:
+                    entries += str(index[i]) + " & "
+                else:
+                    entries += "{} & "
+            entries = entries[:-2]
+            if i != self.n-1:
+                entries += "\\\\ \n"
+        end = "\n\\end{ytableau}"
+        return begin+entries+end    
+
 class RootIdeals:
     r""" The family of root ideals.
 
