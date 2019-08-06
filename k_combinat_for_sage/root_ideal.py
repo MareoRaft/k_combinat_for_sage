@@ -814,6 +814,28 @@ class RootIdeal(list):
         ri_complement_set = set(ri_staircase) - set(self)
         ri_complement = RootIdeal(ri_complement_set, n)
         return ri_complement
+    
+    def removable_roots(self):
+        r"""
+        Give the set of all roots that, if removed, would still yield a root ideal.
+
+        EXAMPLES::
+
+            sage: ri = RootIdeal([(0,1),(0,2),(1,2),(0,3),(1,3)],4)
+            sage: set(ri.removable_roots()) == set([(0, 1), (1, 2)])
+            True
+            sage: ri = RootIdeal([],1)
+            sage: set(ri.removable_roots()) == set([])
+            True
+
+        TESTS::
+
+            sage: RI = RootIdeals()
+            sage: ideals = [RI.init_from_partition(part,5) for j in range(11) for part in Partitions(j,outer=[4,3,2,1])]
+            sage: all([RI.init_from_removable_roots(ideal.removable_roots(),5) == ideal for ideal in ideals])
+            True
+        """
+        return set([(i,j) for (i,j) in self if (i,j-1) not in self and (i+1,j) not in self])
 
     def _latex_(self, color='red', index=None):
         r"""
@@ -856,37 +878,6 @@ class RootIdeal(list):
                 entries += "\\\\ \n"
         end = "\n\\end{ytableau}"
         return begin+entries+end    
-    
-    # def _latex_(self, color='red'):
-    #     r"""
-    #     Return LaTeX code to draw a LaTeX representation of ``self``.
-
-    #     EXAMPLES::
-
-    #         sage: latex(RootIdeal([],3)) # indirect doctest
-    #         \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}]
-    #         \draw[step=0.5cm,color=black] (0,0) grid (1.5,1.5);
-    #         \end{tikzpicture}
-    #         sage: latex(RootIdeal([(0,2)],3)) # indirect doctest
-    #         \begin{tikzpicture}[every node/.style={minimum size=.5cm-\pgflinewidth, outer sep=0pt}]
-    #         \draw[step=0.5cm,color=black] (0,0) grid (1.5,1.5);
-    #           \node[fill=red] at (1.25,-0.25) {};
-    #         \end{tikzpicture}
-    #     """
-    #     # these allow the view command to work (maybe move them somewhere more appropriate?)
-    #     from sage.misc.latex import latex            
-    #     latex.add_to_mathjax_avoid_list('tikzpicture')
-    #     latex.add_package_to_preamble_if_available('tikz')
-    #     begin = "\\begin{tikzpicture}[every node/.style={minimum size=.5cm-\\pgflinewidth, outer sep=0pt}]\n"
-    #     dec_n = str(self.n/2.0)
-    #     grid = "\\draw[step=0.5cm,color=black] (0,0) grid ("+dec_n+","+"-"+dec_n+");\n"
-    #     colors = ""
-    #     for (r,c) in self:
-    #         dec_r = str(-1*(r/2.0+0.25))
-    #         dec_c = str(c/2.0+0.25)
-    #         colors += "  \\node[fill="+color+"] at (" + dec_c + "," + dec_r + ") {};\n"
-    #     end = "\\end{tikzpicture}"
-    #     return begin+grid+colors+end    
 
 class RootIdeals:
     r""" The family of root ideals.
