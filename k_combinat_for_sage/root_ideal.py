@@ -814,7 +814,7 @@ class RootIdeal(list):
         ri_complement_set = set(ri_staircase) - set(self)
         ri_complement = RootIdeal(ri_complement_set, n)
         return ri_complement
-    
+
     def removable_roots(self):
         r"""
         Give the set of all roots that, if removed, would still yield a root ideal.
