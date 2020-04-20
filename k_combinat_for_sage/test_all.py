@@ -1,7 +1,7 @@
 #!/usr/bin/env sage
 # use `sage --python -m pdb test_all.py` for the debugger
 # A place to test my functions
-from __future__ import print_function
+# from __future__ import print_function
 import time
 
 from sage.all import *
@@ -853,17 +853,17 @@ a(Partition([4, 2, 2]).is_core(7), True)
 
 # test partition to k core (or k bounded partition to k+1 core)
 # main tests
-a(to_k_core([1], 3), [1])
-a(to_k_core([2], 3), [2])
-a(to_k_core([1, 1], 3), [1, 1])
-a(to_k_core([2, 1], 3), [3, 1])
-a(to_k_core([1, 1, 1], 3), [2, 1, 1])
-a(to_k_core([1, 1, 1, 1, 1, 1], 2), [6, 5, 4, 3, 2, 1])
-a(to_k_core([2, 1, 1, 1], 3), [4, 2, 1, 1])
-a(to_k_core([1, 1, 1, 1, 1], 3), [3, 2, 2, 1, 1])
-# extra
-a(to_k_core([6, 5, 5, 2], 4), [11, 8, 5, 2])
-a(to_k_core([2, 2, 1], 3), [5, 3, 1])
+# a(to_k_core([1], 3), [1])
+# a(to_k_core([2], 3), [2])
+# a(to_k_core([1, 1], 3), [1, 1])
+# a(to_k_core([2, 1], 3), [3, 1])
+# a(to_k_core([1, 1, 1], 3), [2, 1, 1])
+# a(to_k_core([1, 1, 1, 1, 1, 1], 2), [6, 5, 4, 3, 2, 1])
+# a(to_k_core([2, 1, 1, 1], 3), [4, 2, 1, 1])
+# a(to_k_core([1, 1, 1, 1, 1], 3), [3, 2, 2, 1, 1])
+# # extra
+# a(to_k_core([6, 5, 5, 2], 4), [11, 8, 5, 2])
+# a(to_k_core([2, 2, 1], 3), [5, 3, 1])
 
 
 # test_is_linked
@@ -1042,7 +1042,7 @@ a((0.5,) in S, False)
 
 
 # test ShiftingOperatorAlgebra
-R = ShiftingOperatorAlgebra()
+R = ShiftingOperatorAlgebra2()
 TestSuite(R).run(verbose=False)
 a(R(), R())
 a(R[(1, 2, 1)] * R[(0, 1, 0, 1)], R[(1, 3, 1, 1)])
@@ -1092,7 +1092,7 @@ a(R[(1, -1)](s[2, 1] + s[3, 1]), s[3] + s[4])
 
 
 # test RaisingOperatorAlgebra
-R = RaisingOperatorAlgebra()
+R = RaisingOperatorAlgebra2()
 TestSuite(R).run(verbose=False)
 a(R[(1, -1)] * R[(0, 1, 0, -1)], R[(1, 0, 0, -1)])
 # create 'R_ij' element
