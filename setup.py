@@ -14,7 +14,7 @@ setup(
 	packages=[name], # must be same as name above
 	version=version,
 	description='k-Schur combinatorics for SageMath',
-	author='Matthew Lancellotti',
+	author='Matthew Lancellotti and George H. Seelinger',
 	author_email='mvlancellotti@gmail.com',
 	url=url, # URL to github repo
 	download_url=download_url,
