@@ -837,6 +837,9 @@ class RootIdeal(list):
         """
         return set([(i,j) for (i,j) in self if (i,j-1) not in self and (i+1,j) not in self])
 
+    def addable_roots(self):
+        return set([(i,j) for (i,j) in self.complement() if ((i-1,j) in self or i==0) and ((i,j+1) in self or j+1==self.n)])
+    
 class RootIdeals:
     r""" The family of root ideals.
 
