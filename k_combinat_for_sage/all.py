@@ -18,22 +18,41 @@ REFERENCES:
 #  Distributed under the terms of the GNU General Public License (GPL)
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
+import sys
 
 from sage.all import *
+from sage.combinat.partition_shifting_algebras import ShiftingOperatorAlgebra as ShiftingOperatorAlgebraExplicit
 
-from core import *
-import core
-from partition import *
-import partition
-from partition import _is_sequence
-from skew_partition import *
-import skew_partition
-from k_shape import *
-import k_shape
-from root_ideal import *
-import root_ideal
-from strong_marked_tableau import *
-import strong_marked_tableau
+parent_module = sys.modules['.'.join(__name__.split('.')[:-1]) or '__main__']
+if __name__ == '__main__' or parent_module.__name__ == '__main__':
+    from core import *
+    import core
+    from partition import *
+    import partition
+    from partition import _is_sequence
+    from skew_partition import *
+    import skew_partition
+    from k_shape import *
+    import k_shape
+    from root_ideal import *
+    import root_ideal
+    from strong_marked_tableau import *
+    import strong_marked_tableau
+else:
+    from .core import *
+    from . import core
+    from .partition import *
+    from . import partition
+    from .partition import _is_sequence
+    from .skew_partition import *
+    from . import skew_partition
+    from .k_shape import *
+    from . import k_shape
+    from .root_ideal import *
+    from . import root_ideal
+    from .strong_marked_tableau import *
+    from . import strong_marked_tableau
+    
 # ^*^ sphinx insert ^*^
 
 
@@ -379,8 +398,9 @@ class RaisingSequenceSpace(ShiftingSequenceSpace):
         # finally, succeed
         return True
 
+RaisingOperatorAlgebra = ShiftingOperatorAlgebra
 
-class ShiftingOperatorAlgebra(CombinatorialFreeModule):
+class ShiftingOperatorAlgebra2(CombinatorialFreeModule):
     r""" An algebra of shifting operators.
 
     We follow the following convention:
@@ -592,7 +612,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                     dic = operand.monomial_coefficients()
                     assert len(dic) == 1
                     # occasionally a coefficient can show up (not cool, so consider the inclusion of coeff here a patch)
-                    (composition, coeff) = dic.items()[0]
+                    (composition, coeff) = list(dic.items())[0]
                     out_composition = raise_func(seq, composition)
                     if parent_basis.__class__.__name__ in (
                             'SymmetricFunctionAlgebra_homogeneous_with_category',
@@ -633,7 +653,7 @@ class ShiftingOperatorAlgebra(CombinatorialFreeModule):
                     return sum(coeff * mon for mon, coeff in out_list)
 
 
-class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
+class RaisingOperatorAlgebra2(ShiftingOperatorAlgebra2):
     r""" An algebra of raising operators.
 
     This class subclasses :class:`ShiftingOperatorAlgebra` and inherits the large majority of its functionality from there.
@@ -675,10 +695,14 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
     """
 
     def __init__(self, base_ring=QQ['t'], prefix='R'):
-        ShiftingOperatorAlgebra.__init__(self,
+        ShiftingOperatorAlgebra2.__init__(self,
                                          base_ring=base_ring,
                                          prefix=prefix,
                                          basis_indices=RaisingSequenceSpace())
+        # sym = SymmetricFunctions(base_ring)
+        # H = sym.Qp()
+        # HL_map = lambda supp: straighten(H, supp)
+        # self.build_and_register_conversion(HL_map, H)
 
     def ij(self, i, j):
         r""" Return the raising operator `R_{ij}` as notated in [cat]_ Definition 2.1.
@@ -711,7 +735,7 @@ class RaisingOperatorAlgebra(ShiftingOperatorAlgebra):
         return self._element_constructor_(seq)
 
 
-class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
+class PieriOperatorAlgebra(ShiftingOperatorAlgebraExplicit):
     r""" The Pieri operator `u_i`.
 
     EXAMPLES::
@@ -738,10 +762,10 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
     """
     # TODO: verify by hand that above is really correct, or maybe a simpler example
     def __init__(self, base_ring=QQ['t'], prefix='u'):
-        ShiftingOperatorAlgebra.__init__(self,
+        ShiftingOperatorAlgebraExplicit.__init__(self,
                                          base_ring=base_ring,
-                                         prefix=prefix,
-                                         basis_indices=ShiftingSequenceSpace())
+                                         prefix=prefix) #,
+#                                         basis_indices=ShiftingSequenceSpace())
 
     def i(self, i):
         r"""
@@ -802,6 +826,12 @@ class PieriOperatorAlgebra(ShiftingOperatorAlgebra):
                 out_coeff_pairs = [(kschur(cat.eval()), coeff)
                                    for cat, coeff in cat_coeff_pairs]
                 return sum(coeff * func for func, coeff in out_coeff_pairs)
+            elif hasattr(operand, '_get_indices_for_index_operator'):
+                indices = operand._get_indices_for_index_operator()
+                # TODO: see if this works for TUPLES of indices.  This has only been tested for a single index.
+                new_indices = self.__call__(indices)[0][0]
+                out = operand._new_object_for_index_operator(new_indices)
+                return out
             else:
                 return ShiftingOperatorAlgebra.Element.__call__(self, operand)
 
@@ -1212,10 +1242,17 @@ class CatalanFunction:
             t = self.base_ring.gen()
         else:
             hl = SymmetricFunctions(self.base_ring).hall_littlewood(t=t).Qp()
+        HL_map = lambda supp: straighten(hl, supp)
+
+            
         # formula
         roots_complement = self.roots.complement()
         op = raising_roots_operator(
             roots_complement, base_ring=self.base_ring, t=t)
+        try:
+            parent(op).build_and_register_conversion(HL_map, hl)
+        except AssertionError:
+            pass
         hl_poly = hl(self.index)
         cat_func = op(hl_poly)
         return cat_func
@@ -1251,7 +1288,23 @@ class CatalanFunction:
         """
         return self.eval().expand(*args, **kwargs)
 
+    def _latex_(self, color='red'):
+        r"""
+        Return LaTeX code to draw a LaTeX representation of a root ideal 
+        encoding  ``self``.
 
+        EXAMPLES::
+
+            sage: cf = CatalanFunction([(0,2)],[3,2,1])
+            sage: latex(cf) # indirect doctest
+            \begin{ytableau}
+              3 & {} & *(red) \\ 
+              {} & 2 & {} \\ 
+              {} & {} & 1 
+            \end{ytableau}
+        """
+        return self.roots._latex_(color=color,index=self.index)
+        
 class CatalanFunctions:
     r""" The family of catalan functions, as discussed in [cat]_ section 4.
 

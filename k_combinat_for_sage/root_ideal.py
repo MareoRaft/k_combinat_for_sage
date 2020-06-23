@@ -19,9 +19,18 @@ REFERENCES:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+import sys
+
 from sage.all import *
-import partition
-import skew_partition
+
+parent_module = sys.modules['.'.join(__name__.split('.')[:-1]) or '__main__']
+if __name__ == '__main__' or parent_module.__name__ == '__main__':
+    import partition
+    import skew_partition
+else:
+    from . import partition
+    from . import skew_partition
+    
 # ^*^ sphinx insert ^*^
 
 # HELPERS
@@ -839,7 +848,49 @@ class RootIdeal(list):
 
     def addable_roots(self):
         return set([(i,j) for (i,j) in self.complement() if ((i-1,j) in self or i==0) and ((i,j+1) in self or j+1==self.n)])
-    
+
+    def _latex_(self, color='red', index=None):
+        r"""
+        Return LaTeX code to draw a LaTeX representation of ``self``.
+
+        EXAMPLES::
+
+            sage: latex(RootIdeal([],3)) # indirect doctest
+            \begin{ytableau}
+              {} & {} & {} \\ 
+              {} & {} & {} \\ 
+              {} & {} & {} 
+            \end{ytableau}
+            sage: latex(RootIdeal([(0,2)],3)) # indirect doctest
+            \begin{ytableau}
+              {} & {} & *(red) \\ 
+              {} & {} & {} \\ 
+              {} & {} & {} 
+            \end{ytableau}
+        """
+        # these allow the view command to work (maybe move them somewhere more appropriate?)
+        if index:
+            assert len(index) == self.n, "Length of root ideal index must equal root ideal size!"
+        from sage.misc.latex import latex            
+        latex.add_to_mathjax_avoid_list('ytableau')
+        latex.add_package_to_preamble_if_available('ytableau')
+        begin = "\\begin{ytableau}\n"
+        entries = ""
+        for i in range(self.n):
+            entries += "  "
+            for j in range(self.n):
+                if (i,j) in self:
+                    entries += "*("+color+") & "
+                elif index and i == j:
+                    entries += str(index[i]) + " & "
+                else:
+                    entries += "{} & "
+            entries = entries[:-2]
+            if i != self.n-1:
+                entries += "\\\\ \n"
+        end = "\n\\end{ytableau}"
+        return begin+entries+end    
+
 class RootIdeals:
     r""" The family of root ideals.
 

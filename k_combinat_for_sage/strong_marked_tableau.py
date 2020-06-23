@@ -18,10 +18,17 @@ REFERENCES:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+import sys
+
 from sage.all import *
 
-from partition import *
-import skew_partition
+parent_module = sys.modules['.'.join(__name__.split('.')[:-1]) or '__main__']
+if __name__ == '__main__' or parent_module.__name__ == '__main__':
+    from partition import *
+    import skew_partition
+else:
+    from .partition import *
+    from . import skew_partition
 # ^*^ sphinx insert ^*^
 
 

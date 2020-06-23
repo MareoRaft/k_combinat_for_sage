@@ -18,9 +18,17 @@ REFERENCES:
 #                  http://www.gnu.org/licenses/
 #*****************************************************************************
 
+import sys
+
 from sage.all import *
-from partition import *
-import skew_partition
+
+parent_module = sys.modules['.'.join(__name__.split('.')[:-1]) or '__main__']
+if __name__ == '__main__' or parent_module.__name__ == '__main__':
+    from partition import *
+    from skew_partition import is_linked
+else:
+    from .partition import *
+    from .skew_partition import is_linked    
 # ^*^ sphinx insert ^*^
 
 
@@ -50,7 +58,7 @@ def is_k_shape(ptn, k):
         return any(lis)
     else:
         k_bdy = ptn.k_boundary(k)
-        return skew_partition.is_linked(k_bdy)
+        return is_linked(k_bdy)
 
 # kShape stuff
 
@@ -266,7 +274,7 @@ def k_to_irreducible_k_shapes(k):
 
         :meth:`is_reducible`, :meth:`is_irreducible`
     """
-    bound = (k-1)*k/2
+    bound = (k-1)*k//2
     n_bound = bound**2
     ptns = []
     for n in range(0, n_bound+1):

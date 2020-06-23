@@ -6,7 +6,7 @@ import sys
 # config
 name = 'k_combinat_for_sage'
 # version = WILL BE AUTOMATICALLY POPULATED IN LINE BELOW.  DO NOT EDIT LINE BELOW.
-version = '0.1.4'
+version = '1.0.0'
 url = 'https://github.com/mareoraft/{name}'.format(name=name)
 download_url = '{url}/archive/{tag}.tar.gz'.format(url=url, tag=version)
 setup(
@@ -14,7 +14,7 @@ setup(
 	packages=[name], # must be same as name above
 	version=version,
 	description='k-Schur combinatorics for SageMath',
-	author='Matthew Lancellotti',
+	author='Matthew Lancellotti and George H. Seelinger',
 	author_email='mvlancellotti@gmail.com',
 	url=url, # URL to github repo
 	download_url=download_url,
