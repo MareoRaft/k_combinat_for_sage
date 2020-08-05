@@ -639,7 +639,7 @@ class RootIdeal(list):
 
         This exists mainly as a helper function for :meth:`down_path_column_lengths`.
 
-        EXAMPLES:
+        EXAMPLES::
 
             sage: ri = RootIdeals().init_from_partition([5, 2, 2, 2], 6)
             sage: ptn = [7, 6, 5, 2, 2, 2]
