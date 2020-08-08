@@ -849,6 +849,16 @@ class RootIdeal(list):
     def addable_roots(self):
         return set([(i,j) for (i,j) in self.complement() if ((i-1,j) in self or i==0) and ((i,j+1) in self or j+1==self.n)])
 
+    def root_vectors(self):
+        def ij(i, j, l):
+            seq = [0] * l
+            seq[i] = 1
+            seq[j] = -1
+            seq = tuple(seq)
+            return seq
+        VS = VectorSpace(QQ,self.n)
+        return [VS(ij(i,j,self.n)) for (i,j) in self]
+            
     def _latex_(self, color='red', index=None):
         r"""
         Return LaTeX code to draw a LaTeX representation of ``self``.
