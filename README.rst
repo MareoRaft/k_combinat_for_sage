@@ -5,6 +5,11 @@ k_combinat_for_sage
 k-Schur and other "k-math-objects" for combinatorics.  This code is meant to be used with `SageMath <https://www.sagemath.org/>`_, and parts of it have already `been migrated <https://github.com/sagemath/sage/issues/25931>`_ into SageMath itself.  The functions in the code come from research by `Jennifer Morse <http://math.virginia.edu/people/jlm6cj/>`_ and her colleagues.  You will see in the documentation references to various research papers, which are the relevant topics.
 
 
+.. image:: docs/source/_static/k-rim.JPG
+  :width: 400
+  :alt: Alternative text
+
+
 Quicklinks
 --------------
 
