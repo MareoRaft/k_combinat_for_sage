@@ -6,8 +6,7 @@ k-Schur and other "k-math-objects" for combinatorics.  This code is meant to be 
 
 
 .. image:: docs/source/_static/k-rim.JPG
-  :width: 400
-  :alt: Alternative text
+  :alt: image of k-rim of a 2,1,1 tableau
 
 
 Quicklinks
